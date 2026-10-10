@@ -1,0 +1,8 @@
+{
+  "chain": "settler",
+  "order": 2,
+  "name": "Town Banner",
+  "requirement": "A settlement reaches renown 2",
+  "reward": "Banner (radius 16)",
+  "xp": 150
+}

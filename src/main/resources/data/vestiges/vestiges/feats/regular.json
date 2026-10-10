@@ -1,0 +1,9 @@
+{
+  "chain": "gatekeeper",
+  "order": 4,
+  "name": "Regular",
+  "requirement": "Every 5 dungeon clears",
+  "reward": "Small Banner (radius 16)",
+  "xp": 100,
+  "repeatable": true
+}

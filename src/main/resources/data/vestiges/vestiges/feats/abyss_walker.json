@@ -1,0 +1,8 @@
+{
+  "chain": "gatekeeper",
+  "order": 3,
+  "name": "Abyss Walker",
+  "requirement": "Clear dungeon tier 25",
+  "reward": "2nd Gold Block",
+  "xp": 2000
+}

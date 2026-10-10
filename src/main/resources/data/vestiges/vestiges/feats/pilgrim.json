@@ -1,0 +1,8 @@
+{
+  "chain": "explorer",
+  "order": 4,
+  "name": "Pilgrim",
+  "requirement": "Restore 10 ruined shrines",
+  "reward": "Contract (reusable)",
+  "xp": 500
+}

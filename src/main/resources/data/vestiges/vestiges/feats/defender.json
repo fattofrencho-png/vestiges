@@ -1,0 +1,8 @@
+{
+  "chain": "warden",
+  "order": 2,
+  "name": "Defender",
+  "requirement": "Defend a raid",
+  "reward": "Ward Lantern (radius 12)",
+  "xp": 300
+}

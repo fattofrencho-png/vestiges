@@ -1,0 +1,31 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Compiles the mod, runs the JUnit suite (src/test) and produces the jar: the same command a local `dev build` runs.
+      - name: Build and test
+        run: ./gradlew build --no-daemon
+
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: vestiges-jar
+          path: build/libs/*.jar

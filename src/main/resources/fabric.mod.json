@@ -1,0 +1,26 @@
+{
+	"schemaVersion": 1,
+	"id": "vestiges",
+	"version": "${version}",
+	"name": "Vestiges",
+	"description": "An endless RPG built on vanilla Minecraft: a character at the core, earned automation, settlements, workers, portal dungeons and 24 dragons.",
+	"authors": [
+		"carpe"
+	],
+	"license": "All-Rights-Reserved",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.vestiges.Vestiges"
+		],
+		"client": [
+			"dev.vestiges.client.VestigesClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

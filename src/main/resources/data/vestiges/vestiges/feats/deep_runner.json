@@ -1,0 +1,8 @@
+{
+  "chain": "gatekeeper",
+  "order": 2,
+  "name": "Deep Runner",
+  "requirement": "Clear dungeon tier 10",
+  "reward": "Gold Block (chunk loader)",
+  "xp": 800
+}

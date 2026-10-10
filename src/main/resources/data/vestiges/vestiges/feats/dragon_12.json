@@ -1,0 +1,8 @@
+{
+  "chain": "dragonslayer",
+  "order": 3,
+  "name": "The Breaking",
+  "requirement": "Kill dragon 12",
+  "reward": "Respec Tome, a Relic item",
+  "xp": 2000
+}

@@ -1,0 +1,8 @@
+{
+  "chain": "dragonslayer",
+  "order": 2,
+  "name": "The Waking",
+  "requirement": "Kill dragon 6",
+  "reward": "Extra Waystone, a Relic item",
+  "xp": 1000
+}

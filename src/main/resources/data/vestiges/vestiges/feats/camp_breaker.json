@@ -1,0 +1,8 @@
+{
+  "chain": "warden",
+  "order": 1,
+  "name": "Camp Breaker",
+  "requirement": "Clear a pillager camp",
+  "reward": "Ward Lantern (radius 6)",
+  "xp": 150
+}

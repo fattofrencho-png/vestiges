@@ -1,0 +1,8 @@
+{
+  "chain": "gatekeeper",
+  "order": 1,
+  "name": "First Key",
+  "requirement": "Level 15, kill 5 elites",
+  "reward": "Tier 1 key and the portal frame",
+  "xp": 200
+}

@@ -1,0 +1,8 @@
+{
+  "chain": "warden",
+  "order": 3,
+  "name": "Bulwark",
+  "requirement": "Defend a Bad Omen V raid",
+  "reward": "Ward Lantern (radius 30)",
+  "xp": 1000
+}

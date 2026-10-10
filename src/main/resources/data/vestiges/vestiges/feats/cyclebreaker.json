@@ -1,0 +1,8 @@
+{
+  "chain": "dragonslayer",
+  "order": 5,
+  "name": "The Ending",
+  "requirement": "Kill dragon 24",
+  "reward": "The choice, a Relic item, and the ending",
+  "xp": 5000
+}

@@ -1,0 +1,8 @@
+{
+  "chain": "explorer",
+  "order": 3,
+  "name": "Surveyor",
+  "requirement": "250 Codex entries",
+  "reward": "Blueprint size 64",
+  "xp": 800
+}

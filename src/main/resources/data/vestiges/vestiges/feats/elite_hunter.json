@@ -1,0 +1,9 @@
+{
+  "chain": "warden",
+  "order": 4,
+  "name": "Elite Hunter",
+  "requirement": "Every 10 elites killed",
+  "reward": "Ward Lantern (radius 6)",
+  "xp": 100,
+  "repeatable": true
+}

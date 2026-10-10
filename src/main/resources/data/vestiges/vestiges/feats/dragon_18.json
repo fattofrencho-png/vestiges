@@ -1,0 +1,8 @@
+{
+  "chain": "dragonslayer",
+  "order": 4,
+  "name": "The Remembering",
+  "requirement": "Kill dragon 18",
+  "reward": "3rd Gold Block, a Relic item",
+  "xp": 3000
+}

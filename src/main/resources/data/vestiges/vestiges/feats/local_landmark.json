@@ -1,0 +1,9 @@
+{
+  "chain": "settler",
+  "order": 6,
+  "name": "Local Landmark",
+  "requirement": "Each renown level gained in any settlement",
+  "reward": "Small Banner (radius 16)",
+  "xp": 100,
+  "repeatable": true
+}

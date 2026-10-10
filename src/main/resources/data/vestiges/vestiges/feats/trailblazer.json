@@ -1,0 +1,9 @@
+{
+  "chain": "explorer",
+  "order": 5,
+  "name": "Trailblazer",
+  "requirement": "Every 50 new Codex entries",
+  "reward": "Waystone",
+  "xp": 150,
+  "repeatable": true
+}

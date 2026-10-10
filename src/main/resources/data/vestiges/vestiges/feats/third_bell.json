@@ -1,0 +1,8 @@
+{
+  "chain": "settler",
+  "order": 5,
+  "name": "Third Bell",
+  "requirement": "Level 80, two settlements at renown 6",
+  "reward": "3rd Bell",
+  "xp": 1500
+}

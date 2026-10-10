@@ -1,0 +1,8 @@
+{
+  "chain": "explorer",
+  "order": 1,
+  "name": "First Waystone",
+  "requirement": "Level 15, visit 10 biomes",
+  "reward": "Waystone",
+  "xp": 200
+}

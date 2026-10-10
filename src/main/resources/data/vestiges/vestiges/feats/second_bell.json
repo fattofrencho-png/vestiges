@@ -1,0 +1,8 @@
+{
+  "chain": "settler",
+  "order": 4,
+  "name": "Second Bell",
+  "requirement": "Level 50, a settlement at renown 5, 3 workers Journeyman or above",
+  "reward": "2nd Bell",
+  "xp": 800
+}

@@ -1,0 +1,8 @@
+{
+  "chain": "settler",
+  "order": 1,
+  "name": "Founder",
+  "requirement": "Level 10, 5 beds in one area, meet 1 villager",
+  "reward": "1st Bell",
+  "xp": 150
+}

@@ -1,0 +1,8 @@
+{
+  "chain": "explorer",
+  "order": 2,
+  "name": "Charted",
+  "requirement": "100 Codex entries",
+  "reward": "Blueprint size 32",
+  "xp": 400
+}
