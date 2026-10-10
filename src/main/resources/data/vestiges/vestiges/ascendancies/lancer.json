@@ -1,0 +1,136 @@
+{
+ "id": "lancer",
+ "name": "Lancer",
+ "kit": "Spear + Shears",
+ "branches": [
+  {
+   "name": "Cluster Harvest",
+   "nodes": [
+    {
+     "id": "lancer:Cluster Harvest:0",
+     "type": "travel",
+     "name": "+10% underwater mining speed",
+     "text": "+10% underwater mining speed.",
+     "effects": [
+      {
+       "stat": "underwater_mining",
+       "value": 10
+      }
+     ]
+    },
+    {
+     "id": "lancer:Cluster Harvest:1",
+     "type": "crafting",
+     "name": "Cluster Harvest",
+     "text": "Breaking coral, moss, dripstone, amethyst, glow lichen, vines or a flower patch harvests the whole connected cluster, up to 32 (V).",
+     "effects": [
+      {
+       "mechanic": "cluster_harvest",
+       "params": {
+        "max": 32
+       }
+      }
+     ]
+    },
+    {
+     "id": "lancer:Cluster Harvest:2",
+     "type": "travel",
+     "name": "+5% spear damage",
+     "text": "+5% spear damage.",
+     "effects": [
+      {
+       "stat": "spear_damage",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "id": "lancer:Cluster Harvest:3",
+     "type": "fighting",
+     "name": "Impaler",
+     "text": "Charged spear attacks pierce through the first enemy and hit the one behind.",
+     "effects": [
+      {
+       "mechanic": "impaler"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Shearmaster",
+   "nodes": [
+    {
+     "id": "lancer:Shearmaster:0",
+     "type": "travel",
+     "name": "-10% tool durability loss",
+     "text": "-10% tool durability loss.",
+     "effects": [
+      {
+       "stat": "tool_wear",
+       "value": -10
+      }
+     ]
+    },
+    {
+     "id": "lancer:Shearmaster:1",
+     "type": "crafting",
+     "name": "Shearmaster",
+     "text": "Shearing a sheep shears every sheep within 5 blocks; shears cut leaves, wool and cobwebs 50% faster (V).",
+     "effects": [
+      {
+       "mechanic": "shearmaster",
+       "params": {
+        "radius": 5,
+        "speed": 50
+       }
+      }
+     ]
+    },
+    {
+     "id": "lancer:Shearmaster:2",
+     "type": "travel",
+     "name": "+3% spear attack speed",
+     "text": "+3% spear attack speed.",
+     "effects": [
+      {
+       "stat": "spear_attack_speed",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "id": "lancer:Shearmaster:3",
+     "type": "fighting",
+     "name": "Long Reach",
+     "text": "+1 block attack reach while holding a spear.",
+     "effects": [
+      {
+       "mechanic": "spear_reach",
+       "params": {
+        "blocks": 1
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "second": [
+  {
+   "counter": "spear_kills",
+   "goal": 500,
+   "text": "spear kills"
+  },
+  {
+   "counter": "cluster_blocks",
+   "goal": 500,
+   "text": "cluster blocks harvested"
+  },
+  {
+   "counter": "coral_blocks",
+   "goal": 64,
+   "text": "coral blocks gathered"
+  }
+ ]
+}

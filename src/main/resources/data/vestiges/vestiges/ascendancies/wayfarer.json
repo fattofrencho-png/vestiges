@@ -1,0 +1,143 @@
+{
+ "id": "wayfarer",
+ "name": "Wayfarer",
+ "kit": "Bow + Shovel",
+ "branches": [
+  {
+   "name": "Earthmover",
+   "nodes": [
+    {
+     "id": "wayfarer:Earthmover:0",
+     "type": "travel",
+     "name": "+10% shovel speed",
+     "text": "+10% shovel speed.",
+     "effects": [
+      {
+       "stat": "shovel_speed",
+       "value": 10
+      }
+     ]
+    },
+    {
+     "id": "wayfarer:Earthmover:1",
+     "type": "crafting",
+     "name": "Earthmover",
+     "text": "Shovels dig a 3x3 area of dirt, sand, gravel, snow and clay (V).",
+     "effects": [
+      {
+       "mechanic": "earthmover",
+       "params": {
+        "radius": 1
+       }
+      }
+     ]
+    },
+    {
+     "id": "wayfarer:Earthmover:2",
+     "type": "travel",
+     "name": "+5% bow draw speed",
+     "text": "+5% bow draw speed.",
+     "effects": [
+      {
+       "stat": "draw_speed",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "id": "wayfarer:Earthmover:3",
+     "type": "fighting",
+     "name": "Pinning Shot",
+     "text": "Fully drawn arrows slow the target for 2 s.",
+     "effects": [
+      {
+       "mechanic": "slow_on_hit",
+       "params": {
+        "weapon": 0,
+        "amplifier": 1,
+        "seconds": 2,
+        "full_draw": 1
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Trailmaker",
+   "nodes": [
+    {
+     "id": "wayfarer:Trailmaker:0",
+     "type": "travel",
+     "name": "+10% discovery XP",
+     "text": "+10% discovery XP.",
+     "effects": [
+      {
+       "stat": "discovery_xp",
+       "value": 10
+      }
+     ]
+    },
+    {
+     "id": "wayfarer:Trailmaker:1",
+     "type": "crafting",
+     "name": "Trailmaker",
+     "text": "Shovel paths come out 3 wide, and you move 15% faster on paths (V).",
+     "effects": [
+      {
+       "mechanic": "trailmaker",
+       "params": {
+        "width": 3,
+        "speed": 15
+       }
+      }
+     ]
+    },
+    {
+     "id": "wayfarer:Trailmaker:2",
+     "type": "travel",
+     "name": "+5% bow damage",
+     "text": "+5% bow damage.",
+     "effects": [
+      {
+       "stat": "bow_damage",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "id": "wayfarer:Trailmaker:3",
+     "type": "fighting",
+     "name": "Hunter's Mark",
+     "text": "A mob you shoot glows and takes +10% damage from everyone for 10 s.",
+     "effects": [
+      {
+       "mechanic": "hunters_mark",
+       "params": {
+        "bonus": 10,
+        "seconds": 10
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "second": [
+  {
+   "counter": "shovel_blocks",
+   "goal": 5000,
+   "text": "blocks dug with a shovel"
+  },
+  {
+   "counter": "bow_kills",
+   "goal": 500,
+   "text": "bow kills"
+  },
+  {
+   "counter": "biomes",
+   "goal": 40,
+   "text": "biomes visited"
+  }
+ ]
+}

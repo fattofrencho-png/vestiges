@@ -39,7 +39,7 @@ From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.
 ## Working preferences
 
 - Simple words, short messages, one topic at a time; numbered questions; drafts before code. Plan first for anything non-trivial.
-- **Commit only when asked. Never push** unless the author asks (the private GitHub repo `vestiges` is not created yet; `gh` is not installed).
+- **Commit and push only when asked.** Remote: private repo https://github.com/fattofrencho-png/vestiges (CI builds every push to main). `gh` is not installed.
 
 ## Architecture (M0)
 

@@ -72,6 +72,17 @@ public final class HubNet {
 		}
 		root.add("data", data);
 
+		dev.vestiges.level.PlayerLevel lvl = dev.vestiges.level.LevelService.get(player);
+		JsonObject level = new JsonObject();
+		level.addProperty("level", lvl.level());
+		level.addProperty("xp", lvl.xp());
+		level.addProperty("need", lvl.need());
+		level.addProperty("paragon", lvl.paragon());
+		level.addProperty("bonusHealth", dev.vestiges.level.LevelCurve.bonusHealth(lvl.level(), lvl.paragon()));
+		level.addProperty("damagePct", Math.round((dev.vestiges.level.LevelCurve.damageMultiplier(lvl.level(), lvl.paragon()) - 1) * 1000) / 10.0);
+		level.addProperty("discoveries", lvl.firsts().size());
+		root.add("level", level);
+
 		PlayerProfile profile = PlayerProfiles.get(player);
 		JsonObject p = new JsonObject();
 		p.addProperty("name", player.getName().getString());

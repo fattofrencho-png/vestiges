@@ -1,0 +1,142 @@
+{
+ "id": "delver",
+ "name": "Delver",
+ "kit": "Mace + Pickaxe",
+ "branches": [
+  {
+   "name": "Vein Sense",
+   "nodes": [
+    {
+     "id": "delver:Vein Sense:0",
+     "type": "travel",
+     "name": "+3% chance of extra ore drops",
+     "text": "+3% chance of extra ore drops.",
+     "effects": [
+      {
+       "stat": "extra_ore",
+       "value": 3
+      }
+     ]
+    },
+    {
+     "id": "delver:Vein Sense:1",
+     "type": "crafting",
+     "name": "Vein Sense",
+     "text": "Mining an ore breaks the whole connected vein, up to 32 blocks (V).",
+     "effects": [
+      {
+       "mechanic": "vein_miner",
+       "params": {
+        "max": 32
+       }
+      }
+     ]
+    },
+    {
+     "id": "delver:Vein Sense:2",
+     "type": "travel",
+     "name": "+5% smash damage",
+     "text": "+5% smash damage.",
+     "effects": [
+      {
+       "stat": "smash_damage",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "id": "delver:Vein Sense:3",
+     "type": "fighting",
+     "name": "Aftershock",
+     "text": "Mace smash attacks slow nearby enemies for 3 s.",
+     "effects": [
+      {
+       "mechanic": "aftershock",
+       "params": {
+        "radius": 3,
+        "seconds": 3
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Excavator",
+   "nodes": [
+    {
+     "id": "delver:Excavator:0",
+     "type": "travel",
+     "name": "+10% mining speed below y=0",
+     "text": "+10% mining speed below y=0.",
+     "effects": [
+      {
+       "stat": "deep_mining_speed",
+       "value": 10
+      }
+     ]
+    },
+    {
+     "id": "delver:Excavator:1",
+     "type": "crafting",
+     "name": "Excavator",
+     "text": "Pickaxes break a 3x3 area (V).",
+     "effects": [
+      {
+       "mechanic": "excavator",
+       "params": {
+        "radius": 1
+       }
+      }
+     ]
+    },
+    {
+     "id": "delver:Excavator:2",
+     "type": "travel",
+     "name": "+5% armor while holding a mace",
+     "text": "+5% armor while holding a mace.",
+     "effects": [
+      {
+       "mechanic": "held_armor",
+       "params": {
+        "item": 0,
+        "armor": 5
+       }
+      }
+     ]
+    },
+    {
+     "id": "delver:Excavator:3",
+     "type": "fighting",
+     "name": "Stoneheart",
+     "text": "While holding a mace you cannot be knocked back; +10% armor.",
+     "effects": [
+      {
+       "mechanic": "stoneheart",
+       "params": {
+        "armor": 10
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "second": [
+  {
+   "counter": "ores",
+   "goal": 1000,
+   "text": "ores mined"
+  },
+  {
+   "counter": "mace_kills",
+   "goal": 500,
+   "text": "mace kills"
+  },
+  {
+   "counter": "ancient_debris",
+   "goal": 50,
+   "text": "ancient debris mined"
+  }
+ ]
+}

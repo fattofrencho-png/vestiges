@@ -16,9 +16,15 @@ public final class ReloadNotice {
 		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
 			Component msg = success ? Component.literal(summary()).withStyle(ChatFormatting.GREEN)
 				: Component.literal("Vestiges: data reload failed, the previous data is kept. Check the log.").withStyle(ChatFormatting.RED);
+			boolean scaled = server.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT)
+				.get(net.minecraft.world.item.enchantment.Enchantments.SHARPNESS).map(h -> h.value().getMaxLevel() == 4).orElse(false);
 			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 				if (Permissions.isOperator(player)) {
 					player.sendSystemMessage(msg);
+					if (!scaled) {
+						player.sendSystemMessage(Component.literal("Vestiges: the \"enchant levels\" datapack is off, so enchantments use vanilla levels.")
+							.withStyle(ChatFormatting.GOLD));
+					}
 				}
 			}
 		});

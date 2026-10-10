@@ -1,4 +1,7 @@
 {
   "key.vestiges.hub": "Open the Vestiges hub",
-  "key.category.vestiges.main": "Vestiges"
+  "key.category.vestiges.main": "Vestiges",
+  "key.vestiges.map": "Open the world map",
+  "key.vestiges.utility": "Utility powers on/off",
+  "key.vestiges.tree": "Open the passive trees"
 }

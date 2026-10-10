@@ -1,0 +1,248 @@
+{
+  "anvil_cost": 8,
+  "description": {
+    "translate": "enchantment.minecraft.channeling"
+  },
+  "effects": {
+    "minecraft:hit_block": [
+      {
+        "effect": {
+          "type": "minecraft:all_of",
+          "effects": [
+            {
+              "type": "minecraft:summon_entity",
+              "entity": "minecraft:lightning_bolt"
+            },
+            {
+              "type": "minecraft:play_sound",
+              "pitch": 1.0,
+              "sound": "minecraft:item.trident.thunder",
+              "volume": 5.0
+            }
+          ]
+        },
+        "requirements": {
+          "type": "minecraft:all_of",
+          "terms": [
+            {
+              "type": "minecraft:any_of",
+              "terms": [
+                {
+                  "type": "minecraft:weather_check",
+                  "thundering": true
+                },
+                {
+                  "type": "minecraft:all_of",
+                  "terms": [
+                    {
+                      "type": "minecraft:weather_check",
+                      "raining": true
+                    },
+                    {
+                      "type": "minecraft:random_chance",
+                      "chance": {
+                        "type": "minecraft:enchantment_level",
+                        "amount": {
+                          "type": "minecraft:lookup",
+                          "values": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0,
+                            1.0
+                          ],
+                          "fallback": 1.0
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "minecraft:random_chance",
+                  "chance": {
+                    "type": "minecraft:enchantment_level",
+                    "amount": {
+                      "type": "minecraft:lookup",
+                      "values": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                      ],
+                      "fallback": 1.0
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "minecraft:entity_properties",
+              "entity": "this",
+              "predicate": {
+                "minecraft:entity_type": "minecraft:trident"
+              }
+            },
+            {
+              "type": "minecraft:location_check",
+              "predicate": {
+                "block": {
+                  "blocks": "#minecraft:lightning_rods"
+                },
+                "can_see_sky": true
+              }
+            },
+            {
+              "type": "minecraft:random_chance",
+              "chance": {
+                "type": "minecraft:enchantment_level",
+                "amount": {
+                  "type": "minecraft:lookup",
+                  "values": [
+                    0.25,
+                    0.5,
+                    0.75,
+                    1,
+                    1,
+                    1
+                  ],
+                  "fallback": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "minecraft:post_attack": [
+      {
+        "affected": "victim",
+        "effect": {
+          "type": "minecraft:all_of",
+          "effects": [
+            {
+              "type": "minecraft:summon_entity",
+              "entity": "minecraft:lightning_bolt"
+            },
+            {
+              "type": "minecraft:play_sound",
+              "pitch": 1.0,
+              "sound": "minecraft:item.trident.thunder",
+              "volume": 5.0
+            }
+          ]
+        },
+        "enchanted": "attacker",
+        "requirements": {
+          "type": "minecraft:all_of",
+          "terms": [
+            {
+              "type": "minecraft:any_of",
+              "terms": [
+                {
+                  "type": "minecraft:weather_check",
+                  "thundering": true
+                },
+                {
+                  "type": "minecraft:all_of",
+                  "terms": [
+                    {
+                      "type": "minecraft:weather_check",
+                      "raining": true
+                    },
+                    {
+                      "type": "minecraft:random_chance",
+                      "chance": {
+                        "type": "minecraft:enchantment_level",
+                        "amount": {
+                          "type": "minecraft:lookup",
+                          "values": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0,
+                            1.0
+                          ],
+                          "fallback": 1.0
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "minecraft:random_chance",
+                  "chance": {
+                    "type": "minecraft:enchantment_level",
+                    "amount": {
+                      "type": "minecraft:lookup",
+                      "values": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                      ],
+                      "fallback": 1.0
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "minecraft:entity_properties",
+              "entity": "this",
+              "predicate": {
+                "minecraft:location": {
+                  "can_see_sky": true
+                }
+              }
+            },
+            {
+              "type": "minecraft:entity_properties",
+              "entity": "direct_attacker",
+              "predicate": {
+                "minecraft:entity_type": "minecraft:trident"
+              }
+            },
+            {
+              "type": "minecraft:random_chance",
+              "chance": {
+                "type": "minecraft:enchantment_level",
+                "amount": {
+                  "type": "minecraft:lookup",
+                  "values": [
+                    0.25,
+                    0.5,
+                    0.75,
+                    1,
+                    1,
+                    1
+                  ],
+                  "fallback": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 50,
+    "per_level_above_first": 0
+  },
+  "max_level": 4,
+  "min_cost": {
+    "base": 25,
+    "per_level_above_first": 5
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#minecraft:enchantable/trident",
+  "weight": 1
+}

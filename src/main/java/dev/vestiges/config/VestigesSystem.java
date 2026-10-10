@@ -4,6 +4,7 @@ package dev.vestiges.config;
 public enum VestigesSystem {
 	CHARACTER("character", "Levels and character stats"),
 	PASSIVE_TREE("passive_tree", "Fight and Craft wheels, ascendancy"),
+	GEAR("gear", "Rarity, enchant costs and level V, gear ladder, trim stats"),
 	INVENTORY("inventory", "New slots, racks and the bank"),
 	MOB_SCALING("mob_scaling", "Mob levels by layer"),
 	ELITES("elites", "Champions, Elites and Warlords"),

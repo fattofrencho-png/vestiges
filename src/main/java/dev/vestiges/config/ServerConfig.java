@@ -25,6 +25,10 @@ public final class ServerConfig {
 		public int deathXpLossMaxPercent = 15;
 		/** Waystone trips: 1 emerald per this many blocks, minimum 1. */
 		public int waystoneBlocksPerEmerald = 250;
+		/** Multiplies every level XP award (1.0 = the agreed balance). */
+		public double xpMultiplier = 1.0;
+		/** Minecraft days before an uncollected grave turns into a skull and keeps only the most valuable item. */
+		public int graveDays = 3;
 	}
 
 	/** Fills in every system the file does not mention, so new systems added in an update default to on. */

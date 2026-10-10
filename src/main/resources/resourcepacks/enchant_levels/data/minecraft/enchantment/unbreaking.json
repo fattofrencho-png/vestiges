@@ -1,0 +1,73 @@
+{
+  "anvil_cost": 2,
+  "description": {
+    "translate": "enchantment.minecraft.unbreaking"
+  },
+  "effects": {
+    "minecraft:item_damage": [
+      {
+        "effect": {
+          "type": "minecraft:remove_binomial",
+          "chance": {
+            "type": "minecraft:lookup",
+            "values": [
+              0.2,
+              0.2364,
+              0.2696,
+              0.3,
+              0.44,
+              0.5333
+            ],
+            "fallback": 0.5333
+          }
+        },
+        "requirements": {
+          "type": "minecraft:match_tool",
+          "predicate": {
+            "items": "#minecraft:enchantable/armor"
+          }
+        }
+      },
+      {
+        "effect": {
+          "type": "minecraft:remove_binomial",
+          "chance": {
+            "type": "minecraft:lookup",
+            "values": [
+              0.5,
+              0.625,
+              0.7,
+              0.75,
+              0.8,
+              0.8333
+            ],
+            "fallback": 0.8333
+          }
+        },
+        "requirements": {
+          "type": "minecraft:inverted",
+          "term": {
+            "type": "minecraft:match_tool",
+            "predicate": {
+              "items": "#minecraft:enchantable/armor"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 55,
+    "per_level_above_first": 5
+  },
+  "max_level": 4,
+  "min_cost": {
+    "base": 5,
+    "per_level_above_first": 5
+  },
+  "slots": [
+    "any"
+  ],
+  "supported_items": "#minecraft:enchantable/durability",
+  "weight": 5
+}

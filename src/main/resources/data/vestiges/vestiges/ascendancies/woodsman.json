@@ -1,0 +1,153 @@
+{
+ "id": "woodsman",
+ "name": "Woodsman",
+ "kit": "Crossbow + Axe",
+ "branches": [
+  {
+   "name": "Lumberjack",
+   "nodes": [
+    {
+     "id": "woodsman:Lumberjack:0",
+     "type": "travel",
+     "name": "+10% chopping speed",
+     "text": "+10% chopping speed.",
+     "effects": [
+      {
+       "stat": "chopping_speed",
+       "value": 10
+      }
+     ]
+    },
+    {
+     "id": "woodsman:Lumberjack:1",
+     "type": "crafting",
+     "name": "Lumberjack",
+     "text": "Chopping a log fells the whole tree (up to 64 logs) and replants a sapling (V).",
+     "effects": [
+      {
+       "mechanic": "lumberjack",
+       "params": {
+        "max": 64
+       }
+      }
+     ]
+    },
+    {
+     "id": "woodsman:Lumberjack:2",
+     "type": "travel",
+     "name": "+5% crossbow reload speed",
+     "text": "+5% crossbow reload speed.",
+     "effects": [
+      {
+       "stat": "reload_speed",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "id": "woodsman:Lumberjack:3",
+     "type": "fighting",
+     "name": "Splinter Bolt",
+     "text": "Crossbow bolts pierce 1 extra enemy; +15% crossbow damage.",
+     "effects": [
+      {
+       "mechanic": "pierce",
+       "params": {
+        "extra": 1,
+        "weapon": 1
+       }
+      },
+      {
+       "stat": "crossbow_damage",
+       "value": 15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Timber Sense",
+   "nodes": [
+    {
+     "id": "woodsman:Timber Sense:0",
+     "type": "travel",
+     "name": "+15% sapling and apple drops",
+     "text": "+15% sapling and apple drops.",
+     "effects": [
+      {
+       "stat": "sapling_drops",
+       "value": 15
+      },
+      {
+       "stat": "apple_drops",
+       "value": 15
+      }
+     ]
+    },
+    {
+     "id": "woodsman:Timber Sense:1",
+     "type": "crafting",
+     "name": "Timber Sense",
+     "text": "Axes chop 30% faster; stripping a log strips the whole trunk (V).",
+     "effects": [
+      {
+       "stat": "chopping_speed",
+       "value": 30
+      },
+      {
+       "mechanic": "strip_trunk",
+       "params": {
+        "max": 32
+       }
+      }
+     ]
+    },
+    {
+     "id": "woodsman:Timber Sense:2",
+     "type": "travel",
+     "name": "+5% crossbow damage",
+     "text": "+5% crossbow damage.",
+     "effects": [
+      {
+       "stat": "crossbow_damage",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "id": "woodsman:Timber Sense:3",
+     "type": "fighting",
+     "name": "Lockdown",
+     "text": "Crossbow hits slow the target by 30% for 2 s.",
+     "effects": [
+      {
+       "mechanic": "slow_on_hit",
+       "params": {
+        "weapon": 1,
+        "amplifier": 1,
+        "seconds": 2
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "second": [
+  {
+   "counter": "logs",
+   "goal": 3000,
+   "text": "logs chopped"
+  },
+  {
+   "counter": "crossbow_kills",
+   "goal": 500,
+   "text": "crossbow kills"
+  },
+  {
+   "counter": "elites",
+   "goal": 50,
+   "text": "elites killed"
+  }
+ ]
+}

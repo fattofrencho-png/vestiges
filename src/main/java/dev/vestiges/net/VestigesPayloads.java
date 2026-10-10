@@ -41,8 +41,23 @@ public final class VestigesPayloads {
 		}
 	}
 
+	/** Small server-to-client notices for the HUD: "xp", "levelup", "graves", "grave", "grave_removed". */
+	public record Notice(String kind, String json) implements CustomPacketPayload {
+		public static final Type<Notice> TYPE = new Type<>(Vestiges.id("notice"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, Notice> CODEC = StreamCodec.composite(
+			ByteBufCodecs.stringUtf8(64), Notice::kind,
+			ByteBufCodecs.stringUtf8(64000), Notice::json,
+			Notice::new);
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
+
 	public static void register() {
 		PayloadTypeRegistry.serverboundPlay().register(HubRequest.TYPE, HubRequest.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(HubData.TYPE, HubData.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(Notice.TYPE, Notice.CODEC);
 	}
 }

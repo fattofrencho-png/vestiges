@@ -1,0 +1,93 @@
+{
+  "anvil_cost": 2,
+  "description": {
+    "translate": "enchantment.minecraft.bane_of_arthropods"
+  },
+  "effects": {
+    "minecraft:damage": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:lookup",
+            "values": [
+              2.5,
+              5.8333,
+              9.1667,
+              12.5,
+              15.625,
+              18.75
+            ],
+            "fallback": 18.75
+          }
+        },
+        "requirements": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:entity_type": "#minecraft:sensitive_to_bane_of_arthropods"
+          }
+        }
+      }
+    ],
+    "minecraft:post_attack": [
+      {
+        "affected": "victim",
+        "effect": {
+          "type": "minecraft:apply_mob_effect",
+          "max_amplifier": 3.0,
+          "max_duration": {
+            "type": "minecraft:lookup",
+            "values": [
+              1.5,
+              2.1667,
+              2.8333,
+              3.5,
+              4.375,
+              5.25
+            ],
+            "fallback": 5.25
+          },
+          "min_amplifier": 3.0,
+          "min_duration": 1.5,
+          "to_apply": "minecraft:slowness"
+        },
+        "enchanted": "attacker",
+        "requirements": {
+          "type": "minecraft:all_of",
+          "terms": [
+            {
+              "type": "minecraft:entity_properties",
+              "entity": "this",
+              "predicate": {
+                "minecraft:entity_type": "#minecraft:sensitive_to_bane_of_arthropods"
+              }
+            },
+            {
+              "type": "minecraft:damage_source_properties",
+              "predicate": {
+                "is_direct": true
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "exclusive_set": "#minecraft:exclusive_set/damage",
+  "max_cost": {
+    "base": 25,
+    "per_level_above_first": 11
+  },
+  "max_level": 4,
+  "min_cost": {
+    "base": 5,
+    "per_level_above_first": 11
+  },
+  "primary_items": "#minecraft:enchantable/melee_weapon",
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#minecraft:enchantable/weapon",
+  "weight": 5
+}

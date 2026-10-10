@@ -1,0 +1,73 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.minecraft.depth_strider"
+  },
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:lookup",
+          "values": [
+            0.25,
+            0.5,
+            0.75,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "fallback": 1.0
+        },
+        "attribute": "minecraft:water_movement_efficiency",
+        "id": "minecraft:enchantment.depth_strider",
+        "operation": "add_value"
+      }
+    ],
+    "minecraft:location_changed": [
+      {
+        "effect": {
+          "type": "minecraft:attribute",
+          "attribute": "minecraft:movement_speed",
+          "id": "vestiges:enchantment.depth_strider_swim",
+          "operation": "add_multiplied_base",
+          "amount": {
+            "type": "minecraft:lookup",
+            "values": [
+              0,
+              0,
+              0,
+              0,
+              0.1,
+              0.2
+            ],
+            "fallback": 0.2
+          }
+        },
+        "requirements": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:flags": {
+              "is_in_water": true
+            }
+          }
+        }
+      }
+    ]
+  },
+  "exclusive_set": "#minecraft:exclusive_set/boots",
+  "max_cost": {
+    "base": 25,
+    "per_level_above_first": 7
+  },
+  "max_level": 4,
+  "min_cost": {
+    "base": 10,
+    "per_level_above_first": 7
+  },
+  "slots": [
+    "feet"
+  ],
+  "supported_items": "#minecraft:enchantable/foot_armor",
+  "weight": 2
+}

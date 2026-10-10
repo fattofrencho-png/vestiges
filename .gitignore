@@ -33,3 +33,6 @@ replay_*.log
 *.local
 build.log
 runclient.log
+
+# test runs (Fabric loader JUnit)
+logs/

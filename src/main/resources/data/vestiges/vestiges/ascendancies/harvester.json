@@ -1,0 +1,142 @@
+{
+ "id": "harvester",
+ "name": "Harvester",
+ "kit": "Sword + Hoe",
+ "branches": [
+  {
+   "name": "Reaper",
+   "nodes": [
+    {
+     "id": "harvester:Reaper:0",
+     "type": "travel",
+     "name": "+6% crop yield",
+     "text": "+6% crop yield.",
+     "effects": [
+      {
+       "stat": "crop_yield",
+       "value": 6
+      }
+     ]
+    },
+    {
+     "id": "harvester:Reaper:1",
+     "type": "crafting",
+     "name": "Reaper",
+     "text": "Harvesting a ripe crop harvests and replants every ripe crop in the 5x5 around it (V).",
+     "effects": [
+      {
+       "mechanic": "reaper",
+       "params": {
+        "radius": 2
+       }
+      }
+     ]
+    },
+    {
+     "id": "harvester:Reaper:2",
+     "type": "travel",
+     "name": "+5% sweeping damage",
+     "text": "+5% sweeping damage.",
+     "effects": [
+      {
+       "stat": "sweeping_damage",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "id": "harvester:Reaper:3",
+     "type": "fighting",
+     "name": "Scythe Sweep",
+     "text": "Sword sweeps hit every enemy within 3 blocks in front; +20% sweep damage.",
+     "effects": [
+      {
+       "mechanic": "scythe_sweep",
+       "params": {
+        "range": 3
+       }
+      },
+      {
+       "stat": "sweeping_damage",
+       "value": 20
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Tiller",
+   "nodes": [
+    {
+     "id": "harvester:Tiller:0",
+     "type": "travel",
+     "name": "+15% seed drops",
+     "text": "+15% seed drops.",
+     "effects": [
+      {
+       "stat": "seed_drops",
+       "value": 15
+      }
+     ]
+    },
+    {
+     "id": "harvester:Tiller:1",
+     "type": "crafting",
+     "name": "Tiller",
+     "text": "Tilling a block tills the 3x3 around it (V).",
+     "effects": [
+      {
+       "mechanic": "tiller",
+       "params": {
+        "radius": 1
+       }
+      }
+     ]
+    },
+    {
+     "id": "harvester:Tiller:2",
+     "type": "travel",
+     "name": "+5% sword damage",
+     "text": "+5% sword damage.",
+     "effects": [
+      {
+       "stat": "sword_damage",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "id": "harvester:Tiller:3",
+     "type": "fighting",
+     "name": "Grim Harvest",
+     "text": "Sword kills restore 10% of your max health.",
+     "effects": [
+      {
+       "mechanic": "grim_harvest",
+       "params": {
+        "pct": 10
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "second": [
+  {
+   "counter": "crops",
+   "goal": 2000,
+   "text": "ripe crops harvested"
+  },
+  {
+   "counter": "sword_kills",
+   "goal": 500,
+   "text": "sword kills"
+  },
+  {
+   "counter": "elites",
+   "goal": 50,
+   "text": "elites killed"
+  }
+ ]
+}

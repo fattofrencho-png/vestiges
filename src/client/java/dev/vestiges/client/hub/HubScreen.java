@@ -30,12 +30,12 @@ public final class HubScreen extends Screen {
 	private static final String[] CHAINS = {"settler", "warden", "explorer", "gatekeeper", "dragonslayer"};
 
 	enum Tab {
-		CHARACTER("Character", "Levels, the Fight and Craft wheels and your ascendancy arrive in M1."),
+		CHARACTER("Character", ""),
 		CODEX("Codex", "Blocks, Bestiary, Biomes, Places and Lore arrive in M4."),
 		VILLAGERS("Villagers", "Your villager library and the villager screen arrive in M6."),
 		SETTLEMENTS("Settlements", "Bells, renown, wards and banners arrive in M5."),
 		FEATS("Feats", ""),
-		MAP("Map", "The world map and waystones come right after this foundation."),
+		MAP("Map", "Your map: drag to move, scroll to zoom, right-click to add a waypoint. Waystones and shared places show here too."),
 		SETTINGS("Settings", "");
 
 		final String label;
@@ -63,6 +63,20 @@ public final class HubScreen extends Screen {
 		buildHeader();
 		if (tab == Tab.SETTINGS) {
 			buildSettings();
+		}
+		if (tab == Tab.CHARACTER) {
+			addRenderableWidget(Button.builder(Component.literal("Open the passive trees"), b -> {
+				if (minecraft != null) {
+					minecraft.setScreenAndShow(new dev.vestiges.client.tree.TreeScreen());
+				}
+			}).bounds(GAP, HEADER + 8 + 100, 180, 20).build());
+		}
+		if (tab == Tab.MAP) {
+			addRenderableWidget(Button.builder(Component.literal("Open the world map (M)"), b -> {
+				if (minecraft != null && minecraft.level != null) {
+					minecraft.setScreenAndShow(new dev.vestiges.client.map.WorldMapScreen());
+				}
+			}).bounds(GAP, HEADER + 34, 160, 20).build());
 		}
 	}
 
@@ -100,6 +114,31 @@ public final class HubScreen extends Screen {
 			y += 22;
 		}
 		addRenderableWidget(toggle(x + 10, y, w - 10, "\"New\" tag", c.lineOn(LookAtProviders.NEW_TAG), on -> c.setLine(LookAtProviders.NEW_TAG, on)));
+		y += 30;
+		addRenderableWidget(toggle(x, y, w, "Minimap", c.minimapEnabled, on -> c.minimapEnabled = on));
+		y += 24;
+		addRenderableWidget(cycle(x + 10, y, w - 10, "Size", new String[] {"96", "128", "160", "192"}, String.valueOf(c.minimapSize), v -> c.minimapSize = Integer.parseInt(v)));
+		y += 22;
+		addRenderableWidget(cycle(x + 10, y, w - 10, "Zoom", new String[] {"1", "2", "3", "4"}, String.valueOf(c.minimapZoom), v -> c.minimapZoom = Integer.parseInt(v)));
+		y += 22;
+		addRenderableWidget(cycle(x + 10, y, w - 10, "Corner", new String[] {"top_left", "top_right", "bottom_left", "bottom_right"}, c.minimapCorner, v -> c.minimapCorner = v));
+		y += 26;
+		addRenderableWidget(cycle(x, y, w, "Shared waypoints", new String[] {"ask", "off"}, c.shareMode, v -> c.shareMode = v));
+	}
+
+	/** A button that steps through a few values each click. */
+	private Button cycle(int x, int y, int w, String label, String[] values, String current, java.util.function.Consumer<String> setter) {
+		int[] index = {Math.max(0, java.util.Arrays.asList(values).indexOf(current))};
+		return Button.builder(cycleText(label, values[index[0]]), btn -> {
+			index[0] = (index[0] + 1) % values.length;
+			setter.accept(values[index[0]]);
+			ClientConfigStore.save();
+			btn.setMessage(cycleText(label, values[index[0]]));
+		}).bounds(x, y, w, 20).build();
+	}
+
+	private static Component cycleText(String label, String value) {
+		return Component.literal(label + ": " + value.replace('_', ' '));
 	}
 
 	private Button toggle(int x, int y, int w, String label, boolean on, java.util.function.Consumer<Boolean> setter) {
@@ -131,15 +170,32 @@ public final class HubScreen extends Screen {
 		switch (tab) {
 			case FEATS -> renderFeats(g, top);
 			case SETTINGS -> renderSettings(g, top);
-			case CHARACTER -> {
-				renderPlaceholder(g, top);
-				if (s.has("profile")) {
-					JsonObject p = s.getAsJsonObject("profile");
-					g.text(font, "Player: " + p.get("name").getAsString(), GAP, top + 24, 0xFFFFFFFF);
-				}
-			}
+			case CHARACTER -> renderCharacter(g, top, s);
 			default -> renderPlaceholder(g, top);
 		}
+	}
+
+	private void renderCharacter(GuiGraphicsExtractor g, int top, JsonObject s) {
+		String name = s.has("profile") ? s.getAsJsonObject("profile").get("name").getAsString() : "";
+		g.text(font, name, GAP, top, 0xFFFFFFFF);
+		if (!s.has("level")) {
+			g.text(font, "Loading...", GAP, top + 14, 0xFFAAAAAA);
+			return;
+		}
+		JsonObject l = s.getAsJsonObject("level");
+		int level = l.get("level").getAsInt();
+		int paragon = l.get("paragon").getAsInt();
+		long xp = l.get("xp").getAsLong();
+		long need = l.get("need").getAsLong();
+		g.text(font, "Level " + level + (paragon > 0 ? "  \u00B7  Paragon " + paragon : ""), GAP, top + 16, 0xFFE6C36A);
+		int bw = Math.min(260, width - GAP * 2);
+		g.fill(GAP, top + 30, GAP + bw, top + 36, 0xFF2A2F33);
+		g.fill(GAP, top + 30, GAP + (int) (bw * Math.min(1.0, xp / (double) Math.max(1, need))), top + 36, 0xFF80FF20);
+		g.text(font, xp + " / " + need + " XP", GAP, top + 40, 0xFFAAAAAA);
+		g.text(font, "From your level: +" + (int) l.get("bonusHealth").getAsDouble() + " max health, +" + l.get("damagePct").getAsDouble()
+			+ "% damage", GAP, top + 56, 0xFFFFFFFF);
+		g.text(font, "Discoveries rewarded: " + l.get("discoveries").getAsInt(), GAP, top + 68, 0xFFAAAAAA);
+		g.text(font, "Spend your points on the Fight and Craft wheels, then ascend (from level 20).", GAP, top + 86, 0xFF888888);
 	}
 
 	private void renderPlaceholder(GuiGraphicsExtractor g, int top) {

@@ -1,0 +1,7150 @@
+{
+ "wheel": "fight",
+ "name": "Fight wheel",
+ "nodes": [
+  {
+   "id": "h0",
+   "type": "start",
+   "x": 28.21,
+   "y": -38.83,
+   "name": "Blade & Shield",
+   "text": "A starting point. Starts you didn't pick are walk-through nodes.",
+   "start": 0,
+   "effects": []
+  },
+  {
+   "id": "h1",
+   "type": "travel",
+   "x": 41.57,
+   "y": -24.0,
+   "name": "Inner ring",
+   "text": "+1% XP gained",
+   "effects": [
+    {
+     "stat": "xp_gain",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "h2",
+   "type": "travel",
+   "x": 47.74,
+   "y": -5.02,
+   "name": "Inner ring",
+   "text": "+1% XP gained",
+   "effects": [
+    {
+     "stat": "xp_gain",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "h3",
+   "type": "travel",
+   "x": 45.65,
+   "y": 14.83,
+   "name": "Inner ring",
+   "text": "+1% XP gained",
+   "effects": [
+    {
+     "stat": "xp_gain",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "h4",
+   "type": "travel",
+   "x": 35.67,
+   "y": 32.12,
+   "name": "Inner ring",
+   "text": "+1% XP gained",
+   "effects": [
+    {
+     "stat": "xp_gain",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "h5",
+   "type": "travel",
+   "x": 19.52,
+   "y": 43.85,
+   "name": "Inner ring",
+   "text": "+1% XP gained",
+   "effects": [
+    {
+     "stat": "xp_gain",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "h6",
+   "type": "start",
+   "x": 0.0,
+   "y": 48,
+   "name": "Heart & Stride",
+   "text": "A starting point. Starts you didn't pick are walk-through nodes.",
+   "start": 1,
+   "effects": []
+  },
+  {
+   "id": "h7",
+   "type": "travel",
+   "x": -19.52,
+   "y": 43.85,
+   "name": "Inner ring",
+   "text": "+1% XP gained",
+   "effects": [
+    {
+     "stat": "xp_gain",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "h8",
+   "type": "travel",
+   "x": -35.67,
+   "y": 32.12,
+   "name": "Inner ring",
+   "text": "+1% XP gained",
+   "effects": [
+    {
+     "stat": "xp_gain",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "h9",
+   "type": "travel",
+   "x": -45.65,
+   "y": 14.83,
+   "name": "Inner ring",
+   "text": "+1% XP gained",
+   "effects": [
+    {
+     "stat": "xp_gain",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "h10",
+   "type": "start",
+   "x": -47.74,
+   "y": -5.02,
+   "name": "Bow",
+   "text": "A starting point. Starts you didn't pick are walk-through nodes.",
+   "start": 2,
+   "effects": []
+  },
+  {
+   "id": "h11",
+   "type": "travel",
+   "x": -41.57,
+   "y": -24.0,
+   "name": "Inner ring",
+   "text": "+1% XP gained",
+   "effects": [
+    {
+     "stat": "xp_gain",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "h12",
+   "type": "travel",
+   "x": -28.21,
+   "y": -38.83,
+   "name": "Inner ring",
+   "text": "+1% XP gained",
+   "effects": [
+    {
+     "stat": "xp_gain",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "h13",
+   "type": "travel",
+   "x": -9.98,
+   "y": -46.95,
+   "name": "Inner ring",
+   "text": "+1% XP gained",
+   "effects": [
+    {
+     "stat": "xp_gain",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "h14",
+   "type": "travel",
+   "x": 9.98,
+   "y": -46.95,
+   "name": "Inner ring",
+   "text": "+1% XP gained",
+   "effects": [
+    {
+     "stat": "xp_gain",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "0:s0_0",
+   "type": "small",
+   "x": -28.05,
+   "y": -77.05,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+3% melee damage",
+   "effects": [
+    {
+     "stat": "melee_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "0:s0_1",
+   "type": "small",
+   "x": -36.94,
+   "y": -101.49,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+3% melee damage",
+   "effects": [
+    {
+     "stat": "melee_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "0:s0_2",
+   "type": "small",
+   "x": -45.83,
+   "y": -125.92,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+3% melee damage",
+   "effects": [
+    {
+     "stat": "melee_damage",
+     "value": 3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+3% melee damage",
+     "effects": [
+      {
+       "stat": "melee_damage",
+       "value": 3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+2% critical hit chance",
+     "effects": [
+      {
+       "stat": "crit_chance",
+       "value": 2.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "0:s0_3",
+   "type": "small",
+   "x": -54.72,
+   "y": -150.35,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+3% melee damage",
+   "effects": [
+    {
+     "stat": "melee_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "0:s0_4",
+   "type": "small",
+   "x": -63.62,
+   "y": -174.78,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+3% melee damage",
+   "effects": [
+    {
+     "stat": "melee_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "0:s1_0",
+   "type": "small",
+   "x": 0.0,
+   "y": -82,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+2% attack speed",
+   "effects": [
+    {
+     "stat": "attack_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:s1_1",
+   "type": "small",
+   "x": 0.0,
+   "y": -108,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+2% attack speed",
+   "effects": [
+    {
+     "stat": "attack_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:s1_2",
+   "type": "small",
+   "x": 0.0,
+   "y": -134,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+2% attack speed",
+   "effects": [
+    {
+     "stat": "attack_speed",
+     "value": 2.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+2% attack speed",
+     "effects": [
+      {
+       "stat": "attack_speed",
+       "value": 2.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3% attack knockback",
+     "effects": [
+      {
+       "stat": "attack_knockback",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "0:s1_3",
+   "type": "small",
+   "x": 0.0,
+   "y": -160,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+2% attack speed",
+   "effects": [
+    {
+     "stat": "attack_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:s1_4",
+   "type": "small",
+   "x": 0.0,
+   "y": -186,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+2% attack speed",
+   "effects": [
+    {
+     "stat": "attack_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:s2_0",
+   "type": "small",
+   "x": 28.05,
+   "y": -77.05,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+3% sweeping attack damage",
+   "effects": [
+    {
+     "stat": "sweeping_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "0:s2_1",
+   "type": "small",
+   "x": 36.94,
+   "y": -101.49,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+3% sweeping attack damage",
+   "effects": [
+    {
+     "stat": "sweeping_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "0:s2_2",
+   "type": "small",
+   "x": 45.83,
+   "y": -125.92,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+3% sweeping attack damage",
+   "effects": [
+    {
+     "stat": "sweeping_damage",
+     "value": 3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+3% sweeping attack damage",
+     "effects": [
+      {
+       "stat": "sweeping_damage",
+       "value": 3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+2% knockback resistance",
+     "effects": [
+      {
+       "stat": "knockback_resistance",
+       "value": 2.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "0:s2_3",
+   "type": "small",
+   "x": 54.72,
+   "y": -150.35,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+3% sweeping attack damage",
+   "effects": [
+    {
+     "stat": "sweeping_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "0:s2_4",
+   "type": "small",
+   "x": 63.62,
+   "y": -174.78,
+   "region": "melee",
+   "name": "Melee path",
+   "text": "+3% sweeping attack damage",
+   "effects": [
+    {
+     "stat": "sweeping_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "0:M",
+   "type": "mastery",
+   "x": 0.0,
+   "y": -214,
+   "region": "melee",
+   "name": "Melee mastery",
+   "text": "Pick one of two strong effects.",
+   "effects": [],
+   "choices": [
+    {
+     "name": "Momentum",
+     "text": "Each hit in a row on the same target gives +4% damage (up to +20%); resets after 3 s without a hit.",
+     "effects": [
+      {
+       "mechanic": "momentum",
+       "params": {
+        "per": 4,
+        "max": 20,
+        "reset": 3
+       }
+      }
+     ]
+    },
+    {
+     "name": "Sunder",
+     "text": "Your hits lower the target's armor by 10% for 5 s.",
+     "effects": [
+      {
+       "mechanic": "sunder",
+       "params": {
+        "armor": 10,
+        "seconds": 5
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "0:c0_0",
+   "type": "small",
+   "x": -97.15,
+   "y": -190.68,
+   "region": "melee",
+   "name": "Swords",
+   "text": "+4% sword damage",
+   "effects": [
+    {
+     "stat": "sword_damage",
+     "value": 4.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+4% sword damage",
+     "effects": [
+      {
+       "stat": "sword_damage",
+       "value": 4.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3% sword attack speed",
+     "effects": [
+      {
+       "stat": "sword_attack_speed",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "0:c0_1",
+   "type": "small",
+   "x": -109.87,
+   "y": -215.62,
+   "region": "melee",
+   "name": "Swords",
+   "text": "+4% sword damage",
+   "effects": [
+    {
+     "stat": "sword_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "0:c0_2",
+   "type": "small",
+   "x": -122.58,
+   "y": -240.57,
+   "region": "melee",
+   "name": "Swords",
+   "text": "+4% sword damage",
+   "effects": [
+    {
+     "stat": "sword_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "0:c0_3",
+   "type": "notable",
+   "x": -135.29,
+   "y": -265.52,
+   "region": "melee",
+   "name": "Duelist",
+   "text": "+10% sword damage.",
+   "effects": [
+    {
+     "stat": "sword_damage",
+     "value": 10
+    }
+   ],
+   "choices": [
+    {
+     "name": "Duelist",
+     "text": "+10% sword damage.",
+     "effects": [
+      {
+       "stat": "sword_damage",
+       "value": 10
+      }
+     ]
+    },
+    {
+     "name": "Duelist (B)",
+     "text": "+6% sword attack speed.",
+     "effects": [
+      {
+       "stat": "sword_attack_speed",
+       "value": 6
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "0:c0_4",
+   "type": "small",
+   "x": -148.0,
+   "y": -290.47,
+   "region": "melee",
+   "name": "Swords",
+   "text": "+4% sword damage",
+   "effects": [
+    {
+     "stat": "sword_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "0:c0_5",
+   "type": "small",
+   "x": -160.71,
+   "y": -315.42,
+   "region": "melee",
+   "name": "Swords",
+   "text": "+4% sword damage",
+   "effects": [
+    {
+     "stat": "sword_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "0:c0_6",
+   "type": "notable",
+   "x": -173.42,
+   "y": -340.36,
+   "region": "melee",
+   "name": "Blade Dancer",
+   "text": "+12% sword damage and +15% sweeping attack damage.",
+   "effects": [
+    {
+     "stat": "sword_damage",
+     "value": 12
+    },
+    {
+     "stat": "sweeping_damage",
+     "value": 15
+    }
+   ]
+  },
+  {
+   "id": "0:c1_0",
+   "type": "small",
+   "x": -37.16,
+   "y": -210.75,
+   "region": "melee",
+   "name": "Axes",
+   "text": "+4% axe damage",
+   "effects": [
+    {
+     "stat": "axe_damage",
+     "value": 4.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+4% axe damage",
+     "effects": [
+      {
+       "stat": "axe_damage",
+       "value": 4.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3% axe attack speed",
+     "effects": [
+      {
+       "stat": "axe_attack_speed",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "0:c1_1",
+   "type": "small",
+   "x": -42.02,
+   "y": -238.32,
+   "region": "melee",
+   "name": "Axes",
+   "text": "+4% axe damage",
+   "effects": [
+    {
+     "stat": "axe_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "0:c1_2",
+   "type": "small",
+   "x": -46.89,
+   "y": -265.9,
+   "region": "melee",
+   "name": "Axes",
+   "text": "+4% axe damage",
+   "effects": [
+    {
+     "stat": "axe_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "0:c1_3",
+   "type": "notable",
+   "x": -51.75,
+   "y": -293.47,
+   "region": "melee",
+   "name": "Cleaver",
+   "text": "+10% axe damage.",
+   "effects": [
+    {
+     "stat": "axe_damage",
+     "value": 10
+    }
+   ],
+   "choices": [
+    {
+     "name": "Cleaver",
+     "text": "+10% axe damage.",
+     "effects": [
+      {
+       "stat": "axe_damage",
+       "value": 10
+      }
+     ]
+    },
+    {
+     "name": "Cleaver (B)",
+     "text": "Axes disable shields 1 s longer; +4% axe damage.",
+     "effects": [
+      {
+       "mechanic": "shield_disable",
+       "params": {
+        "seconds": 1
+       }
+      },
+      {
+       "stat": "axe_damage",
+       "value": 4
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "0:c1_4",
+   "type": "small",
+   "x": -56.61,
+   "y": -321.05,
+   "region": "melee",
+   "name": "Axes",
+   "text": "+4% axe damage",
+   "effects": [
+    {
+     "stat": "axe_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "0:c1_5",
+   "type": "small",
+   "x": -61.47,
+   "y": -348.62,
+   "region": "melee",
+   "name": "Axes",
+   "text": "+4% axe damage",
+   "effects": [
+    {
+     "stat": "axe_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "0:c1_6",
+   "type": "notable",
+   "x": -66.33,
+   "y": -376.2,
+   "region": "melee",
+   "name": "Shieldbreaker",
+   "text": "Axe hits disable shields 2 seconds longer; +10% axe damage.",
+   "effects": [
+    {
+     "mechanic": "shield_disable",
+     "params": {
+      "seconds": 2
+     }
+    },
+    {
+     "stat": "axe_damage",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "id": "0:c2_0",
+   "type": "small",
+   "x": 37.16,
+   "y": -210.75,
+   "region": "melee",
+   "name": "Maces",
+   "text": "+4% mace damage",
+   "effects": [
+    {
+     "stat": "mace_damage",
+     "value": 4.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+4% mace damage",
+     "effects": [
+      {
+       "stat": "mace_damage",
+       "value": 4.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+5% smash damage",
+     "effects": [
+      {
+       "stat": "smash_damage",
+       "value": 5.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "0:c2_1",
+   "type": "small",
+   "x": 42.02,
+   "y": -238.32,
+   "region": "melee",
+   "name": "Maces",
+   "text": "+4% mace damage",
+   "effects": [
+    {
+     "stat": "mace_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "0:c2_2",
+   "type": "small",
+   "x": 46.89,
+   "y": -265.9,
+   "region": "melee",
+   "name": "Maces",
+   "text": "+4% mace damage",
+   "effects": [
+    {
+     "stat": "mace_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "0:c2_3",
+   "type": "notable",
+   "x": 51.75,
+   "y": -293.47,
+   "region": "melee",
+   "name": "Heavy Hand",
+   "text": "+10% mace damage.",
+   "effects": [
+    {
+     "stat": "mace_damage",
+     "value": 10
+    }
+   ],
+   "choices": [
+    {
+     "name": "Heavy Hand",
+     "text": "+10% mace damage.",
+     "effects": [
+      {
+       "stat": "mace_damage",
+       "value": 10
+      }
+     ]
+    },
+    {
+     "name": "Heavy Hand (B)",
+     "text": "+15% smash damage.",
+     "effects": [
+      {
+       "stat": "smash_damage",
+       "value": 15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "0:c2_4",
+   "type": "small",
+   "x": 56.61,
+   "y": -321.05,
+   "region": "melee",
+   "name": "Maces",
+   "text": "+4% mace damage",
+   "effects": [
+    {
+     "stat": "mace_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "0:c2_5",
+   "type": "small",
+   "x": 61.47,
+   "y": -348.62,
+   "region": "melee",
+   "name": "Maces",
+   "text": "+4% mace damage",
+   "effects": [
+    {
+     "stat": "mace_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "0:c2_6",
+   "type": "notable",
+   "x": 66.33,
+   "y": -376.2,
+   "region": "melee",
+   "name": "Earthshaker",
+   "text": "Mace smash attacks hit 1 block wider; +12% smash damage.",
+   "effects": [
+    {
+     "mechanic": "smash_radius",
+     "params": {
+      "blocks": 1
+     }
+    },
+    {
+     "stat": "smash_damage",
+     "value": 12
+    }
+   ]
+  },
+  {
+   "id": "0:c3_0",
+   "type": "small",
+   "x": 97.15,
+   "y": -190.68,
+   "region": "melee",
+   "name": "Critical hits",
+   "text": "+2% critical hit chance",
+   "effects": [
+    {
+     "stat": "crit_chance",
+     "value": 2.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+2% critical hit chance",
+     "effects": [
+      {
+       "stat": "crit_chance",
+       "value": 2.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+6% critical damage",
+     "effects": [
+      {
+       "stat": "crit_damage",
+       "value": 6.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "0:c3_1",
+   "type": "small",
+   "x": 109.87,
+   "y": -215.62,
+   "region": "melee",
+   "name": "Critical hits",
+   "text": "+2% critical hit chance",
+   "effects": [
+    {
+     "stat": "crit_chance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:c3_2",
+   "type": "small",
+   "x": 122.58,
+   "y": -240.57,
+   "region": "melee",
+   "name": "Critical hits",
+   "text": "+2% critical hit chance",
+   "effects": [
+    {
+     "stat": "crit_chance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:c3_3",
+   "type": "notable",
+   "x": 135.29,
+   "y": -265.52,
+   "region": "melee",
+   "name": "Keen Eye",
+   "text": "+4% critical hit chance.",
+   "effects": [
+    {
+     "stat": "crit_chance",
+     "value": 4
+    }
+   ],
+   "choices": [
+    {
+     "name": "Keen Eye",
+     "text": "+4% critical hit chance.",
+     "effects": [
+      {
+       "stat": "crit_chance",
+       "value": 4
+      }
+     ]
+    },
+    {
+     "name": "Keen Eye (B)",
+     "text": "+12% critical damage.",
+     "effects": [
+      {
+       "stat": "crit_damage",
+       "value": 12
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "0:c3_4",
+   "type": "small",
+   "x": 148.0,
+   "y": -290.47,
+   "region": "melee",
+   "name": "Critical hits",
+   "text": "+2% critical hit chance",
+   "effects": [
+    {
+     "stat": "crit_chance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:c3_5",
+   "type": "small",
+   "x": 160.71,
+   "y": -315.42,
+   "region": "melee",
+   "name": "Critical hits",
+   "text": "+2% critical hit chance",
+   "effects": [
+    {
+     "stat": "crit_chance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:c3_6",
+   "type": "notable",
+   "x": 173.42,
+   "y": -340.36,
+   "region": "melee",
+   "name": "Precision",
+   "text": "+5% critical hit chance; critical hits deal +20% damage.",
+   "effects": [
+    {
+     "stat": "crit_chance",
+     "value": 5
+    },
+    {
+     "stat": "crit_damage",
+     "value": 20
+    }
+   ]
+  },
+  {
+   "id": "0:k_0",
+   "type": "small",
+   "x": 0.0,
+   "y": -242,
+   "region": "melee",
+   "name": "Melee outer path",
+   "text": "+2% attack speed",
+   "effects": [
+    {
+     "stat": "attack_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:k_1",
+   "type": "small",
+   "x": 0.0,
+   "y": -270,
+   "region": "melee",
+   "name": "Melee outer path",
+   "text": "+2% attack speed",
+   "effects": [
+    {
+     "stat": "attack_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:k_2",
+   "type": "small",
+   "x": 0.0,
+   "y": -298,
+   "region": "melee",
+   "name": "Melee outer path",
+   "text": "+2% attack speed",
+   "effects": [
+    {
+     "stat": "attack_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:k_3",
+   "type": "small",
+   "x": 0.0,
+   "y": -326,
+   "region": "melee",
+   "name": "Melee outer path",
+   "text": "+2% attack speed",
+   "effects": [
+    {
+     "stat": "attack_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:k_4",
+   "type": "small",
+   "x": 0.0,
+   "y": -354,
+   "region": "melee",
+   "name": "Melee outer path",
+   "text": "+2% attack speed",
+   "effects": [
+    {
+     "stat": "attack_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:k_5",
+   "type": "small",
+   "x": 0.0,
+   "y": -382,
+   "region": "melee",
+   "name": "Melee outer path",
+   "text": "+2% attack speed",
+   "effects": [
+    {
+     "stat": "attack_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:k_6",
+   "type": "small",
+   "x": 0.0,
+   "y": -410,
+   "region": "melee",
+   "name": "Melee outer path",
+   "text": "+2% attack speed",
+   "effects": [
+    {
+     "stat": "attack_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "0:K1",
+   "type": "keystone",
+   "x": -38.17,
+   "y": -436.33,
+   "region": "melee",
+   "name": "Whirlwind",
+   "text": "Sweeping attacks hit every enemy around you (up to 5), not just the ones in front.",
+   "effects": [
+    {
+     "mechanic": "whirlwind",
+     "params": {
+      "max": 5
+     }
+    }
+   ],
+   "rival": "0:K2"
+  },
+  {
+   "id": "0:K2",
+   "type": "keystone",
+   "x": 38.17,
+   "y": -436.33,
+   "region": "melee",
+   "name": "Executioner",
+   "text": "Deal 40% more damage to enemies below 30% health.",
+   "effects": [
+    {
+     "mechanic": "executioner",
+     "params": {
+      "below": 30,
+      "bonus": 40
+     }
+    }
+   ],
+   "rival": "0:K1"
+  },
+  {
+   "id": "1:s0_0",
+   "type": "small",
+   "x": 64.62,
+   "y": -50.48,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+3% armor",
+   "effects": [
+    {
+     "stat": "armor_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "1:s0_1",
+   "type": "small",
+   "x": 85.11,
+   "y": -66.49,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+3% armor",
+   "effects": [
+    {
+     "stat": "armor_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "1:s0_2",
+   "type": "small",
+   "x": 105.59,
+   "y": -82.5,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+3% armor",
+   "effects": [
+    {
+     "stat": "armor_pct",
+     "value": 3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+3% armor",
+     "effects": [
+      {
+       "stat": "armor_pct",
+       "value": 3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+2% armor toughness",
+     "effects": [
+      {
+       "stat": "toughness_pct",
+       "value": 2.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1:s0_3",
+   "type": "small",
+   "x": 126.08,
+   "y": -98.51,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+3% armor",
+   "effects": [
+    {
+     "stat": "armor_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "1:s0_4",
+   "type": "small",
+   "x": 146.57,
+   "y": -114.51,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+3% armor",
+   "effects": [
+    {
+     "stat": "armor_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "1:s1_0",
+   "type": "small",
+   "x": 77.99,
+   "y": -25.34,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+2% knockback resistance",
+   "effects": [
+    {
+     "stat": "knockback_resistance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:s1_1",
+   "type": "small",
+   "x": 102.71,
+   "y": -33.37,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+2% knockback resistance",
+   "effects": [
+    {
+     "stat": "knockback_resistance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:s1_2",
+   "type": "small",
+   "x": 127.44,
+   "y": -41.41,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+2% knockback resistance",
+   "effects": [
+    {
+     "stat": "knockback_resistance",
+     "value": 2.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+2% knockback resistance",
+     "effects": [
+      {
+       "stat": "knockback_resistance",
+       "value": 2.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "-3% explosion damage taken",
+     "effects": [
+      {
+       "stat": "explosion_taken",
+       "value": -3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1:s1_3",
+   "type": "small",
+   "x": 152.17,
+   "y": -49.44,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+2% knockback resistance",
+   "effects": [
+    {
+     "stat": "knockback_resistance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:s1_4",
+   "type": "small",
+   "x": 176.9,
+   "y": -57.48,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+2% knockback resistance",
+   "effects": [
+    {
+     "stat": "knockback_resistance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:s2_0",
+   "type": "small",
+   "x": 81.95,
+   "y": 2.86,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+2% armor toughness",
+   "effects": [
+    {
+     "stat": "toughness_pct",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:s2_1",
+   "type": "small",
+   "x": 107.93,
+   "y": 3.77,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+2% armor toughness",
+   "effects": [
+    {
+     "stat": "toughness_pct",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:s2_2",
+   "type": "small",
+   "x": 133.92,
+   "y": 4.68,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+2% armor toughness",
+   "effects": [
+    {
+     "stat": "toughness_pct",
+     "value": 2.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+2% armor toughness",
+     "effects": [
+      {
+       "stat": "toughness_pct",
+       "value": 2.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "-2% melee damage taken",
+     "effects": [
+      {
+       "stat": "melee_taken",
+       "value": -2.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1:s2_3",
+   "type": "small",
+   "x": 159.9,
+   "y": 5.58,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+2% armor toughness",
+   "effects": [
+    {
+     "stat": "toughness_pct",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:s2_4",
+   "type": "small",
+   "x": 185.89,
+   "y": 6.49,
+   "region": "defense",
+   "name": "Defense path",
+   "text": "+2% armor toughness",
+   "effects": [
+    {
+     "stat": "toughness_pct",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:M",
+   "type": "mastery",
+   "x": 203.53,
+   "y": -66.13,
+   "region": "defense",
+   "name": "Defense mastery",
+   "text": "Pick one of two strong effects.",
+   "effects": [],
+   "choices": [
+    {
+     "name": "Fortress",
+     "text": "+15% armor while standing still.",
+     "effects": [
+      {
+       "mechanic": "fortress",
+       "params": {
+        "armor": 15
+       }
+      }
+     ]
+    },
+    {
+     "name": "Riposte",
+     "text": "Blocking a hit with a shield makes your next hit within 3 s deal +30% damage.",
+     "effects": [
+      {
+       "mechanic": "riposte",
+       "params": {
+        "bonus": 30,
+        "seconds": 3
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1:c0_0",
+   "type": "small",
+   "x": 151.32,
+   "y": -151.32,
+   "region": "defense",
+   "name": "Plate",
+   "text": "+3% armor toughness",
+   "effects": [
+    {
+     "stat": "toughness_pct",
+     "value": 3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+3% armor toughness",
+     "effects": [
+      {
+       "stat": "toughness_pct",
+       "value": 3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3% armor",
+     "effects": [
+      {
+       "stat": "armor_pct",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1:c0_1",
+   "type": "small",
+   "x": 171.12,
+   "y": -171.12,
+   "region": "defense",
+   "name": "Plate",
+   "text": "+3% armor toughness",
+   "effects": [
+    {
+     "stat": "toughness_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "1:c0_2",
+   "type": "small",
+   "x": 190.92,
+   "y": -190.92,
+   "region": "defense",
+   "name": "Plate",
+   "text": "+3% armor toughness",
+   "effects": [
+    {
+     "stat": "toughness_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "1:c0_3",
+   "type": "notable",
+   "x": 210.72,
+   "y": -210.72,
+   "region": "defense",
+   "name": "Plated",
+   "text": "+8% armor.",
+   "effects": [
+    {
+     "stat": "armor_pct",
+     "value": 8
+    }
+   ],
+   "choices": [
+    {
+     "name": "Plated",
+     "text": "+8% armor.",
+     "effects": [
+      {
+       "stat": "armor_pct",
+       "value": 8
+      }
+     ]
+    },
+    {
+     "name": "Plated (B)",
+     "text": "+6% armor toughness.",
+     "effects": [
+      {
+       "stat": "toughness_pct",
+       "value": 6
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1:c0_4",
+   "type": "small",
+   "x": 230.52,
+   "y": -230.52,
+   "region": "defense",
+   "name": "Plate",
+   "text": "+3% armor toughness",
+   "effects": [
+    {
+     "stat": "toughness_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "1:c0_5",
+   "type": "small",
+   "x": 250.32,
+   "y": -250.32,
+   "region": "defense",
+   "name": "Plate",
+   "text": "+3% armor toughness",
+   "effects": [
+    {
+     "stat": "toughness_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "1:c0_6",
+   "type": "notable",
+   "x": 270.11,
+   "y": -270.11,
+   "region": "defense",
+   "name": "Bulwark",
+   "text": "+12% armor and +10% knockback resistance.",
+   "effects": [
+    {
+     "stat": "armor_pct",
+     "value": 12
+    },
+    {
+     "stat": "knockback_resistance",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "id": "1:c1_0",
+   "type": "small",
+   "x": 188.95,
+   "y": -100.47,
+   "region": "defense",
+   "name": "Shields",
+   "text": "+6% shield parry window",
+   "effects": [
+    {
+     "stat": "parry_window",
+     "value": 6.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+6% shield parry window",
+     "effects": [
+      {
+       "stat": "parry_window",
+       "value": 6.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+5% shield raise speed",
+     "effects": [
+      {
+       "stat": "shield_raise",
+       "value": 5.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1:c1_1",
+   "type": "small",
+   "x": 213.67,
+   "y": -113.61,
+   "region": "defense",
+   "name": "Shields",
+   "text": "+6% shield parry window",
+   "effects": [
+    {
+     "stat": "parry_window",
+     "value": 6.0
+    }
+   ]
+  },
+  {
+   "id": "1:c1_2",
+   "type": "small",
+   "x": 238.4,
+   "y": -126.76,
+   "region": "defense",
+   "name": "Shields",
+   "text": "+6% shield parry window",
+   "effects": [
+    {
+     "stat": "parry_window",
+     "value": 6.0
+    }
+   ]
+  },
+  {
+   "id": "1:c1_3",
+   "type": "notable",
+   "x": 263.12,
+   "y": -139.9,
+   "region": "defense",
+   "name": "Guard Up",
+   "text": "Shields raise 25% faster.",
+   "effects": [
+    {
+     "stat": "shield_raise",
+     "value": 25
+    }
+   ],
+   "choices": [
+    {
+     "name": "Guard Up",
+     "text": "Shields raise 25% faster.",
+     "effects": [
+      {
+       "stat": "shield_raise",
+       "value": 25
+      }
+     ]
+    },
+    {
+     "name": "Guard Up (B)",
+     "text": "+15% shield parry window.",
+     "effects": [
+      {
+       "stat": "parry_window",
+       "value": 15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1:c1_4",
+   "type": "small",
+   "x": 287.84,
+   "y": -153.05,
+   "region": "defense",
+   "name": "Shields",
+   "text": "+6% shield parry window",
+   "effects": [
+    {
+     "stat": "parry_window",
+     "value": 6.0
+    }
+   ]
+  },
+  {
+   "id": "1:c1_5",
+   "type": "small",
+   "x": 312.56,
+   "y": -166.19,
+   "region": "defense",
+   "name": "Shields",
+   "text": "+6% shield parry window",
+   "effects": [
+    {
+     "stat": "parry_window",
+     "value": 6.0
+    }
+   ]
+  },
+  {
+   "id": "1:c1_6",
+   "type": "notable",
+   "x": 337.29,
+   "y": -179.34,
+   "region": "defense",
+   "name": "Perfect Parry",
+   "text": "Blocking right before a hit lands reflects 30% of its damage back.",
+   "effects": [
+    {
+     "mechanic": "perfect_parry",
+     "params": {
+      "reflect": 30
+     }
+    }
+   ]
+  },
+  {
+   "id": "1:c2_0",
+   "type": "small",
+   "x": 211.92,
+   "y": -29.78,
+   "region": "defense",
+   "name": "Fire & blasts",
+   "text": "-5% burning time",
+   "effects": [
+    {
+     "stat": "burning_time",
+     "value": -5.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "-5% burning time",
+     "effects": [
+      {
+       "stat": "burning_time",
+       "value": -5.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "-3% fire damage taken",
+     "effects": [
+      {
+       "stat": "fire_taken",
+       "value": -3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1:c2_1",
+   "type": "small",
+   "x": 239.64,
+   "y": -33.68,
+   "region": "defense",
+   "name": "Fire & blasts",
+   "text": "-5% burning time",
+   "effects": [
+    {
+     "stat": "burning_time",
+     "value": -5.0
+    }
+   ]
+  },
+  {
+   "id": "1:c2_2",
+   "type": "small",
+   "x": 267.37,
+   "y": -37.58,
+   "region": "defense",
+   "name": "Fire & blasts",
+   "text": "-5% burning time",
+   "effects": [
+    {
+     "stat": "burning_time",
+     "value": -5.0
+    }
+   ]
+  },
+  {
+   "id": "1:c2_3",
+   "type": "notable",
+   "x": 295.1,
+   "y": -41.47,
+   "region": "defense",
+   "name": "Heat Shield",
+   "text": "-20% burning time.",
+   "effects": [
+    {
+     "stat": "burning_time",
+     "value": -20
+    }
+   ],
+   "choices": [
+    {
+     "name": "Heat Shield",
+     "text": "-20% burning time.",
+     "effects": [
+      {
+       "stat": "burning_time",
+       "value": -20
+      }
+     ]
+    },
+    {
+     "name": "Heat Shield (B)",
+     "text": "-10% fire and lava damage taken.",
+     "effects": [
+      {
+       "stat": "fire_taken",
+       "value": -10
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1:c2_4",
+   "type": "small",
+   "x": 322.83,
+   "y": -45.37,
+   "region": "defense",
+   "name": "Fire & blasts",
+   "text": "-5% burning time",
+   "effects": [
+    {
+     "stat": "burning_time",
+     "value": -5.0
+    }
+   ]
+  },
+  {
+   "id": "1:c2_5",
+   "type": "small",
+   "x": 350.55,
+   "y": -49.27,
+   "region": "defense",
+   "name": "Fire & blasts",
+   "text": "-5% burning time",
+   "effects": [
+    {
+     "stat": "burning_time",
+     "value": -5.0
+    }
+   ]
+  },
+  {
+   "id": "1:c2_6",
+   "type": "notable",
+   "x": 378.28,
+   "y": -53.16,
+   "region": "defense",
+   "name": "Fireproof",
+   "text": "-40% burning time and +20% explosion knockback resistance.",
+   "effects": [
+    {
+     "stat": "burning_time",
+     "value": -40
+    },
+    {
+     "stat": "explosion_knockback",
+     "value": 20
+    }
+   ]
+  },
+  {
+   "id": "1:c3_0",
+   "type": "small",
+   "x": 211.37,
+   "y": 33.48,
+   "region": "defense",
+   "name": "Endurance",
+   "text": "-3% damage taken from projectiles",
+   "effects": [
+    {
+     "stat": "projectile_taken",
+     "value": -3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "-3% damage taken from projectiles",
+     "effects": [
+      {
+       "stat": "projectile_taken",
+       "value": -3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "-3% explosion damage taken",
+     "effects": [
+      {
+       "stat": "explosion_taken",
+       "value": -3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1:c3_1",
+   "type": "small",
+   "x": 239.02,
+   "y": 37.86,
+   "region": "defense",
+   "name": "Endurance",
+   "text": "-3% damage taken from projectiles",
+   "effects": [
+    {
+     "stat": "projectile_taken",
+     "value": -3.0
+    }
+   ]
+  },
+  {
+   "id": "1:c3_2",
+   "type": "small",
+   "x": 266.68,
+   "y": 42.24,
+   "region": "defense",
+   "name": "Endurance",
+   "text": "-3% damage taken from projectiles",
+   "effects": [
+    {
+     "stat": "projectile_taken",
+     "value": -3.0
+    }
+   ]
+  },
+  {
+   "id": "1:c3_3",
+   "type": "notable",
+   "x": 294.33,
+   "y": 46.62,
+   "region": "defense",
+   "name": "Arrow Ward",
+   "text": "-10% damage taken from projectiles.",
+   "effects": [
+    {
+     "stat": "projectile_taken",
+     "value": -10
+    }
+   ],
+   "choices": [
+    {
+     "name": "Arrow Ward",
+     "text": "-10% damage taken from projectiles.",
+     "effects": [
+      {
+       "stat": "projectile_taken",
+       "value": -10
+      }
+     ]
+    },
+    {
+     "name": "Arrow Ward (B)",
+     "text": "-10% explosion damage taken.",
+     "effects": [
+      {
+       "stat": "explosion_taken",
+       "value": -10
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "1:c3_4",
+   "type": "small",
+   "x": 321.99,
+   "y": 51.0,
+   "region": "defense",
+   "name": "Endurance",
+   "text": "-3% damage taken from projectiles",
+   "effects": [
+    {
+     "stat": "projectile_taken",
+     "value": -3.0
+    }
+   ]
+  },
+  {
+   "id": "1:c3_5",
+   "type": "small",
+   "x": 349.64,
+   "y": 55.38,
+   "region": "defense",
+   "name": "Endurance",
+   "text": "-3% damage taken from projectiles",
+   "effects": [
+    {
+     "stat": "projectile_taken",
+     "value": -3.0
+    }
+   ]
+  },
+  {
+   "id": "1:c3_6",
+   "type": "notable",
+   "x": 377.3,
+   "y": 59.76,
+   "region": "defense",
+   "name": "Thick Hide",
+   "text": "The first hit you take every 10 seconds deals 50% less damage (an icon shows when it is ready).",
+   "effects": [
+    {
+     "mechanic": "thick_hide",
+     "params": {
+      "seconds": 10,
+      "reduce": 50
+     }
+    }
+   ]
+  },
+  {
+   "id": "1:k_0",
+   "type": "small",
+   "x": 230.16,
+   "y": -74.78,
+   "region": "defense",
+   "name": "Defense outer path",
+   "text": "+2% knockback resistance",
+   "effects": [
+    {
+     "stat": "knockback_resistance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:k_1",
+   "type": "small",
+   "x": 256.79,
+   "y": -83.43,
+   "region": "defense",
+   "name": "Defense outer path",
+   "text": "+2% knockback resistance",
+   "effects": [
+    {
+     "stat": "knockback_resistance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:k_2",
+   "type": "small",
+   "x": 283.41,
+   "y": -92.09,
+   "region": "defense",
+   "name": "Defense outer path",
+   "text": "+2% knockback resistance",
+   "effects": [
+    {
+     "stat": "knockback_resistance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:k_3",
+   "type": "small",
+   "x": 310.04,
+   "y": -100.74,
+   "region": "defense",
+   "name": "Defense outer path",
+   "text": "+2% knockback resistance",
+   "effects": [
+    {
+     "stat": "knockback_resistance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:k_4",
+   "type": "small",
+   "x": 336.67,
+   "y": -109.39,
+   "region": "defense",
+   "name": "Defense outer path",
+   "text": "+2% knockback resistance",
+   "effects": [
+    {
+     "stat": "knockback_resistance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:k_5",
+   "type": "small",
+   "x": 363.3,
+   "y": -118.04,
+   "region": "defense",
+   "name": "Defense outer path",
+   "text": "+2% knockback resistance",
+   "effects": [
+    {
+     "stat": "knockback_resistance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:k_6",
+   "type": "small",
+   "x": 389.93,
+   "y": -126.7,
+   "region": "defense",
+   "name": "Defense outer path",
+   "text": "+2% knockback resistance",
+   "effects": [
+    {
+     "stat": "knockback_resistance",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "1:K1",
+   "type": "keystone",
+   "x": 403.18,
+   "y": -171.14,
+   "region": "defense",
+   "name": "Unshakable",
+   "text": "You are immune to knockback while blocking or sneaking.",
+   "effects": [
+    {
+     "mechanic": "unshakable"
+    }
+   ],
+   "rival": "1:K2"
+  },
+  {
+   "id": "1:K2",
+   "type": "keystone",
+   "x": 426.77,
+   "y": -98.53,
+   "region": "defense",
+   "name": "Iron Will",
+   "text": "Taking a hit bigger than 25% of your health gives Resistance I for 4 seconds (once every 20 seconds).",
+   "effects": [
+    {
+     "mechanic": "iron_will",
+     "params": {
+      "threshold": 25,
+      "seconds": 4,
+      "cooldown": 20
+     }
+    }
+   ],
+   "rival": "1:K1"
+  },
+  {
+   "id": "2:s0_0",
+   "type": "small",
+   "x": 67.98,
+   "y": 45.85,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "+3 max health",
+   "effects": [
+    {
+     "stat": "max_health",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "2:s0_1",
+   "type": "small",
+   "x": 89.54,
+   "y": 60.39,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "+3 max health",
+   "effects": [
+    {
+     "stat": "max_health",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "2:s0_2",
+   "type": "small",
+   "x": 111.09,
+   "y": 74.93,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "+3 max health",
+   "effects": [
+    {
+     "stat": "max_health",
+     "value": 3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+3 max health",
+     "effects": [
+      {
+       "stat": "max_health",
+       "value": 3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3% healing received",
+     "effects": [
+      {
+       "stat": "healing_received",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2:s0_3",
+   "type": "small",
+   "x": 132.65,
+   "y": 89.47,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "+3 max health",
+   "effects": [
+    {
+     "stat": "max_health",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "2:s0_4",
+   "type": "small",
+   "x": 154.2,
+   "y": 104.01,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "+3 max health",
+   "effects": [
+    {
+     "stat": "max_health",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "2:s1_0",
+   "type": "small",
+   "x": 48.2,
+   "y": 66.34,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "+4% natural regeneration speed",
+   "effects": [
+    {
+     "stat": "regen_speed",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "2:s1_1",
+   "type": "small",
+   "x": 63.48,
+   "y": 87.37,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "+4% natural regeneration speed",
+   "effects": [
+    {
+     "stat": "regen_speed",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "2:s1_2",
+   "type": "small",
+   "x": 78.76,
+   "y": 108.41,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "+4% natural regeneration speed",
+   "effects": [
+    {
+     "stat": "regen_speed",
+     "value": 4.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+4% natural regeneration speed",
+     "effects": [
+      {
+       "stat": "regen_speed",
+       "value": 4.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+2% max health",
+     "effects": [
+      {
+       "stat": "max_health_pct",
+       "value": 2.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2:s1_3",
+   "type": "small",
+   "x": 94.05,
+   "y": 129.44,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "+4% natural regeneration speed",
+   "effects": [
+    {
+     "stat": "regen_speed",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "2:s1_4",
+   "type": "small",
+   "x": 109.33,
+   "y": 150.48,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "+4% natural regeneration speed",
+   "effects": [
+    {
+     "stat": "regen_speed",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "2:s2_0",
+   "type": "small",
+   "x": 22.6,
+   "y": 78.82,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "-3% hunger drain",
+   "effects": [
+    {
+     "stat": "hunger_drain",
+     "value": -3.0
+    }
+   ]
+  },
+  {
+   "id": "2:s2_1",
+   "type": "small",
+   "x": 29.77,
+   "y": 103.82,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "-3% hunger drain",
+   "effects": [
+    {
+     "stat": "hunger_drain",
+     "value": -3.0
+    }
+   ]
+  },
+  {
+   "id": "2:s2_2",
+   "type": "small",
+   "x": 36.94,
+   "y": 128.81,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "-3% hunger drain",
+   "effects": [
+    {
+     "stat": "hunger_drain",
+     "value": -3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "-3% hunger drain",
+     "effects": [
+      {
+       "stat": "hunger_drain",
+       "value": -3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+5% food saturation",
+     "effects": [
+      {
+       "stat": "saturation",
+       "value": 5.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2:s2_3",
+   "type": "small",
+   "x": 44.1,
+   "y": 153.8,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "-3% hunger drain",
+   "effects": [
+    {
+     "stat": "hunger_drain",
+     "value": -3.0
+    }
+   ]
+  },
+  {
+   "id": "2:s2_4",
+   "type": "small",
+   "x": 51.27,
+   "y": 178.79,
+   "region": "vitality",
+   "name": "Vitality path",
+   "text": "-3% hunger drain",
+   "effects": [
+    {
+     "stat": "hunger_drain",
+     "value": -3.0
+    }
+   ]
+  },
+  {
+   "id": "2:M",
+   "type": "mastery",
+   "x": 125.79,
+   "y": 173.13,
+   "region": "vitality",
+   "name": "Vitality mastery",
+   "text": "Pick one of two strong effects.",
+   "effects": [],
+   "choices": [
+    {
+     "name": "Blood Pact",
+     "text": "Heal for 2% of the damage you deal.",
+     "effects": [
+      {
+       "mechanic": "blood_pact",
+       "params": {
+        "pct": 2
+       }
+      }
+     ]
+    },
+    {
+     "name": "Resilience",
+     "text": "+20% natural regeneration and -10% hunger drain.",
+     "effects": [
+      {
+       "stat": "regen_speed",
+       "value": 20
+      },
+      {
+       "stat": "hunger_drain",
+       "value": -10
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2:c0_0",
+   "type": "small",
+   "x": 190.68,
+   "y": 97.15,
+   "region": "vitality",
+   "name": "Heart",
+   "text": "+3% max health",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+3% max health",
+     "effects": [
+      {
+       "stat": "max_health_pct",
+       "value": 3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3 max health",
+     "effects": [
+      {
+       "stat": "max_health",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2:c0_1",
+   "type": "small",
+   "x": 215.62,
+   "y": 109.87,
+   "region": "vitality",
+   "name": "Heart",
+   "text": "+3% max health",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "2:c0_2",
+   "type": "small",
+   "x": 240.57,
+   "y": 122.58,
+   "region": "vitality",
+   "name": "Heart",
+   "text": "+3% max health",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "2:c0_3",
+   "type": "notable",
+   "x": 265.52,
+   "y": 135.29,
+   "region": "vitality",
+   "name": "Stout",
+   "text": "+5% max health.",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 5
+    }
+   ],
+   "choices": [
+    {
+     "name": "Stout",
+     "text": "+5% max health.",
+     "effects": [
+      {
+       "stat": "max_health_pct",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "name": "Stout (B)",
+     "text": "+8 max health.",
+     "effects": [
+      {
+       "stat": "max_health",
+       "value": 8
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2:c0_4",
+   "type": "small",
+   "x": 290.47,
+   "y": 148.0,
+   "region": "vitality",
+   "name": "Heart",
+   "text": "+3% max health",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "2:c0_5",
+   "type": "small",
+   "x": 315.42,
+   "y": 160.71,
+   "region": "vitality",
+   "name": "Heart",
+   "text": "+3% max health",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "2:c0_6",
+   "type": "notable",
+   "x": 340.36,
+   "y": 173.42,
+   "region": "vitality",
+   "name": "Big Heart",
+   "text": "+8% max health.",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 8
+    }
+   ]
+  },
+  {
+   "id": "2:c1_0",
+   "type": "small",
+   "x": 153.94,
+   "y": 148.66,
+   "region": "vitality",
+   "name": "Recovery",
+   "text": "+5% natural regeneration speed",
+   "effects": [
+    {
+     "stat": "regen_speed",
+     "value": 5.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+5% natural regeneration speed",
+     "effects": [
+      {
+       "stat": "regen_speed",
+       "value": 5.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3% healing received",
+     "effects": [
+      {
+       "stat": "healing_received",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2:c1_1",
+   "type": "small",
+   "x": 174.08,
+   "y": 168.11,
+   "region": "vitality",
+   "name": "Recovery",
+   "text": "+5% natural regeneration speed",
+   "effects": [
+    {
+     "stat": "regen_speed",
+     "value": 5.0
+    }
+   ]
+  },
+  {
+   "id": "2:c1_2",
+   "type": "small",
+   "x": 194.22,
+   "y": 187.56,
+   "region": "vitality",
+   "name": "Recovery",
+   "text": "+5% natural regeneration speed",
+   "effects": [
+    {
+     "stat": "regen_speed",
+     "value": 5.0
+    }
+   ]
+  },
+  {
+   "id": "2:c1_3",
+   "type": "notable",
+   "x": 214.36,
+   "y": 207.01,
+   "region": "vitality",
+   "name": "Quick Mend",
+   "text": "+15% natural regeneration speed.",
+   "effects": [
+    {
+     "stat": "regen_speed",
+     "value": 15
+    }
+   ],
+   "choices": [
+    {
+     "name": "Quick Mend",
+     "text": "+15% natural regeneration speed.",
+     "effects": [
+      {
+       "stat": "regen_speed",
+       "value": 15
+      }
+     ]
+    },
+    {
+     "name": "Quick Mend (B)",
+     "text": "+10% natural regeneration and +5% healing received.",
+     "effects": [
+      {
+       "stat": "regen_speed",
+       "value": 10
+      },
+      {
+       "stat": "healing_received",
+       "value": 5
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2:c1_4",
+   "type": "small",
+   "x": 234.5,
+   "y": 226.46,
+   "region": "vitality",
+   "name": "Recovery",
+   "text": "+5% natural regeneration speed",
+   "effects": [
+    {
+     "stat": "regen_speed",
+     "value": 5.0
+    }
+   ]
+  },
+  {
+   "id": "2:c1_5",
+   "type": "small",
+   "x": 254.65,
+   "y": 245.91,
+   "region": "vitality",
+   "name": "Recovery",
+   "text": "+5% natural regeneration speed",
+   "effects": [
+    {
+     "stat": "regen_speed",
+     "value": 5.0
+    }
+   ]
+  },
+  {
+   "id": "2:c1_6",
+   "type": "notable",
+   "x": 274.79,
+   "y": 265.36,
+   "region": "vitality",
+   "name": "Second Wind",
+   "text": "Below 30% health you regenerate 3x faster for 5 seconds (once a minute).",
+   "effects": [
+    {
+     "mechanic": "second_wind",
+     "params": {
+      "below": 30,
+      "seconds": 5,
+      "cooldown": 60
+     }
+    }
+   ]
+  },
+  {
+   "id": "2:c2_0",
+   "type": "small",
+   "x": 93.81,
+   "y": 192.34,
+   "region": "vitality",
+   "name": "Appetite",
+   "text": "-4% hunger drain",
+   "effects": [
+    {
+     "stat": "hunger_drain",
+     "value": -4.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "-4% hunger drain",
+     "effects": [
+      {
+       "stat": "hunger_drain",
+       "value": -4.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+5% food saturation",
+     "effects": [
+      {
+       "stat": "saturation",
+       "value": 5.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2:c2_1",
+   "type": "small",
+   "x": 106.09,
+   "y": 217.51,
+   "region": "vitality",
+   "name": "Appetite",
+   "text": "-4% hunger drain",
+   "effects": [
+    {
+     "stat": "hunger_drain",
+     "value": -4.0
+    }
+   ]
+  },
+  {
+   "id": "2:c2_2",
+   "type": "small",
+   "x": 118.36,
+   "y": 242.67,
+   "region": "vitality",
+   "name": "Appetite",
+   "text": "-4% hunger drain",
+   "effects": [
+    {
+     "stat": "hunger_drain",
+     "value": -4.0
+    }
+   ]
+  },
+  {
+   "id": "2:c2_3",
+   "type": "notable",
+   "x": 130.63,
+   "y": 267.84,
+   "region": "vitality",
+   "name": "Light Eater",
+   "text": "-10% hunger drain.",
+   "effects": [
+    {
+     "stat": "hunger_drain",
+     "value": -10
+    }
+   ],
+   "choices": [
+    {
+     "name": "Light Eater",
+     "text": "-10% hunger drain.",
+     "effects": [
+      {
+       "stat": "hunger_drain",
+       "value": -10
+      }
+     ]
+    },
+    {
+     "name": "Light Eater (B)",
+     "text": "Food restores 10% more hunger.",
+     "effects": [
+      {
+       "stat": "food_restore",
+       "value": 10
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2:c2_4",
+   "type": "small",
+   "x": 142.91,
+   "y": 293.01,
+   "region": "vitality",
+   "name": "Appetite",
+   "text": "-4% hunger drain",
+   "effects": [
+    {
+     "stat": "hunger_drain",
+     "value": -4.0
+    }
+   ]
+  },
+  {
+   "id": "2:c2_5",
+   "type": "small",
+   "x": 155.18,
+   "y": 318.17,
+   "region": "vitality",
+   "name": "Appetite",
+   "text": "-4% hunger drain",
+   "effects": [
+    {
+     "stat": "hunger_drain",
+     "value": -4.0
+    }
+   ]
+  },
+  {
+   "id": "2:c2_6",
+   "type": "notable",
+   "x": 167.46,
+   "y": 343.34,
+   "region": "vitality",
+   "name": "Hearty Eater",
+   "text": "Meal buffs last 30% longer.",
+   "effects": [
+    {
+     "stat": "meal_duration",
+     "value": 30
+    }
+   ]
+  },
+  {
+   "id": "2:c3_0",
+   "type": "small",
+   "x": 33.48,
+   "y": 211.37,
+   "region": "vitality",
+   "name": "Healing",
+   "text": "+3% healing received",
+   "effects": [
+    {
+     "stat": "healing_received",
+     "value": 3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+3% healing received",
+     "effects": [
+      {
+       "stat": "healing_received",
+       "value": 3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+4% potion healing",
+     "effects": [
+      {
+       "stat": "potion_healing",
+       "value": 4.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2:c3_1",
+   "type": "small",
+   "x": 37.86,
+   "y": 239.02,
+   "region": "vitality",
+   "name": "Healing",
+   "text": "+3% healing received",
+   "effects": [
+    {
+     "stat": "healing_received",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "2:c3_2",
+   "type": "small",
+   "x": 42.24,
+   "y": 266.68,
+   "region": "vitality",
+   "name": "Healing",
+   "text": "+3% healing received",
+   "effects": [
+    {
+     "stat": "healing_received",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "2:c3_3",
+   "type": "notable",
+   "x": 46.62,
+   "y": 294.33,
+   "region": "vitality",
+   "name": "Remedy",
+   "text": "+8% healing received.",
+   "effects": [
+    {
+     "stat": "healing_received",
+     "value": 8
+    }
+   ],
+   "choices": [
+    {
+     "name": "Remedy",
+     "text": "+8% healing received.",
+     "effects": [
+      {
+       "stat": "healing_received",
+       "value": 8
+      }
+     ]
+    },
+    {
+     "name": "Remedy (B)",
+     "text": "Healing potions heal 15% more.",
+     "effects": [
+      {
+       "stat": "potion_healing",
+       "value": 15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "2:c3_4",
+   "type": "small",
+   "x": 51.0,
+   "y": 321.99,
+   "region": "vitality",
+   "name": "Healing",
+   "text": "+3% healing received",
+   "effects": [
+    {
+     "stat": "healing_received",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "2:c3_5",
+   "type": "small",
+   "x": 55.38,
+   "y": 349.64,
+   "region": "vitality",
+   "name": "Healing",
+   "text": "+3% healing received",
+   "effects": [
+    {
+     "stat": "healing_received",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "2:c3_6",
+   "type": "notable",
+   "x": 59.76,
+   "y": 377.3,
+   "region": "vitality",
+   "name": "Potion Lover",
+   "text": "Healing potions heal 25% more.",
+   "effects": [
+    {
+     "stat": "potion_healing",
+     "value": 25
+    }
+   ]
+  },
+  {
+   "id": "2:k_0",
+   "type": "small",
+   "x": 142.24,
+   "y": 195.78,
+   "region": "vitality",
+   "name": "Vitality outer path",
+   "text": "+2% max health",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "2:k_1",
+   "type": "small",
+   "x": 158.7,
+   "y": 218.43,
+   "region": "vitality",
+   "name": "Vitality outer path",
+   "text": "+2% max health",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "2:k_2",
+   "type": "small",
+   "x": 175.16,
+   "y": 241.09,
+   "region": "vitality",
+   "name": "Vitality outer path",
+   "text": "+2% max health",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "2:k_3",
+   "type": "small",
+   "x": 191.62,
+   "y": 263.74,
+   "region": "vitality",
+   "name": "Vitality outer path",
+   "text": "+2% max health",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "2:k_4",
+   "type": "small",
+   "x": 208.08,
+   "y": 286.39,
+   "region": "vitality",
+   "name": "Vitality outer path",
+   "text": "+2% max health",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "2:k_5",
+   "type": "small",
+   "x": 224.53,
+   "y": 309.04,
+   "region": "vitality",
+   "name": "Vitality outer path",
+   "text": "+2% max health",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "2:k_6",
+   "type": "small",
+   "x": 240.99,
+   "y": 331.7,
+   "region": "vitality",
+   "name": "Vitality outer path",
+   "text": "+2% max health",
+   "effects": [
+    {
+     "stat": "max_health_pct",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "2:K1",
+   "type": "keystone",
+   "x": 287.35,
+   "y": 330.56,
+   "region": "vitality",
+   "name": "Last Stand",
+   "text": "Below 25% health you take 20% less damage.",
+   "effects": [
+    {
+     "mechanic": "last_stand",
+     "params": {
+      "below": 25,
+      "reduce": 20
+     }
+    }
+   ],
+   "rival": "2:K2"
+  },
+  {
+   "id": "2:K2",
+   "type": "keystone",
+   "x": 225.59,
+   "y": 375.44,
+   "region": "vitality",
+   "name": "Ever-Mending",
+   "text": "Natural regeneration keeps working even when your hunger bar is low.",
+   "effects": [
+    {
+     "mechanic": "ever_mending"
+    }
+   ],
+   "rival": "2:K1"
+  },
+  {
+   "id": "3:s0_0",
+   "type": "small",
+   "x": -22.6,
+   "y": 78.82,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+2% movement speed",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:s0_1",
+   "type": "small",
+   "x": -29.77,
+   "y": 103.82,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+2% movement speed",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:s0_2",
+   "type": "small",
+   "x": -36.94,
+   "y": 128.81,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+2% movement speed",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+2% movement speed",
+     "effects": [
+      {
+       "stat": "movement_speed",
+       "value": 2.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3% sprint speed",
+     "effects": [
+      {
+       "stat": "sprint_speed",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3:s0_3",
+   "type": "small",
+   "x": -44.1,
+   "y": 153.8,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+2% movement speed",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:s0_4",
+   "type": "small",
+   "x": -51.27,
+   "y": 178.79,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+2% movement speed",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:s1_0",
+   "type": "small",
+   "x": -48.2,
+   "y": 66.34,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+4% jump strength",
+   "effects": [
+    {
+     "stat": "jump_strength",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "3:s1_1",
+   "type": "small",
+   "x": -63.48,
+   "y": 87.37,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+4% jump strength",
+   "effects": [
+    {
+     "stat": "jump_strength",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "3:s1_2",
+   "type": "small",
+   "x": -78.76,
+   "y": 108.41,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+4% jump strength",
+   "effects": [
+    {
+     "stat": "jump_strength",
+     "value": 4.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+4% jump strength",
+     "effects": [
+      {
+       "stat": "jump_strength",
+       "value": 4.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+1 block safe fall distance",
+     "effects": [
+      {
+       "stat": "safe_fall",
+       "value": 1.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3:s1_3",
+   "type": "small",
+   "x": -94.05,
+   "y": 129.44,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+4% jump strength",
+   "effects": [
+    {
+     "stat": "jump_strength",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "3:s1_4",
+   "type": "small",
+   "x": -109.33,
+   "y": 150.48,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+4% jump strength",
+   "effects": [
+    {
+     "stat": "jump_strength",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "3:s2_0",
+   "type": "small",
+   "x": -67.98,
+   "y": 45.85,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+1 block safe fall distance",
+   "effects": [
+    {
+     "stat": "safe_fall",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "3:s2_1",
+   "type": "small",
+   "x": -89.54,
+   "y": 60.39,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+1 block safe fall distance",
+   "effects": [
+    {
+     "stat": "safe_fall",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "3:s2_2",
+   "type": "small",
+   "x": -111.09,
+   "y": 74.93,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+1 block safe fall distance",
+   "effects": [
+    {
+     "stat": "safe_fall",
+     "value": 1.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+1 block safe fall distance",
+     "effects": [
+      {
+       "stat": "safe_fall",
+       "value": 1.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+5% sneaking speed",
+     "effects": [
+      {
+       "stat": "sneak_speed",
+       "value": 5.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3:s2_3",
+   "type": "small",
+   "x": -132.65,
+   "y": 89.47,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+1 block safe fall distance",
+   "effects": [
+    {
+     "stat": "safe_fall",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "3:s2_4",
+   "type": "small",
+   "x": -154.2,
+   "y": 104.01,
+   "region": "mobility",
+   "name": "Mobility path",
+   "text": "+1 block safe fall distance",
+   "effects": [
+    {
+     "stat": "safe_fall",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "3:M",
+   "type": "mastery",
+   "x": -125.79,
+   "y": 173.13,
+   "region": "mobility",
+   "name": "Mobility mastery",
+   "text": "Pick one of two strong effects.",
+   "effects": [],
+   "choices": [
+    {
+     "name": "Runner's High",
+     "text": "After 3 s of sprinting, +10% movement speed until you stop.",
+     "effects": [
+      {
+       "mechanic": "runners_high",
+       "params": {
+        "speed": 10,
+        "after": 3
+       }
+      }
+     ]
+    },
+    {
+     "name": "Acrobat",
+     "text": "+0.5 block step height and +10% jump strength.",
+     "effects": [
+      {
+       "stat": "step_height",
+       "value": 0.5
+      },
+      {
+       "stat": "jump_strength",
+       "value": 10
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3:c0_0",
+   "type": "small",
+   "x": -33.48,
+   "y": 211.37,
+   "region": "mobility",
+   "name": "Running",
+   "text": "+2% sprint speed",
+   "effects": [
+    {
+     "stat": "sprint_speed",
+     "value": 2.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+2% sprint speed",
+     "effects": [
+      {
+       "stat": "sprint_speed",
+       "value": 2.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "-3% sprint hunger",
+     "effects": [
+      {
+       "stat": "sprint_hunger",
+       "value": -3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3:c0_1",
+   "type": "small",
+   "x": -37.86,
+   "y": 239.02,
+   "region": "mobility",
+   "name": "Running",
+   "text": "+2% sprint speed",
+   "effects": [
+    {
+     "stat": "sprint_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:c0_2",
+   "type": "small",
+   "x": -42.24,
+   "y": 266.68,
+   "region": "mobility",
+   "name": "Running",
+   "text": "+2% sprint speed",
+   "effects": [
+    {
+     "stat": "sprint_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:c0_3",
+   "type": "notable",
+   "x": -46.62,
+   "y": 294.33,
+   "region": "mobility",
+   "name": "Swift",
+   "text": "+5% movement speed.",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 5
+    }
+   ],
+   "choices": [
+    {
+     "name": "Swift",
+     "text": "+5% movement speed.",
+     "effects": [
+      {
+       "stat": "movement_speed",
+       "value": 5
+      }
+     ]
+    },
+    {
+     "name": "Swift (B)",
+     "text": "+8% sprint speed.",
+     "effects": [
+      {
+       "stat": "sprint_speed",
+       "value": 8
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3:c0_4",
+   "type": "small",
+   "x": -51.0,
+   "y": 321.99,
+   "region": "mobility",
+   "name": "Running",
+   "text": "+2% sprint speed",
+   "effects": [
+    {
+     "stat": "sprint_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:c0_5",
+   "type": "small",
+   "x": -55.38,
+   "y": 349.64,
+   "region": "mobility",
+   "name": "Running",
+   "text": "+2% sprint speed",
+   "effects": [
+    {
+     "stat": "sprint_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:c0_6",
+   "type": "notable",
+   "x": -59.76,
+   "y": 377.3,
+   "region": "mobility",
+   "name": "Fleet Foot",
+   "text": "+8% movement speed and you walk up full blocks without jumping.",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 8
+    },
+    {
+     "stat": "step_height",
+     "value": 0.4
+    }
+   ]
+  },
+  {
+   "id": "3:c1_0",
+   "type": "small",
+   "x": -93.81,
+   "y": 192.34,
+   "region": "mobility",
+   "name": "Falling",
+   "text": "+1 block safe fall distance",
+   "effects": [
+    {
+     "stat": "safe_fall",
+     "value": 1.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+1 block safe fall distance",
+     "effects": [
+      {
+       "stat": "safe_fall",
+       "value": 1.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "-5% fall damage",
+     "effects": [
+      {
+       "stat": "fall_damage",
+       "value": -5.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3:c1_1",
+   "type": "small",
+   "x": -106.09,
+   "y": 217.51,
+   "region": "mobility",
+   "name": "Falling",
+   "text": "+1 block safe fall distance",
+   "effects": [
+    {
+     "stat": "safe_fall",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "3:c1_2",
+   "type": "small",
+   "x": -118.36,
+   "y": 242.67,
+   "region": "mobility",
+   "name": "Falling",
+   "text": "+1 block safe fall distance",
+   "effects": [
+    {
+     "stat": "safe_fall",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "3:c1_3",
+   "type": "notable",
+   "x": -130.63,
+   "y": 267.84,
+   "region": "mobility",
+   "name": "Light Landing",
+   "text": "-15% fall damage.",
+   "effects": [
+    {
+     "stat": "fall_damage",
+     "value": -15
+    }
+   ],
+   "choices": [
+    {
+     "name": "Light Landing",
+     "text": "-15% fall damage.",
+     "effects": [
+      {
+       "stat": "fall_damage",
+       "value": -15
+      }
+     ]
+    },
+    {
+     "name": "Light Landing (B)",
+     "text": "+3 blocks safe fall distance.",
+     "effects": [
+      {
+       "stat": "safe_fall",
+       "value": 3
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3:c1_4",
+   "type": "small",
+   "x": -142.91,
+   "y": 293.01,
+   "region": "mobility",
+   "name": "Falling",
+   "text": "+1 block safe fall distance",
+   "effects": [
+    {
+     "stat": "safe_fall",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "3:c1_5",
+   "type": "small",
+   "x": -155.18,
+   "y": 318.17,
+   "region": "mobility",
+   "name": "Falling",
+   "text": "+1 block safe fall distance",
+   "effects": [
+    {
+     "stat": "safe_fall",
+     "value": 1.0
+    }
+   ]
+  },
+  {
+   "id": "3:c1_6",
+   "type": "notable",
+   "x": -167.46,
+   "y": 343.34,
+   "region": "mobility",
+   "name": "Cat's Grace",
+   "text": "+4 blocks safe fall distance and -25% fall damage.",
+   "effects": [
+    {
+     "stat": "safe_fall",
+     "value": 4
+    },
+    {
+     "stat": "fall_damage",
+     "value": -25
+    }
+   ]
+  },
+  {
+   "id": "3:c2_0",
+   "type": "small",
+   "x": -153.94,
+   "y": 148.66,
+   "region": "mobility",
+   "name": "Swimming",
+   "text": "+5% water movement speed",
+   "effects": [
+    {
+     "stat": "swim_speed",
+     "value": 5.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+5% water movement speed",
+     "effects": [
+      {
+       "stat": "swim_speed",
+       "value": 5.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+10 seconds of oxygen",
+     "effects": [
+      {
+       "stat": "oxygen_seconds",
+       "value": 10.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3:c2_1",
+   "type": "small",
+   "x": -174.08,
+   "y": 168.11,
+   "region": "mobility",
+   "name": "Swimming",
+   "text": "+5% water movement speed",
+   "effects": [
+    {
+     "stat": "swim_speed",
+     "value": 5.0
+    }
+   ]
+  },
+  {
+   "id": "3:c2_2",
+   "type": "small",
+   "x": -194.22,
+   "y": 187.56,
+   "region": "mobility",
+   "name": "Swimming",
+   "text": "+5% water movement speed",
+   "effects": [
+    {
+     "stat": "swim_speed",
+     "value": 5.0
+    }
+   ]
+  },
+  {
+   "id": "3:c2_3",
+   "type": "notable",
+   "x": -214.36,
+   "y": 207.01,
+   "region": "mobility",
+   "name": "Swimmer",
+   "text": "+12% swim speed.",
+   "effects": [
+    {
+     "stat": "swim_speed",
+     "value": 12
+    }
+   ],
+   "choices": [
+    {
+     "name": "Swimmer",
+     "text": "+12% swim speed.",
+     "effects": [
+      {
+       "stat": "swim_speed",
+       "value": 12
+      }
+     ]
+    },
+    {
+     "name": "Swimmer (B)",
+     "text": "+30 seconds of oxygen.",
+     "effects": [
+      {
+       "stat": "oxygen_seconds",
+       "value": 30
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3:c2_4",
+   "type": "small",
+   "x": -234.5,
+   "y": 226.46,
+   "region": "mobility",
+   "name": "Swimming",
+   "text": "+5% water movement speed",
+   "effects": [
+    {
+     "stat": "swim_speed",
+     "value": 5.0
+    }
+   ]
+  },
+  {
+   "id": "3:c2_5",
+   "type": "small",
+   "x": -254.65,
+   "y": 245.91,
+   "region": "mobility",
+   "name": "Swimming",
+   "text": "+5% water movement speed",
+   "effects": [
+    {
+     "stat": "swim_speed",
+     "value": 5.0
+    }
+   ]
+  },
+  {
+   "id": "3:c2_6",
+   "type": "notable",
+   "x": -274.79,
+   "y": 265.36,
+   "region": "mobility",
+   "name": "Dolphin Kick",
+   "text": "+20% swim speed; sprint-swimming costs no hunger.",
+   "effects": [
+    {
+     "stat": "swim_speed",
+     "value": 20
+    },
+    {
+     "mechanic": "swim_no_hunger"
+    }
+   ]
+  },
+  {
+   "id": "3:c3_0",
+   "type": "small",
+   "x": -190.68,
+   "y": 97.15,
+   "region": "mobility",
+   "name": "Riding",
+   "text": "+4% speed of mounts you ride",
+   "effects": [
+    {
+     "stat": "mount_speed",
+     "value": 4.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+4% speed of mounts you ride",
+     "effects": [
+      {
+       "stat": "mount_speed",
+       "value": 4.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+4% mount jump",
+     "effects": [
+      {
+       "stat": "mount_jump",
+       "value": 4.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3:c3_1",
+   "type": "small",
+   "x": -215.62,
+   "y": 109.87,
+   "region": "mobility",
+   "name": "Riding",
+   "text": "+4% speed of mounts you ride",
+   "effects": [
+    {
+     "stat": "mount_speed",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "3:c3_2",
+   "type": "small",
+   "x": -240.57,
+   "y": 122.58,
+   "region": "mobility",
+   "name": "Riding",
+   "text": "+4% speed of mounts you ride",
+   "effects": [
+    {
+     "stat": "mount_speed",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "3:c3_3",
+   "type": "notable",
+   "x": -265.52,
+   "y": 135.29,
+   "region": "mobility",
+   "name": "Horseman",
+   "text": "Mounts you ride get +8% speed.",
+   "effects": [
+    {
+     "stat": "mount_speed",
+     "value": 8
+    }
+   ],
+   "choices": [
+    {
+     "name": "Horseman",
+     "text": "Mounts you ride get +8% speed.",
+     "effects": [
+      {
+       "stat": "mount_speed",
+       "value": 8
+      }
+     ]
+    },
+    {
+     "name": "Horseman (B)",
+     "text": "Mounts you ride get +10% jump and take 20% less fall damage.",
+     "effects": [
+      {
+       "stat": "mount_jump",
+       "value": 10
+      },
+      {
+       "mechanic": "mount_fall",
+       "params": {
+        "reduce": 20
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "3:c3_4",
+   "type": "small",
+   "x": -290.47,
+   "y": 148.0,
+   "region": "mobility",
+   "name": "Riding",
+   "text": "+4% speed of mounts you ride",
+   "effects": [
+    {
+     "stat": "mount_speed",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "3:c3_5",
+   "type": "small",
+   "x": -315.42,
+   "y": 160.71,
+   "region": "mobility",
+   "name": "Riding",
+   "text": "+4% speed of mounts you ride",
+   "effects": [
+    {
+     "stat": "mount_speed",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "3:c3_6",
+   "type": "notable",
+   "x": -340.36,
+   "y": 173.42,
+   "region": "mobility",
+   "name": "Rider",
+   "text": "Mounts you ride get +15% speed and jump.",
+   "effects": [
+    {
+     "stat": "mount_speed",
+     "value": 15
+    },
+    {
+     "stat": "mount_jump",
+     "value": 15
+    }
+   ]
+  },
+  {
+   "id": "3:k_0",
+   "type": "small",
+   "x": -142.24,
+   "y": 195.78,
+   "region": "mobility",
+   "name": "Mobility outer path",
+   "text": "+2% movement speed",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:k_1",
+   "type": "small",
+   "x": -158.7,
+   "y": 218.43,
+   "region": "mobility",
+   "name": "Mobility outer path",
+   "text": "+2% movement speed",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:k_2",
+   "type": "small",
+   "x": -175.16,
+   "y": 241.09,
+   "region": "mobility",
+   "name": "Mobility outer path",
+   "text": "+2% movement speed",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:k_3",
+   "type": "small",
+   "x": -191.62,
+   "y": 263.74,
+   "region": "mobility",
+   "name": "Mobility outer path",
+   "text": "+2% movement speed",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:k_4",
+   "type": "small",
+   "x": -208.08,
+   "y": 286.39,
+   "region": "mobility",
+   "name": "Mobility outer path",
+   "text": "+2% movement speed",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:k_5",
+   "type": "small",
+   "x": -224.53,
+   "y": 309.04,
+   "region": "mobility",
+   "name": "Mobility outer path",
+   "text": "+2% movement speed",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:k_6",
+   "type": "small",
+   "x": -240.99,
+   "y": 331.7,
+   "region": "mobility",
+   "name": "Mobility outer path",
+   "text": "+2% movement speed",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "3:K1",
+   "type": "keystone",
+   "x": -225.59,
+   "y": 375.44,
+   "region": "mobility",
+   "name": "Featherfall",
+   "text": "-50% fall damage and +6 blocks safe fall distance.",
+   "effects": [
+    {
+     "stat": "fall_damage",
+     "value": -50
+    },
+    {
+     "stat": "safe_fall",
+     "value": 6
+    }
+   ],
+   "rival": "3:K2"
+  },
+  {
+   "id": "3:K2",
+   "type": "keystone",
+   "x": -287.35,
+   "y": 330.56,
+   "region": "mobility",
+   "name": "Pathfinder",
+   "text": "+15% movement speed and -50% hunger from sprinting.",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 15
+    },
+    {
+     "stat": "sprint_hunger",
+     "value": -50
+    }
+   ],
+   "rival": "3:K1"
+  },
+  {
+   "id": "4:s0_0",
+   "type": "small",
+   "x": -81.95,
+   "y": 2.86,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% projectile damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:s0_1",
+   "type": "small",
+   "x": -107.93,
+   "y": 3.77,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% projectile damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:s0_2",
+   "type": "small",
+   "x": -133.92,
+   "y": 4.68,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% projectile damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+3% projectile damage",
+     "effects": [
+      {
+       "stat": "projectile_damage",
+       "value": 3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+2% projectile critical hit chance",
+     "effects": [
+      {
+       "stat": "projectile_crit",
+       "value": 2.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "4:s0_3",
+   "type": "small",
+   "x": -159.9,
+   "y": 5.58,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% projectile damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:s0_4",
+   "type": "small",
+   "x": -185.89,
+   "y": 6.49,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% projectile damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:s1_0",
+   "type": "small",
+   "x": -77.99,
+   "y": -25.34,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% bow draw speed",
+   "effects": [
+    {
+     "stat": "draw_speed",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:s1_1",
+   "type": "small",
+   "x": -102.71,
+   "y": -33.37,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% bow draw speed",
+   "effects": [
+    {
+     "stat": "draw_speed",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:s1_2",
+   "type": "small",
+   "x": -127.44,
+   "y": -41.41,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% bow draw speed",
+   "effects": [
+    {
+     "stat": "draw_speed",
+     "value": 3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+3% bow draw speed",
+     "effects": [
+      {
+       "stat": "draw_speed",
+       "value": 3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3% crossbow reload speed",
+     "effects": [
+      {
+       "stat": "reload_speed",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "4:s1_3",
+   "type": "small",
+   "x": -152.17,
+   "y": -49.44,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% bow draw speed",
+   "effects": [
+    {
+     "stat": "draw_speed",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:s1_4",
+   "type": "small",
+   "x": -176.9,
+   "y": -57.48,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% bow draw speed",
+   "effects": [
+    {
+     "stat": "draw_speed",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:s2_0",
+   "type": "small",
+   "x": -64.62,
+   "y": -50.48,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% projectile speed",
+   "effects": [
+    {
+     "stat": "projectile_speed",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:s2_1",
+   "type": "small",
+   "x": -85.11,
+   "y": -66.49,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% projectile speed",
+   "effects": [
+    {
+     "stat": "projectile_speed",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:s2_2",
+   "type": "small",
+   "x": -105.59,
+   "y": -82.5,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% projectile speed",
+   "effects": [
+    {
+     "stat": "projectile_speed",
+     "value": 3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+3% projectile speed",
+     "effects": [
+      {
+       "stat": "projectile_speed",
+       "value": 3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3% chance not to use an arrow",
+     "effects": [
+      {
+       "stat": "arrow_save",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "4:s2_3",
+   "type": "small",
+   "x": -126.08,
+   "y": -98.51,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% projectile speed",
+   "effects": [
+    {
+     "stat": "projectile_speed",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:s2_4",
+   "type": "small",
+   "x": -146.57,
+   "y": -114.51,
+   "region": "ranged",
+   "name": "Ranged path",
+   "text": "+3% projectile speed",
+   "effects": [
+    {
+     "stat": "projectile_speed",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:M",
+   "type": "mastery",
+   "x": -203.53,
+   "y": -66.13,
+   "region": "ranged",
+   "name": "Ranged mastery",
+   "text": "Pick one of two strong effects.",
+   "effects": [],
+   "choices": [
+    {
+     "name": "Deadeye",
+     "text": "Fully drawn bow shots deal +20% damage.",
+     "effects": [
+      {
+       "mechanic": "full_draw_bonus",
+       "params": {
+        "damage": 20,
+        "speed": 0
+       }
+      }
+     ]
+    },
+    {
+     "name": "Long Shot",
+     "text": "+25% projectile damage against targets over 20 blocks away.",
+     "effects": [
+      {
+       "mechanic": "sniper",
+       "params": {
+        "distance": 20,
+        "bonus": 25
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "4:c0_0",
+   "type": "small",
+   "x": -211.37,
+   "y": 33.48,
+   "region": "ranged",
+   "name": "Bows",
+   "text": "+4% bow draw speed",
+   "effects": [
+    {
+     "stat": "draw_speed",
+     "value": 4.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+4% bow draw speed",
+     "effects": [
+      {
+       "stat": "draw_speed",
+       "value": 4.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3% bow damage",
+     "effects": [
+      {
+       "stat": "bow_damage",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "4:c0_1",
+   "type": "small",
+   "x": -239.02,
+   "y": 37.86,
+   "region": "ranged",
+   "name": "Bows",
+   "text": "+4% bow draw speed",
+   "effects": [
+    {
+     "stat": "draw_speed",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "4:c0_2",
+   "type": "small",
+   "x": -266.68,
+   "y": 42.24,
+   "region": "ranged",
+   "name": "Bows",
+   "text": "+4% bow draw speed",
+   "effects": [
+    {
+     "stat": "draw_speed",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "4:c0_3",
+   "type": "notable",
+   "x": -294.33,
+   "y": 46.62,
+   "region": "ranged",
+   "name": "Steady Draw",
+   "text": "+10% bow damage.",
+   "effects": [
+    {
+     "stat": "bow_damage",
+     "value": 10
+    }
+   ],
+   "choices": [
+    {
+     "name": "Steady Draw",
+     "text": "+10% bow damage.",
+     "effects": [
+      {
+       "stat": "bow_damage",
+       "value": 10
+      }
+     ]
+    },
+    {
+     "name": "Steady Draw (B)",
+     "text": "+10% bow draw speed.",
+     "effects": [
+      {
+       "stat": "draw_speed",
+       "value": 10
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "4:c0_4",
+   "type": "small",
+   "x": -321.99,
+   "y": 51.0,
+   "region": "ranged",
+   "name": "Bows",
+   "text": "+4% bow draw speed",
+   "effects": [
+    {
+     "stat": "draw_speed",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "4:c0_5",
+   "type": "small",
+   "x": -349.64,
+   "y": 55.38,
+   "region": "ranged",
+   "name": "Bows",
+   "text": "+4% bow draw speed",
+   "effects": [
+    {
+     "stat": "draw_speed",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "4:c0_6",
+   "type": "notable",
+   "x": -377.3,
+   "y": 59.76,
+   "region": "ranged",
+   "name": "Eagle Eye",
+   "text": "Fully drawn bow shots deal +15% damage and fly 15% faster.",
+   "effects": [
+    {
+     "mechanic": "full_draw_bonus",
+     "params": {
+      "damage": 15,
+      "speed": 15
+     }
+    }
+   ]
+  },
+  {
+   "id": "4:c1_0",
+   "type": "small",
+   "x": -211.92,
+   "y": -29.78,
+   "region": "ranged",
+   "name": "Crossbows",
+   "text": "+5% crossbow reload speed",
+   "effects": [
+    {
+     "stat": "reload_speed",
+     "value": 5.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+5% crossbow reload speed",
+     "effects": [
+      {
+       "stat": "reload_speed",
+       "value": 5.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3% crossbow damage",
+     "effects": [
+      {
+       "stat": "crossbow_damage",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "4:c1_1",
+   "type": "small",
+   "x": -239.64,
+   "y": -33.68,
+   "region": "ranged",
+   "name": "Crossbows",
+   "text": "+5% crossbow reload speed",
+   "effects": [
+    {
+     "stat": "reload_speed",
+     "value": 5.0
+    }
+   ]
+  },
+  {
+   "id": "4:c1_2",
+   "type": "small",
+   "x": -267.37,
+   "y": -37.58,
+   "region": "ranged",
+   "name": "Crossbows",
+   "text": "+5% crossbow reload speed",
+   "effects": [
+    {
+     "stat": "reload_speed",
+     "value": 5.0
+    }
+   ]
+  },
+  {
+   "id": "4:c1_3",
+   "type": "notable",
+   "x": -295.1,
+   "y": -41.47,
+   "region": "ranged",
+   "name": "Quick Loader",
+   "text": "+12% crossbow reload speed.",
+   "effects": [
+    {
+     "stat": "reload_speed",
+     "value": 12
+    }
+   ],
+   "choices": [
+    {
+     "name": "Quick Loader",
+     "text": "+12% crossbow reload speed.",
+     "effects": [
+      {
+       "stat": "reload_speed",
+       "value": 12
+      }
+     ]
+    },
+    {
+     "name": "Quick Loader (B)",
+     "text": "+8% crossbow damage.",
+     "effects": [
+      {
+       "stat": "crossbow_damage",
+       "value": 8
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "4:c1_4",
+   "type": "small",
+   "x": -322.83,
+   "y": -45.37,
+   "region": "ranged",
+   "name": "Crossbows",
+   "text": "+5% crossbow reload speed",
+   "effects": [
+    {
+     "stat": "reload_speed",
+     "value": 5.0
+    }
+   ]
+  },
+  {
+   "id": "4:c1_5",
+   "type": "small",
+   "x": -350.55,
+   "y": -49.27,
+   "region": "ranged",
+   "name": "Crossbows",
+   "text": "+5% crossbow reload speed",
+   "effects": [
+    {
+     "stat": "reload_speed",
+     "value": 5.0
+    }
+   ]
+  },
+  {
+   "id": "4:c1_6",
+   "type": "notable",
+   "x": -378.28,
+   "y": -53.16,
+   "region": "ranged",
+   "name": "Bolt Thrower",
+   "text": "+15% crossbow damage.",
+   "effects": [
+    {
+     "stat": "crossbow_damage",
+     "value": 15
+    }
+   ]
+  },
+  {
+   "id": "4:c2_0",
+   "type": "small",
+   "x": -188.95,
+   "y": -100.47,
+   "region": "ranged",
+   "name": "Tridents",
+   "text": "+4% trident damage",
+   "effects": [
+    {
+     "stat": "trident_damage",
+     "value": 4.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+4% trident damage",
+     "effects": [
+      {
+       "stat": "trident_damage",
+       "value": 4.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+5% trident throw speed",
+     "effects": [
+      {
+       "stat": "trident_throw",
+       "value": 5.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "4:c2_1",
+   "type": "small",
+   "x": -213.67,
+   "y": -113.61,
+   "region": "ranged",
+   "name": "Tridents",
+   "text": "+4% trident damage",
+   "effects": [
+    {
+     "stat": "trident_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "4:c2_2",
+   "type": "small",
+   "x": -238.4,
+   "y": -126.76,
+   "region": "ranged",
+   "name": "Tridents",
+   "text": "+4% trident damage",
+   "effects": [
+    {
+     "stat": "trident_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "4:c2_3",
+   "type": "notable",
+   "x": -263.12,
+   "y": -139.9,
+   "region": "ranged",
+   "name": "Harpooner",
+   "text": "+10% trident damage.",
+   "effects": [
+    {
+     "stat": "trident_damage",
+     "value": 10
+    }
+   ],
+   "choices": [
+    {
+     "name": "Harpooner",
+     "text": "+10% trident damage.",
+     "effects": [
+      {
+       "stat": "trident_damage",
+       "value": 10
+      }
+     ]
+    },
+    {
+     "name": "Harpooner (B)",
+     "text": "Thrown tridents return 25% faster.",
+     "effects": [
+      {
+       "stat": "trident_return",
+       "value": 25
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "4:c2_4",
+   "type": "small",
+   "x": -287.84,
+   "y": -153.05,
+   "region": "ranged",
+   "name": "Tridents",
+   "text": "+4% trident damage",
+   "effects": [
+    {
+     "stat": "trident_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "4:c2_5",
+   "type": "small",
+   "x": -312.56,
+   "y": -166.19,
+   "region": "ranged",
+   "name": "Tridents",
+   "text": "+4% trident damage",
+   "effects": [
+    {
+     "stat": "trident_damage",
+     "value": 4.0
+    }
+   ]
+  },
+  {
+   "id": "4:c2_6",
+   "type": "notable",
+   "x": -337.29,
+   "y": -179.34,
+   "region": "ranged",
+   "name": "Tide Caller",
+   "text": "Thrown tridents return 30% faster and deal +15% damage in rain or water.",
+   "effects": [
+    {
+     "stat": "trident_return",
+     "value": 30
+    },
+    {
+     "mechanic": "tide_caller",
+     "params": {
+      "bonus": 15
+     }
+    }
+   ]
+  },
+  {
+   "id": "4:c3_0",
+   "type": "small",
+   "x": -151.32,
+   "y": -151.32,
+   "region": "ranged",
+   "name": "Quiver",
+   "text": "+3% chance not to use an arrow",
+   "effects": [
+    {
+     "stat": "arrow_save",
+     "value": 3.0
+    }
+   ],
+   "choices": [
+    {
+     "name": "A",
+     "text": "+3% chance not to use an arrow",
+     "effects": [
+      {
+       "stat": "arrow_save",
+       "value": 3.0
+      }
+     ]
+    },
+    {
+     "name": "B",
+     "text": "+3% projectile speed",
+     "effects": [
+      {
+       "stat": "projectile_speed",
+       "value": 3.0
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "4:c3_1",
+   "type": "small",
+   "x": -171.12,
+   "y": -171.12,
+   "region": "ranged",
+   "name": "Quiver",
+   "text": "+3% chance not to use an arrow",
+   "effects": [
+    {
+     "stat": "arrow_save",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:c3_2",
+   "type": "small",
+   "x": -190.92,
+   "y": -190.92,
+   "region": "ranged",
+   "name": "Quiver",
+   "text": "+3% chance not to use an arrow",
+   "effects": [
+    {
+     "stat": "arrow_save",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:c3_3",
+   "type": "notable",
+   "x": -210.72,
+   "y": -210.72,
+   "region": "ranged",
+   "name": "Thrifty",
+   "text": "+8% chance not to use an arrow.",
+   "effects": [
+    {
+     "stat": "arrow_save",
+     "value": 8
+    }
+   ],
+   "choices": [
+    {
+     "name": "Thrifty",
+     "text": "+8% chance not to use an arrow.",
+     "effects": [
+      {
+       "stat": "arrow_save",
+       "value": 8
+      }
+     ]
+    },
+    {
+     "name": "Thrifty (B)",
+     "text": "+8% projectile speed.",
+     "effects": [
+      {
+       "stat": "projectile_speed",
+       "value": 8
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "4:c3_4",
+   "type": "small",
+   "x": -230.52,
+   "y": -230.52,
+   "region": "ranged",
+   "name": "Quiver",
+   "text": "+3% chance not to use an arrow",
+   "effects": [
+    {
+     "stat": "arrow_save",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:c3_5",
+   "type": "small",
+   "x": -250.32,
+   "y": -250.32,
+   "region": "ranged",
+   "name": "Quiver",
+   "text": "+3% chance not to use an arrow",
+   "effects": [
+    {
+     "stat": "arrow_save",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:c3_6",
+   "type": "notable",
+   "x": -270.11,
+   "y": -270.11,
+   "region": "ranged",
+   "name": "Fletcher",
+   "text": "Arrows you craft fly 10% faster.",
+   "effects": [
+    {
+     "mechanic": "fletcher",
+     "params": {
+      "speed": 10
+     }
+    }
+   ]
+  },
+  {
+   "id": "4:k_0",
+   "type": "small",
+   "x": -230.16,
+   "y": -74.78,
+   "region": "ranged",
+   "name": "Ranged outer path",
+   "text": "+3% projectile damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:k_1",
+   "type": "small",
+   "x": -256.79,
+   "y": -83.43,
+   "region": "ranged",
+   "name": "Ranged outer path",
+   "text": "+3% projectile damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:k_2",
+   "type": "small",
+   "x": -283.41,
+   "y": -92.09,
+   "region": "ranged",
+   "name": "Ranged outer path",
+   "text": "+3% projectile damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:k_3",
+   "type": "small",
+   "x": -310.04,
+   "y": -100.74,
+   "region": "ranged",
+   "name": "Ranged outer path",
+   "text": "+3% projectile damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:k_4",
+   "type": "small",
+   "x": -336.67,
+   "y": -109.39,
+   "region": "ranged",
+   "name": "Ranged outer path",
+   "text": "+3% projectile damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:k_5",
+   "type": "small",
+   "x": -363.3,
+   "y": -118.04,
+   "region": "ranged",
+   "name": "Ranged outer path",
+   "text": "+3% projectile damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:k_6",
+   "type": "small",
+   "x": -389.93,
+   "y": -126.7,
+   "region": "ranged",
+   "name": "Ranged outer path",
+   "text": "+3% projectile damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "4:K1",
+   "type": "keystone",
+   "x": -426.77,
+   "y": -98.53,
+   "region": "ranged",
+   "name": "Sniper",
+   "text": "Projectiles deal 50% more damage to targets more than 24 blocks away.",
+   "effects": [
+    {
+     "mechanic": "sniper",
+     "params": {
+      "distance": 24,
+      "bonus": 50
+     }
+    }
+   ],
+   "rival": "4:K2"
+  },
+  {
+   "id": "4:K2",
+   "type": "keystone",
+   "x": -403.18,
+   "y": -171.14,
+   "region": "ranged",
+   "name": "Skirmisher",
+   "text": "Projectiles deal 25% more damage to targets within 8 blocks.",
+   "effects": [
+    {
+     "mechanic": "skirmisher",
+     "params": {
+      "distance": 8,
+      "bonus": 25
+     }
+    }
+   ],
+   "rival": "4:K1"
+  },
+  {
+   "id": "b1_0",
+   "type": "small",
+   "x": 78.76,
+   "y": -108.41,
+   "name": "Bridge",
+   "text": "+3% melee damage and +3% armor",
+   "effects": [
+    {
+     "stat": "melee_damage",
+     "value": 3.0
+    },
+    {
+     "stat": "armor_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "b2_0",
+   "type": "small",
+   "x": 147.05,
+   "y": -226.44,
+   "name": "Bridge",
+   "text": "+3% melee damage and +3% armor",
+   "effects": [
+    {
+     "stat": "melee_damage",
+     "value": 3.0
+    },
+    {
+     "stat": "armor_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "b3_0",
+   "type": "small",
+   "x": 169.92,
+   "y": -209.83,
+   "name": "Bridge",
+   "text": "+3% melee damage and +3% armor",
+   "effects": [
+    {
+     "stat": "melee_damage",
+     "value": 3.0
+    },
+    {
+     "stat": "armor_pct",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "b1_1",
+   "type": "small",
+   "x": 127.44,
+   "y": 41.41,
+   "name": "Bridge",
+   "text": "+3% armor and +3 max health",
+   "effects": [
+    {
+     "stat": "armor_pct",
+     "value": 3.0
+    },
+    {
+     "stat": "max_health",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "b2_1",
+   "type": "small",
+   "x": 260.8,
+   "y": 69.88,
+   "name": "Bridge",
+   "text": "+3% armor and +3 max health",
+   "effects": [
+    {
+     "stat": "armor_pct",
+     "value": 3.0
+    },
+    {
+     "stat": "max_health",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "b3_1",
+   "type": "small",
+   "x": 252.07,
+   "y": 96.76,
+   "name": "Bridge",
+   "text": "+3% armor and +3 max health",
+   "effects": [
+    {
+     "stat": "armor_pct",
+     "value": 3.0
+    },
+    {
+     "stat": "max_health",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "b1_2",
+   "type": "small",
+   "x": 0.0,
+   "y": 134,
+   "name": "Bridge",
+   "text": "+3 max health and +2% movement speed",
+   "effects": [
+    {
+     "stat": "max_health",
+     "value": 3.0
+    },
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "b2_2",
+   "type": "small",
+   "x": 14.13,
+   "y": 269.63,
+   "name": "Bridge",
+   "text": "+3 max health and +2% movement speed",
+   "effects": [
+    {
+     "stat": "max_health",
+     "value": 3.0
+    },
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "b3_2",
+   "type": "small",
+   "x": -14.13,
+   "y": 269.63,
+   "name": "Bridge",
+   "text": "+3 max health and +2% movement speed",
+   "effects": [
+    {
+     "stat": "max_health",
+     "value": 3.0
+    },
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    }
+   ]
+  },
+  {
+   "id": "b1_3",
+   "type": "small",
+   "x": -127.44,
+   "y": 41.41,
+   "name": "Bridge",
+   "text": "+2% movement speed and +3% projectile damage",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    },
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "b2_3",
+   "type": "small",
+   "x": -252.07,
+   "y": 96.76,
+   "name": "Bridge",
+   "text": "+2% movement speed and +3% projectile damage",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    },
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "b3_3",
+   "type": "small",
+   "x": -260.8,
+   "y": 69.88,
+   "name": "Bridge",
+   "text": "+2% movement speed and +3% projectile damage",
+   "effects": [
+    {
+     "stat": "movement_speed",
+     "value": 2.0
+    },
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "b1_4",
+   "type": "small",
+   "x": -78.76,
+   "y": -108.41,
+   "name": "Bridge",
+   "text": "+3% projectile damage and +3% melee damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    },
+    {
+     "stat": "melee_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "b2_4",
+   "type": "small",
+   "x": -169.92,
+   "y": -209.83,
+   "name": "Bridge",
+   "text": "+3% projectile damage and +3% melee damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    },
+    {
+     "stat": "melee_damage",
+     "value": 3.0
+    }
+   ]
+  },
+  {
+   "id": "b3_4",
+   "type": "small",
+   "x": -147.05,
+   "y": -226.44,
+   "name": "Bridge",
+   "text": "+3% projectile damage and +3% melee damage",
+   "effects": [
+    {
+     "stat": "projectile_damage",
+     "value": 3.0
+    },
+    {
+     "stat": "melee_damage",
+     "value": 3.0
+    }
+   ]
+  }
+ ],
+ "edges": [
+  [
+   "h0",
+   "h1"
+  ],
+  [
+   "h1",
+   "h2"
+  ],
+  [
+   "h2",
+   "h3"
+  ],
+  [
+   "h3",
+   "h4"
+  ],
+  [
+   "h4",
+   "h5"
+  ],
+  [
+   "h5",
+   "h6"
+  ],
+  [
+   "h6",
+   "h7"
+  ],
+  [
+   "h7",
+   "h8"
+  ],
+  [
+   "h8",
+   "h9"
+  ],
+  [
+   "h9",
+   "h10"
+  ],
+  [
+   "h10",
+   "h11"
+  ],
+  [
+   "h11",
+   "h12"
+  ],
+  [
+   "h12",
+   "h13"
+  ],
+  [
+   "h13",
+   "h14"
+  ],
+  [
+   "h14",
+   "h0"
+  ],
+  [
+   "h13",
+   "0:s0_0"
+  ],
+  [
+   "0:s0_0",
+   "0:s0_1"
+  ],
+  [
+   "0:s0_1",
+   "0:s0_2"
+  ],
+  [
+   "0:s0_2",
+   "0:s0_3"
+  ],
+  [
+   "0:s0_3",
+   "0:s0_4"
+  ],
+  [
+   "h13",
+   "0:s1_0"
+  ],
+  [
+   "0:s1_0",
+   "0:s1_1"
+  ],
+  [
+   "0:s1_1",
+   "0:s1_2"
+  ],
+  [
+   "0:s1_2",
+   "0:s1_3"
+  ],
+  [
+   "0:s1_3",
+   "0:s1_4"
+  ],
+  [
+   "h14",
+   "0:s2_0"
+  ],
+  [
+   "0:s2_0",
+   "0:s2_1"
+  ],
+  [
+   "0:s2_1",
+   "0:s2_2"
+  ],
+  [
+   "0:s2_2",
+   "0:s2_3"
+  ],
+  [
+   "0:s2_3",
+   "0:s2_4"
+  ],
+  [
+   "0:s0_2",
+   "0:s1_2"
+  ],
+  [
+   "0:s1_2",
+   "0:s2_2"
+  ],
+  [
+   "0:s1_4",
+   "0:M"
+  ],
+  [
+   "0:s0_4",
+   "0:c0_0"
+  ],
+  [
+   "0:c0_0",
+   "0:c0_1"
+  ],
+  [
+   "0:c0_1",
+   "0:c0_2"
+  ],
+  [
+   "0:c0_2",
+   "0:c0_3"
+  ],
+  [
+   "0:c0_3",
+   "0:c0_4"
+  ],
+  [
+   "0:c0_4",
+   "0:c0_5"
+  ],
+  [
+   "0:c0_5",
+   "0:c0_6"
+  ],
+  [
+   "0:s0_4",
+   "0:c1_0"
+  ],
+  [
+   "0:c1_0",
+   "0:c1_1"
+  ],
+  [
+   "0:c1_1",
+   "0:c1_2"
+  ],
+  [
+   "0:c1_2",
+   "0:c1_3"
+  ],
+  [
+   "0:c1_3",
+   "0:c1_4"
+  ],
+  [
+   "0:c1_4",
+   "0:c1_5"
+  ],
+  [
+   "0:c1_5",
+   "0:c1_6"
+  ],
+  [
+   "0:s2_4",
+   "0:c2_0"
+  ],
+  [
+   "0:c2_0",
+   "0:c2_1"
+  ],
+  [
+   "0:c2_1",
+   "0:c2_2"
+  ],
+  [
+   "0:c2_2",
+   "0:c2_3"
+  ],
+  [
+   "0:c2_3",
+   "0:c2_4"
+  ],
+  [
+   "0:c2_4",
+   "0:c2_5"
+  ],
+  [
+   "0:c2_5",
+   "0:c2_6"
+  ],
+  [
+   "0:s2_4",
+   "0:c3_0"
+  ],
+  [
+   "0:c3_0",
+   "0:c3_1"
+  ],
+  [
+   "0:c3_1",
+   "0:c3_2"
+  ],
+  [
+   "0:c3_2",
+   "0:c3_3"
+  ],
+  [
+   "0:c3_3",
+   "0:c3_4"
+  ],
+  [
+   "0:c3_4",
+   "0:c3_5"
+  ],
+  [
+   "0:c3_5",
+   "0:c3_6"
+  ],
+  [
+   "0:M",
+   "0:k_0"
+  ],
+  [
+   "0:k_0",
+   "0:k_1"
+  ],
+  [
+   "0:k_1",
+   "0:k_2"
+  ],
+  [
+   "0:k_2",
+   "0:k_3"
+  ],
+  [
+   "0:k_3",
+   "0:k_4"
+  ],
+  [
+   "0:k_4",
+   "0:k_5"
+  ],
+  [
+   "0:k_5",
+   "0:k_6"
+  ],
+  [
+   "0:k_6",
+   "0:K1"
+  ],
+  [
+   "0:k_6",
+   "0:K2"
+  ],
+  [
+   "h1",
+   "1:s0_0"
+  ],
+  [
+   "1:s0_0",
+   "1:s0_1"
+  ],
+  [
+   "1:s0_1",
+   "1:s0_2"
+  ],
+  [
+   "1:s0_2",
+   "1:s0_3"
+  ],
+  [
+   "1:s0_3",
+   "1:s0_4"
+  ],
+  [
+   "h1",
+   "1:s1_0"
+  ],
+  [
+   "1:s1_0",
+   "1:s1_1"
+  ],
+  [
+   "1:s1_1",
+   "1:s1_2"
+  ],
+  [
+   "1:s1_2",
+   "1:s1_3"
+  ],
+  [
+   "1:s1_3",
+   "1:s1_4"
+  ],
+  [
+   "h2",
+   "1:s2_0"
+  ],
+  [
+   "1:s2_0",
+   "1:s2_1"
+  ],
+  [
+   "1:s2_1",
+   "1:s2_2"
+  ],
+  [
+   "1:s2_2",
+   "1:s2_3"
+  ],
+  [
+   "1:s2_3",
+   "1:s2_4"
+  ],
+  [
+   "1:s0_2",
+   "1:s1_2"
+  ],
+  [
+   "1:s1_2",
+   "1:s2_2"
+  ],
+  [
+   "1:s1_4",
+   "1:M"
+  ],
+  [
+   "1:s0_4",
+   "1:c0_0"
+  ],
+  [
+   "1:c0_0",
+   "1:c0_1"
+  ],
+  [
+   "1:c0_1",
+   "1:c0_2"
+  ],
+  [
+   "1:c0_2",
+   "1:c0_3"
+  ],
+  [
+   "1:c0_3",
+   "1:c0_4"
+  ],
+  [
+   "1:c0_4",
+   "1:c0_5"
+  ],
+  [
+   "1:c0_5",
+   "1:c0_6"
+  ],
+  [
+   "1:s0_4",
+   "1:c1_0"
+  ],
+  [
+   "1:c1_0",
+   "1:c1_1"
+  ],
+  [
+   "1:c1_1",
+   "1:c1_2"
+  ],
+  [
+   "1:c1_2",
+   "1:c1_3"
+  ],
+  [
+   "1:c1_3",
+   "1:c1_4"
+  ],
+  [
+   "1:c1_4",
+   "1:c1_5"
+  ],
+  [
+   "1:c1_5",
+   "1:c1_6"
+  ],
+  [
+   "1:s2_4",
+   "1:c2_0"
+  ],
+  [
+   "1:c2_0",
+   "1:c2_1"
+  ],
+  [
+   "1:c2_1",
+   "1:c2_2"
+  ],
+  [
+   "1:c2_2",
+   "1:c2_3"
+  ],
+  [
+   "1:c2_3",
+   "1:c2_4"
+  ],
+  [
+   "1:c2_4",
+   "1:c2_5"
+  ],
+  [
+   "1:c2_5",
+   "1:c2_6"
+  ],
+  [
+   "1:s2_4",
+   "1:c3_0"
+  ],
+  [
+   "1:c3_0",
+   "1:c3_1"
+  ],
+  [
+   "1:c3_1",
+   "1:c3_2"
+  ],
+  [
+   "1:c3_2",
+   "1:c3_3"
+  ],
+  [
+   "1:c3_3",
+   "1:c3_4"
+  ],
+  [
+   "1:c3_4",
+   "1:c3_5"
+  ],
+  [
+   "1:c3_5",
+   "1:c3_6"
+  ],
+  [
+   "1:M",
+   "1:k_0"
+  ],
+  [
+   "1:k_0",
+   "1:k_1"
+  ],
+  [
+   "1:k_1",
+   "1:k_2"
+  ],
+  [
+   "1:k_2",
+   "1:k_3"
+  ],
+  [
+   "1:k_3",
+   "1:k_4"
+  ],
+  [
+   "1:k_4",
+   "1:k_5"
+  ],
+  [
+   "1:k_5",
+   "1:k_6"
+  ],
+  [
+   "1:k_6",
+   "1:K1"
+  ],
+  [
+   "1:k_6",
+   "1:K2"
+  ],
+  [
+   "h4",
+   "2:s0_0"
+  ],
+  [
+   "2:s0_0",
+   "2:s0_1"
+  ],
+  [
+   "2:s0_1",
+   "2:s0_2"
+  ],
+  [
+   "2:s0_2",
+   "2:s0_3"
+  ],
+  [
+   "2:s0_3",
+   "2:s0_4"
+  ],
+  [
+   "h4",
+   "2:s1_0"
+  ],
+  [
+   "2:s1_0",
+   "2:s1_1"
+  ],
+  [
+   "2:s1_1",
+   "2:s1_2"
+  ],
+  [
+   "2:s1_2",
+   "2:s1_3"
+  ],
+  [
+   "2:s1_3",
+   "2:s1_4"
+  ],
+  [
+   "h5",
+   "2:s2_0"
+  ],
+  [
+   "2:s2_0",
+   "2:s2_1"
+  ],
+  [
+   "2:s2_1",
+   "2:s2_2"
+  ],
+  [
+   "2:s2_2",
+   "2:s2_3"
+  ],
+  [
+   "2:s2_3",
+   "2:s2_4"
+  ],
+  [
+   "2:s0_2",
+   "2:s1_2"
+  ],
+  [
+   "2:s1_2",
+   "2:s2_2"
+  ],
+  [
+   "2:s1_4",
+   "2:M"
+  ],
+  [
+   "2:s0_4",
+   "2:c0_0"
+  ],
+  [
+   "2:c0_0",
+   "2:c0_1"
+  ],
+  [
+   "2:c0_1",
+   "2:c0_2"
+  ],
+  [
+   "2:c0_2",
+   "2:c0_3"
+  ],
+  [
+   "2:c0_3",
+   "2:c0_4"
+  ],
+  [
+   "2:c0_4",
+   "2:c0_5"
+  ],
+  [
+   "2:c0_5",
+   "2:c0_6"
+  ],
+  [
+   "2:s0_4",
+   "2:c1_0"
+  ],
+  [
+   "2:c1_0",
+   "2:c1_1"
+  ],
+  [
+   "2:c1_1",
+   "2:c1_2"
+  ],
+  [
+   "2:c1_2",
+   "2:c1_3"
+  ],
+  [
+   "2:c1_3",
+   "2:c1_4"
+  ],
+  [
+   "2:c1_4",
+   "2:c1_5"
+  ],
+  [
+   "2:c1_5",
+   "2:c1_6"
+  ],
+  [
+   "2:s2_4",
+   "2:c2_0"
+  ],
+  [
+   "2:c2_0",
+   "2:c2_1"
+  ],
+  [
+   "2:c2_1",
+   "2:c2_2"
+  ],
+  [
+   "2:c2_2",
+   "2:c2_3"
+  ],
+  [
+   "2:c2_3",
+   "2:c2_4"
+  ],
+  [
+   "2:c2_4",
+   "2:c2_5"
+  ],
+  [
+   "2:c2_5",
+   "2:c2_6"
+  ],
+  [
+   "2:s2_4",
+   "2:c3_0"
+  ],
+  [
+   "2:c3_0",
+   "2:c3_1"
+  ],
+  [
+   "2:c3_1",
+   "2:c3_2"
+  ],
+  [
+   "2:c3_2",
+   "2:c3_3"
+  ],
+  [
+   "2:c3_3",
+   "2:c3_4"
+  ],
+  [
+   "2:c3_4",
+   "2:c3_5"
+  ],
+  [
+   "2:c3_5",
+   "2:c3_6"
+  ],
+  [
+   "2:M",
+   "2:k_0"
+  ],
+  [
+   "2:k_0",
+   "2:k_1"
+  ],
+  [
+   "2:k_1",
+   "2:k_2"
+  ],
+  [
+   "2:k_2",
+   "2:k_3"
+  ],
+  [
+   "2:k_3",
+   "2:k_4"
+  ],
+  [
+   "2:k_4",
+   "2:k_5"
+  ],
+  [
+   "2:k_5",
+   "2:k_6"
+  ],
+  [
+   "2:k_6",
+   "2:K1"
+  ],
+  [
+   "2:k_6",
+   "2:K2"
+  ],
+  [
+   "h7",
+   "3:s0_0"
+  ],
+  [
+   "3:s0_0",
+   "3:s0_1"
+  ],
+  [
+   "3:s0_1",
+   "3:s0_2"
+  ],
+  [
+   "3:s0_2",
+   "3:s0_3"
+  ],
+  [
+   "3:s0_3",
+   "3:s0_4"
+  ],
+  [
+   "h7",
+   "3:s1_0"
+  ],
+  [
+   "3:s1_0",
+   "3:s1_1"
+  ],
+  [
+   "3:s1_1",
+   "3:s1_2"
+  ],
+  [
+   "3:s1_2",
+   "3:s1_3"
+  ],
+  [
+   "3:s1_3",
+   "3:s1_4"
+  ],
+  [
+   "h8",
+   "3:s2_0"
+  ],
+  [
+   "3:s2_0",
+   "3:s2_1"
+  ],
+  [
+   "3:s2_1",
+   "3:s2_2"
+  ],
+  [
+   "3:s2_2",
+   "3:s2_3"
+  ],
+  [
+   "3:s2_3",
+   "3:s2_4"
+  ],
+  [
+   "3:s0_2",
+   "3:s1_2"
+  ],
+  [
+   "3:s1_2",
+   "3:s2_2"
+  ],
+  [
+   "3:s1_4",
+   "3:M"
+  ],
+  [
+   "3:s0_4",
+   "3:c0_0"
+  ],
+  [
+   "3:c0_0",
+   "3:c0_1"
+  ],
+  [
+   "3:c0_1",
+   "3:c0_2"
+  ],
+  [
+   "3:c0_2",
+   "3:c0_3"
+  ],
+  [
+   "3:c0_3",
+   "3:c0_4"
+  ],
+  [
+   "3:c0_4",
+   "3:c0_5"
+  ],
+  [
+   "3:c0_5",
+   "3:c0_6"
+  ],
+  [
+   "3:s0_4",
+   "3:c1_0"
+  ],
+  [
+   "3:c1_0",
+   "3:c1_1"
+  ],
+  [
+   "3:c1_1",
+   "3:c1_2"
+  ],
+  [
+   "3:c1_2",
+   "3:c1_3"
+  ],
+  [
+   "3:c1_3",
+   "3:c1_4"
+  ],
+  [
+   "3:c1_4",
+   "3:c1_5"
+  ],
+  [
+   "3:c1_5",
+   "3:c1_6"
+  ],
+  [
+   "3:s2_4",
+   "3:c2_0"
+  ],
+  [
+   "3:c2_0",
+   "3:c2_1"
+  ],
+  [
+   "3:c2_1",
+   "3:c2_2"
+  ],
+  [
+   "3:c2_2",
+   "3:c2_3"
+  ],
+  [
+   "3:c2_3",
+   "3:c2_4"
+  ],
+  [
+   "3:c2_4",
+   "3:c2_5"
+  ],
+  [
+   "3:c2_5",
+   "3:c2_6"
+  ],
+  [
+   "3:s2_4",
+   "3:c3_0"
+  ],
+  [
+   "3:c3_0",
+   "3:c3_1"
+  ],
+  [
+   "3:c3_1",
+   "3:c3_2"
+  ],
+  [
+   "3:c3_2",
+   "3:c3_3"
+  ],
+  [
+   "3:c3_3",
+   "3:c3_4"
+  ],
+  [
+   "3:c3_4",
+   "3:c3_5"
+  ],
+  [
+   "3:c3_5",
+   "3:c3_6"
+  ],
+  [
+   "3:M",
+   "3:k_0"
+  ],
+  [
+   "3:k_0",
+   "3:k_1"
+  ],
+  [
+   "3:k_1",
+   "3:k_2"
+  ],
+  [
+   "3:k_2",
+   "3:k_3"
+  ],
+  [
+   "3:k_3",
+   "3:k_4"
+  ],
+  [
+   "3:k_4",
+   "3:k_5"
+  ],
+  [
+   "3:k_5",
+   "3:k_6"
+  ],
+  [
+   "3:k_6",
+   "3:K1"
+  ],
+  [
+   "3:k_6",
+   "3:K2"
+  ],
+  [
+   "h10",
+   "4:s0_0"
+  ],
+  [
+   "4:s0_0",
+   "4:s0_1"
+  ],
+  [
+   "4:s0_1",
+   "4:s0_2"
+  ],
+  [
+   "4:s0_2",
+   "4:s0_3"
+  ],
+  [
+   "4:s0_3",
+   "4:s0_4"
+  ],
+  [
+   "h10",
+   "4:s1_0"
+  ],
+  [
+   "4:s1_0",
+   "4:s1_1"
+  ],
+  [
+   "4:s1_1",
+   "4:s1_2"
+  ],
+  [
+   "4:s1_2",
+   "4:s1_3"
+  ],
+  [
+   "4:s1_3",
+   "4:s1_4"
+  ],
+  [
+   "h11",
+   "4:s2_0"
+  ],
+  [
+   "4:s2_0",
+   "4:s2_1"
+  ],
+  [
+   "4:s2_1",
+   "4:s2_2"
+  ],
+  [
+   "4:s2_2",
+   "4:s2_3"
+  ],
+  [
+   "4:s2_3",
+   "4:s2_4"
+  ],
+  [
+   "4:s0_2",
+   "4:s1_2"
+  ],
+  [
+   "4:s1_2",
+   "4:s2_2"
+  ],
+  [
+   "4:s1_4",
+   "4:M"
+  ],
+  [
+   "4:s0_4",
+   "4:c0_0"
+  ],
+  [
+   "4:c0_0",
+   "4:c0_1"
+  ],
+  [
+   "4:c0_1",
+   "4:c0_2"
+  ],
+  [
+   "4:c0_2",
+   "4:c0_3"
+  ],
+  [
+   "4:c0_3",
+   "4:c0_4"
+  ],
+  [
+   "4:c0_4",
+   "4:c0_5"
+  ],
+  [
+   "4:c0_5",
+   "4:c0_6"
+  ],
+  [
+   "4:s0_4",
+   "4:c1_0"
+  ],
+  [
+   "4:c1_0",
+   "4:c1_1"
+  ],
+  [
+   "4:c1_1",
+   "4:c1_2"
+  ],
+  [
+   "4:c1_2",
+   "4:c1_3"
+  ],
+  [
+   "4:c1_3",
+   "4:c1_4"
+  ],
+  [
+   "4:c1_4",
+   "4:c1_5"
+  ],
+  [
+   "4:c1_5",
+   "4:c1_6"
+  ],
+  [
+   "4:s2_4",
+   "4:c2_0"
+  ],
+  [
+   "4:c2_0",
+   "4:c2_1"
+  ],
+  [
+   "4:c2_1",
+   "4:c2_2"
+  ],
+  [
+   "4:c2_2",
+   "4:c2_3"
+  ],
+  [
+   "4:c2_3",
+   "4:c2_4"
+  ],
+  [
+   "4:c2_4",
+   "4:c2_5"
+  ],
+  [
+   "4:c2_5",
+   "4:c2_6"
+  ],
+  [
+   "4:s2_4",
+   "4:c3_0"
+  ],
+  [
+   "4:c3_0",
+   "4:c3_1"
+  ],
+  [
+   "4:c3_1",
+   "4:c3_2"
+  ],
+  [
+   "4:c3_2",
+   "4:c3_3"
+  ],
+  [
+   "4:c3_3",
+   "4:c3_4"
+  ],
+  [
+   "4:c3_4",
+   "4:c3_5"
+  ],
+  [
+   "4:c3_5",
+   "4:c3_6"
+  ],
+  [
+   "4:M",
+   "4:k_0"
+  ],
+  [
+   "4:k_0",
+   "4:k_1"
+  ],
+  [
+   "4:k_1",
+   "4:k_2"
+  ],
+  [
+   "4:k_2",
+   "4:k_3"
+  ],
+  [
+   "4:k_3",
+   "4:k_4"
+  ],
+  [
+   "4:k_4",
+   "4:k_5"
+  ],
+  [
+   "4:k_5",
+   "4:k_6"
+  ],
+  [
+   "4:k_6",
+   "4:K1"
+  ],
+  [
+   "4:k_6",
+   "4:K2"
+  ],
+  [
+   "0:s2_2",
+   "b1_0"
+  ],
+  [
+   "b1_0",
+   "1:s0_2"
+  ],
+  [
+   "0:c3_2",
+   "b2_0"
+  ],
+  [
+   "b2_0",
+   "b3_0"
+  ],
+  [
+   "b3_0",
+   "1:c0_2"
+  ],
+  [
+   "1:s2_2",
+   "b1_1"
+  ],
+  [
+   "b1_1",
+   "2:s0_2"
+  ],
+  [
+   "1:c3_2",
+   "b2_1"
+  ],
+  [
+   "b2_1",
+   "b3_1"
+  ],
+  [
+   "b3_1",
+   "2:c0_2"
+  ],
+  [
+   "2:s2_2",
+   "b1_2"
+  ],
+  [
+   "b1_2",
+   "3:s0_2"
+  ],
+  [
+   "2:c3_2",
+   "b2_2"
+  ],
+  [
+   "b2_2",
+   "b3_2"
+  ],
+  [
+   "b3_2",
+   "3:c0_2"
+  ],
+  [
+   "3:s2_2",
+   "b1_3"
+  ],
+  [
+   "b1_3",
+   "4:s0_2"
+  ],
+  [
+   "3:c3_2",
+   "b2_3"
+  ],
+  [
+   "b2_3",
+   "b3_3"
+  ],
+  [
+   "b3_3",
+   "4:c0_2"
+  ],
+  [
+   "4:s2_2",
+   "b1_4"
+  ],
+  [
+   "b1_4",
+   "0:s0_2"
+  ],
+  [
+   "4:c3_2",
+   "b2_4"
+  ],
+  [
+   "b2_4",
+   "b3_4"
+  ],
+  [
+   "b3_4",
+   "0:c0_2"
+  ]
+ ]
+}

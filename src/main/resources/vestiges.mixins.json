@@ -1,0 +1,27 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "dev.vestiges.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"AbstractArrowAccessor",
+		"AbstractArrowMixin",
+		"AnvilMenuMixin",
+		"ApplyBonusCountMixin",
+		"BonusLevelTableConditionMixin",
+		"BowItemMixin",
+		"CrossbowItemMixin",
+		"EnchantedBonusChanceMixin",
+		"EnchantedCountIncreaseFunctionMixin",
+		"EnchantmentMenuMixin",
+		"FoodDataMixin",
+		"ItemStackMixin",
+		"LivingEntityMixin",
+		"PlayerMixin",
+		"ProjectileWeaponItemMixin",
+		"ServerPlayerMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

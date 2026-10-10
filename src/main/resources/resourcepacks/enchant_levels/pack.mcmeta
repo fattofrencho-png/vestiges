@@ -1,0 +1,7 @@
+{
+  "pack": {
+    "description": "Vestiges: every enchantment from I to VI (IV = vanilla max; V and VI are earned or found)",
+    "min_format": 121,
+    "max_format": 121
+  }
+}
