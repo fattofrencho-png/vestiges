@@ -1,0 +1,178 @@
+{
+ "type": "minecraft:chest",
+ "random_sequence": "minecraft:chests/village/village_cartographer",
+ "pools": [
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:map",
+     "weight": 10
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 5,
+       "min": 1
+      }
+     },
+     "name": "minecraft:paper",
+     "weight": 15
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:compass",
+     "weight": 5
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 4,
+       "min": 1
+      }
+     },
+     "name": "minecraft:bread",
+     "weight": 15
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 2,
+       "min": 1
+      }
+     },
+     "name": "minecraft:stick",
+     "weight": 5
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 5,
+    "min": 1
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": 1
+     },
+     "name": "minecraft:bundle"
+    },
+    {
+     "type": "minecraft:empty",
+     "weight": 2
+    }
+   ],
+   "rolls": 1,
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "rolls": {
+    "min": 2,
+    "max": 4,
+    "type": "minecraft:uniform"
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:paper",
+     "weight": 35,
+     "modifier": [
+      {
+       "count": {
+        "min": 3,
+        "max": 8,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:compass",
+     "weight": 20
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:map",
+     "weight": 15
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:glass_pane",
+     "weight": 25,
+     "modifier": [
+      {
+       "count": {
+        "min": 2,
+        "max": 6,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald",
+     "weight": 15,
+     "modifier": [
+      {
+       "count": {
+        "min": 1,
+        "max": 3,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   }
+  },
+  {
+   "rolls": 1,
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   },
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/scaled"
+    }
+   ]
+  }
+ ]
+}

@@ -12,6 +12,34 @@ public final class MobLevels {
 	private MobLevels() {
 	}
 
+	/** The level before the layer cap: share of the players' level plus the layer bonus. */
+	public static int raw(double averagePlayerLevel, Layer layer, double share, int cavesBonus, int deepslateBonus) {
+		int bonus = switch (layer) {
+			case SURFACE -> 0;
+			case CAVES -> cavesBonus;
+			case DEEPSLATE -> deepslateBonus;
+		};
+		return Math.max(1, (int) Math.round(averagePlayerLevel * share) + bonus);
+	}
+
+	public static int cap(Layer layer, int surfaceCap, int cavesCap, int deepslateCap) {
+		return switch (layer) {
+			case SURFACE -> surfaceCap;
+			case CAVES -> cavesCap;
+			case DEEPSLATE -> deepslateCap;
+		};
+	}
+
+	/** Elites may go over the layer cap: Champion +3, Elite +6, Warlord +10 (approved). */
+	public static int overCap(int rank) {
+		return switch (rank) {
+			case 1 -> 3;
+			case 2 -> 6;
+			case 3 -> 10;
+			default -> 0;
+		};
+	}
+
 	public static int compute(double averagePlayerLevel, Layer layer, double share, int cavesBonus, int deepslateBonus, int surfaceCap, int cavesCap,
 							  int deepslateCap) {
 		int bonus = switch (layer) {

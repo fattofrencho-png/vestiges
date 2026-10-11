@@ -1,0 +1,353 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bundle",
+     "modifier": [
+      {
+       "name": {
+        "text": "Seed & Sapling Kit",
+        "italic": false
+       },
+       "type": "minecraft:set_name"
+      },
+      {
+       "component": "minecraft:bundle_contents",
+       "entries": [
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:wheat_seeds",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 5,
+            "max": 13
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:beetroot_seeds",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 10
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:melon_seeds",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:pumpkin_seeds",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:bone_meal",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 6,
+            "max": 18
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:oak_sapling",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 7
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:spruce_sapling",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 7
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:birch_sapling",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 7
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:jungle_sapling",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:acacia_sapling",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:dark_oak_sapling",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:cherry_sapling",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 1,
+            "max": 4
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:mangrove_propagule",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 1,
+            "max": 4
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:sugar_cane",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 10
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:cocoa_beans",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 10
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:sweet_berries",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 10
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:glow_berries",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 10
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:kelp",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.25
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 4,
+            "max": 11
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        }
+       ],
+       "type": "minecraft:set_contents"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

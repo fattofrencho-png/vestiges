@@ -1,0 +1,109 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bundle",
+     "modifier": [
+      {
+       "name": {
+        "text": "Special Arrows Kit",
+        "italic": false
+       },
+       "type": "minecraft:set_name"
+      },
+      {
+       "component": "minecraft:bundle_contents",
+       "entries": [
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:tipped_arrow",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.75
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 9,
+            "max": 24
+           },
+           "type": "minecraft:set_count"
+          },
+          {
+           "components": {
+            "minecraft:potion_contents": {
+             "potion": "minecraft:harming"
+            }
+           },
+           "type": "minecraft:set_components"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:spectral_arrow",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.75
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 9,
+            "max": 24
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:fire_charge",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.75
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 4,
+            "max": 12
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:wind_charge",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.75
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 4,
+            "max": 12
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        }
+       ],
+       "type": "minecraft:set_contents"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

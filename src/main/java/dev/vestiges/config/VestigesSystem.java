@@ -9,6 +9,7 @@ public enum VestigesSystem {
 	MOB_SCALING("mob_scaling", "Mob levels by layer"),
 	ELITES("elites", "Champions, Elites and Warlords"),
 	LOOT("loot", "Rarity and banded loot"),
+	PER_PLAYER_LOOT("per_player_loot", "Each player gets their own chest loot"),
 	CODEX("codex", "Block Codex and Bestiary"),
 	FARMING("farming", "Farming quality of life"),
 	FEATS("feats", "Feats and earned markers"),

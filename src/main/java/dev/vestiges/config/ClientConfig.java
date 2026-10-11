@@ -23,6 +23,9 @@ public final class ClientConfig {
 	public String shareMode = "ask";
 	/** M2: with the Tool slot selected, breaking a block picks the right tool from the rack. */
 	public boolean autoTool = true;
+	/** M3a: a health bar over a mob after you hit it (elites while in view), and damage numbers floating up from each hit. */
+	public boolean healthBars = true;
+	public boolean damageNumbers = true;
 	public java.util.List<String> blockedPlayers = new java.util.ArrayList<>();
 
 	public ClientConfig normalize() {

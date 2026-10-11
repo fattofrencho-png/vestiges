@@ -26,6 +26,13 @@ public abstract class PlayerMixin {
 		}
 	}
 
+	@Inject(method = "crit", at = @At("HEAD"))
+	private void vestiges$markCrit(net.minecraft.world.entity.Entity target, CallbackInfo ci) {
+		if ((Object) this instanceof ServerPlayer player) {
+			dev.vestiges.mobs.CombatFeedback.markCrit(player, target);
+		}
+	}
+
 	@ModifyReturnValue(method = "getDestroySpeed", at = @At("RETURN"))
 	private float vestiges$breakSpeed(float speed, BlockState state) {
 		return TreeHooks.breakSpeed((Player) (Object) this, state, speed);

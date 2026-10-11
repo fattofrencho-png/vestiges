@@ -1,0 +1,367 @@
+{
+ "type": "minecraft:chest",
+ "random_sequence": "minecraft:chests/desert_pyramid",
+ "pools": [
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:diamond",
+     "weight": 5
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 5,
+       "min": 1
+      }
+     },
+     "name": "minecraft:iron_ingot",
+     "weight": 15
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 7,
+       "min": 2
+      }
+     },
+     "name": "minecraft:gold_ingot",
+     "weight": 15
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:emerald",
+     "weight": 15
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 6,
+       "min": 4
+      }
+     },
+     "name": "minecraft:bone",
+     "weight": 25
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:spider_eye",
+     "weight": 25
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 7,
+       "min": 3
+      }
+     },
+     "name": "minecraft:rotten_flesh",
+     "weight": 25
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 5,
+       "min": 1
+      }
+     },
+     "name": "minecraft:leather",
+     "weight": 20
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:copper_horse_armor",
+     "weight": 15
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_horse_armor",
+     "weight": 15
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:golden_horse_armor",
+     "weight": 10
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:diamond_horse_armor",
+     "weight": 5
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:enchant_randomly",
+      "options": "#minecraft:on_random_loot"
+     },
+     "name": "minecraft:book",
+     "weight": 20
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:golden_apple",
+     "weight": 20
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:enchanted_golden_apple",
+     "weight": 2
+    },
+    {
+     "type": "minecraft:empty",
+     "weight": 15
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 4,
+    "min": 2
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 8,
+       "min": 1
+      }
+     },
+     "name": "minecraft:bone",
+     "weight": 10
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 8,
+       "min": 1
+      }
+     },
+     "name": "minecraft:gunpowder",
+     "weight": 10
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 8,
+       "min": 1
+      }
+     },
+     "name": "minecraft:rotten_flesh",
+     "weight": 10
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 8,
+       "min": 1
+      }
+     },
+     "name": "minecraft:string",
+     "weight": 10
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 8,
+       "min": 1
+      }
+     },
+     "name": "minecraft:sand",
+     "weight": 10
+    }
+   ],
+   "rolls": 4,
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "entries": [
+    {
+     "type": "minecraft:empty",
+     "weight": 6
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": 2
+     },
+     "name": "minecraft:dune_armor_trim_smithing_template"
+    }
+   ],
+   "rolls": 1,
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "rolls": {
+    "min": 2,
+    "max": 4,
+    "type": "minecraft:uniform"
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:sand",
+     "weight": 25,
+     "modifier": [
+      {
+       "count": {
+        "min": 4,
+        "max": 16,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:tnt",
+     "weight": 20,
+     "modifier": [
+      {
+       "count": {
+        "min": 1,
+        "max": 4,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:gunpowder",
+     "weight": 25,
+     "modifier": [
+      {
+       "count": {
+        "min": 2,
+        "max": 6,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bone",
+     "weight": 30,
+     "modifier": [
+      {
+       "count": {
+        "min": 3,
+        "max": 8,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:rotten_flesh",
+     "weight": 30,
+     "modifier": [
+      {
+       "count": {
+        "min": 3,
+        "max": 8,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:dune_armor_trim_smithing_template",
+     "weight": 15
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   }
+  },
+  {
+   "rolls": 1,
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   },
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/scaled"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,33 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bundle",
+     "modifier": [
+      {
+       "name": {
+        "text": "Special Arrows Kit",
+        "italic": false
+       },
+       "type": "minecraft:set_name"
+      },
+      {
+       "component": "minecraft:bundle_contents",
+       "entries": [
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:stick"
+        }
+       ],
+       "type": "minecraft:set_contents"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

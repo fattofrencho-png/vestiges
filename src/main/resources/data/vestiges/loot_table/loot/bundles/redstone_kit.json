@@ -1,0 +1,157 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/redstone_kit/band_1"
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_level",
+    "max": 4
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/redstone_kit/band_2"
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_level",
+    "min": 5,
+    "max": 9
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/redstone_kit/band_3"
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_level",
+    "min": 10,
+    "max": 14
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/redstone_kit/band_4"
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_level",
+    "min": 15,
+    "max": 19
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/redstone_kit/band_5"
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_level",
+    "min": 20,
+    "max": 29
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/redstone_kit/band_6"
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_level",
+    "min": 30,
+    "max": 39
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/redstone_kit/band_7"
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_level",
+    "min": 40,
+    "max": 49
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/redstone_kit/band_8"
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_level",
+    "min": 50,
+    "max": 64
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/redstone_kit/band_9"
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_level",
+    "min": 65,
+    "max": 79
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/redstone_kit/band_10"
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_level",
+    "min": 80,
+    "max": 89
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/redstone_kit/band_11"
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_level",
+    "min": 90
+   }
+  }
+ ]
+}

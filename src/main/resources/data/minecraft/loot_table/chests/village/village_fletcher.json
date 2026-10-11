@@ -1,0 +1,189 @@
+{
+ "type": "minecraft:chest",
+ "random_sequence": "minecraft:chests/village/village_fletcher",
+ "pools": [
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald"
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:arrow",
+     "weight": 2
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:feather",
+     "weight": 6
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:egg",
+     "weight": 2
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:flint",
+     "weight": 6
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:stick",
+     "weight": 6
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 5,
+    "min": 1
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "rolls": {
+    "min": 2,
+    "max": 4,
+    "type": "minecraft:uniform"
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:arrow",
+     "weight": 35,
+     "modifier": [
+      {
+       "count": {
+        "min": 6,
+        "max": 16,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:feather",
+     "weight": 30,
+     "modifier": [
+      {
+       "count": {
+        "min": 2,
+        "max": 6,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:flint",
+     "weight": 25,
+     "modifier": [
+      {
+       "count": {
+        "min": 2,
+        "max": 5,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:string",
+     "weight": 25,
+     "modifier": [
+      {
+       "count": {
+        "min": 2,
+        "max": 5,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:stick",
+     "weight": 20,
+     "modifier": [
+      {
+       "count": {
+        "min": 3,
+        "max": 8,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   }
+  },
+  {
+   "rolls": 1,
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   },
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/scaled"
+    }
+   ]
+  }
+ ]
+}

@@ -13,12 +13,15 @@
 		"ClientTextTooltipMixin",
 		"CreativeModeInventoryScreenMixin",
 		"EnchantmentScreenMixin",
+		"EntityRendererMixin",
 		"HudMixin",
 		"HumanoidRenderStateMixin",
 		"InventoryScreenMixin",
 		"MinecraftMixin",
+		"MobRendererMixin",
 		"MouseHandlerMixin",
 		"MultiPlayerGameModeMixin",
+		"SubmitNodeCollectionMixin",
 		"WingsLayerMixin"
 	],
 	"injectors": {

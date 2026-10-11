@@ -1,0 +1,161 @@
+{
+ "type": "minecraft:chest",
+ "random_sequence": "minecraft:chests/village/village_mason",
+ "pools": [
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:clay_ball"
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:flower_pot"
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:stone",
+     "weight": 2
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:stone_bricks",
+     "weight": 2
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 4,
+       "min": 1
+      }
+     },
+     "name": "minecraft:bread",
+     "weight": 4
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:yellow_dye"
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:smooth_stone"
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald"
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 5,
+    "min": 1
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "rolls": {
+    "min": 2,
+    "max": 4,
+    "type": "minecraft:uniform"
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:stone",
+     "weight": 30,
+     "modifier": [
+      {
+       "count": {
+        "min": 8,
+        "max": 16,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:clay_ball",
+     "weight": 25,
+     "modifier": [
+      {
+       "count": {
+        "min": 2,
+        "max": 6,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bricks",
+     "weight": 25,
+     "modifier": [
+      {
+       "count": {
+        "min": 3,
+        "max": 8,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:terracotta",
+     "weight": 20,
+     "modifier": [
+      {
+       "count": {
+        "min": 2,
+        "max": 6,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:flower_pot",
+     "weight": 15
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   }
+  },
+  {
+   "rolls": 1,
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   },
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/scaled"
+    }
+   ]
+  }
+ ]
+}

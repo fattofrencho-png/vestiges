@@ -1,0 +1,211 @@
+{
+ "type": "minecraft:chest",
+ "random_sequence": "minecraft:chests/village/village_shepherd",
+ "pools": [
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 8,
+       "min": 1
+      }
+     },
+     "name": "minecraft:white_wool",
+     "weight": 6
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:black_wool",
+     "weight": 3
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:gray_wool",
+     "weight": 2
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:brown_wool",
+     "weight": 2
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:light_gray_wool",
+     "weight": 2
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald"
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:shears"
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 6,
+       "min": 1
+      }
+     },
+     "name": "minecraft:wheat",
+     "weight": 6
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 5,
+    "min": 1
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "rolls": {
+    "min": 2,
+    "max": 4,
+    "type": "minecraft:uniform"
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:white_wool",
+     "weight": 20,
+     "modifier": [
+      {
+       "count": {
+        "min": 2,
+        "max": 5,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:orange_wool",
+     "weight": 15,
+     "modifier": [
+      {
+       "count": {
+        "min": 2,
+        "max": 5,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:light_blue_wool",
+     "weight": 15,
+     "modifier": [
+      {
+       "count": {
+        "min": 2,
+        "max": 5,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:gray_wool",
+     "weight": 15,
+     "modifier": [
+      {
+       "count": {
+        "min": 2,
+        "max": 5,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:shears",
+     "weight": 15
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:string",
+     "weight": 20,
+     "modifier": [
+      {
+       "count": {
+        "min": 2,
+        "max": 6,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   }
+  },
+  {
+   "rolls": 1,
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   },
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/scaled"
+    }
+   ]
+  }
+ ]
+}

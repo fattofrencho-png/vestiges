@@ -1,0 +1,267 @@
+{
+ "type": "minecraft:chest",
+ "random_sequence": "minecraft:chests/trial_chambers/intersection_barrel",
+ "pools": [
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "modifier": [
+      {
+       "type": "minecraft:set_count",
+       "count": 1
+      },
+      {
+       "type": "minecraft:set_damage",
+       "damage": {
+        "type": "minecraft:uniform",
+        "max": 0.9,
+        "min": 0.4
+       }
+      },
+      {
+       "type": "minecraft:enchant_randomly",
+       "options": "#minecraft:on_random_loot"
+      }
+     ],
+     "name": "minecraft:diamond_axe"
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": [
+      {
+       "type": "minecraft:set_count",
+       "count": 1
+      },
+      {
+       "type": "minecraft:set_damage",
+       "damage": {
+        "type": "minecraft:uniform",
+        "max": 0.8,
+        "min": 0.15
+       }
+      }
+     ],
+     "name": "minecraft:diamond_pickaxe"
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:diamond"
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": [
+      {
+       "type": "minecraft:set_count",
+       "count": 1
+      },
+      {
+       "type": "minecraft:set_damage",
+       "damage": {
+        "type": "minecraft:uniform",
+        "max": 0.8,
+        "min": 0.15
+       }
+      }
+     ],
+     "name": "minecraft:compass"
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 2,
+       "min": 1
+      }
+     },
+     "name": "minecraft:bucket"
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": [
+      {
+       "type": "minecraft:set_count",
+       "count": 1
+      },
+      {
+       "type": "minecraft:set_damage",
+       "damage": {
+        "type": "minecraft:uniform",
+        "max": 0.8,
+        "min": 0.15
+       }
+      }
+     ],
+     "name": "minecraft:golden_axe",
+     "weight": 4
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": [
+      {
+       "type": "minecraft:set_count",
+       "count": 1
+      },
+      {
+       "type": "minecraft:set_damage",
+       "damage": {
+        "type": "minecraft:uniform",
+        "max": 0.8,
+        "min": 0.15
+       }
+      }
+     ],
+     "name": "minecraft:golden_pickaxe",
+     "weight": 4
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 15,
+       "min": 5
+      }
+     },
+     "name": "minecraft:bamboo_planks",
+     "weight": 10
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 10,
+       "min": 6
+      }
+     },
+     "name": "minecraft:baked_potato",
+     "weight": 10
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 3,
+    "min": 1
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:diamond",
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "max": 3.0,
+        "min": 1.0
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:compass",
+     "modifier": [
+      {
+       "count": 1.0,
+       "type": "minecraft:set_count"
+      },
+      {
+       "damage": {
+        "type": "minecraft:uniform",
+        "max": 0.8,
+        "min": 0.15
+       },
+       "type": "minecraft:set_damage"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bucket",
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "max": 2.0,
+        "min": 1.0
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bamboo_planks",
+     "weight": 10,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "max": 15.0,
+        "min": 5.0
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:baked_potato",
+     "weight": 10,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "max": 10.0,
+        "min": 6.0
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 3.0,
+    "min": 1.0
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   }
+  },
+  {
+   "rolls": 1,
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   },
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/scaled"
+    }
+   ]
+  }
+ ]
+}

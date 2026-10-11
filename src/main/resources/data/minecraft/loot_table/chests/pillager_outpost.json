@@ -1,0 +1,281 @@
+{
+ "type": "minecraft:chest",
+ "random_sequence": "minecraft:chests/pillager_outpost",
+ "pools": [
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:crossbow"
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 1,
+    "min": 0
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 5,
+       "min": 3
+      }
+     },
+     "name": "minecraft:wheat",
+     "weight": 7
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 5,
+       "min": 2
+      }
+     },
+     "name": "minecraft:potato",
+     "weight": 5
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 5,
+       "min": 3
+      }
+     },
+     "name": "minecraft:carrot",
+     "weight": 5
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 3,
+    "min": 2
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 2
+      }
+     },
+     "name": "minecraft:dark_oak_log"
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 3,
+    "min": 1
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:experience_bottle",
+     "weight": 7
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 6,
+       "min": 1
+      }
+     },
+     "name": "minecraft:string",
+     "weight": 4
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 7,
+       "min": 2
+      }
+     },
+     "name": "minecraft:arrow",
+     "weight": 4
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:tripwire_hook",
+     "weight": 3
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:iron_ingot",
+     "weight": 3
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:enchant_randomly",
+      "options": "#minecraft:on_random_loot"
+     },
+     "name": "minecraft:book"
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 3,
+    "min": 2
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:goat_horn"
+    }
+   ],
+   "modifier": {
+    "type": "minecraft:set_instrument",
+    "options": "#minecraft:regular_goat_horns"
+   },
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 1,
+    "min": 0
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "entries": [
+    {
+     "type": "minecraft:empty",
+     "weight": 3
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": 2
+     },
+     "name": "minecraft:sentry_armor_trim_smithing_template"
+    }
+   ],
+   "rolls": 1,
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "rolls": {
+    "min": 2,
+    "max": 4,
+    "type": "minecraft:uniform"
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:arrow",
+     "weight": 35,
+     "modifier": [
+      {
+       "count": {
+        "min": 4,
+        "max": 16,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:sentry_armor_trim_smithing_template",
+     "weight": 20
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:tripwire_hook",
+     "weight": 25,
+     "modifier": [
+      {
+       "count": {
+        "min": 1,
+        "max": 3,
+        "type": "minecraft:uniform"
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   }
+  },
+  {
+   "rolls": 1,
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   },
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/scaled"
+    }
+   ]
+  }
+ ]
+}

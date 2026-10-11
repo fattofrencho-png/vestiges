@@ -1,0 +1,541 @@
+{
+ "type": "minecraft:entity",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald",
+     "weight": 1,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.167
+     },
+     {
+      "type": "vestiges:loot_level",
+      "max": 24
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald",
+     "weight": 1,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 3
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.167
+     },
+     {
+      "type": "vestiges:loot_level",
+      "min": 25
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:copper_ingot",
+     "weight": 55,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:gold_nugget",
+     "weight": 45,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 5
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.2
+     },
+     {
+      "type": "vestiges:loot_level",
+      "max": 15
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:copper_ingot",
+     "weight": 20,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 3
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:gold_nugget",
+     "weight": 25,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 6
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_ingot",
+     "weight": 30,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:gold_ingot",
+     "weight": 25,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.2
+     },
+     {
+      "type": "vestiges:loot_level",
+      "min": 16,
+      "max": 35
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_ingot",
+     "weight": 40,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:gold_ingot",
+     "weight": 35,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:gold_nugget",
+     "weight": 15,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:diamond",
+     "weight": 10,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.2
+     },
+     {
+      "type": "vestiges:loot_level",
+      "min": 36
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald",
+     "weight": 1,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 4
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "vestiges:mob_rank",
+      "rank": 1
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_sword",
+     "weight": 1,
+     "modifier": [
+      {
+       "kind": "gear",
+       "min_rarity": "uncommon",
+       "type": "vestiges:loot_gear"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "vestiges:mob_rank",
+      "rank": 1
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.1
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald",
+     "weight": 1,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 4,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "vestiges:mob_rank",
+      "rank": 2
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_sword",
+     "weight": 1,
+     "modifier": [
+      {
+       "kind": "gear",
+       "min_rarity": "uncommon",
+       "type": "vestiges:loot_gear"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "vestiges:mob_rank",
+      "rank": 2
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.25
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 1,
+     "modifier": [
+      {
+       "kind": "book",
+       "min_rarity": "uncommon",
+       "type": "vestiges:loot_gear"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "vestiges:mob_rank",
+      "rank": 2
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.1
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald",
+     "weight": 1,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 10,
+        "max": 20
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "vestiges:mob_rank",
+      "rank": 3
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_sword",
+     "weight": 1,
+     "modifier": [
+      {
+       "kind": "gear",
+       "min_rarity": "uncommon",
+       "type": "vestiges:loot_gear"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "vestiges:mob_rank",
+      "rank": 3
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 1,
+     "modifier": [
+      {
+       "kind": "book",
+       "min_rarity": "uncommon",
+       "rarity": "relic",
+       "type": "vestiges:loot_gear"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "vestiges:mob_rank",
+      "rank": 3
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.05
+     }
+    ]
+   }
+  }
+ ]
+}

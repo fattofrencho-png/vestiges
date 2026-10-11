@@ -39,6 +39,7 @@ public class VestigesClient implements ClientModInitializer {
 		dev.vestiges.client.tree.ClientTree.register();
 		dev.vestiges.client.hud.GearTooltips.register();
 		dev.vestiges.client.inventory.ClientInventory.register();
+		dev.vestiges.client.mobs.DamageNumbers.register();
 		MapScanner.register();
 		KeyMapping.Category category = KeyMapping.Category.register(Vestiges.id("main"));
 		hubKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.hub", InputConstants.KEY_H, category));
@@ -65,6 +66,7 @@ public class VestigesClient implements ClientModInitializer {
 			MapStore.open();
 			ClientWaypoints.load();
 			MapScanner.reset();
+			dev.vestiges.client.mobs.ClientMobs.reset();
 			deathRecorded = false;
 		}));
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
@@ -97,6 +99,9 @@ public class VestigesClient implements ClientModInitializer {
 			}
 			dev.vestiges.client.inventory.ClientInventory.tickKeys(client);
 			MapScanner.tick(client);
+			dev.vestiges.client.mobs.DamageNumbers.tick(client);
+			dev.vestiges.client.mobs.ClientMobs.tick(client);
+			dev.vestiges.client.loot.LootSparkles.tick(client);
 			recordDeath(client);
 			if (++saveTimer >= 20 * 60) {
 				saveTimer = 0;

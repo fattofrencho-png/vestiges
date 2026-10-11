@@ -1,0 +1,389 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bundle",
+     "modifier": [
+      {
+       "name": {
+        "text": "Redstone Kit",
+        "italic": false
+       },
+       "type": "minecraft:set_name"
+      },
+      {
+       "component": "minecraft:bundle_contents",
+       "entries": [
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:redstone",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 6,
+            "max": 22
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:redstone_torch",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 10
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:repeater",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:comparator",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 5
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:lever",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 7
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:tripwire_hook",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:piston",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:sticky_piston",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 5
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:observer",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 5
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:hopper",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 1,
+            "max": 4
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:dropper",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 5
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:dispenser",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 1,
+            "max": 4
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:target",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 5
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:daylight_detector",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 1,
+            "max": 3
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:note_block",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:redstone_lamp",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:rail",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 6,
+            "max": 19
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:powered_rail",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 10
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:detector_rail",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:activator_rail",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.225
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        }
+       ],
+       "type": "minecraft:set_contents"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

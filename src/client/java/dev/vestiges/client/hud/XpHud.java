@@ -27,6 +27,9 @@ public final class XpHud implements HudElement {
 	/** Discovery toasts waiting their turn: title, subtitle, XP. */
 	private static final ArrayDeque<Object[]> TOASTS = new ArrayDeque<>();
 	private static long toastStart;
+	private static final long LAYER_MS = 3500;
+	private static String layerText = "";
+	private static long layerStart;
 
 	public static void gain(long amount) {
 		long now = System.currentTimeMillis();
@@ -42,6 +45,12 @@ public final class XpHud implements HudElement {
 		paragon = newParagon;
 		bannerText = level >= 100 && newParagon > 0 ? "Paragon " + newParagon + "!" : "Level " + level + "!";
 		bannerStart = System.currentTimeMillis();
+	}
+
+	/** Entering a new layer: "Caves: mobs up to level 40". */
+	public static void layer(String name, int cap) {
+		layerText = name + ": mobs up to level " + cap;
+		layerStart = System.currentTimeMillis();
 	}
 
 	public static void setParagon(int value) {
@@ -118,6 +127,15 @@ public final class XpHud implements HudElement {
 			g.text(font, p, g.guiWidth() / 2 + 94, barY - 1, 0xFFE6C36A, true);
 		}
 		drawToast(g, font, now);
+		if (now - layerStart < LAYER_MS && !layerText.isEmpty()) {
+			float t = (now - layerStart) / (float) LAYER_MS;
+			int alpha = Math.max(8, (int) (255 * Math.min(1f, Math.min(t * 6f, (1f - t) * 3f))));
+			g.pose().pushMatrix();
+			g.pose().translate(g.guiWidth() / 2f, g.guiHeight() / 2f + 24);
+			g.pose().scale(1.25f, 1.25f);
+			g.text(font, layerText, -font.width(layerText) / 2, 0, (alpha << 24) | 0xD8D0C0, true);
+			g.pose().popMatrix();
+		}
 		if (now - bannerStart < BANNER_MS && !bannerText.isEmpty()) {
 			float t = (now - bannerStart) / (float) BANNER_MS;
 			int alpha = (int) (255 * Math.min(1f, (1f - t) * 3f));

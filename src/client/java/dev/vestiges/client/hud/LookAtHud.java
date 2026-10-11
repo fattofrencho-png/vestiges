@@ -55,24 +55,46 @@ public final class LookAtHud implements HudElement {
 		}
 
 		Font font = mc.font;
-		Component title = title(target);
+		dev.vestiges.mobs.MobData mob = target.isEntity() ? dev.vestiges.client.mobs.ClientMobs.data(target.entity()) : null;
+		boolean elite = mob != null && mob.elite();
+		Component banner = elite ? dev.vestiges.client.mobs.ClientMobs.banner(mob) : null;
+		Component title = title(target, mob);
 		boolean showNew = config.lineOn(LookAtProviders.NEW_TAG) && isNew(target.id().toString());
 		Component newTag = Component.literal("  NEW").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD);
 		int width = font.width(title) + (showNew ? font.width(newTag) : 0);
 		for (Component c : lines) {
 			width = Math.max(width, font.width(c));
 		}
+		if (elite) {
+			width = Math.max(width + 12, font.width(banner));
+		}
 		int lineH = font.lineHeight + 2;
-		int height = lineH * (1 + lines.size()) - 2;
+		int extra = elite ? lineH + 5 : 0;
+		int height = lineH * (1 + lines.size()) - 2 + extra;
 		int x = (g.guiWidth() - width) / 2 - PAD;
 		int y = 4;
-		g.fill(x, y, x + width + PAD * 2, y + height + PAD * 2, 0xB0101418);
-		g.outline(x, y, width + PAD * 2, height + PAD * 2, 0x60FFFFFF);
+		int border = elite ? 0xFF000000 | dev.vestiges.client.mobs.ClientMobs.rankColor(mob.rank()) : 0x60FFFFFF;
+		g.fill(x, y, x + width + PAD * 2, y + height + PAD * 2, elite ? 0xD0101418 : 0xB0101418);
+		g.outline(x, y, width + PAD * 2, height + PAD * 2, border);
+		if (elite) {
+			g.outline(x + 1, y + 1, width + PAD * 2 - 2, height + PAD * 2 - 2, (border & 0x00FFFFFF) | 0x50000000);
+		}
 		int tx = x + PAD;
 		int ty = y + PAD;
+		if (elite) {
+			g.text(font, banner, x + PAD + (width - font.width(banner)) / 2, ty, 0xFFFFFFFF);
+			ty += lineH;
+		}
 		g.text(font, title, tx, ty, 0xFFFFFFFF);
 		if (showNew) {
 			g.text(font, newTag, tx + font.width(title), ty, 0xFFFFFF55);
+		}
+		if (elite && target.entity() instanceof net.minecraft.world.entity.LivingEntity living) {
+			int barY = ty + lineH;
+			float f = Math.max(0, Math.min(1, living.getHealth() / Math.max(1, living.getMaxHealth())));
+			g.fill(tx, barY, tx + width, barY + 3, 0xFF3A1010);
+			g.fill(tx, barY, tx + Math.round(width * f), barY + 3, 0xFFD03030);
+			ty += 5;
 		}
 		for (Component c : lines) {
 			ty += lineH;
@@ -86,7 +108,11 @@ public final class LookAtHud implements HudElement {
 		return t == null || now - t < NEW_TAG_MS;
 	}
 
-	private static Component title(LookAtTarget t) {
+	private static Component title(LookAtTarget t, dev.vestiges.mobs.MobData mob) {
+		if (mob != null) {
+			return Component.empty().append(dev.vestiges.client.mobs.ClientMobs.name(t.entity(), mob)).append("  ")
+				.append(dev.vestiges.client.mobs.ClientMobs.levelTag(mob));
+		}
 		if (t.isEntity()) {
 			return t.entity().getDisplayName();
 		}

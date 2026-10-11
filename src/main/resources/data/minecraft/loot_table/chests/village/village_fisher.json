@@ -1,0 +1,215 @@
+{
+ "type": "minecraft:chest",
+ "random_sequence": "minecraft:chests/village/village_fisher",
+ "pools": [
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald"
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:cod",
+     "weight": 2
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:salmon"
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:water_bucket"
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:barrel"
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:wheat_seeds",
+     "weight": 3
+    },
+    {
+     "type": "minecraft:item",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "max": 3,
+       "min": 1
+      }
+     },
+     "name": "minecraft:coal",
+     "weight": 2
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 5,
+    "min": 1
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": false
+   }
+  },
+  {
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald"
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:cod",
+     "weight": 2,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "max": 3.0,
+        "min": 1.0
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:salmon",
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "max": 3.0,
+        "min": 1.0
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:water_bucket",
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "max": 3.0,
+        "min": 1.0
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:barrel",
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "max": 3.0,
+        "min": 1.0
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:wheat_seeds",
+     "weight": 3,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "max": 3.0,
+        "min": 1.0
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:coal",
+     "weight": 2,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "max": 3.0,
+        "min": 1.0
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ],
+   "rolls": {
+    "type": "minecraft:uniform",
+    "max": 5.0,
+    "min": 1.0
+   },
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   }
+  },
+  {
+   "rolls": 1,
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   },
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/scaled"
+    }
+   ]
+  }
+ ]
+}

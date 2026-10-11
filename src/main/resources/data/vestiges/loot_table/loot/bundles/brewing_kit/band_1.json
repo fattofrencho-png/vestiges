@@ -1,0 +1,83 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bundle",
+     "modifier": [
+      {
+       "name": {
+        "text": "Brewing Kit",
+        "italic": false
+       },
+       "type": "minecraft:set_name"
+      },
+      {
+       "component": "minecraft:bundle_contents",
+       "entries": [
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:spider_eye",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.95
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:sugar",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.95
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 8
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:glass_bottle",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.95
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 8
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        }
+       ],
+       "type": "minecraft:set_contents"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

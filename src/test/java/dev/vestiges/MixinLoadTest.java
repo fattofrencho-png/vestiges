@@ -32,7 +32,11 @@ class MixinLoadTest {
 		"net.minecraft.world.entity.player.Inventory",
 		"net.minecraft.world.inventory.InventoryMenu",
 		"net.minecraft.server.network.ServerGamePacketListenerImpl",
-		"net.minecraft.world.entity.player.PlayerEquipment");
+		"net.minecraft.world.entity.player.PlayerEquipment",
+		"net.minecraft.world.damagesource.CombatRules",
+		"net.minecraft.world.entity.ai.attributes.Attributes",
+		"net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity",
+		"net.minecraft.world.entity.vehicle.minecart.AbstractMinecartContainer");
 	/** Client screens and HUD, checked when the tests run as a client. */
 	private static final List<String> CLIENT_TARGETS = List.of(
 		"net.minecraft.client.gui.screens.inventory.InventoryScreen",
@@ -49,7 +53,10 @@ class MixinLoadTest {
 		"net.minecraft.client.player.AbstractClientPlayer",
 		"net.minecraft.client.renderer.entity.state.HumanoidRenderState",
 		"net.minecraft.client.renderer.entity.player.AvatarRenderer",
-		"net.minecraft.client.renderer.entity.layers.WingsLayer");
+		"net.minecraft.client.renderer.entity.layers.WingsLayer",
+		"net.minecraft.client.renderer.entity.EntityRenderer",
+		"net.minecraft.client.renderer.entity.MobRenderer",
+		"net.minecraft.client.renderer.SubmitNodeCollection");
 
 	@BeforeAll
 	static void boot() {

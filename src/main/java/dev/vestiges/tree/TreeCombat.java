@@ -105,6 +105,14 @@ public final class TreeCombat {
 		}
 		long t = now(level);
 		float out = amount;
+		if (dev.vestiges.mobs.MobService.immune(target, source)) {
+			return 0;
+		}
+		// Mobs hit harder by level, size, rank and Brute (not Spiked's reflected damage, not a Volatile mob's death blast).
+		if (source.getEntity() instanceof LivingEntity mobAttacker && !(mobAttacker instanceof net.minecraft.world.entity.player.Player)
+			&& !mobAttacker.isDeadOrDying() && !source.is(net.minecraft.world.damagesource.DamageTypes.THORNS)) {
+			out *= (float) dev.vestiges.mobs.MobService.damageMultiplier(mobAttacker);
+		}
 		boolean tree = !target.isInvulnerableTo(level, source);
 		if (source.getEntity() instanceof ServerPlayer attacker && attacker != target) {
 			out *= (float) LevelService.damageMultiplier(attacker);
@@ -194,6 +202,7 @@ public final class TreeCombat {
 		double critChance = melee ? s.get("crit_chance") + (sword ? s.get("sword_crit") : 0) : projectile ? s.get("projectile_crit") : 0;
 		if (critChance > 0 && attacker.getRandom().nextDouble() < critChance / 100.0) {
 			mult *= 1.5 + s.get("crit_damage") / 100.0;
+			dev.vestiges.mobs.CombatFeedback.markCrit(attacker, target);
 			level.sendParticles(ParticleTypes.CRIT, target.getX(), target.getY(0.5), target.getZ(), 16, 0.3, 0.4, 0.3, 0.3);
 			level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.PLAYERS, 1.0f, 1.0f);
 		}

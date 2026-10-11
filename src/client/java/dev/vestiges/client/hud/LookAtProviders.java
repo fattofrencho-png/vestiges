@@ -21,16 +21,26 @@ public final class LookAtProviders {
 				out.add(Component.literal("Health " + Math.round(living.getHealth()) + " / " + Math.round(living.getMaxHealth())).withStyle(ChatFormatting.RED));
 			}
 		}));
+		register(simple("mob_powers", "Elite powers", (t, out) -> {
+			dev.vestiges.mobs.MobData d = dev.vestiges.client.mobs.ClientMobs.data(t.entity());
+			if (d != null && d.elite()) {
+				for (String p : d.powers()) {
+					out.add(Component.literal(dev.vestiges.client.mobs.ClientMobs.powerText(p)).withStyle(ChatFormatting.GRAY));
+				}
+			}
+		}));
 		register(simple("tool", "Tool hint", (t, out) -> {
 			if (t.isBlock() && t.state().requiresCorrectToolForDrops()) {
 				out.add(Component.literal("Needs the right tool to drop").withStyle(ChatFormatting.GRAY));
 			}
 		}));
 		register(simple("source", "Which mod it comes from", (t, out) -> {
+			// Only for things other mods add; vanilla needs no label.
 			String ns = t.id().getNamespace();
-			String name = "minecraft".equals(ns) ? "Minecraft"
-				: FabricLoader.getInstance().getModContainer(ns).map(c -> c.getMetadata().getName()).orElse(ns);
-			out.add(Component.literal(name).withStyle(ChatFormatting.BLUE, ChatFormatting.ITALIC));
+			if (!"minecraft".equals(ns)) {
+				String name = FabricLoader.getInstance().getModContainer(ns).map(c -> c.getMetadata().getName()).orElse(ns);
+				out.add(Component.literal(name).withStyle(ChatFormatting.BLUE, ChatFormatting.ITALIC));
+			}
 		}));
 	}
 

@@ -6,10 +6,13 @@
 	"mixins": [
 		"AbstractArrowAccessor",
 		"AbstractArrowMixin",
+		"AbstractMinecartContainerMixin",
 		"AnvilMenuMixin",
 		"ApplyBonusCountMixin",
+		"AttributesMixin",
 		"BonusLevelTableConditionMixin",
 		"BowItemMixin",
+		"CombatRulesMixin",
 		"CrossbowItemMixin",
 		"EnchantedBonusChanceMixin",
 		"EnchantedCountIncreaseFunctionMixin",
@@ -23,6 +26,7 @@
 		"PlayerExtraMixin",
 		"PlayerMixin",
 		"ProjectileWeaponItemMixin",
+		"RandomizableContainerBlockEntityMixin",
 		"ServerGamePacketListenerImplMixin",
 		"ServerPlayerMixin"
 	],

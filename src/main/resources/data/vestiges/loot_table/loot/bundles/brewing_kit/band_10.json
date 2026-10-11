@@ -1,0 +1,299 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bundle",
+     "modifier": [
+      {
+       "name": {
+        "text": "Brewing Kit",
+        "italic": false
+       },
+       "type": "minecraft:set_name"
+      },
+      {
+       "component": "minecraft:bundle_contents",
+       "entries": [
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:nether_wart",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 11,
+            "max": 44
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:blaze_powder",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 7,
+            "max": 22
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:glowstone_dust",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 11,
+            "max": 44
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:gunpowder",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 11,
+            "max": 44
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:spider_eye",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 7,
+            "max": 22
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:fermented_spider_eye",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 4,
+            "max": 11
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:magma_cream",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 7,
+            "max": 22
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:ghast_tear",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 7
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:rabbit_foot",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:phantom_membrane",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 4,
+            "max": 11
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:pufferfish",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 4,
+            "max": 11
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:sugar",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 11,
+            "max": 30
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:glistering_melon_slice",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 7,
+            "max": 22
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:glass_bottle",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 11,
+            "max": 30
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:dragon_breath",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.3
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        }
+       ],
+       "type": "minecraft:set_contents"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

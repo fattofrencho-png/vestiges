@@ -33,6 +33,7 @@ public final class ClientNotices {
 				case "bank" -> dev.vestiges.client.inventory.ClientInventory.onBank(json);
 				case "pages" -> dev.vestiges.client.inventory.ClientInventory.onPages(json);
 				case "discovery" -> XpHud.discovery(json.get("key").getAsString(), json.get("xp").getAsLong());
+				case "layer" -> XpHud.layer(json.get("name").getAsString(), json.get("cap").getAsInt());
 				default -> Vestiges.LOGGER.debug("Vestiges: unknown notice {}", payload.kind());
 			}
 		}));

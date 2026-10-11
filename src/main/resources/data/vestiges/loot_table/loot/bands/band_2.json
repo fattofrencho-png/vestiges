@@ -1,0 +1,1206 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": {
+    "type": "minecraft:binomial",
+    "n": 1,
+    "p": 0.455
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_sword",
+     "weight": 75,
+     "modifier": [
+      {
+       "kind": "gear",
+       "type": "vestiges:loot_gear"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 25,
+     "modifier": [
+      {
+       "kind": "book",
+       "type": "vestiges:loot_gear"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "rolls": {
+    "type": "minecraft:binomial",
+    "n": 2,
+    "p": 0.237
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_ingot",
+     "weight": 49,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 5,
+        "max": 11
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:copper_ingot",
+     "weight": 38,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 6,
+        "max": 17
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:coal",
+     "weight": 38,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 6,
+        "max": 15
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:redstone",
+     "weight": 31,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 6,
+        "max": 17
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:lapis_lazuli",
+     "weight": 31,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 4,
+        "max": 12
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:gold_ingot",
+     "weight": 22,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 9
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_nugget",
+     "weight": 14,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 5,
+        "max": 14
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:gold_nugget",
+     "weight": 7,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 5,
+        "max": 14
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:raw_iron",
+     "weight": 28,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 9
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:raw_copper",
+     "weight": 24,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 4,
+        "max": 12
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:raw_gold",
+     "weight": 12,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 7
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald",
+     "weight": 49,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "rolls": {
+    "type": "minecraft:binomial",
+    "n": 2,
+    "p": 0.188
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:white_terracotta",
+     "weight": 12,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 10,
+        "max": 34
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:orange_terracotta",
+     "weight": 8,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 10,
+        "max": 30
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:light_blue_terracotta",
+     "weight": 8,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 10,
+        "max": 30
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:yellow_terracotta",
+     "weight": 8,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 10,
+        "max": 30
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:brown_terracotta",
+     "weight": 7,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 10,
+        "max": 30
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:terracotta",
+     "weight": 14,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 14,
+        "max": 44
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:sandstone",
+     "weight": 14,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 14,
+        "max": 44
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:red_sandstone",
+     "weight": 9,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 12,
+        "max": 41
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:mud",
+     "weight": 11,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 12,
+        "max": 41
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:packed_mud",
+     "weight": 5,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 9,
+        "max": 27
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:calcite",
+     "weight": 4,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 9,
+        "max": 27
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:dripstone_block",
+     "weight": 4,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 9,
+        "max": 27
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:tuff",
+     "weight": 4,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 12,
+        "max": 38
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:glass",
+     "weight": 14,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 14,
+        "max": 44
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:white_wool",
+     "weight": 11,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 9,
+        "max": 27
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:light_gray_wool",
+     "weight": 7,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 9,
+        "max": 27
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:brown_wool",
+     "weight": 5,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 9,
+        "max": 27
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:moss_block",
+     "weight": 4,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 6,
+        "max": 20
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "rolls": {
+    "type": "minecraft:binomial",
+    "n": 1,
+    "p": 0.173
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:ladder",
+     "weight": 16,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 5,
+        "max": 16
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:lantern",
+     "weight": 15,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:white_candle",
+     "weight": 8,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 6
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:orange_candle",
+     "weight": 5,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 6
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:flower_pot",
+     "weight": 9,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 5
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:painting",
+     "weight": 9,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 3
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:item_frame",
+     "weight": 11,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 5
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:white_banner",
+     "weight": 7,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_chain",
+     "weight": 11,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bell",
+     "weight": 3,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:white_glazed_terracotta",
+     "weight": 4,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:blue_glazed_terracotta",
+     "weight": 3,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:pointed_dripstone",
+     "weight": 3,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 7
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:poppy",
+     "weight": 7,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 7
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:dandelion",
+     "weight": 7,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 7
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:moss_carpet",
+     "weight": 3,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:white_carpet",
+     "weight": 7,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:scaffolding",
+     "weight": 8,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 5,
+        "max": 16
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:glass_pane",
+     "weight": 9,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 5,
+        "max": 17
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_bars",
+     "weight": 8,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 5,
+        "max": 16
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:cobweb",
+     "weight": 3,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 5
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:armor_stand",
+     "weight": 7,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "rolls": {
+    "type": "minecraft:binomial",
+    "n": 1,
+    "p": 0.34
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:torch",
+     "weight": 28,
+     "modifier": [
+      {
+       "count": 2,
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:arrow",
+     "weight": 21,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 5,
+        "max": 17
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:map",
+     "weight": 14,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:compass",
+     "weight": 12,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:clock",
+     "weight": 9,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:lead",
+     "weight": 14,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:name_tag",
+     "weight": 9,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:saddle",
+     "weight": 5,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:oak_boat",
+     "weight": 8,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:water_bucket",
+     "weight": 7,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bundle",
+     "weight": 8,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bread",
+     "weight": 16,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 6
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:apple",
+     "weight": 10,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 5
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:baked_potato",
+     "weight": 10,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 4,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:carrot",
+     "weight": 9,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 4,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:cooked_cod",
+     "weight": 8,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 5
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:cooked_chicken",
+     "weight": 8,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 5
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "weight": 4,
+     "modifier": [
+      {
+       "components": {
+        "minecraft:potion_contents": {
+         "potion": "minecraft:swiftness"
+        }
+       },
+       "type": "minecraft:set_components"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "weight": 4,
+     "modifier": [
+      {
+       "components": {
+        "minecraft:potion_contents": {
+         "potion": "minecraft:healing"
+        }
+       },
+       "type": "minecraft:set_components"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "weight": 4,
+     "modifier": [
+      {
+       "components": {
+        "minecraft:potion_contents": {
+         "potion": "minecraft:night_vision"
+        }
+       },
+       "type": "minecraft:set_components"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "weight": 4,
+     "modifier": [
+      {
+       "components": {
+        "minecraft:potion_contents": {
+         "potion": "minecraft:water_breathing"
+        }
+       },
+       "type": "minecraft:set_components"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "weight": 4,
+     "modifier": [
+      {
+       "components": {
+        "minecraft:potion_contents": {
+         "potion": "minecraft:leaping"
+        }
+       },
+       "type": "minecraft:set_components"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "rolls": {
+    "type": "minecraft:binomial",
+    "n": 1,
+    "p": 0.465
+   },
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/redstone_kit",
+     "weight": 85
+    },
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/seed_kit",
+     "weight": 80
+    },
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/brewing_kit",
+     "weight": 30
+    },
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/explorer_kit",
+     "weight": 55
+    },
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/decoration_kit",
+     "weight": 27
+    },
+    {
+     "type": "minecraft:loot_table",
+     "value": "vestiges:loot/bundles/arrows_kit",
+     "weight": 6
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:music_disc_cat",
+     "weight": 1
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:music_disc_13",
+     "weight": 1
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:goat_horn",
+     "weight": 1
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:name_tag",
+     "weight": 1
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:saddle",
+     "weight": 1
+    }
+   ]
+  }
+ ]
+}

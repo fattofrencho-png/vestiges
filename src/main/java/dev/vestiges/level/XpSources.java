@@ -67,9 +67,10 @@ public final class XpSources {
 			return;
 		}
 		ServerLevel level = (ServerLevel) dead.level();
-		int mobLevel = mobLevelAt(level, dead.blockPosition());
+		dev.vestiges.mobs.MobData data = dev.vestiges.mobs.MobService.data(dead);
+		int mobLevel = data != null ? data.level() : mobLevelAt(level, dead.blockPosition());
 		int playerLevel = LevelService.get(killer).level();
-		long xp = Math.round(LevelCurve.killXp(mobLevel) * LevelCurve.gapMultiplier(playerLevel, mobLevel));
+		long xp = Math.round(LevelCurve.killXp(mobLevel) * LevelCurve.gapMultiplier(playerLevel, mobLevel) * dev.vestiges.mobs.MobService.xpMultiplier(data));
 		LevelService.addXp(killer, xp, "kill");
 	}
 

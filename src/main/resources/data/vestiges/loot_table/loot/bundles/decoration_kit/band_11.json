@@ -1,0 +1,463 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bundle",
+     "modifier": [
+      {
+       "name": {
+        "text": "Decoration Kit",
+        "italic": false
+       },
+       "type": "minecraft:set_name"
+      },
+      {
+       "component": "minecraft:bundle_contents",
+       "entries": [
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:decorated_pot",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:amethyst_cluster",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 4,
+            "max": 12
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:ochre_froglight",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 8
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:verdant_froglight",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 8
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:pearlescent_froglight",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 8
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:glow_item_frame",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 10
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:skeleton_skull",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 1,
+            "max": 2
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:zombie_head",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 1,
+            "max": 2
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:creeper_head",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 1,
+            "max": 2
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:oak_hanging_sign",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 2,
+            "max": 6
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:copper_bulb",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 3,
+            "max": 10
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:sculk",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 6,
+            "max": 16
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:sculk_vein",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         },
+         "modifier": [
+          {
+           "count": {
+            "type": "minecraft:uniform",
+            "min": 6,
+            "max": 16
+           },
+           "type": "minecraft:set_count"
+          }
+         ]
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:flower_banner_pattern",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:mojang_banner_pattern",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:angler_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:archer_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:arms_up_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:blade_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:brewer_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:burn_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:danger_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:explorer_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:flow_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:friend_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:guster_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:heart_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:heartbreak_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:howl_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:miner_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:mourner_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:plenty_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:prize_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:scrape_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:sheaf_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:shelter_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:skull_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        },
+        {
+         "type": "minecraft:item",
+         "name": "minecraft:snort_pottery_sherd",
+         "condition": {
+          "type": "minecraft:random_chance",
+          "chance": 0.118
+         }
+        }
+       ],
+       "type": "minecraft:set_contents"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
