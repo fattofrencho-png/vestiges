@@ -44,6 +44,33 @@ public final class Emeralds {
 		return true;
 	}
 
+	/** Emeralds in the Bank (M2). */
+	public static long bank(Player player) {
+		return ((dev.vestiges.inventory.ExtraHolder) player).vestiges$bank();
+	}
+
+	/** Inventory plus Bank: what waystones, the anvil and tree refunds can use. */
+	public static long countWithBank(Player player) {
+		return count(player) + bank(player);
+	}
+
+	/** Pays from the Bank first, then the inventory (waystones, anvil, tree refunds). Creative pays nothing. */
+	public static boolean payWithBank(ServerPlayer player, int amount) {
+		if (free(player) || amount <= 0) {
+			return true;
+		}
+		if (countWithBank(player) < amount) {
+			return false;
+		}
+		long fromBank = Math.min(bank(player), amount);
+		if (fromBank > 0) {
+			((dev.vestiges.inventory.ExtraHolder) player).vestiges$setBank(bank(player) - fromBank);
+			dev.vestiges.inventory.InventoryService.sendBank(player);
+		}
+		take(player, (int) (amount - fromBank));
+		return true;
+	}
+
 	public static void take(ServerPlayer player, int amount) {
 		Inventory inv = player.getInventory();
 		for (int i = 0; i < inv.getContainerSize() && amount > 0; i++) {

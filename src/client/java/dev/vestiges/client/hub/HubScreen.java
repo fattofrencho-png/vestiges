@@ -124,6 +124,8 @@ public final class HubScreen extends Screen {
 		addRenderableWidget(cycle(x + 10, y, w - 10, "Corner", new String[] {"top_left", "top_right", "bottom_left", "bottom_right"}, c.minimapCorner, v -> c.minimapCorner = v));
 		y += 26;
 		addRenderableWidget(cycle(x, y, w, "Shared waypoints", new String[] {"ask", "off"}, c.shareMode, v -> c.shareMode = v));
+		y += 26;
+		addRenderableWidget(toggle(x, y, w, "Auto-tool", c.autoTool, on -> c.autoTool = on));
 	}
 
 	/** A button that steps through a few values each click. */

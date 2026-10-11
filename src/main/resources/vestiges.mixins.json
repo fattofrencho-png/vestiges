@@ -15,10 +15,15 @@
 		"EnchantedCountIncreaseFunctionMixin",
 		"EnchantmentMenuMixin",
 		"FoodDataMixin",
+		"InventoryMenuMixin",
+		"InventoryMixin",
 		"ItemStackMixin",
 		"LivingEntityMixin",
+		"PlayerEquipmentMixin",
+		"PlayerExtraMixin",
 		"PlayerMixin",
 		"ProjectileWeaponItemMixin",
+		"ServerGamePacketListenerImplMixin",
 		"ServerPlayerMixin"
 	],
 	"injectors": {

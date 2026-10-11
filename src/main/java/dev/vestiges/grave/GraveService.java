@@ -107,6 +107,7 @@ public final class GraveService {
 				items.add(s);
 			}
 		}
+		items.addAll(dev.vestiges.inventory.InventoryHooks.slots(player).drain());
 		if (items.isEmpty()) {
 			return true;
 		}

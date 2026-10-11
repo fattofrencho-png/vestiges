@@ -54,5 +54,7 @@ From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.
 - `ModAttachments.PROFILE` (`PlayerProfile`): persistent, copied on death; grows with level, tree, Codex, feats.
 - Client: `client/hub/HubScreen` (H; tabs Character, Codex, Villagers, Settlements, Feats, Map, Settings), `client/hud/LookAtHud` (own
   look-at HUD written from scratch, no Jade code) with `LookAtProvider`s registered in `LookAtProviders`; each line can be switched off.
+- Pitfalls seen in 26.3: mixin `@Unique` field initialisers did not run for `Player` (create such fields lazily in a getter); no
+  `ItemStack` in static initialisers of classes loaded at client start (components are bound later); unit tests can't build item stacks.
 - 26.3 API notes: GUI drawing goes through `GuiGraphicsExtractor` (`extractRenderState`), HUD through Fabric `HudElementRegistry`,
   data reloads through Fabric `ResourceLoader.get(PackType.SERVER_DATA)` + vanilla `SimpleJsonResourceReloadListener`.

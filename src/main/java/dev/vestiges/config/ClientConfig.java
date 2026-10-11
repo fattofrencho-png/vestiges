@@ -21,6 +21,8 @@ public final class ClientConfig {
 	public String minimapCorner = "top_left";
 	/** Waypoints shared by other players: "ask" (Add or Decline) or "off". Blocked players are always ignored. */
 	public String shareMode = "ask";
+	/** M2: with the Tool slot selected, breaking a block picks the right tool from the rack. */
+	public boolean autoTool = true;
 	public java.util.List<String> blockedPlayers = new java.util.ArrayList<>();
 
 	public ClientConfig normalize() {

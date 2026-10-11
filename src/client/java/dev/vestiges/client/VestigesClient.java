@@ -38,16 +38,21 @@ public class VestigesClient implements ClientModInitializer {
 		ClientNotices.register();
 		dev.vestiges.client.tree.ClientTree.register();
 		dev.vestiges.client.hud.GearTooltips.register();
+		dev.vestiges.client.inventory.ClientInventory.register();
 		MapScanner.register();
 		KeyMapping.Category category = KeyMapping.Category.register(Vestiges.id("main"));
 		hubKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.hub", InputConstants.KEY_H, category));
 		mapKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.map", InputConstants.KEY_M, category));
 		utilityKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.utility", InputConstants.KEY_V, category));
 		treeKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.tree", InputConstants.UNKNOWN.getValue(), category));
+		dev.vestiges.client.inventory.ClientInventory.zoomKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.zoom", InputConstants.KEY_Z, category));
+		dev.vestiges.client.inventory.ClientInventory.toolKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.tool_slot", InputConstants.UNKNOWN.getValue(), category));
+		dev.vestiges.client.inventory.ClientInventory.weaponKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.weapon_slot", InputConstants.UNKNOWN.getValue(), category));
 		HudElementRegistry.addLast(Vestiges.id("minimap"), new MinimapHud());
 		HudElementRegistry.addLast(Vestiges.id("look_at"), new LookAtHud());
 		HudElementRegistry.addLast(Vestiges.id("xp"), new XpHud());
 		HudElementRegistry.addLast(Vestiges.id("thick_hide"), new dev.vestiges.client.hud.ThickHideHud());
+		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Vestiges.id("extra_hotbar"), new dev.vestiges.client.hud.ExtraHotbarHud());
 		// Hearts as a percentage: our 10-heart bar replaces vanilla's and takes one row, so the armour bar sits right above it.
 		HudElementRegistry.replaceElement(VanillaHudElements.HEALTH_BAR, old -> new HeartsHud());
 		try {
@@ -90,6 +95,7 @@ public class VestigesClient implements ClientModInitializer {
 					client.setScreenAndShow(new dev.vestiges.client.tree.TreeScreen());
 				}
 			}
+			dev.vestiges.client.inventory.ClientInventory.tickKeys(client);
 			MapScanner.tick(client);
 			recordDeath(client);
 			if (++saveTimer >= 20 * 60) {

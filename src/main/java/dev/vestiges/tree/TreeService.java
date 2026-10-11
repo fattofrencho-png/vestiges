@@ -294,8 +294,8 @@ public final class TreeService {
 			return fail(player, "Other nodes hang on this one: refund the outer ones first.");
 		}
 		int cost = refundCost(player);
-		if (!Emeralds.pay(player, cost)) {
-			return fail(player, "A refund costs " + cost + " emerald" + (cost == 1 ? "" : "s") + " (you have " + Emeralds.count(player) + ").");
+		if (!Emeralds.payWithBank(player, cost)) {
+			return fail(player, "A refund costs " + cost + " emerald" + (cost == 1 ? "" : "s") + " (you have " + Emeralds.countWithBank(player) + ").");
 		}
 		TreeDefs.Node node = idx.nodes().get(nodeId);
 		set(player, tree.withWheel(wheelId, state.drop(nodeId)), "Refunded " + (node != null ? node.name() : nodeId) + paid(player, cost) + ".");
@@ -317,8 +317,8 @@ public final class TreeService {
 			return fail(player, "Pick the other option.");
 		}
 		int cost = refundCost(player);
-		if (!Emeralds.pay(player, cost)) {
-			return fail(player, "Switching costs " + cost + " emerald" + (cost == 1 ? "" : "s") + " (you have " + Emeralds.count(player) + ").");
+		if (!Emeralds.payWithBank(player, cost)) {
+			return fail(player, "Switching costs " + cost + " emerald" + (cost == 1 ? "" : "s") + " (you have " + Emeralds.countWithBank(player) + ").");
 		}
 		set(player, tree.withWheel(wheelId, state.choose(nodeId, choice)), "Switched to " + node.choices().get(choice).name() + paid(player, cost) + ".");
 		return null;
@@ -459,8 +459,8 @@ public final class TreeService {
 			return fail(player, "Refund the next node in this branch first.");
 		}
 		int cost = refundCost(player);
-		if (!Emeralds.pay(player, cost)) {
-			return fail(player, "A refund costs " + cost + " emerald" + (cost == 1 ? "" : "s") + " (you have " + Emeralds.count(player) + ").");
+		if (!Emeralds.payWithBank(player, cost)) {
+			return fail(player, "A refund costs " + cost + " emerald" + (cost == 1 ? "" : "s") + " (you have " + Emeralds.countWithBank(player) + ").");
 		}
 		Set<String> taken = new HashSet<>(tree.ascTaken());
 		taken.remove(nodeId);
@@ -517,9 +517,10 @@ public final class TreeService {
 		JsonObject root = new JsonObject();
 		root.addProperty("enabled", enabled());
 		root.addProperty("gear", dev.vestiges.gear.GearService.enabled() && LevelService.enabled());
+		root.addProperty("inventory", dev.vestiges.inventory.InventoryService.enabled());
 		root.addProperty("level", l.level());
 		root.addProperty("refundCost", refundCost(player));
-		root.addProperty("emeralds", Emeralds.count(player));
+		root.addProperty("emeralds", Emeralds.countWithBank(player));
 		root.addProperty("free", Emeralds.free(player));
 		root.addProperty("message", message);
 		JsonElement treeJson = PlayerTree.CODEC.encodeStart(JsonOps.INSTANCE, tree).result().orElseGet(JsonObject::new);

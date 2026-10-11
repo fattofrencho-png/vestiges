@@ -30,6 +30,8 @@ public final class ClientNotices {
 				case "grave_removed" -> ClientWaypoints.removeGrave(json.get("id").getAsInt());
 				case "graves" -> ClientWaypoints.syncGraves(json.getAsJsonArray("graves"));
 				case "thick_hide" -> dev.vestiges.client.tree.ClientTree.onThickHide(json);
+				case "bank" -> dev.vestiges.client.inventory.ClientInventory.onBank(json);
+				case "pages" -> dev.vestiges.client.inventory.ClientInventory.onPages(json);
 				case "discovery" -> XpHud.discovery(json.get("key").getAsString(), json.get("xp").getAsLong());
 				default -> Vestiges.LOGGER.debug("Vestiges: unknown notice {}", payload.kind());
 			}

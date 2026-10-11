@@ -22,7 +22,7 @@ public final class ThickHideHud implements HudElement {
 		if (shield == null) {
 			shield = new ItemStack(Items.SHIELD);
 		}
-		int x = g.guiWidth() / 2 + 91 + 8;
+		int x = dev.vestiges.client.hud.ExtraHotbarHud.rightStart(g, mc.player) + 42 + 6;
 		int y = g.guiHeight() - 20;
 		float charge = ClientTree.thickHideCharge(mc.level.getGameTime());
 		g.item(shield, x, y);

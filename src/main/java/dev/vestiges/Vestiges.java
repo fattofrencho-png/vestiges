@@ -44,6 +44,8 @@ public class Vestiges implements ModInitializer {
 		dev.vestiges.tree.TreeDrops.register();
 		dev.vestiges.tree.UtilityPowers.register();
 		dev.vestiges.gear.GearService.register();
+		dev.vestiges.net.InventoryPayloads.register();
+		dev.vestiges.inventory.InventoryService.register();
 		// Every enchantment from I to VI. On by default; a server can turn it off with /datapack disable.
 		net.fabricmc.loader.api.FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(mod ->
 			net.fabricmc.fabric.api.resource.v1.ResourceLoader.registerBuiltinPack(id("enchant_levels"), mod,

@@ -4,9 +4,22 @@
 	"package": "dev.vestiges.client.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
+		"AbstractClientPlayerMixin",
+		"AbstractContainerScreenAccessor",
+		"AbstractContainerScreenMixin",
+		"AbstractRecipeBookScreenMixin",
 		"AnvilScreenMixin",
+		"AvatarRendererMixin",
 		"ClientTextTooltipMixin",
-		"EnchantmentScreenMixin"
+		"CreativeModeInventoryScreenMixin",
+		"EnchantmentScreenMixin",
+		"HudMixin",
+		"HumanoidRenderStateMixin",
+		"InventoryScreenMixin",
+		"MinecraftMixin",
+		"MouseHandlerMixin",
+		"MultiPlayerGameModeMixin",
+		"WingsLayerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

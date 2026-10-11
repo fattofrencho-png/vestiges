@@ -53,13 +53,13 @@ public abstract class AnvilMenuMixin extends ItemCombinerMenu {
 			return;
 		}
 		int c = cost.get();
-		cir.setReturnValue(c > 0 && Emeralds.count(p) >= EnchantScale.anvilEmeralds(p, c));
+		cir.setReturnValue(c > 0 && Emeralds.countWithBank(p) >= EnchantScale.anvilEmeralds(p, c));
 	}
 
 	@Inject(method = "onTake", at = @At("HEAD"))
 	private void vestiges$pay(Player p, ItemStack stack, CallbackInfo ci) {
 		if (p instanceof ServerPlayer sp && GearService.enabled() && !sp.hasInfiniteMaterials() && cost.get() > 0) {
-			Emeralds.take(sp, EnchantScale.anvilEmeralds(sp, cost.get()));
+			Emeralds.payWithBank(sp, EnchantScale.anvilEmeralds(sp, cost.get()));
 		}
 	}
 

@@ -28,7 +28,28 @@ class MixinLoadTest {
 		"net.minecraft.world.level.storage.loot.functions.ApplyBonusCount",
 		"net.minecraft.world.level.storage.loot.functions.EnchantedCountIncreaseFunction",
 		"net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition",
-		"net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithEnchantedBonusCondition");
+		"net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithEnchantedBonusCondition",
+		"net.minecraft.world.entity.player.Inventory",
+		"net.minecraft.world.inventory.InventoryMenu",
+		"net.minecraft.server.network.ServerGamePacketListenerImpl",
+		"net.minecraft.world.entity.player.PlayerEquipment");
+	/** Client screens and HUD, checked when the tests run as a client. */
+	private static final List<String> CLIENT_TARGETS = List.of(
+		"net.minecraft.client.gui.screens.inventory.InventoryScreen",
+		"net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen",
+		"net.minecraft.client.gui.screens.inventory.AbstractContainerScreen",
+		"net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen",
+		"net.minecraft.client.gui.screens.inventory.EnchantmentScreen",
+		"net.minecraft.client.gui.screens.inventory.AnvilScreen",
+		"net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip",
+		"net.minecraft.client.gui.Hud",
+		"net.minecraft.client.MouseHandler",
+		"net.minecraft.client.Minecraft",
+		"net.minecraft.client.multiplayer.MultiPlayerGameMode",
+		"net.minecraft.client.player.AbstractClientPlayer",
+		"net.minecraft.client.renderer.entity.state.HumanoidRenderState",
+		"net.minecraft.client.renderer.entity.player.AvatarRenderer",
+		"net.minecraft.client.renderer.entity.layers.WingsLayer");
 
 	@BeforeAll
 	static void boot() {
@@ -40,6 +61,18 @@ class MixinLoadTest {
 	void everyMixinTargetLoads() {
 		for (String name : TARGETS) {
 			assertDoesNotThrow(() -> Class.forName(name, true, MixinLoadTest.class.getClassLoader()), name);
+		}
+	}
+
+	@Test
+	void everyClientMixinTargetLoads() {
+		if (net.fabricmc.loader.api.FabricLoader.getInstance().getEnvironmentType() != net.fabricmc.api.EnvType.CLIENT) {
+			System.out.println("MixinLoadTest: not a client environment, client targets skipped");
+			return;
+		}
+		for (String name : CLIENT_TARGETS) {
+			// Loading without initializing still applies the mixins (and fails if one no longer fits).
+			assertDoesNotThrow(() -> Class.forName(name, false, MixinLoadTest.class.getClassLoader()), name);
 		}
 	}
 }

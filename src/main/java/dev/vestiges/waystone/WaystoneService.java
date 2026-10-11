@@ -169,7 +169,7 @@ public final class WaystoneService {
 		root.addProperty("fromName", from.name());
 		root.addProperty("fromMine", from.owner().equals(player.getUUID()));
 		root.addProperty("inCombat", inCombat(player));
-		root.addProperty("emeralds", countEmeralds(player));
+		root.addProperty("emeralds", (int) Math.min(Integer.MAX_VALUE, dev.vestiges.server.Emeralds.countWithBank(player)));
 		root.addProperty("free", player.getAbilities().instabuild);
 		JsonArray arr = new JsonArray();
 		for (Waystone w : list.waystones()) {
@@ -213,7 +213,7 @@ public final class WaystoneService {
 		}
 		int cost = tripCost(player, Math.sqrt(from.pos().distSqr(to.pos())), ConfigStore.server().numbers.waystoneBlocksPerEmerald);
 		boolean free = player.getAbilities().instabuild;
-		if (!free && countEmeralds(player) < cost) {
+		if (!free && dev.vestiges.server.Emeralds.countWithBank(player) < cost) {
 			MapNet.message(player, "You need " + cost + " emeralds for this trip.", true);
 			return;
 		}
@@ -222,7 +222,7 @@ public final class WaystoneService {
 			return;
 		}
 		if (!free) {
-			takeEmeralds(player, cost);
+			dev.vestiges.server.Emeralds.payWithBank(player, cost);
 		}
 		ServerLevel fromLevel = (ServerLevel) player.level();
 		fromLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.8f, 1.2f);

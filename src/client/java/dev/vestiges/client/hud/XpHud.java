@@ -104,11 +104,11 @@ public final class XpHud implements HudElement {
 			float t = (now - popupStart) / (float) POPUP_MS;
 			int alpha = (int) (255 * Math.min(1f, (1f - t) * 2f));
 			String s = "+" + popupAmount + " XP";
-			// Drawn 1.5x so it reads at a glance; its right edge stays on the XP bar's right end.
+			// Drawn 1.5x so it reads at a glance, above the Tool and Weapon slots, right where the XP bar ends.
 			float scale = 1.5f;
-			int y = barY - 16 - (int) (t * 6);
+			int y = g.guiHeight() - 22 - 16 - (int) (t * 6);
 			g.pose().pushMatrix();
-			g.pose().translate(g.guiWidth() / 2f + 91 - font.width(s) * scale, y);
+			g.pose().translate(ExtraHotbarHud.rightStart(g, mc.player), y);
 			g.pose().scale(scale, scale);
 			g.text(font, s, 0, 0, (Math.max(8, alpha) << 24) | 0x80FF20, true);
 			g.pose().popMatrix();
