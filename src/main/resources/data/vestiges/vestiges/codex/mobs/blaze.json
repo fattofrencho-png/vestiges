@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Blaze",
+ "members": [
+  "minecraft:blaze"
+ ],
+ "boss": false,
+ "icon": "minecraft:blaze_spawn_egg",
+ "line1": "Spins and spits fire in Nether fortresses. Snowballs hurt it.",
+ "line2": "The fortress-builders called them sparks from a forge, and followed them home."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Red Mushroom",
+ "class": "common",
+ "members": [
+  "minecraft:red_mushroom"
+ ],
+ "icon": "minecraft:red_mushroom",
+ "line1": "Grows in the dark. Stew, and more stew.",
+ "line2": "Red mooshrooms carry it on their backs."
+}

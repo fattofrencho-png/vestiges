@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Pufferfish",
+ "members": [
+  "minecraft:pufferfish"
+ ],
+ "boss": false,
+ "icon": "minecraft:pufferfish_spawn_egg",
+ "line1": "Puffs up when close and poisons what it touches.",
+ "line2": "Brewers use it for water breathing. Ask them how they learned."
+}

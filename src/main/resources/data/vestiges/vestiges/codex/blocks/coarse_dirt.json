@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Coarse Dirt",
+ "class": "common",
+ "members": [
+  "minecraft:coarse_dirt"
+ ],
+ "icon": "minecraft:coarse_dirt",
+ "line1": "Dirt nothing will grow on until you till it.",
+ "line2": "Farmers call it tired soil."
+}

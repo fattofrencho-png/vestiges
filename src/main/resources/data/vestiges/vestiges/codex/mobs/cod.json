@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Cod",
+ "members": [
+  "minecraft:cod"
+ ],
+ "boss": false,
+ "icon": "minecraft:cod_spawn_egg",
+ "line1": "Common in cool waters. Cooks fast, fills little.",
+ "line2": "Oscat fishers leave the first cod of the day for the Tide."
+}

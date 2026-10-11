@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Deep Dark",
+ "members": [
+  "minecraft:deep_dark"
+ ],
+ "icon": "minecraft:sculk",
+ "line1": "Sculk, silence and ancient cities. Every sound counts.",
+ "line2": "Older than any kingdom. Older than the last Turning."
+}

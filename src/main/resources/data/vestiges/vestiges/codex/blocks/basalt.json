@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Basalt",
+ "class": "common",
+ "members": [
+  "minecraft:basalt"
+ ],
+ "icon": "minecraft:basalt",
+ "line1": "Grey pillars of the Nether.",
+ "line2": "Lava meets blue ice over soul soil and makes it."
+}

@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Sunflower Plains",
+ "members": [
+  "minecraft:sunflower_plains"
+ ],
+ "icon": "minecraft:sunflower",
+ "line1": "Sunflowers always face the sunrise. Use them as a compass.",
+ "line2": "The Walkers plant them at every temple."
+}

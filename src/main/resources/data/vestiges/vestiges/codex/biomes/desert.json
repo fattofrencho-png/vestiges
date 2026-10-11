@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Desert",
+ "members": [
+  "minecraft:desert"
+ ],
+ "icon": "minecraft:cactus",
+ "line1": "Sand, cactus, husks and buried temples.",
+ "line2": "The Kilnfolk fired their bricks from this sand."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Bee Nest",
+ "class": "uncommon",
+ "members": [
+  "minecraft:bee_nest"
+ ],
+ "icon": "minecraft:bee_nest",
+ "line1": "A wild hive. Bees and honey inside.",
+ "line2": "Calm it with smoke before you take what's inside."
+}

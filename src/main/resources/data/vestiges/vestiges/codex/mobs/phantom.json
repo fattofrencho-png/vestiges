@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Phantom",
+ "members": [
+  "minecraft:phantom"
+ ],
+ "boss": false,
+ "icon": "minecraft:phantom_spawn_egg",
+ "line1": "Comes for anyone who has not slept in three nights.",
+ "line2": "The Sleepless kept vigil to see the end coming. The phantoms came first."
+}

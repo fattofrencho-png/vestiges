@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Powder Snow",
+ "class": "uncommon",
+ "members": [
+  "minecraft:powder_snow"
+ ],
+ "icon": "minecraft:powder_snow_bucket",
+ "line1": "Looks like snow; swallows you like water. Leather boots walk on it.",
+ "line2": "Buckets carry it. Strays love it."
+}

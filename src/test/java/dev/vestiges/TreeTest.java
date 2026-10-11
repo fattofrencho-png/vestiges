@@ -157,10 +157,12 @@ class TreeTest {
 
 	@Test
 	void pendingLabels() {
+		TreeDefs.Effect placing = new TreeDefs.Effect(java.util.Optional.of("placing_speed"), java.util.Optional.empty(), 5, Map.of());
 		TreeDefs.Effect codex = new TreeDefs.Effect(java.util.Optional.of("codex_xp"), java.util.Optional.empty(), 10, Map.of());
 		TreeDefs.Effect enchant = new TreeDefs.Effect(java.util.Optional.of("enchant_cost"), java.util.Optional.empty(), -2, Map.of());
 		TreeDefs.Effect damage = new TreeDefs.Effect(java.util.Optional.of("melee_damage"), java.util.Optional.empty(), 3, Map.of());
-		assertEquals(Set.of("the Codex (M4)"), TreeLabels.pending(List.of(codex, enchant, damage)));
+		assertEquals(Set.of("settlements (M5)"), TreeLabels.pending(List.of(placing, codex, enchant, damage)));
+		assertTrue(TreeLabels.active(codex), "Codex nodes work since M4");
 		assertTrue(TreeLabels.active(enchant), "enchanting cost works since M1c");
 		assertTrue(TreeLabels.active(damage));
 	}

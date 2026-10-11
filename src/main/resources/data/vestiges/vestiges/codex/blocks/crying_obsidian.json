@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Crying Obsidian",
+ "class": "rare",
+ "members": [
+  "minecraft:crying_obsidian"
+ ],
+ "icon": "minecraft:crying_obsidian",
+ "line1": "Obsidian that weeps purple light. Powers respawn anchors.",
+ "line2": "Ruined portals are full of it. Something grieved here."
+}

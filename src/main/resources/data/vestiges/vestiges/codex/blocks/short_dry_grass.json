@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Short Dry Grass",
+ "class": "common",
+ "members": [
+  "minecraft:short_dry_grass"
+ ],
+ "icon": "minecraft:short_dry_grass",
+ "line1": "Dry grass of hot lands.",
+ "line2": "It burns too easily. Keep fires away."
+}

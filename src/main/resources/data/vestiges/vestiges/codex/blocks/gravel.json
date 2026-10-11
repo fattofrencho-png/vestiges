@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Gravel",
+ "class": "common",
+ "members": [
+  "minecraft:gravel"
+ ],
+ "icon": "minecraft:gravel",
+ "line1": "Falls like sand. Hides flint.",
+ "line2": "Brush the strange kind for old treasures."
+}

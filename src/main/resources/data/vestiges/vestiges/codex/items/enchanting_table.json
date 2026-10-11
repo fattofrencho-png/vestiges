@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Enchanting Table",
+ "members": [
+  "minecraft:enchanting_table"
+ ],
+ "rare": false,
+ "icon": "minecraft:enchanting_table",
+ "line1": "Spends lapis and levels on enchantments. Its glyphs seem to shift.",
+ "line2": "No scholar of this age can read them. Not one."
+}

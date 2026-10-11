@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Happy Ghast",
+ "members": [
+  "minecraft:happy_ghast"
+ ],
+ "boss": false,
+ "icon": "minecraft:happy_ghast_spawn_egg",
+ "line1": "Raised from a dried ghast. Fit it with a harness and fly.",
+ "line2": "Proof the Nether can be gentle, if you keep it wet."
+}

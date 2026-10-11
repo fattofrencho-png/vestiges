@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Lead",
+ "members": [
+  "minecraft:lead"
+ ],
+ "rare": false,
+ "icon": "minecraft:lead",
+ "line1": "Leads animals, and ties them to fences.",
+ "line2": "Villagers won't take a lead. Ask nicely instead."
+}

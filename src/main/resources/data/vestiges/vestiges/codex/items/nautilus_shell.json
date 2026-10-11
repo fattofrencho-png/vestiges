@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Nautilus Shell",
+ "members": [
+  "minecraft:nautilus_shell"
+ ],
+ "rare": false,
+ "icon": "minecraft:nautilus_shell",
+ "line1": "Dropped by drowned and nautiluses. Makes conduits.",
+ "line2": "Spirals inside spirals, like the cycle."
+}

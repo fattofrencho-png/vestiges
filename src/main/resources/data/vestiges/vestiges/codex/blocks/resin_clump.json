@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Resin Clump",
+ "class": "uncommon",
+ "members": [
+  "minecraft:resin_clump"
+ ],
+ "icon": "minecraft:resin_clump",
+ "line1": "Orange resin left by an angry creaking heart.",
+ "line2": "Fire it into bricks. Resin bricks glow warm."
+}

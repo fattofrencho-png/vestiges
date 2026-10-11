@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Bee",
+ "members": [
+  "minecraft:bee"
+ ],
+ "boss": false,
+ "icon": "minecraft:bee_spawn_egg",
+ "line1": "Calm a hive with a campfire beneath before you take its honey.",
+ "line2": "A bee stings once and dies. Honey is a dear trade."
+}

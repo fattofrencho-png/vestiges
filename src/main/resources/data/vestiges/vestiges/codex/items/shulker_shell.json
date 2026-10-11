@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Shulker Shell",
+ "members": [
+  "minecraft:shulker_shell"
+ ],
+ "rare": false,
+ "icon": "minecraft:shulker_shell",
+ "line1": "Dropped by shulkers in End runs. Makes shulker boxes.",
+ "line2": "Portable rooms. The Ascended packed light."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Snow",
+ "class": "common",
+ "members": [
+  "minecraft:snow"
+ ],
+ "icon": "minecraft:snow",
+ "line1": "A thin layer that settles in cold lands.",
+ "line2": "Snow golems leave a trail of it wherever they walk."
+}

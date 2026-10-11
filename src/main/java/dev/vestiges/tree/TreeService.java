@@ -163,7 +163,7 @@ public final class TreeService {
 
 	public static int points(ServerPlayer player, String wheelId) {
 		int level = LevelService.get(player).level();
-		return "craft".equals(wheelId) ? TreeRules.craftPoints(level, 0) : TreeRules.fightPoints(level);
+		return "craft".equals(wheelId) ? TreeRules.craftPoints(level, dev.vestiges.codex.CodexService.bonusPoints(player)) : TreeRules.fightPoints(level);
 	}
 
 	/** Points spent on a wheel: taken nodes that still exist in the data (the picked start is free). */
@@ -342,10 +342,10 @@ public final class TreeService {
 		List<Check> out = new ArrayList<>();
 		out.add(new Check("Reach level " + FIRST_ASCENSION_LEVEL, l.level(), FIRST_ASCENSION_LEVEL, null));
 		out.add(new Check("Kill 100 hostile mobs", tree.counter("kills"), 100, null));
-		out.add(new Check("Kill 1 elite", 0, 1, "elites arrive in M3"));
+		out.add(new Check("Kill 1 elite", tree.counter("elites"), 1, null));
 		out.add(new Check("Mine 64 ores", tree.counter("ores"), 64, null));
 		out.add(new Check("Reach the deepslate layer (below y=0)", tree.counter("deepslate"), 1, null));
-		out.add(new Check("Find 25 Codex entries", 0, 25, "the Codex arrives in M4"));
+		out.add(new Check("Find 25 Codex entries", dev.vestiges.codex.CodexService.discovered(player), 25, null));
 		return out;
 	}
 
@@ -357,7 +357,7 @@ public final class TreeService {
 			for (TreeDefs.Step s : asc.second()) {
 				String text = s.goal() + " " + s.text();
 				switch (s.counter()) {
-					case "elites" -> out.add(new Check(text, 0, s.goal(), "elites arrive in M3"));
+					case "elites" -> out.add(new Check(text, tree.counter("elites"), s.goal(), null));
 					case "biomes" -> out.add(new Check(text, l.firsts().stream().filter(k -> k.startsWith("biome:")).count(), s.goal(), null));
 					default -> out.add(new Check(text, tree.counter(s.counter()), s.goal(), null));
 				}

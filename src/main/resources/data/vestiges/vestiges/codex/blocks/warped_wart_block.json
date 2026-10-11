@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Warped Wart Block",
+ "class": "uncommon",
+ "members": [
+  "minecraft:warped_wart_block"
+ ],
+ "icon": "minecraft:warped_wart_block",
+ "line1": "The blue cap of a warped fungus.",
+ "line2": "It smells like rain that never fell."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Skeleton Horse",
+ "members": [
+  "minecraft:skeleton_horse"
+ ],
+ "boss": false,
+ "icon": "minecraft:skeleton_horse_spawn_egg",
+ "line1": "Comes with the lightning, carrying four riders.",
+ "line2": "Tamed after the fight, it swims well and fears nothing."
+}

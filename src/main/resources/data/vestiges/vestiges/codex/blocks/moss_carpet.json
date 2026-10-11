@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Moss Carpet",
+ "class": "uncommon",
+ "members": [
+  "minecraft:moss_carpet"
+ ],
+ "icon": "minecraft:moss_carpet",
+ "line1": "A soft layer of moss.",
+ "line2": "Soft underfoot. Still not soft enough to fool sculk."
+}

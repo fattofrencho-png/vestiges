@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Suspicious Sand",
+ "class": "unique",
+ "members": [
+  "minecraft:suspicious_sand"
+ ],
+ "icon": "minecraft:suspicious_sand",
+ "line1": "Sand hiding something. Brush it, don't break it.",
+ "line2": "Every sherd is a page from an age with no books."
+}

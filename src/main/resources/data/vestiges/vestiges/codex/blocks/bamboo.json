@@ -1,0 +1,13 @@
+{
+ "section": "blocks",
+ "name": "Bamboo",
+ "class": "uncommon",
+ "members": [
+  "minecraft:bamboo",
+  "minecraft:bamboo_stairs",
+  "minecraft:bamboo_slab"
+ ],
+ "icon": "minecraft:bamboo",
+ "line1": "Grows fast and tall. Sticks, scaffolding and rafts.",
+ "line2": "Pandas eat it. You can build with it. Both are right."
+}

@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Snowy Plains",
+ "members": [
+  "minecraft:snowy_plains"
+ ],
+ "icon": "minecraft:snow_block",
+ "line1": "White fields, igloos, and strays at night.",
+ "line2": "Check under the igloo carpets."
+}

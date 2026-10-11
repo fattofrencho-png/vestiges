@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Copper Ore",
+ "class": "common",
+ "members": [
+  "minecraft:copper_ore",
+  "minecraft:deepslate_copper_ore"
+ ],
+ "icon": "minecraft:copper_ore",
+ "line1": "Orange-green streaks. Copper weathers green with time.",
+ "line2": "The Coppersmiths built golems from it."
+}

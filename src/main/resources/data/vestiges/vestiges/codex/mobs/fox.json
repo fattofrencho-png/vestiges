@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Fox",
+ "members": [
+  "minecraft:fox"
+ ],
+ "boss": false,
+ "icon": "minecraft:fox_spawn_egg",
+ "line1": "Steals items, sleeps by day, and pounces on chickens at night.",
+ "line2": "Breed two, and the kit will trust you for life."
+}

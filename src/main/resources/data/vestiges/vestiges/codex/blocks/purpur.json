@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Purpur",
+ "class": "rare",
+ "members": [
+  "minecraft:purpur_block",
+  "minecraft:purpur_pillar",
+  "minecraft:purpur_stairs",
+  "minecraft:purpur_slab"
+ ],
+ "icon": "minecraft:purpur_block",
+ "line1": "Purple blocks of the Ascended's cities.",
+ "line2": "They grew it from chorus, like stone flowers."
+}

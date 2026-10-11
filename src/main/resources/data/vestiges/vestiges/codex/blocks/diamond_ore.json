@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Diamond Ore",
+ "class": "rare",
+ "members": [
+  "minecraft:diamond_ore",
+  "minecraft:deepslate_diamond_ore"
+ ],
+ "icon": "minecraft:diamond_ore",
+ "line1": "Deep, rare and precious. Mine it with iron or better.",
+ "line2": "Fortune makes it generous. Silk Touch makes it a trophy."
+}

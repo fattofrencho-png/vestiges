@@ -1,0 +1,8 @@
+{
+ "item": "minecraft:pumpkin_pie",
+ "minutes": 10,
+ "stats": {
+  "hunger_drain": -15
+ },
+ "text": "-15% hunger drain"
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Gilded Blackstone",
+ "class": "very_rare",
+ "members": [
+  "minecraft:gilded_blackstone"
+ ],
+ "icon": "minecraft:gilded_blackstone",
+ "line1": "Blackstone with gold veins. Found in bastions.",
+ "line2": "Gold someone pressed into stone, then left."
+}

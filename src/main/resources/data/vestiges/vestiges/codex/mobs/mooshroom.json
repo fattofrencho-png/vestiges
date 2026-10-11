@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Mooshroom",
+ "members": [
+  "minecraft:mooshroom"
+ ],
+ "boss": false,
+ "icon": "minecraft:mooshroom_spawn_egg",
+ "line1": "A mushroom cow. Bowls give stew; lightning turns red ones brown.",
+ "line2": "Feed a brown one a flower, and its stew comes out strange."
+}

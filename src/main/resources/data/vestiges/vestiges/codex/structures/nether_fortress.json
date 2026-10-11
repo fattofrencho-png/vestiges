@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Nether Fortress",
+ "icon": "minecraft:nether_bricks",
+ "line1": "Nether brick halls full of blazes and wither skeletons.",
+ "line2": "Built to last a thousand years. It did not need to.",
+ "members": [
+  "minecraft:fortress"
+ ]
+}

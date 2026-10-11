@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Jungle Temple",
+ "icon": "minecraft:mossy_cobblestone",
+ "line1": "Vines, levers, tripwires and arrows.",
+ "line2": "Whoever built it expected visitors, and did not like them.",
+ "members": [
+  "minecraft:jungle_pyramid"
+ ]
+}

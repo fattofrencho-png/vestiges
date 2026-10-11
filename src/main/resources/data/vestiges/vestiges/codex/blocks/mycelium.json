@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Mycelium",
+ "class": "uncommon",
+ "members": [
+  "minecraft:mycelium"
+ ],
+ "icon": "minecraft:mycelium",
+ "line1": "Fungus-covered ground of the mushroom fields.",
+ "line2": "It spreads slowly, like a rumour."
+}

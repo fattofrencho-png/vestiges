@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Rooted Dirt",
+ "class": "common",
+ "members": [
+  "minecraft:rooted_dirt"
+ ],
+ "icon": "minecraft:rooted_dirt",
+ "line1": "Dirt woven with roots, under azalea trees.",
+ "line2": "Dig below it and you may find a lush cave."
+}

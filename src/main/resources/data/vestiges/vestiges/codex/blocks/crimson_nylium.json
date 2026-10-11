@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Crimson Nylium",
+ "class": "uncommon",
+ "members": [
+  "minecraft:crimson_nylium"
+ ],
+ "icon": "minecraft:crimson_nylium",
+ "line1": "Red fungus-covered netherrack.",
+ "line2": "Bone meal grows crimson fungus on it."
+}

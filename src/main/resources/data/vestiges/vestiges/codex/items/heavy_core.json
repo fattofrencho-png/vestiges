@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Heavy Core",
+ "members": [
+  "minecraft:heavy_core"
+ ],
+ "rare": true,
+ "icon": "minecraft:heavy_core",
+ "line1": "A very dense block from ominous vaults. Makes a mace.",
+ "line2": "Heavier than anything this size should be."
+}

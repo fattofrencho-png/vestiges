@@ -1,0 +1,8 @@
+{
+ "item": "minecraft:cake",
+ "minutes": 6,
+ "stats": {
+  "movement_speed": 4
+ },
+ "text": "+4% movement speed"
+}

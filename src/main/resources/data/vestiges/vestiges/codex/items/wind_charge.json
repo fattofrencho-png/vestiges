@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Wind Charge",
+ "members": [
+  "minecraft:wind_charge"
+ ],
+ "rare": false,
+ "icon": "minecraft:wind_charge",
+ "line1": "Thrown burst of wind. Launches you, or them.",
+ "line2": "Breezes hurl them without thinking. So can you."
+}

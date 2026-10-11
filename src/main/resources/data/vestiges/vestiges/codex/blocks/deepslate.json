@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Deepslate",
+ "class": "common",
+ "members": [
+  "minecraft:deepslate"
+ ],
+ "icon": "minecraft:deepslate",
+ "line1": "Hard dark stone below the surface. Slower to mine.",
+ "line2": "It has layers like pages, the Deep Ones said."
+}

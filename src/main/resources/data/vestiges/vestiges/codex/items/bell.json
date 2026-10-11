@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Bell",
+ "members": [
+  "minecraft:bell"
+ ],
+ "rare": false,
+ "icon": "minecraft:bell",
+ "line1": "Rings to wake villagers and warn of raids.",
+ "line2": "The Bell is how every settlement begins."
+}

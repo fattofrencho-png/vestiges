@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Swamp Hut",
+ "icon": "minecraft:cauldron",
+ "line1": "A witch's home on stilts. Sometimes a black cat waits there.",
+ "line2": "The cauldron is always warm.",
+ "members": [
+  "minecraft:swamp_hut"
+ ]
+}

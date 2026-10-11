@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Strider",
+ "members": [
+  "minecraft:strider"
+ ],
+ "boss": false,
+ "icon": "minecraft:strider_spawn_egg",
+ "line1": "Walks on lava. Saddle it and steer with warped fungus on a stick.",
+ "line2": "Out of lava it shivers, as if it remembers being warm."
+}

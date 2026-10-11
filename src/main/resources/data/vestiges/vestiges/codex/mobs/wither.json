@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Wither",
+ "members": [
+  "minecraft:wither"
+ ],
+ "boss": true,
+ "icon": "minecraft:wither_skeleton_skull",
+ "line1": "Three heads, no mercy. Built from soul sand and wither skulls.",
+ "line2": "The fortress diaries call it a king. They locked his skull away."
+}

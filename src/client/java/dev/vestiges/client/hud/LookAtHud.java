@@ -103,6 +103,10 @@ public final class LookAtHud implements HudElement {
 	}
 
 	private boolean isNew(String id) {
+		Boolean codex = dev.vestiges.client.codex.ClientCodex.isNew(net.minecraft.resources.Identifier.parse(id));
+		if (codex != null) {
+			return codex;
+		}
 		long now = System.currentTimeMillis();
 		Long t = firstSeen.putIfAbsent(id, now);
 		return t == null || now - t < NEW_TAG_MS;

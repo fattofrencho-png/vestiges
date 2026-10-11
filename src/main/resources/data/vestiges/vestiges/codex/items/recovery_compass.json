@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Recovery Compass",
+ "members": [
+  "minecraft:recovery_compass"
+ ],
+ "rare": true,
+ "icon": "minecraft:recovery_compass",
+ "line1": "Points to where you last died.",
+ "line2": "Echo shards remember things. Including you."
+}

@@ -1,0 +1,9 @@
+{
+ "section": "structures",
+ "name": "Amethyst Geode",
+ "icon": "minecraft:amethyst_cluster",
+ "line1": "Amethyst inside smooth basalt and calcite. Mine carefully.",
+ "line2": "Geodes hum at night, miners swear.",
+ "members": [],
+ "detect": "geode"
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Snow Block",
+ "class": "common",
+ "members": [
+  "minecraft:snow_block"
+ ],
+ "icon": "minecraft:snow_block",
+ "line1": "Packed snow, for walls and golems.",
+ "line2": "Frostwardens built whole halls from it."
+}

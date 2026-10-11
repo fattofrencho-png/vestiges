@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Savanna Plateau",
+ "members": [
+  "minecraft:savanna_plateau"
+ ],
+ "icon": "minecraft:acacia_log",
+ "line1": "Flat-topped hills of acacia above the plains.",
+ "line2": "From the top, you can see three days of road."
+}

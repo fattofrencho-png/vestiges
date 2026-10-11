@@ -54,11 +54,12 @@ public final class StatEngine {
 	private StatEngine() {
 	}
 
-	/** The player's tree stats plus their gear stats (trims). NONE when neither gives anything. */
+	/** The player's tree stats plus their gear stats (trims) and meal buff. NONE when none gives anything. */
 	public static PlayerStats get(ServerPlayer player) {
 		return CACHE.computeIfAbsent(player.getUUID(), id -> {
 			PlayerStats tree = TreeService.enabled() ? compute(TreeService.get(player), TreeService::wheel, TreeService::ascendancy) : PlayerStats.NONE;
-			return PlayerStats.merge(tree, dev.vestiges.gear.GearService.stats(player));
+			PlayerStats withGear = PlayerStats.merge(tree, dev.vestiges.gear.GearService.stats(player));
+			return PlayerStats.merge(withGear, dev.vestiges.farming.MealService.stats(player));
 		});
 	}
 

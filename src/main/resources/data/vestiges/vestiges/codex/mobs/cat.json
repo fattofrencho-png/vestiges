@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Cat",
+ "members": [
+  "minecraft:cat"
+ ],
+ "boss": false,
+ "icon": "minecraft:cat_spawn_egg",
+ "line1": "Keeps creepers and phantoms away, and leaves gifts by your bed.",
+ "line2": "Village grandmothers say a cat can see the sky watching."
+}

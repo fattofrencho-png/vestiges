@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sculk",
+ "class": "rare",
+ "members": [
+  "minecraft:sculk"
+ ],
+ "icon": "minecraft:sculk",
+ "line1": "Dark living block that eats experience.",
+ "line2": "It grows where things died loudly."
+}

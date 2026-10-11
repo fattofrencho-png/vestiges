@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Husk",
+ "members": [
+  "minecraft:husk"
+ ],
+ "boss": false,
+ "icon": "minecraft:husk_spawn_egg",
+ "line1": "A desert zombie that does not burn by day, and leaves you hungry.",
+ "line2": "Kilnfolk tombs keep their dead. Not all of them."
+}

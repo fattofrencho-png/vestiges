@@ -13,7 +13,9 @@ public final class VestigesData {
 	public static final DataType<TreeDefs.Ascendancy> ASCENDANCIES = new DataType<>("ascendancies", TreeDefs.Ascendancy.CODEC);
 
 	public static final DataType<dev.vestiges.loot.LootRules> LOOT_RULES = new DataType<>("loot_rules", dev.vestiges.loot.LootRules.CODEC);
-	public static final List<DataType<?>> ALL = List.of(FEATS, TREES, ASCENDANCIES, LOOT_RULES);
+	public static final DataType<dev.vestiges.codex.CodexEntry> CODEX = new DataType<>("codex", dev.vestiges.codex.CodexEntry.CODEC);
+	public static final DataType<dev.vestiges.farming.MealDef> MEALS = new DataType<>("meals", dev.vestiges.farming.MealDef.CODEC);
+	public static final List<DataType<?>> ALL = List.of(FEATS, TREES, ASCENDANCIES, LOOT_RULES, CODEX, MEALS);
 
 	private VestigesData() {
 	}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Dripstone Block",
+ "class": "uncommon",
+ "members": [
+  "minecraft:dripstone_block"
+ ],
+ "icon": "minecraft:dripstone_block",
+ "line1": "Stone grown slowly by dripping water.",
+ "line2": "Patience, made solid."
+}

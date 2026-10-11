@@ -13,16 +13,11 @@ public final class TreeLabels {
 	private TreeLabels() {
 	}
 
-	private static final String CODEX = "the Codex (M4)";
-	private static final String FARMING = "farming and food (M4)";
 	private static final String BUILDING = "settlements (M5)";
 	private static final String LATER = "a later update";
 
 	/** Effects that are not live yet, with the system that brings them. Everything else works today. */
 	private static final Map<String, String> PENDING = Map.ofEntries(
-		Map.entry("codex_gathering", CODEX), Map.entry("codex_xp", CODEX), Map.entry("lorekeeper", CODEX),
-		Map.entry("crop_growth", FARMING), Map.entry("bonemeal", FARMING), Map.entry("baby_growth", FARMING), Map.entry("breeding_cooldown", FARMING),
-		Map.entry("meal_duration", FARMING), Map.entry("food_restore", FARMING), Map.entry("saturation", FARMING),
 		Map.entry("rebuilder", BUILDING), Map.entry("placing_speed", BUILDING), Map.entry("climb_speed", BUILDING), Map.entry("own_block_break", BUILDING),
 		Map.entry("cartographer", LATER), Map.entry("fletcher", LATER), Map.entry("brewing_speed", LATER), Map.entry("wide_splash", LATER),
 		Map.entry("potion_duration", LATER), Map.entry("drunk_potion_duration", LATER), Map.entry("potion_healing", LATER),

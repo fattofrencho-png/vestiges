@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Spider",
+ "members": [
+  "minecraft:spider"
+ ],
+ "boss": false,
+ "icon": "minecraft:spider_spawn_egg",
+ "line1": "Climbs walls and turns hostile in the dark.",
+ "line2": "A spider ridden by a skeleton is the rarest bad luck."
+}

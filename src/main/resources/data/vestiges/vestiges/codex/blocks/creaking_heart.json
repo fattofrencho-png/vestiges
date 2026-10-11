@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Creaking Heart",
+ "class": "rare",
+ "members": [
+  "minecraft:creaking_heart"
+ ],
+ "icon": "minecraft:creaking_heart",
+ "line1": "Lives in a pale oak trunk. Wakes the creaking at night.",
+ "line2": "Break it and its creaking crumbles."
+}

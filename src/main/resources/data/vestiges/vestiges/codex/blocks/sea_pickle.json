@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sea Pickle",
+ "class": "rare",
+ "members": [
+  "minecraft:sea_pickle"
+ ],
+ "icon": "minecraft:sea_pickle",
+ "line1": "Glowing pods on coral. More together, more light.",
+ "line2": "Bone meal on coral grows more."
+}

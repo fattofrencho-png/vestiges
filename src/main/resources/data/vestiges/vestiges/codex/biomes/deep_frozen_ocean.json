@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Deep Frozen Ocean",
+ "members": [
+  "minecraft:deep_frozen_ocean"
+ ],
+ "icon": "minecraft:blue_ice",
+ "line1": "Icebergs above, strays on the ice, monuments below.",
+ "line2": "The Frostwardens' sea, frozen in a single night."
+}

@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Nether Wastes",
+ "members": [
+  "minecraft:nether_wastes"
+ ],
+ "icon": "minecraft:netherrack",
+ "line1": "Netherrack, lava seas, ghasts and fortresses.",
+ "line2": "\"This is not another world. This is ours, later.\""
+}

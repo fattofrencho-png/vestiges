@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Podzol",
+ "class": "uncommon",
+ "members": [
+  "minecraft:podzol"
+ ],
+ "icon": "minecraft:podzol",
+ "line1": "Dark forest floor where mushrooms thrive.",
+ "line2": "It remembers every leaf that ever fell."
+}

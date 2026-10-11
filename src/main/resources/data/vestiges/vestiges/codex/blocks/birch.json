@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Birch",
+ "class": "common",
+ "members": [
+  "minecraft:birch_log",
+  "minecraft:birch_wood"
+ ],
+ "icon": "minecraft:birch_log",
+ "line1": "Pale, straight, quick to grow.",
+ "line2": "Weavers write on its bark."
+}

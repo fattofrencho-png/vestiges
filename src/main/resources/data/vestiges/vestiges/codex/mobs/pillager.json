@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Pillager",
+ "members": [
+  "minecraft:pillager"
+ ],
+ "boss": false,
+ "icon": "minecraft:pillager_spawn_egg",
+ "line1": "Crossbow raider. Its captains drop ominous bottles that bring raids.",
+ "line2": "Grey faces, sour tongues: what is left of an empire, a scribe wrote."
+}

@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Mangrove Swamp",
+ "members": [
+  "minecraft:mangrove_swamp"
+ ],
+ "icon": "minecraft:mangrove_propagule",
+ "line1": "Roots, mud and frogs. Bring a boat.",
+ "line2": "Its mud becomes bricks, with a little wheat and patience."
+}

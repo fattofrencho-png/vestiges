@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Endermite",
+ "members": [
+  "minecraft:endermite"
+ ],
+ "boss": false,
+ "icon": "minecraft:endermite_spawn_egg",
+ "line1": "Sometimes crawls out where an ender pearl lands. Endermen hate it.",
+ "line2": "Small, but it bites like a debt."
+}

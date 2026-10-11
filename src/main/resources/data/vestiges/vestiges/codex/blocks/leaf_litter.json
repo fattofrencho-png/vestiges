@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Leaf Litter",
+ "class": "common",
+ "members": [
+  "minecraft:leaf_litter"
+ ],
+ "icon": "minecraft:leaf_litter",
+ "line1": "Fallen leaves on the forest floor.",
+ "line2": "It crunches. Nothing sneaks on it."
+}

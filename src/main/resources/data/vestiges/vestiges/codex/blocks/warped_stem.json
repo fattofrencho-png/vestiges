@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Warped Stem",
+ "class": "uncommon",
+ "members": [
+  "minecraft:warped_stem",
+  "minecraft:warped_hyphae"
+ ],
+ "icon": "minecraft:warped_stem",
+ "line1": "The trunk of a warped fungus.",
+ "line2": "Endermen gather wherever it grows."
+}

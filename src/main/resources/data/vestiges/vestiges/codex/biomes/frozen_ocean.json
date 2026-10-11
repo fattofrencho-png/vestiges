@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Frozen Ocean",
+ "members": [
+  "minecraft:frozen_ocean"
+ ],
+ "icon": "minecraft:ice",
+ "line1": "Ice sheets and floating floes over cold water.",
+ "line2": "Polar bears by day, strays by night."
+}

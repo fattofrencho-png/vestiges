@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Coal Ore",
+ "class": "common",
+ "members": [
+  "minecraft:coal_ore",
+  "minecraft:deepslate_coal_ore"
+ ],
+ "icon": "minecraft:coal_ore",
+ "line1": "Black specks in stone. Fuel and torches.",
+ "line2": "The first fire of every age was coal."
+}

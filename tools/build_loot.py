@@ -448,13 +448,13 @@ def router(prefix):
 def monster_drops():
     kill = {"type": "minecraft:killed_by_player"}
     pools = [
-        {"rolls": 1, "conditions": [kill, {"type": "minecraft:random_chance", "chance": EMERALD_CHANCE}, level_cond(None, 24)],
+        {"rolls": 1, "conditions": [kill, {"type": "vestiges:drop_chance", "chance": EMERALD_CHANCE}, level_cond(None, 24)],
          "entries": [item_entry("emerald", 1, [count_fn(1, 2)])]},
-        {"rolls": 1, "conditions": [kill, {"type": "minecraft:random_chance", "chance": EMERALD_CHANCE}, level_cond(25, None)],
+        {"rolls": 1, "conditions": [kill, {"type": "vestiges:drop_chance", "chance": EMERALD_CHANCE}, level_cond(25, None)],
          "entries": [item_entry("emerald", 1, [count_fn(1, 3)])]},
     ]
     for lo, hi, items in INGOTS:
-        pools.append({"rolls": 1, "conditions": [kill, {"type": "minecraft:random_chance", "chance": INGOT_CHANCE},
+        pools.append({"rolls": 1, "conditions": [kill, {"type": "vestiges:drop_chance", "chance": INGOT_CHANCE},
                                                 level_cond(None if lo == 1 else lo, hi)],
                       "entries": [item_entry(i, w, [count_fn(a, b)]) for i, w, a, b in items]})
     for rank, (elo, ehi, gear, book, book_rarity) in ELITES.items():

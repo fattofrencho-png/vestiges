@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Elder Guardian",
+ "members": [
+  "minecraft:elder_guardian"
+ ],
+ "boss": true,
+ "icon": "minecraft:elder_guardian_spawn_egg",
+ "line1": "Curses nearby divers with Mining Fatigue. Three guard every monument.",
+ "line2": "Its curse was taught, a Tidefolk diary says, to keep hands away from the Heart."
+}

@@ -1,0 +1,12 @@
+{
+ "section": "items",
+ "name": "Map",
+ "members": [
+  "minecraft:map",
+  "minecraft:filled_map"
+ ],
+ "rare": false,
+ "icon": "minecraft:map",
+ "line1": "Draws the land as you walk it.",
+ "line2": "Every age's maps show the same coasts."
+}

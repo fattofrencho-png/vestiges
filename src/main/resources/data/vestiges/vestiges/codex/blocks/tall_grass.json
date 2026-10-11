@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Tall Grass",
+ "class": "common",
+ "members": [
+  "minecraft:tall_grass"
+ ],
+ "icon": "minecraft:tall_grass",
+ "line1": "Two blocks of grass. Hides seeds too.",
+ "line2": "Good cover for foxes, and for creepers."
+}

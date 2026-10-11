@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Pale Oak",
+ "class": "uncommon",
+ "members": [
+  "minecraft:pale_oak_log",
+  "minecraft:pale_oak_wood"
+ ],
+ "icon": "minecraft:pale_oak_log",
+ "line1": "Grey wood of the pale garden.",
+ "line2": "Creaking hearts sleep inside its trunks."
+}

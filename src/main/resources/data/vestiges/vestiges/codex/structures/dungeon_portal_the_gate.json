@@ -1,0 +1,9 @@
+{
+ "section": "structures",
+ "name": "Dungeon Portal (the Gate)",
+ "icon": "minecraft:chiseled_tuff",
+ "line1": "A chiseled tuff and copper frame that opens with a key.",
+ "line2": "The Deep Ones copied this very frame, a diary says.",
+ "members": [],
+ "later": "dungeons (M8)"
+}

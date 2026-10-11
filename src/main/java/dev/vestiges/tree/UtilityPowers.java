@@ -126,7 +126,7 @@ public final class UtilityPowers {
 			reap(p, level, pos, state, (int) max(s, "reaper", "radius", 2));
 		}
 		int group = clusterGroup(state);
-		if (group >= 0 && active(p, s, "cluster_harvest")) {
+		if (group >= 0 && active(p, s, "cluster_harvest") && dev.vestiges.codex.CodexService.discoveredBlock(p, state.getBlock())) {
 			breakAll(p, level, tool, connected(level, pos, b -> clusterGroup(b) == group, (int) max(s, "cluster_harvest", "max", 32) - 1, false));
 		}
 	}
@@ -282,6 +282,14 @@ public final class UtilityPowers {
 	}
 
 	// ---- harvest -----------------------------------------------------------------------------------------------------
+
+	/** Right-click harvest (M4) also triggers the Reaper power around the crop. */
+	public static void reapAround(ServerPlayer p, ServerLevel level, BlockPos pos, BlockState ripe) {
+		PlayerStats s = StatEngine.get(p);
+		if (TreeDrops.isRipeCrop(ripe) && active(p, s, "reaper")) {
+			reap(p, level, pos, ripe, (int) max(s, "reaper", "radius", 2));
+		}
+	}
 
 	private static void reap(ServerPlayer p, ServerLevel level, BlockPos pos, BlockState state, int r) {
 		int harvested = 0;

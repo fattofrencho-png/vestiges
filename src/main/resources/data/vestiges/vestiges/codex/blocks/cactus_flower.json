@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Cactus Flower",
+ "class": "uncommon",
+ "members": [
+  "minecraft:cactus_flower"
+ ],
+ "icon": "minecraft:cactus_flower",
+ "line1": "A flower that sometimes blooms on cactus.",
+ "line2": "Desert travellers take it as a good omen."
+}

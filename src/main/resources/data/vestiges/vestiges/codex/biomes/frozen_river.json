@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Frozen River",
+ "members": [
+  "minecraft:frozen_river"
+ ],
+ "icon": "minecraft:ice",
+ "line1": "A river under ice. Fish through a hole.",
+ "line2": "Children skate here. Old people don't."
+}

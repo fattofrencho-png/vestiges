@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Tall Dry Grass",
+ "class": "common",
+ "members": [
+  "minecraft:tall_dry_grass"
+ ],
+ "icon": "minecraft:tall_dry_grass",
+ "line1": "Tall dry grass of hot lands.",
+ "line2": "Savanna villages thatch roofs with it."
+}

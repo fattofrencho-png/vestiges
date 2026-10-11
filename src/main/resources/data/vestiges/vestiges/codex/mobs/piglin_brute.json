@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Piglin Brute",
+ "members": [
+  "minecraft:piglin_brute"
+ ],
+ "boss": false,
+ "icon": "minecraft:piglin_brute_spawn_egg",
+ "line1": "Guards bastion treasure with a golden axe. Gold won't calm it.",
+ "line2": "It never trades. It remembers what gold is for."
+}

@@ -1,0 +1,13 @@
+{
+ "section": "items",
+ "name": "Anvil",
+ "members": [
+  "minecraft:anvil",
+  "minecraft:chipped_anvil",
+  "minecraft:damaged_anvil"
+ ],
+ "rare": false,
+ "icon": "minecraft:anvil",
+ "line1": "Repairs, combines and renames. Gets tired with use.",
+ "line2": "\"Too Expensive!\" is the anvil's only joke."
+}

@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Diorite",
+ "class": "common",
+ "members": [
+  "minecraft:diorite",
+  "minecraft:diorite_stairs",
+  "minecraft:diorite_slab",
+  "minecraft:diorite_wall"
+ ],
+ "icon": "minecraft:diorite",
+ "line1": "White stone with grey flecks. Builders argue about it.",
+ "line2": "Its flecks look like stars, if you squint."
+}

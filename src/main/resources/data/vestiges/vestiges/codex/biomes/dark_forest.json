@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Dark Forest",
+ "members": [
+  "minecraft:dark_forest"
+ ],
+ "icon": "minecraft:dark_oak_sapling",
+ "line1": "A roof of dark oak, giant mushrooms and, deep inside, mansions.",
+ "line2": "The Hollow Kings took every tree like these for their halls."
+}

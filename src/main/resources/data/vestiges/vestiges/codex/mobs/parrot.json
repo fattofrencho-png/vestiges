@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Parrot",
+ "members": [
+  "minecraft:parrot"
+ ],
+ "boss": false,
+ "icon": "minecraft:parrot_spawn_egg",
+ "line1": "Mimics nearby monsters. Never feed it cookies.",
+ "line2": "A parrot on your shoulder hears danger before you see it."
+}

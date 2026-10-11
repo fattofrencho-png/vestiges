@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Zombie Nautilus",
+ "members": [
+  "minecraft:zombie_nautilus"
+ ],
+ "boss": false,
+ "icon": "minecraft:zombie_nautilus_spawn_egg",
+ "line1": "A rotting nautilus, ridden by drowned in the deep.",
+ "line2": "Even the sea's mounts don't rest in peace."
+}

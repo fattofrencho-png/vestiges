@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Sulfur Caves",
+ "members": [
+  "minecraft:sulfur_caves"
+ ],
+ "icon": "minecraft:sulfur",
+ "line1": "Yellow sulfur and sharp spikes underground.",
+ "line2": "Brewers go down with masks and come back with secrets."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Zombie",
+ "members": [
+  "minecraft:zombie"
+ ],
+ "boss": false,
+ "icon": "minecraft:zombie_spawn_egg",
+ "line1": "Slow, stubborn, always hungry. Burns at dawn unless it finds a hat.",
+ "line2": "The Promised call them \"the uncounted\"."
+}

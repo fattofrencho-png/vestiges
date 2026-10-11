@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Blue Ice",
+ "class": "rare",
+ "members": [
+  "minecraft:blue_ice"
+ ],
+ "icon": "minecraft:blue_ice",
+ "line1": "The fastest, coldest ice. Made from packed ice, or found in icebergs.",
+ "line2": "The Frostwardens said it was the old sun, frozen."
+}

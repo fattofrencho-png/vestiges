@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Pillager Outpost",
+ "icon": "minecraft:crossbow",
+ "line1": "A raiders' watchtower, often with a captive caged nearby.",
+ "line2": "The banner they fly is older than any kingdom that fights them.",
+ "members": [
+  "minecraft:pillager_outpost"
+ ]
+}

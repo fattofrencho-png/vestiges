@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Cinnabar",
+ "class": "uncommon",
+ "members": [
+  "minecraft:cinnabar",
+  "minecraft:cinnabar_stairs",
+  "minecraft:cinnabar_slab",
+  "minecraft:cinnabar_wall"
+ ],
+ "icon": "minecraft:cinnabar",
+ "line1": "Red stone, bright as blood.",
+ "line2": "Old scribes ground it into red ink for important words."
+}

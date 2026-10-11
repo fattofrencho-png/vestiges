@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Chorus Plant",
+ "class": "rare",
+ "members": [
+  "minecraft:chorus_plant"
+ ],
+ "icon": "minecraft:chorus_plant",
+ "line1": "Strange plant of the End. Its fruit teleports you.",
+ "line2": "It grows toward something none of us can see."
+}

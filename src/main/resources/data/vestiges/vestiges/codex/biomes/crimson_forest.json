@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Crimson Forest",
+ "members": [
+  "minecraft:crimson_forest"
+ ],
+ "icon": "minecraft:crimson_fungus",
+ "line1": "Red fungus trees, hoglins and hunting piglins.",
+ "line2": "Shroomlight grows where the fungus is oldest."
+}

@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Snowy Slopes",
+ "members": [
+  "minecraft:snowy_slopes"
+ ],
+ "icon": "minecraft:powder_snow_bucket",
+ "line1": "Powder snow traps on the mountain flanks. Leather boots help.",
+ "line2": "Goats cross it without sinking. Learn from goats."
+}

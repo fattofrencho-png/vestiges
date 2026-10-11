@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sand",
+ "class": "common",
+ "members": [
+  "minecraft:sand"
+ ],
+ "icon": "minecraft:sand",
+ "line1": "Falls if nothing holds it. Smelts into glass.",
+ "line2": "The Kilnfolk turned whole dunes into glass, a diary says."
+}

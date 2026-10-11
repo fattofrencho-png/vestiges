@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Sniffer",
+ "members": [
+  "minecraft:sniffer"
+ ],
+ "boss": false,
+ "icon": "minecraft:sniffer_spawn_egg",
+ "line1": "An ancient beast hatched from old eggs. It digs up seeds nobody has seen.",
+ "line2": "Its seeds come from a world that no longer exists."
+}

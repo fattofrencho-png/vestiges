@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Zoglin",
+ "members": [
+  "minecraft:zoglin"
+ ],
+ "boss": false,
+ "icon": "minecraft:zoglin_spawn_egg",
+ "line1": "A hoglin gone wrong in the overworld. Attacks everything.",
+ "line2": "The overworld does that to Nether things. Or the Nether to us."
+}

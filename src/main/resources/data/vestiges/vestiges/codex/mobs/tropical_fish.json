@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Tropical Fish",
+ "members": [
+  "minecraft:tropical_fish"
+ ],
+ "boss": false,
+ "icon": "minecraft:tropical_fish_spawn_egg",
+ "line1": "Thousands of colours and patterns. Warm seas only.",
+ "line2": "Axolotls love them. So do your eyes."
+}

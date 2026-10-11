@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Fern",
+ "class": "common",
+ "members": [
+  "minecraft:fern"
+ ],
+ "icon": "minecraft:fern",
+ "line1": "A small fern of forests and jungles.",
+ "line2": "Bone meal makes it large."
+}

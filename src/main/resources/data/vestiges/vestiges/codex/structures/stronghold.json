@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Stronghold",
+ "icon": "minecraft:end_portal_frame",
+ "line1": "Libraries, cells and the eye-door to the End.",
+ "line2": "Its books are written in glyphs no one can read.",
+ "members": [
+  "minecraft:stronghold"
+ ]
+}

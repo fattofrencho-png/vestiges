@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Spawner",
+ "class": "unique",
+ "members": [
+  "minecraft:spawner"
+ ],
+ "icon": "minecraft:spawner",
+ "line1": "A cage that calls monsters. Cannot be carried.",
+ "line2": "Somebody built every one of these."
+}

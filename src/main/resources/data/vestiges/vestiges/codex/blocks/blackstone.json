@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Blackstone",
+ "class": "common",
+ "members": [
+  "minecraft:blackstone",
+  "minecraft:blackstone_stairs",
+  "minecraft:blackstone_slab",
+  "minecraft:blackstone_wall"
+ ],
+ "icon": "minecraft:blackstone",
+ "line1": "Dark Nether stone, like cobblestone but grimmer.",
+ "line2": "Bastions are blackstone. So are older things."
+}

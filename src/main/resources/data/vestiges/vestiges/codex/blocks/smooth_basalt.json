@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Smooth Basalt",
+ "class": "common",
+ "members": [
+  "minecraft:smooth_basalt"
+ ],
+ "icon": "minecraft:smooth_basalt",
+ "line1": "The dark rim of a geode, smooth to the touch.",
+ "line2": "It keeps the crystals in, or something out."
+}

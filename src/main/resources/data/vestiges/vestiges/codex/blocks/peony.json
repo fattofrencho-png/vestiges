@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Peony",
+ "class": "common",
+ "members": [
+  "minecraft:peony"
+ ],
+ "icon": "minecraft:peony",
+ "line1": "A tall pink flower.",
+ "line2": "Pilgrims leave them at shrines."
+}

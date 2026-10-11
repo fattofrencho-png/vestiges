@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Ocean",
+ "members": [
+  "minecraft:ocean"
+ ],
+ "icon": "minecraft:kelp",
+ "line1": "Water as far as you can see.",
+ "line2": "Every sailor's map shows the same coasts. Every age's maps did too."
+}

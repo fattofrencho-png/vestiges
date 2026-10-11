@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Golden Dandelion",
+ "class": "rare",
+ "members": [
+  "minecraft:golden_dandelion"
+ ],
+ "icon": "minecraft:golden_dandelion",
+ "line1": "A dandelion that shines like metal.",
+ "line2": "Gardeners argue whether it grew, or was made."
+}

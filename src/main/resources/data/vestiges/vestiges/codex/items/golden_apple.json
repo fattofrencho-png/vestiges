@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Golden Apple",
+ "members": [
+  "minecraft:golden_apple"
+ ],
+ "rare": false,
+ "icon": "minecraft:golden_apple",
+ "line1": "Gold-coated apple. Regeneration and absorption.",
+ "line2": "Half of a zombie villager's cure."
+}

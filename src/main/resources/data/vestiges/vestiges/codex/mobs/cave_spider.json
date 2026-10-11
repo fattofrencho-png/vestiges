@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Cave Spider",
+ "members": [
+  "minecraft:cave_spider"
+ ],
+ "boss": false,
+ "icon": "minecraft:cave_spider_spawn_egg",
+ "line1": "Small, quick and poisonous. Found around spawners in mineshafts.",
+ "line2": "Burn the cobwebs first. They always come from the webs."
+}

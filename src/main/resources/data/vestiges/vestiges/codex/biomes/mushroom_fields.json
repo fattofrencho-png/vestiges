@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Mushroom Fields",
+ "members": [
+  "minecraft:mushroom_fields"
+ ],
+ "icon": "minecraft:red_mushroom_block",
+ "line1": "No monsters spawn here. Only mooshrooms.",
+ "line2": "The Promised call it the land the One forgot to curse."
+}

@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Eyeblossom",
+ "class": "rare",
+ "members": [
+  "minecraft:open_eyeblossom",
+  "minecraft:closed_eyeblossom"
+ ],
+ "icon": "minecraft:open_eyeblossom",
+ "line1": "A pale garden flower that opens at night.",
+ "line2": "It opens when the creaking wakes. Coincidence?"
+}

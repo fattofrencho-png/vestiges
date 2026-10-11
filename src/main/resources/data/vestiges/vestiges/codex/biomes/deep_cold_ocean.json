@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Deep Cold Ocean",
+ "members": [
+  "minecraft:deep_cold_ocean"
+ ],
+ "icon": "minecraft:cod",
+ "line1": "Deeper, colder, darker. Monuments sometimes rest here.",
+ "line2": "Fishers will not drop lines here after dusk."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Turtle",
+ "members": [
+  "minecraft:turtle"
+ ],
+ "boss": false,
+ "icon": "minecraft:turtle_spawn_egg",
+ "line1": "Always returns to the beach where it hatched to lay eggs.",
+ "line2": "A growing baby drops a scute. Five make a turtle shell."
+}

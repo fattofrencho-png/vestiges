@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Totem of Undying",
+ "members": [
+  "minecraft:totem_of_undying"
+ ],
+ "rare": true,
+ "icon": "minecraft:totem_of_undying",
+ "line1": "Held, it saves you from death once. Its own slot in Vestiges.",
+ "line2": "Evokers carry them. They never say where they got them."
+}

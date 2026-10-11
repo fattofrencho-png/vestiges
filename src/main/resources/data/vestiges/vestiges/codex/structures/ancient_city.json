@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Ancient City",
+ "icon": "minecraft:sculk_shrieker",
+ "line1": "A deepslate city in the dark. Walk softly; something listens.",
+ "line2": "Built around a gate of its own, by people who went too deep.",
+ "members": [
+  "minecraft:ancient_city"
+ ]
+}

@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Nether Star",
+ "members": [
+  "minecraft:nether_star"
+ ],
+ "rare": true,
+ "icon": "minecraft:nether_star",
+ "line1": "Dropped by the Wither. Makes a beacon.",
+ "line2": "A star from a king's three crowns."
+}

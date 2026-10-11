@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Iron Ore",
+ "class": "common",
+ "members": [
+  "minecraft:iron_ore",
+  "minecraft:deepslate_iron_ore"
+ ],
+ "icon": "minecraft:iron_ore",
+ "line1": "The smith's best friend.",
+ "line2": "Iron golems are made of it. They never say who made the first."
+}

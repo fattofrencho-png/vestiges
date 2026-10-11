@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Snowy Taiga",
+ "members": [
+  "minecraft:snowy_taiga"
+ ],
+ "icon": "minecraft:spruce_leaves",
+ "line1": "Snow-covered spruce, foxes and wolves.",
+ "line2": "The northern rangers winter here."
+}

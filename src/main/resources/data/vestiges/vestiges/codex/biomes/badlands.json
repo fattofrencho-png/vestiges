@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Badlands",
+ "members": [
+  "minecraft:badlands"
+ ],
+ "icon": "minecraft:red_sand",
+ "line1": "Layered red rock, and mineshafts full of gold. Bring water.",
+ "line2": "Every stripe of colour is an age, the Primas teach. Count them."
+}

@@ -1,0 +1,20 @@
+{
+ "section": "blocks",
+ "name": "Prismarine",
+ "class": "rare",
+ "members": [
+  "minecraft:prismarine",
+  "minecraft:prismarine_bricks",
+  "minecraft:dark_prismarine",
+  "minecraft:prismarine_stairs",
+  "minecraft:prismarine_slab",
+  "minecraft:prismarine_wall",
+  "minecraft:prismarine_brick_stairs",
+  "minecraft:prismarine_brick_slab",
+  "minecraft:dark_prismarine_stairs",
+  "minecraft:dark_prismarine_slab"
+ ],
+ "icon": "minecraft:prismarine",
+ "line1": "The sea-green stone of monuments.",
+ "line2": "It grows with the sea, the Tidefolk said."
+}

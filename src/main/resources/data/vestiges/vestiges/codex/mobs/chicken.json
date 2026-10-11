@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Chicken",
+ "members": [
+  "minecraft:chicken"
+ ],
+ "boss": false,
+ "icon": "minecraft:chicken_spawn_egg",
+ "line1": "Lays eggs, drops feathers, fears nothing but foxes.",
+ "line2": "A chicken ridden by a baby zombie is a sight no traveller forgets."
+}

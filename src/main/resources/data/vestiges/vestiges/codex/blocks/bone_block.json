@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Bone Block",
+ "class": "uncommon",
+ "members": [
+  "minecraft:bone_block"
+ ],
+ "icon": "minecraft:bone_block",
+ "line1": "Bones pressed together. Found in fossils.",
+ "line2": "The skeletons of things too big to name."
+}

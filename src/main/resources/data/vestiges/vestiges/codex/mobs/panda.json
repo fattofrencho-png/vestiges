@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Panda",
+ "members": [
+  "minecraft:panda"
+ ],
+ "boss": false,
+ "icon": "minecraft:panda_spawn_egg",
+ "line1": "Lazy, playful, worried or angry: every panda has its own temper.",
+ "line2": "Brown pandas are rare enough that jungle villages name them."
+}

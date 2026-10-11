@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Pig",
+ "members": [
+  "minecraft:pig"
+ ],
+ "boss": false,
+ "icon": "minecraft:pig_spawn_egg",
+ "line1": "Ride it with a saddle and a carrot on a stick.",
+ "line2": "Struck by lightning, it becomes something angrier."
+}

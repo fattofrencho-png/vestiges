@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Allium",
+ "class": "common",
+ "members": [
+  "minecraft:allium"
+ ],
+ "icon": "minecraft:allium",
+ "line1": "A purple flower of flower forests.",
+ "line2": "Brewers dry it for dye."
+}

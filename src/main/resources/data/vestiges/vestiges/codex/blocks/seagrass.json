@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Seagrass",
+ "class": "common",
+ "members": [
+  "minecraft:seagrass",
+  "minecraft:tall_seagrass"
+ ],
+ "icon": "minecraft:seagrass",
+ "line1": "Grass of the sea floor.",
+ "line2": "Turtles graze on it."
+}

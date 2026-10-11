@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Glowstone",
+ "class": "uncommon",
+ "members": [
+  "minecraft:glowstone"
+ ],
+ "icon": "minecraft:glowstone",
+ "line1": "Glowing clusters on the Nether ceiling.",
+ "line2": "Brewers use its dust to make potions stronger."
+}

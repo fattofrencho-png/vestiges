@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Pumpkin",
+ "class": "common",
+ "members": [
+  "minecraft:pumpkin"
+ ],
+ "icon": "minecraft:pumpkin",
+ "line1": "Grows from a stem. Carve it, wear it, or bake it.",
+ "line2": "A carved pumpkin hides you from an enderman's stare."
+}

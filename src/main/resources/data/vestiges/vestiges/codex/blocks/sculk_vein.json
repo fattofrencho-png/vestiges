@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sculk Vein",
+ "class": "rare",
+ "members": [
+  "minecraft:sculk_vein"
+ ],
+ "icon": "minecraft:sculk_vein",
+ "line1": "Thin sculk on walls.",
+ "line2": "It spreads like ink on wet paper."
+}

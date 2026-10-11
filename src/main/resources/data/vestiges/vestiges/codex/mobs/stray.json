@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Stray",
+ "members": [
+  "minecraft:stray"
+ ],
+ "boss": false,
+ "icon": "minecraft:stray_spawn_egg",
+ "line1": "A frozen skeleton whose arrows slow you.",
+ "line2": "The last Frostwarden diary speaks of arrows as cold as the sky."
+}

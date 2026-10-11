@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Lily of the Valley",
+ "class": "common",
+ "members": [
+  "minecraft:lily_of_the_valley"
+ ],
+ "icon": "minecraft:lily_of_the_valley",
+ "line1": "Small white bells. Poison in a stew.",
+ "line2": "Beautiful and dangerous, like most pretty things."
+}

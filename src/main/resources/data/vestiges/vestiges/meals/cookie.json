@@ -1,0 +1,8 @@
+{
+ "item": "minecraft:cookie",
+ "minutes": 5,
+ "stats": {
+  "block_reach": 0.3
+ },
+ "text": "+0.3 block reach"
+}

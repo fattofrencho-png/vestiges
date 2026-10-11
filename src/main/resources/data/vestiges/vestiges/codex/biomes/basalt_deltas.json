@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Basalt Deltas",
+ "members": [
+  "minecraft:basalt_deltas"
+ ],
+ "icon": "minecraft:basalt",
+ "line1": "Grey pillars, lava pools and magma cubes. Watch every step.",
+ "line2": "A fortress diary describes this land as the world after a fire."
+}

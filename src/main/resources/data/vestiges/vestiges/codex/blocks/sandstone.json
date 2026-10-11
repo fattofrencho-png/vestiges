@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Sandstone",
+ "class": "common",
+ "members": [
+  "minecraft:sandstone",
+  "minecraft:sandstone_stairs",
+  "minecraft:sandstone_slab",
+  "minecraft:sandstone_wall"
+ ],
+ "icon": "minecraft:sandstone",
+ "line1": "Pressed sand, easy to carve.",
+ "line2": "Kilnfolk tombs are sandstone all the way down."
+}

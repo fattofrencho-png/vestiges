@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sculk Shrieker",
+ "class": "rare",
+ "members": [
+  "minecraft:sculk_shrieker"
+ ],
+ "icon": "minecraft:sculk_shrieker",
+ "line1": "Screams when sensors hear you. Sometimes calls the Warden.",
+ "line2": "Its scream reaches further than it should."
+}

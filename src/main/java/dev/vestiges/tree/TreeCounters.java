@@ -43,6 +43,10 @@ public final class TreeCounters {
 		}
 		Map<String, Long> add = new HashMap<>();
 		add.put("kills", 1L);
+		dev.vestiges.mobs.MobData mob = dev.vestiges.mobs.MobService.data(dead);
+		if (mob != null && mob.elite()) {
+			add.put("elites", 1L);
+		}
 		if (source.is(DamageTypeTags.IS_PROJECTILE) && source.getDirectEntity() instanceof AbstractArrow arrow) {
 			ItemStack weapon = arrow.getWeaponItem();
 			if (weapon != null && weapon.getItem() instanceof BowItem) {

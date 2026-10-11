@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Bastion Remnant",
+ "icon": "minecraft:gilded_blackstone",
+ "line1": "A piglin stronghold of blackstone and gold.",
+ "line2": "Built by someone older than the piglins, the fortress diaries say.",
+ "members": [
+  "minecraft:bastion_remnant"
+ ]
+}

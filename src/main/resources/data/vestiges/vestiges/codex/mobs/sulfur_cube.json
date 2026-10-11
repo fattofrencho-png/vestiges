@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Sulfur Cube",
+ "members": [
+  "minecraft:sulfur_cube"
+ ],
+ "boss": false,
+ "icon": "minecraft:sulfur_cube_spawn_egg",
+ "line1": "A cube that wanders the sulfur caves. It can be caught in a bucket.",
+ "line2": "Brewers want them badly. They won't say what for."
+}

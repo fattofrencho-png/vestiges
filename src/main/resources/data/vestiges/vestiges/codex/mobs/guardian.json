@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Guardian",
+ "members": [
+  "minecraft:guardian"
+ ],
+ "boss": false,
+ "icon": "minecraft:guardian_spawn_egg",
+ "line1": "Fires a slow laser from its eye. Monuments are full of them.",
+ "line2": "Bred to guard, a Tidefolk diary says. They still do."
+}

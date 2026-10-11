@@ -1,0 +1,11 @@
+{
+ "section": "structures",
+ "name": "Ocean Ruins",
+ "icon": "minecraft:suspicious_gravel",
+ "line1": "Sunken stone, drowned guards and buried chests.",
+ "line2": "Some of the stones are carved with tide marks.",
+ "members": [
+  "minecraft:ocean_ruin_cold",
+  "minecraft:ocean_ruin_warm"
+ ]
+}

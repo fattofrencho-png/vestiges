@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Village (Desert)",
+ "icon": "minecraft:bell",
+ "line1": "Sandstone homes around a well.",
+ "line2": "Kermat's merchants came from villages like this.",
+ "members": [
+  "minecraft:village_desert"
+ ]
+}

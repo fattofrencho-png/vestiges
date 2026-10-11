@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Beacon",
+ "members": [
+  "minecraft:beacon"
+ ],
+ "rare": true,
+ "icon": "minecraft:beacon",
+ "line1": "A pyramid of metal and a nether star buy you powers in a wide area.",
+ "line2": "Its beam can be seen from very far away. By whom, though?"
+}

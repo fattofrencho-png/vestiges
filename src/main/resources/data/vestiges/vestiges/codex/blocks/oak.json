@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Oak",
+ "class": "common",
+ "members": [
+  "minecraft:oak_log",
+  "minecraft:oak_wood"
+ ],
+ "icon": "minecraft:oak_log",
+ "line1": "Oak logs, leaves and saplings: the builder's first tree.",
+ "line2": "Oak leaves drop apples, and sometimes hope."
+}

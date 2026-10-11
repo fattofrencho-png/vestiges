@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Sheep",
+ "members": [
+  "minecraft:sheep"
+ ],
+ "boss": false,
+ "icon": "minecraft:sheep_spawn_egg",
+ "line1": "Wool in any colour, if you dye it first. Regrows by eating grass.",
+ "line2": "Pink sheep are rare enough to bring luck, the Primas say."
+}

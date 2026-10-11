@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Nether Gold Ore",
+ "class": "uncommon",
+ "members": [
+  "minecraft:nether_gold_ore"
+ ],
+ "icon": "minecraft:nether_gold_ore",
+ "line1": "Gold nuggets in netherrack. Piglins watch you mine it.",
+ "line2": "Piglins get angry if you mine it near them. Mine it anyway."
+}

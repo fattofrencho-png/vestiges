@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Nether Sprouts",
+ "class": "common",
+ "members": [
+  "minecraft:nether_sprouts"
+ ],
+ "icon": "minecraft:nether_sprouts",
+ "line1": "Tiny blue sprouts of the warped forest.",
+ "line2": "Shears only. They crumble otherwise."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Trial Spawner",
+ "class": "unique",
+ "members": [
+  "minecraft:trial_spawner"
+ ],
+ "icon": "minecraft:trial_spawner",
+ "line1": "Calls waves of monsters in trial chambers, then rewards you.",
+ "line2": "It measures you. It remembers you."
+}

@@ -1,0 +1,9 @@
+{
+ "section": "structures",
+ "name": "Ruined Shrine",
+ "icon": "minecraft:mossy_stone_bricks",
+ "line1": "A small ruin with missing blocks. Fill them in to restore it.",
+ "line2": "Every faith built shrines. So did someone else.",
+ "members": [],
+ "later": "world events (M9)"
+}

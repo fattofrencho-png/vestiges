@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Clay",
+ "class": "common",
+ "members": [
+  "minecraft:clay"
+ ],
+ "icon": "minecraft:clay",
+ "line1": "Soft and grey under rivers. Its balls fire into bricks; the block, into terracotta.",
+ "line2": "The first pots of every age were clay."
+}

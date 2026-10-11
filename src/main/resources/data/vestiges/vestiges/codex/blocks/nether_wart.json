@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Nether Wart",
+ "class": "uncommon",
+ "members": [
+  "minecraft:nether_wart"
+ ],
+ "icon": "minecraft:nether_wart",
+ "line1": "The base of nearly every potion. Grows on soul sand.",
+ "line2": "Every brewer's first lesson, in every age."
+}

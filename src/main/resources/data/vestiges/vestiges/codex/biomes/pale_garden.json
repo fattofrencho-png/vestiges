@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Pale Garden",
+ "members": [
+  "minecraft:pale_garden"
+ ],
+ "icon": "minecraft:pale_oak_sapling",
+ "line1": "Grey trees, hanging moss and the creaking.",
+ "line2": "The trees seem to watch here. Perhaps they do."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Allay",
+ "members": [
+  "minecraft:allay"
+ ],
+ "boss": false,
+ "icon": "minecraft:allay_spawn_egg",
+ "line1": "Hand it an item and it gathers more of the same, bringing them to a note block you play.",
+ "line2": "Freed from pillager cages, it hums as if it remembers other cages."
+}

@@ -27,6 +27,7 @@ public class VestigesClient implements ClientModInitializer {
 	private static KeyMapping mapKey;
 	private static KeyMapping utilityKey;
 	private static KeyMapping treeKey;
+	private static KeyMapping codexKey;
 	private static boolean deathRecorded;
 	private static int saveTimer;
 
@@ -40,12 +41,15 @@ public class VestigesClient implements ClientModInitializer {
 		dev.vestiges.client.hud.GearTooltips.register();
 		dev.vestiges.client.inventory.ClientInventory.register();
 		dev.vestiges.client.mobs.DamageNumbers.register();
+		dev.vestiges.client.codex.ClientCodex.register();
+		dev.vestiges.client.farming.ClientMeals.register();
 		MapScanner.register();
 		KeyMapping.Category category = KeyMapping.Category.register(Vestiges.id("main"));
 		hubKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.hub", InputConstants.KEY_H, category));
 		mapKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.map", InputConstants.KEY_M, category));
 		utilityKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.utility", InputConstants.KEY_V, category));
 		treeKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.tree", InputConstants.UNKNOWN.getValue(), category));
+		codexKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.codex", InputConstants.UNKNOWN.getValue(), category));
 		dev.vestiges.client.inventory.ClientInventory.zoomKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.zoom", InputConstants.KEY_Z, category));
 		dev.vestiges.client.inventory.ClientInventory.toolKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.tool_slot", InputConstants.UNKNOWN.getValue(), category));
 		dev.vestiges.client.inventory.ClientInventory.weaponKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.weapon_slot", InputConstants.UNKNOWN.getValue(), category));
@@ -53,6 +57,7 @@ public class VestigesClient implements ClientModInitializer {
 		HudElementRegistry.addLast(Vestiges.id("look_at"), new LookAtHud());
 		HudElementRegistry.addLast(Vestiges.id("xp"), new XpHud());
 		HudElementRegistry.addLast(Vestiges.id("thick_hide"), new dev.vestiges.client.hud.ThickHideHud());
+		HudElementRegistry.addLast(Vestiges.id("meal"), new dev.vestiges.client.farming.ClientMeals());
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Vestiges.id("extra_hotbar"), new dev.vestiges.client.hud.ExtraHotbarHud());
 		// Hearts as a percentage: our 10-heart bar replaces vanilla's and takes one row, so the armour bar sits right above it.
 		HudElementRegistry.replaceElement(VanillaHudElements.HEALTH_BAR, old -> new HeartsHud());
@@ -67,6 +72,9 @@ public class VestigesClient implements ClientModInitializer {
 			ClientWaypoints.load();
 			MapScanner.reset();
 			dev.vestiges.client.mobs.ClientMobs.reset();
+			dev.vestiges.client.codex.ClientCodex.reset();
+			dev.vestiges.client.farming.ClientMeals.reset();
+			dev.vestiges.client.hud.EntityInfo.reset();
 			deathRecorded = false;
 		}));
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
@@ -90,6 +98,11 @@ public class VestigesClient implements ClientModInitializer {
 			while (utilityKey.consumeClick()) {
 				if (client.player != null) {
 					dev.vestiges.client.tree.ClientTree.send("utility", "", "", 0);
+				}
+			}
+			while (codexKey.consumeClick()) {
+				if (client.gui.screen() == null && client.player != null) {
+					client.setScreenAndShow(new dev.vestiges.client.codex.CodexScreen());
 				}
 			}
 			while (treeKey.consumeClick()) {

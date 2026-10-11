@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Heart of the Sea",
+ "members": [
+  "minecraft:heart_of_the_sea"
+ ],
+ "rare": true,
+ "icon": "minecraft:heart_of_the_sea",
+ "line1": "Found in buried treasure. Builds a conduit.",
+ "line2": "A Tidefolk diary calls it a recorder. Listen closely."
+}

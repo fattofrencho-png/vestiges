@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Poppy",
+ "class": "common",
+ "members": [
+  "minecraft:poppy"
+ ],
+ "icon": "minecraft:poppy",
+ "line1": "A red flower. Iron golems give them to children.",
+ "line2": "The golems never say where they learned it."
+}

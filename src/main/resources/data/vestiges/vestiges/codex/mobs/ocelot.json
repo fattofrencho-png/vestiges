@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Ocelot",
+ "members": [
+  "minecraft:ocelot"
+ ],
+ "boss": false,
+ "icon": "minecraft:ocelot_spawn_egg",
+ "line1": "Shy jungle cat. Offer raw fish and wait; it learns to trust you.",
+ "line2": "Creepers avoid it, just like its tame cousins."
+}

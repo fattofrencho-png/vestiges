@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Jungle",
+ "class": "uncommon",
+ "members": [
+  "minecraft:jungle_log",
+  "minecraft:jungle_wood"
+ ],
+ "icon": "minecraft:jungle_log",
+ "line1": "Huge trees with cocoa and vines.",
+ "line2": "Four saplings grow a giant. Bring a ladder."
+}

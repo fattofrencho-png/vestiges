@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Windswept Forest",
+ "members": [
+  "minecraft:windswept_forest"
+ ],
+ "icon": "minecraft:spruce_sapling",
+ "line1": "Hills of wind-bent trees.",
+ "line2": "Every tree leans the same way, as if pushed by one hand."
+}

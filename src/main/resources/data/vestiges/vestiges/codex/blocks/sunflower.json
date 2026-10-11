@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sunflower",
+ "class": "common",
+ "members": [
+  "minecraft:sunflower"
+ ],
+ "icon": "minecraft:sunflower",
+ "line1": "A tall flower that always faces the sunrise.",
+ "line2": "The Walkers plant them at every temple."
+}

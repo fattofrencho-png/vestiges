@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Azure Bluet",
+ "class": "common",
+ "members": [
+  "minecraft:azure_bluet"
+ ],
+ "icon": "minecraft:azure_bluet",
+ "line1": "A tiny pale flower.",
+ "line2": "Makes Blindness stews. Pick carefully."
+}

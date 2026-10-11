@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Compass",
+ "members": [
+  "minecraft:compass"
+ ],
+ "rare": false,
+ "icon": "minecraft:compass",
+ "line1": "Points to your spawn, or to a lodestone.",
+ "line2": "Compasses work in the Nether only with a lodestone."
+}

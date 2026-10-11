@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Tuff",
+ "class": "common",
+ "members": [
+  "minecraft:tuff",
+  "minecraft:tuff_stairs",
+  "minecraft:tuff_slab",
+  "minecraft:tuff_wall"
+ ],
+ "icon": "minecraft:tuff",
+ "line1": "Grey volcanic stone deep down.",
+ "line2": "The makers' vaults are built of it. Take note."
+}

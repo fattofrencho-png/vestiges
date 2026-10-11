@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Witch",
+ "members": [
+  "minecraft:witch"
+ ],
+ "boss": false,
+ "icon": "minecraft:witch_spawn_egg",
+ "line1": "Throws potions and drinks her own. Lives in swamp huts.",
+ "line2": "Descended from the Brewers, some say, minus the cures."
+}

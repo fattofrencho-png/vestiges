@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Creeper",
+ "members": [
+  "minecraft:creeper"
+ ],
+ "boss": false,
+ "icon": "minecraft:creeper_spawn_egg",
+ "line1": "Silent, then hissing, then gone, along with your wall.",
+ "line2": "Cats terrify it. Nobody has ever learned why."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Bush",
+ "class": "common",
+ "members": [
+  "minecraft:bush"
+ ],
+ "icon": "minecraft:bush",
+ "line1": "A small leafy bush.",
+ "line2": "Rabbits hide under it."
+}

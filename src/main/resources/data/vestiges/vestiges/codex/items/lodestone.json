@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Lodestone",
+ "members": [
+  "minecraft:lodestone"
+ ],
+ "rare": false,
+ "icon": "minecraft:lodestone",
+ "line1": "Pairs with a compass to point at it. Becomes a waystone.",
+ "line2": "Waystones remember where you have been."
+}

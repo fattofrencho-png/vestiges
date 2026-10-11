@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Snow Golem",
+ "members": [
+  "minecraft:snow_golem"
+ ],
+ "boss": false,
+ "icon": "minecraft:snow_golem_spawn_egg",
+ "line1": "Two snow blocks and a pumpkin. Throws snowballs, melts in warm lands.",
+ "line2": "Shear its pumpkin to see a face you'll wish you hadn't."
+}

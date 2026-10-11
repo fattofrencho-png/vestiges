@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Snowy Beach",
+ "members": [
+  "minecraft:snowy_beach"
+ ],
+ "icon": "minecraft:snow_block",
+ "line1": "Sand under snow, and cold water beyond.",
+ "line2": "Oscat's winters start here."
+}

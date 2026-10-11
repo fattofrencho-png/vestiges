@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Large Fern",
+ "class": "common",
+ "members": [
+  "minecraft:large_fern"
+ ],
+ "icon": "minecraft:large_fern",
+ "line1": "A two-block fern.",
+ "line2": "Rangers sleep under them in the rain."
+}

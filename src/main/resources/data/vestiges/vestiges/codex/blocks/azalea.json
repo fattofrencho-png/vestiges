@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Azalea",
+ "class": "uncommon",
+ "members": [
+  "minecraft:azalea",
+  "minecraft:flowering_azalea"
+ ],
+ "icon": "minecraft:azalea",
+ "line1": "A flowering bush that grows into an azalea tree.",
+ "line2": "Its roots point to a lush cave below."
+}

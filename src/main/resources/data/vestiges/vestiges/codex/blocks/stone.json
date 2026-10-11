@@ -1,0 +1,13 @@
+{
+ "section": "blocks",
+ "name": "Stone",
+ "class": "common",
+ "members": [
+  "minecraft:stone",
+  "minecraft:stone_stairs",
+  "minecraft:stone_slab"
+ ],
+ "icon": "minecraft:stone",
+ "line1": "The world's bones. Smelt cobblestone back into it.",
+ "line2": "The Seers measured every age by its stone. It never changed."
+}

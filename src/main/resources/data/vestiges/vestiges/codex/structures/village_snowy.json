@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Village (Snowy)",
+ "icon": "minecraft:bell",
+ "line1": "Spruce and snow, smoke from every chimney.",
+ "line2": "They keep a fire burning all summer, just in case.",
+ "members": [
+  "minecraft:village_snowy"
+ ]
+}

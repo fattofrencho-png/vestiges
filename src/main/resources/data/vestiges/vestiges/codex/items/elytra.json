@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Elytra",
+ "members": [
+  "minecraft:elytra"
+ ],
+ "rare": true,
+ "icon": "minecraft:elytra",
+ "line1": "Wings found in End runs. Glide, and fly with rockets.",
+ "line2": "The Ascended flew between their towers with these."
+}

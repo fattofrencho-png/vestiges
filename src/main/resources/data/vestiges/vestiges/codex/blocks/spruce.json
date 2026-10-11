@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Spruce",
+ "class": "common",
+ "members": [
+  "minecraft:spruce_log",
+  "minecraft:spruce_wood"
+ ],
+ "icon": "minecraft:spruce_log",
+ "line1": "Tall dark trees of the north.",
+ "line2": "Four saplings together grow a giant."
+}

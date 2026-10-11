@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Glow Squid",
+ "members": [
+  "minecraft:glow_squid"
+ ],
+ "boss": false,
+ "icon": "minecraft:glow_squid_spawn_egg",
+ "line1": "Lights the dark deep. Its ink makes sign text glow.",
+ "line2": "The Deep Ones wrote with its ink, where no torch could burn."
+}

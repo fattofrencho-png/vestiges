@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Wandering Trader",
+ "members": [
+  "minecraft:wandering_trader"
+ ],
+ "boss": false,
+ "icon": "minecraft:wandering_trader_spawn_egg",
+ "line1": "Turns up with odd goods and two llamas, then vanishes.",
+ "line2": "Nobody has ever seen him arrive."
+}

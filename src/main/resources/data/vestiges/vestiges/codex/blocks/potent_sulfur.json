@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Potent Sulfur",
+ "class": "rare",
+ "members": [
+  "minecraft:potent_sulfur"
+ ],
+ "icon": "minecraft:potent_sulfur",
+ "line1": "Sulfur so strong it stings the nose.",
+ "line2": "The Kilnfolk, they say, knew what to do with it."
+}

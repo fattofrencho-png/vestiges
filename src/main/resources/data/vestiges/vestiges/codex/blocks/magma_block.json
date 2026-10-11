@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Magma Block",
+ "class": "uncommon",
+ "members": [
+  "minecraft:magma_block"
+ ],
+ "icon": "minecraft:magma_block",
+ "line1": "Hot to stand on, unless you sneak.",
+ "line2": "Under water, it drags you down in bubbles."
+}

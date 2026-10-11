@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sulfur Spike",
+ "class": "uncommon",
+ "members": [
+  "minecraft:sulfur_spike"
+ ],
+ "icon": "minecraft:sulfur_spike",
+ "line1": "Sharp yellow spikes in the sulfur caves. Step carefully.",
+ "line2": "It grows, slowly, like something breathing."
+}

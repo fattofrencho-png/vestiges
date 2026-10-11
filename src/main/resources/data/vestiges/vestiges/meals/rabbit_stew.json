@@ -1,0 +1,8 @@
+{
+ "item": "minecraft:rabbit_stew",
+ "minutes": 8,
+ "stats": {
+  "max_health": 6
+ },
+ "text": "+6 max health"
+}

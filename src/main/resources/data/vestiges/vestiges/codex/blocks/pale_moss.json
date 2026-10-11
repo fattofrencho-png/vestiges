@@ -1,0 +1,13 @@
+{
+ "section": "blocks",
+ "name": "Pale Moss",
+ "class": "rare",
+ "members": [
+  "minecraft:pale_moss_block",
+  "minecraft:pale_moss_carpet",
+  "minecraft:pale_hanging_moss"
+ ],
+ "icon": "minecraft:pale_moss_block",
+ "line1": "Grey moss and hanging moss of the pale garden.",
+ "line2": "It grows thicker near the creaking hearts."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Short Grass",
+ "class": "common",
+ "members": [
+  "minecraft:short_grass"
+ ],
+ "icon": "minecraft:short_grass",
+ "line1": "Grass that hides seeds.",
+ "line2": "Break it for wheat seeds. Farmers start here."
+}

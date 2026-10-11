@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Desert Pyramid",
+ "icon": "minecraft:chiseled_sandstone",
+ "line1": "A tomb in the sand. Step on the blue tile and you join it.",
+ "line2": "A Kilnfolk tomb: a prayer made of brick.",
+ "members": [
+  "minecraft:desert_pyramid"
+ ]
+}

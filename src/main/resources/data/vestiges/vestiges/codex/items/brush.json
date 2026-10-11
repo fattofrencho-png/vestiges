@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Brush",
+ "members": [
+  "minecraft:brush"
+ ],
+ "rare": false,
+ "icon": "minecraft:brush",
+ "line1": "Brushes suspicious sand and gravel, and armadillos.",
+ "line2": "Patience is a tool too."
+}

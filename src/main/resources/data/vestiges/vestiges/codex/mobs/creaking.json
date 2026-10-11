@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Creaking",
+ "members": [
+  "minecraft:creaking"
+ ],
+ "boss": false,
+ "icon": "minecraft:creaking_spawn_egg",
+ "line1": "Moves only when you look away, and cannot die while its heart beats.",
+ "line2": "In the pale garden, the trees seem to watch too."
+}

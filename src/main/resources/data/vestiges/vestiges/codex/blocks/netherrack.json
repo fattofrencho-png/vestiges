@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Netherrack",
+ "class": "common",
+ "members": [
+  "minecraft:netherrack"
+ ],
+ "icon": "minecraft:netherrack",
+ "line1": "The Nether's stone. Burns forever once lit.",
+ "line2": "The world after a fire, made of what burned."
+}

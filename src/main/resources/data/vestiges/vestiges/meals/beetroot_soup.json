@@ -1,0 +1,9 @@
+{
+ "item": "minecraft:beetroot_soup",
+ "minutes": 10,
+ "stats": {
+  "chopping_speed": 4,
+  "crop_yield": 3
+ },
+ "text": "+4% chopping speed and +3% crop yield"
+}

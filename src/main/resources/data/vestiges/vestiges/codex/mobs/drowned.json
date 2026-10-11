@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Drowned",
+ "members": [
+  "minecraft:drowned"
+ ],
+ "boss": false,
+ "icon": "minecraft:drowned_spawn_egg",
+ "line1": "Zombies of the deep. Some throw tridents; some hold nautilus shells.",
+ "line2": "The Tidefolk, the stories say, never stopped guarding."
+}

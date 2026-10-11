@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Shroomlight",
+ "class": "rare",
+ "members": [
+  "minecraft:shroomlight"
+ ],
+ "icon": "minecraft:shroomlight",
+ "line1": "Glowing block in huge fungus caps.",
+ "line2": "Light that grows on its own."
+}

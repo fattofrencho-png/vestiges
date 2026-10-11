@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Village (Taiga)",
+ "icon": "minecraft:bell",
+ "line1": "Spruce homes, berry bushes and pumpkins.",
+ "line2": "Their stories are the longest, because the nights are.",
+ "members": [
+  "minecraft:village_taiga"
+ ]
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Rabbit",
+ "members": [
+  "minecraft:rabbit"
+ ],
+ "boss": false,
+ "icon": "minecraft:rabbit_spawn_egg",
+ "line1": "Quick and timid. Its foot is a brewer's lucky charm.",
+ "line2": "Some say a rabbit once turned killer. Nobody believes them."
+}

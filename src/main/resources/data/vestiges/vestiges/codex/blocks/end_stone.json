@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "End Stone",
+ "class": "rare",
+ "members": [
+  "minecraft:end_stone"
+ ],
+ "icon": "minecraft:end_stone",
+ "line1": "The pale stone of the End. Endermen place it.",
+ "line2": "It doesn't feel like stone. It feels like waiting."
+}

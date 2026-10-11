@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Ice",
+ "class": "common",
+ "members": [
+  "minecraft:ice"
+ ],
+ "icon": "minecraft:ice",
+ "line1": "Slippery, and melts near light.",
+ "line2": "Fish dream under it all winter."
+}

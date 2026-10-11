@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Cactus",
+ "class": "uncommon",
+ "members": [
+  "minecraft:cactus"
+ ],
+ "icon": "minecraft:cactus",
+ "line1": "Spiky. Hurts to touch, destroys items.",
+ "line2": "Smelt it for green dye."
+}

@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Cherry",
+ "class": "uncommon",
+ "members": [
+  "minecraft:cherry_log",
+  "minecraft:cherry_wood"
+ ],
+ "icon": "minecraft:cherry_log",
+ "line1": "Pink wood and blossoms.",
+ "line2": "Its petals fall all year and never pile up."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Glow Lichen",
+ "class": "common",
+ "members": [
+  "minecraft:glow_lichen"
+ ],
+ "icon": "minecraft:glow_lichen",
+ "line1": "Glowing moss on cave walls. Spreads with bone meal.",
+ "line2": "Miners follow it when the torches run out."
+}

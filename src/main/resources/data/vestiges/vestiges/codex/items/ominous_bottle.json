@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Ominous Bottle",
+ "members": [
+  "minecraft:ominous_bottle"
+ ],
+ "rare": false,
+ "icon": "minecraft:ominous_bottle",
+ "line1": "Drink it to bring Bad Omen. Raids and ominous trials follow.",
+ "line2": "Captains carry them, as if wanting to be defeated."
+}

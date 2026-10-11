@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Armadillo",
+ "members": [
+  "minecraft:armadillo"
+ ],
+ "boss": false,
+ "icon": "minecraft:armadillo_spawn_egg",
+ "line1": "Rolls into a ball when danger is near. Brush it gently for scutes.",
+ "line2": "Wolf armour is made from its scutes. The armadillo seems not to mind."
+}

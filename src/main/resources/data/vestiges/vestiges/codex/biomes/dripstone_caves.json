@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Dripstone Caves",
+ "members": [
+  "minecraft:dripstone_caves"
+ ],
+ "icon": "minecraft:pointed_dripstone",
+ "line1": "Stone teeth above and below. Mind the falling ones.",
+ "line2": "Dripstone grows one drop at a time. Patience made these caves."
+}

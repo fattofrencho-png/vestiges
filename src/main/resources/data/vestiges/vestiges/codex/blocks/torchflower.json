@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Torchflower",
+ "class": "rare",
+ "members": [
+  "minecraft:torchflower"
+ ],
+ "icon": "minecraft:torchflower",
+ "line1": "An ancient flower the sniffer digs up.",
+ "line2": "It grows from a world that no longer exists."
+}

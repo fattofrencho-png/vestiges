@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sugar Cane",
+ "class": "common",
+ "members": [
+  "minecraft:sugar_cane"
+ ],
+ "icon": "minecraft:sugar_cane",
+ "line1": "Grows by water. Sugar and paper.",
+ "line2": "Paper makes books. Books make everything else."
+}

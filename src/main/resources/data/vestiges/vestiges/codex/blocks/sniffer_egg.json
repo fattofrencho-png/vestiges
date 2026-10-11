@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sniffer Egg",
+ "class": "very_rare",
+ "members": [
+  "minecraft:sniffer_egg"
+ ],
+ "icon": "minecraft:sniffer_egg",
+ "line1": "An ancient egg. Hatches faster on moss.",
+ "line2": "It waited a long time to hatch."
+}

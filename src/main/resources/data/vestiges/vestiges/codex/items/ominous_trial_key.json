@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Ominous Trial Key",
+ "members": [
+  "minecraft:ominous_trial_key"
+ ],
+ "rare": true,
+ "icon": "minecraft:ominous_trial_key",
+ "line1": "Opens ominous vaults.",
+ "line2": "Only heroes who pass ominous trials get one."
+}

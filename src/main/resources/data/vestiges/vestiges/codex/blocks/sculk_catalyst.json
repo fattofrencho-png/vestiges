@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sculk Catalyst",
+ "class": "very_rare",
+ "members": [
+  "minecraft:sculk_catalyst"
+ ],
+ "icon": "minecraft:sculk_catalyst",
+ "line1": "Spreads sculk wherever something dies nearby.",
+ "line2": "The Deep Ones' failure took root here."
+}

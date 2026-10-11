@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Andesite",
+ "class": "common",
+ "members": [
+  "minecraft:andesite",
+  "minecraft:andesite_stairs",
+  "minecraft:andesite_slab",
+  "minecraft:andesite_wall"
+ ],
+ "icon": "minecraft:andesite",
+ "line1": "Plain grey stone, good for roads.",
+ "line2": "Every road in Restena is paved with it."
+}

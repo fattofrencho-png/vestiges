@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Meadow",
+ "members": [
+  "minecraft:meadow"
+ ],
+ "icon": "minecraft:cornflower",
+ "line1": "High flowers, bees and quiet. Sometimes a village.",
+ "line2": "Pilgrims rest here on the way to the peaks."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Camel Husk",
+ "members": [
+  "minecraft:camel_husk"
+ ],
+ "boss": false,
+ "icon": "minecraft:camel_husk_spawn_egg",
+ "line1": "A camel long dead, still walking the dunes.",
+ "line2": "The Kilnfolk buried their camels beside them. Some never stayed buried."
+}

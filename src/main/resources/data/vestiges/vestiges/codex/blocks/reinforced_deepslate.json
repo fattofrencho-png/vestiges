@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Reinforced Deepslate",
+ "class": "unique",
+ "members": [
+  "minecraft:reinforced_deepslate"
+ ],
+ "icon": "minecraft:reinforced_deepslate",
+ "line1": "A block no tool can break, found only in ancient cities.",
+ "line2": "Built to frame a gate. The gate never closed."
+}

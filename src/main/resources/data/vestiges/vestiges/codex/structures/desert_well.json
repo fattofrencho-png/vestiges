@@ -1,0 +1,9 @@
+{
+ "section": "structures",
+ "name": "Desert Well",
+ "icon": "minecraft:sandstone_slab",
+ "line1": "A small well in the sand. Brush the sand around it.",
+ "line2": "Travellers drop a coin in, for luck that never comes.",
+ "members": [],
+ "detect": "desert_well"
+}

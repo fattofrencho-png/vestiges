@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Eye of Ender",
+ "members": [
+  "minecraft:ender_eye"
+ ],
+ "rare": false,
+ "icon": "minecraft:ender_eye",
+ "line1": "Flies toward the nearest stronghold. Sometimes breaks.",
+ "line2": "It looks back at you. Don't stare too long."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Red Sand",
+ "class": "uncommon",
+ "members": [
+  "minecraft:red_sand"
+ ],
+ "icon": "minecraft:red_sand",
+ "line1": "The badlands' sand, rusty and warm.",
+ "line2": "It makes the same glass. Most people don't know."
+}

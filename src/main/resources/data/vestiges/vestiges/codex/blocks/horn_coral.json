@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Horn Coral",
+ "class": "rare",
+ "members": [
+  "minecraft:horn_coral",
+  "minecraft:horn_coral_block",
+  "minecraft:horn_coral_fan",
+  "minecraft:horn_coral_wall_fan"
+ ],
+ "icon": "minecraft:horn_coral",
+ "line1": "Yellow branching coral. Dies out of water.",
+ "line2": "Sailors carve it into horns for good weather."
+}

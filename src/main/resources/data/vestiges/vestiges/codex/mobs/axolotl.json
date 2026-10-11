@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Axolotl",
+ "members": [
+  "minecraft:axolotl"
+ ],
+ "boss": false,
+ "icon": "minecraft:axolotl_spawn_egg",
+ "line1": "Lives in lush cave pools and fights fish and drowned beside you.",
+ "line2": "Blue ones are so rare the Primas call them Tide-blessed."
+}

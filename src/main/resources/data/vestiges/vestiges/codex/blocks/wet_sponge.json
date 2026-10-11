@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Wet Sponge",
+ "class": "very_rare",
+ "members": [
+  "minecraft:wet_sponge"
+ ],
+ "icon": "minecraft:wet_sponge",
+ "line1": "A sponge full of water. Dry it.",
+ "line2": "The Tidefolk used them to keep the Heart's room dry."
+}

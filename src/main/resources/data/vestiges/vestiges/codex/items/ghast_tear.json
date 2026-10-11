@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Ghast Tear",
+ "members": [
+  "minecraft:ghast_tear"
+ ],
+ "rare": false,
+ "icon": "minecraft:ghast_tear",
+ "line1": "Dropped by ghasts. Brews regeneration.",
+ "line2": "The crying sky's only gift."
+}

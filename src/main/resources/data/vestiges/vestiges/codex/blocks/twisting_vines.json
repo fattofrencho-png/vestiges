@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Twisting Vines",
+ "class": "uncommon",
+ "members": [
+  "minecraft:twisting_vines",
+  "minecraft:twisting_vines_plant"
+ ],
+ "icon": "minecraft:twisting_vines",
+ "line1": "Blue vines growing up from warped nylium.",
+ "line2": "Climb them, quickly."
+}

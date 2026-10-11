@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Zombie Villager",
+ "members": [
+  "minecraft:zombie_villager"
+ ],
+ "boss": false,
+ "icon": "minecraft:zombie_villager_spawn_egg",
+ "line1": "Cure it with a splash of Weakness and a golden apple.",
+ "line2": "Cured, it remembers you, and trusts you completely."
+}

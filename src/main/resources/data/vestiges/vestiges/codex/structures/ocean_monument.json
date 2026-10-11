@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Ocean Monument",
+ "icon": "minecraft:prismarine_bricks",
+ "line1": "A prismarine fortress of guardians and three elders.",
+ "line2": "A monument is never finished. It is tended.",
+ "members": [
+  "minecraft:monument"
+ ]
+}

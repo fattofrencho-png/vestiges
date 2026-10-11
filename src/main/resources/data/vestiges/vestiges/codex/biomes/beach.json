@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Beach",
+ "members": [
+  "minecraft:beach"
+ ],
+ "icon": "minecraft:sand",
+ "line1": "Sand, turtles and the odd shipwreck.",
+ "line2": "Oscat fishers read the beach each morning for what the Tide brought."
+}

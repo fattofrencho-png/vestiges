@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Dolphin",
+ "members": [
+  "minecraft:dolphin"
+ ],
+ "boss": false,
+ "icon": "minecraft:dolphin_spawn_egg",
+ "line1": "Feed it raw fish and it leads you to treasure. Swim beside it for speed.",
+ "line2": "Sailors say dolphins remember the drowned halls before the sea came back."
+}

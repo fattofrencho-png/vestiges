@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Turtle Egg",
+ "class": "rare",
+ "members": [
+  "minecraft:turtle_egg"
+ ],
+ "icon": "minecraft:turtle_egg",
+ "line1": "Laid on beaches. Zombies love to trample them.",
+ "line2": "Every turtle comes back to its own beach."
+}

@@ -124,23 +124,34 @@ public final class XpSources {
 	}
 
 	private static void tickDiscovery(MinecraftServer server) {
-		if (server.getTickCount() % 40 != 0 || !LevelService.enabled()) {
+		if (server.getTickCount() % 40 != 0) {
 			return;
 		}
+		boolean levels = LevelService.enabled();
 		for (ServerPlayer p : server.getPlayerList().getPlayers()) {
 			if (p.isSpectator()) {
 				continue;
 			}
 			ServerLevel level = (ServerLevel) p.level();
 			BlockPos pos = p.blockPosition();
-			level.getBiome(pos).unwrapKey().ifPresent(key -> first(p, "biome:" + key.identifier(), BIOME_XP, "discovery"));
+			long chunk = ((long) (pos.getX() >> 4) & 0xFFFFFFFFL) | (((long) (pos.getZ() >> 4) & 0xFFFFFFFFL) << 32);
+			level.getBiome(pos).unwrapKey().ifPresent(key -> {
+				if (levels) {
+					first(p, "biome:" + key.identifier(), BIOME_XP, "discovery");
+				}
+				dev.vestiges.codex.CodexService.onBiome(p, key.identifier(), chunk);
+			});
 			Map<Structure, it.unimi.dsi.fastutil.longs.LongSet> around = level.structureManager().getAllStructuresAt(pos);
 			for (Structure s : around.keySet()) {
 				StructureStart start = level.structureManager().getStructureAt(pos, s);
 				if (start != null && start.isValid() && start.getBoundingBox().isInside(pos)) {
 					Identifier id = level.registryAccess().lookupOrThrow(Registries.STRUCTURE).getKey(s);
 					if (id != null) {
-						first(p, "structure:" + id, STRUCTURE_XP, "discovery");
+						if (levels) {
+							first(p, "structure:" + id, STRUCTURE_XP, "discovery");
+						}
+						net.minecraft.world.level.levelgen.structure.BoundingBox box = start.getBoundingBox();
+						dev.vestiges.codex.CodexService.onStructure(p, id, BlockPos.asLong(box.minX(), box.minY(), box.minZ()));
 					}
 				}
 			}

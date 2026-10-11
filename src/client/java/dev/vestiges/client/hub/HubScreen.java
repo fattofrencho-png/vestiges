@@ -31,7 +31,7 @@ public final class HubScreen extends Screen {
 
 	enum Tab {
 		CHARACTER("Character", ""),
-		CODEX("Codex", "Blocks, Bestiary, Biomes, Places and Lore arrive in M4."),
+		CODEX("Codex", "Blocks, Bestiary, Places and Items: everything you find fills it in."),
 		VILLAGERS("Villagers", "Your villager library and the villager screen arrive in M6."),
 		SETTLEMENTS("Settlements", "Bells, renown, wards and banners arrive in M5."),
 		FEATS("Feats", ""),
@@ -70,6 +70,13 @@ public final class HubScreen extends Screen {
 					minecraft.setScreenAndShow(new dev.vestiges.client.tree.TreeScreen());
 				}
 			}).bounds(GAP, HEADER + 8 + 100, 180, 20).build());
+		}
+		if (tab == Tab.CODEX) {
+			addRenderableWidget(Button.builder(Component.literal("Open the Codex"), b -> {
+				if (minecraft != null) {
+					minecraft.setScreenAndShow(new dev.vestiges.client.codex.CodexScreen());
+				}
+			}).bounds(GAP, HEADER + 34, 160, 20).build());
 		}
 		if (tab == Tab.MAP) {
 			addRenderableWidget(Button.builder(Component.literal("Open the world map (M)"), b -> {

@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Cobblestone",
+ "class": "common",
+ "members": [
+  "minecraft:cobblestone",
+  "minecraft:cobblestone_stairs",
+  "minecraft:cobblestone_slab",
+  "minecraft:cobblestone_wall"
+ ],
+ "icon": "minecraft:cobblestone",
+ "line1": "Broken stone. Cheap, honest, everywhere.",
+ "line2": "Every first house in every age was cobblestone."
+}

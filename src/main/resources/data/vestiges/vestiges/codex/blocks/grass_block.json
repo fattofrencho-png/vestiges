@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Grass Block",
+ "class": "common",
+ "members": [
+  "minecraft:grass_block"
+ ],
+ "icon": "minecraft:grass_block",
+ "line1": "Dirt with grass on top. Spreads to dirt in the light.",
+ "line2": "Silk Touch keeps the grass. Few bother."
+}

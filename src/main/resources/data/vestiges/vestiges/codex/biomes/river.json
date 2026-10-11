@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "River",
+ "members": [
+  "minecraft:river"
+ ],
+ "icon": "minecraft:water_bucket",
+ "line1": "Fresh water, clay, and every traveller's road.",
+ "line2": "Rivers run the same course every age, the Seers wrote."
+}

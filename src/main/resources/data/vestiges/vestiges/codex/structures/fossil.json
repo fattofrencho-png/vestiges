@@ -1,0 +1,9 @@
+{
+ "section": "structures",
+ "name": "Fossil",
+ "icon": "minecraft:bone_block",
+ "line1": "Huge bones buried in stone.",
+ "line2": "No beast alive is that big. Some were, once.",
+ "members": [],
+ "detect": "fossil"
+}

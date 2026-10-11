@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Enderman",
+ "members": [
+  "minecraft:enderman"
+ ],
+ "boss": false,
+ "icon": "minecraft:enderman_spawn_egg",
+ "line1": "Don't meet its eyes. It takes that personally.",
+ "line2": "The Vitera say it is trying to remember who it was."
+}

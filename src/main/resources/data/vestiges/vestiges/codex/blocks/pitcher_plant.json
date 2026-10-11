@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Pitcher Plant",
+ "class": "rare",
+ "members": [
+  "minecraft:pitcher_plant"
+ ],
+ "icon": "minecraft:pitcher_plant",
+ "line1": "A tall ancient flower from sniffer seeds.",
+ "line2": "Its seeds were waiting a very long time."
+}

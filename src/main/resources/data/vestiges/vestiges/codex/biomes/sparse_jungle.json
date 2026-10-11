@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Sparse Jungle",
+ "members": [
+  "minecraft:sparse_jungle"
+ ],
+ "icon": "minecraft:jungle_log",
+ "line1": "Jungle thinning into open land.",
+ "line2": "Melons grow wild here, for the lucky."
+}

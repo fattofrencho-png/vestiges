@@ -36,7 +36,16 @@ class MixinLoadTest {
 		"net.minecraft.world.damagesource.CombatRules",
 		"net.minecraft.world.entity.ai.attributes.Attributes",
 		"net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity",
-		"net.minecraft.world.entity.vehicle.minecart.AbstractMinecartContainer");
+		"net.minecraft.world.entity.vehicle.minecart.AbstractMinecartContainer",
+		"net.minecraft.world.item.BlockItem",
+		"net.minecraft.world.level.block.piston.PistonBaseBlock",
+		"net.minecraft.world.entity.item.FallingBlockEntity",
+		"net.minecraft.world.entity.animal.Animal",
+		"net.minecraft.world.level.block.CropBlock",
+		"net.minecraft.world.item.BoneMealItem",
+		"net.minecraft.world.level.block.FarmlandBlock",
+		"net.minecraft.world.level.block.CakeBlock",
+		"net.minecraft.world.food.FoodProperties");
 	/** Client screens and HUD, checked when the tests run as a client. */
 	private static final List<String> CLIENT_TARGETS = List.of(
 		"net.minecraft.client.gui.screens.inventory.InventoryScreen",

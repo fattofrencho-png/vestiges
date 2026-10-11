@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Cherry Grove",
+ "members": [
+  "minecraft:cherry_grove"
+ ],
+ "icon": "minecraft:cherry_sapling",
+ "line1": "Pink blossoms and petals on every path.",
+ "line2": "Even the Walkers admit something this lovely was planted on purpose."
+}

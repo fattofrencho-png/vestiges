@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Crimson Stem",
+ "class": "uncommon",
+ "members": [
+  "minecraft:crimson_stem",
+  "minecraft:crimson_hyphae"
+ ],
+ "icon": "minecraft:crimson_stem",
+ "line1": "The trunk of a crimson fungus.",
+ "line2": "Nether wood never burns."
+}

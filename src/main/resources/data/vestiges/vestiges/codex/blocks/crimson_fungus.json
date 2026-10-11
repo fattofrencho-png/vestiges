@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Crimson Fungus",
+ "class": "uncommon",
+ "members": [
+  "minecraft:crimson_fungus"
+ ],
+ "icon": "minecraft:crimson_fungus",
+ "line1": "Grows into a huge crimson fungus with bone meal.",
+ "line2": "Hoglins breed when fed it."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Breeze Rod",
+ "members": [
+  "minecraft:breeze_rod"
+ ],
+ "rare": false,
+ "icon": "minecraft:breeze_rod",
+ "line1": "Dropped by breezes. Makes wind charges and maces.",
+ "line2": "It still smells of the makers' breath."
+}

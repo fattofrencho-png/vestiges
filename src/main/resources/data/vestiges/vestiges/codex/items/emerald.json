@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Emerald",
+ "members": [
+  "minecraft:emerald"
+ ],
+ "rare": false,
+ "icon": "minecraft:emerald",
+ "line1": "The currency of villages, and of Vestiges.",
+ "line2": "Even the faiths that hate each other trade in emeralds."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Poplar",
+ "class": "uncommon",
+ "members": [
+  "minecraft:poplar_log"
+ ],
+ "icon": "minecraft:poplar_log",
+ "line1": "Tall trees with gold, orange or red leaves.",
+ "line2": "They keep their autumn all year."
+}

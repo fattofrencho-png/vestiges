@@ -72,6 +72,21 @@ public final class VestigesCommands {
 						.executes(ctx -> mobRank(ctx.getSource(), StringArgumentType.getString(ctx, "rank"), 0))
 						.then(Commands.argument("level", IntegerArgumentType.integer(1, 200))
 							.executes(ctx -> mobRank(ctx.getSource(), StringArgumentType.getString(ctx, "rank"), IntegerArgumentType.getInteger(ctx, "level")))))))
+			.then(Commands.literal("codex")
+				.then(Commands.literal("info")
+					.then(Commands.argument("targets", EntityArgument.players())
+						.executes(ctx -> codexInfo(ctx.getSource(), EntityArgument.getPlayers(ctx, "targets")))))
+				.then(Commands.literal("set")
+					.then(Commands.argument("targets", EntityArgument.players())
+						.then(Commands.argument("entry", StringArgumentType.string())
+							.suggests((ctx, b) -> net.minecraft.commands.SharedSuggestionProvider.suggest(
+								dev.vestiges.codex.CodexIndex.get().entries.keySet().stream().map(k -> "\"" + k + "\""), b))
+							.then(Commands.argument("stage", IntegerArgumentType.integer(0, 4))
+								.executes(ctx -> codexSet(ctx.getSource(), EntityArgument.getPlayers(ctx, "targets"),
+									StringArgumentType.getString(ctx, "entry"), IntegerArgumentType.getInteger(ctx, "stage")))))))
+				.then(Commands.literal("reset")
+					.then(Commands.argument("targets", EntityArgument.players())
+						.executes(ctx -> codexReset(ctx.getSource(), EntityArgument.getPlayers(ctx, "targets"))))))
 			.then(Commands.literal("loot")
 				.then(Commands.literal("roll")
 					.then(Commands.argument("level", IntegerArgumentType.integer(1, 100))
@@ -93,6 +108,54 @@ public final class VestigesCommands {
 						.suggests((ctx, builder) -> SharedSuggestionProvider.suggest(Arrays.stream(VestigesSystem.values()).map(s -> s.id), builder))
 						.then(Commands.argument("on", BoolArgumentType.bool())
 							.executes(ctx -> setSystem(ctx.getSource(), StringArgumentType.getString(ctx, "id"), BoolArgumentType.getBool(ctx, "on"))))))));
+	}
+
+	private static int codexInfo(CommandSourceStack src, Collection<ServerPlayer> targets) {
+		for (ServerPlayer p : targets) {
+			dev.vestiges.codex.CodexProgress prog = dev.vestiges.codex.CodexService.get(p);
+			java.util.Map<String, int[]> bySection = new java.util.TreeMap<>();
+			dev.vestiges.codex.CodexIndex.get().entries.forEach((id, e) -> {
+				int[] c = bySection.computeIfAbsent(e.section(), k -> new int[3]);
+				int stage = prog.stage(id);
+				c[0]++;
+				if (stage > 0) {
+					c[1]++;
+				}
+				if (stage > 0 && stage >= dev.vestiges.codex.CodexRules.maxStage(e)) {
+					c[2]++;
+				}
+			});
+			StringBuilder sb = new StringBuilder(p.getName().getString() + ": " + prog.discovered() + " found, "
+				+ dev.vestiges.codex.CodexService.bonusPoints(p) + " bonus Craft points");
+			bySection.forEach((k, c) -> sb.append(" \u00B7 ").append(k).append(' ').append(c[1]).append('/').append(c[0]).append(" (").append(c[2]).append(" mastered)"));
+			src.sendSuccess(() -> Component.literal(sb.toString()), false);
+		}
+		return targets.size();
+	}
+
+	private static int codexSet(CommandSourceStack src, Collection<ServerPlayer> targets, String entry, int stage) {
+		for (ServerPlayer p : targets) {
+			if ("all".equals(entry)) {
+				// Testing helper: every entry at once (e.g. to see the bonus Craft points).
+				for (String id : dev.vestiges.codex.CodexIndex.get().entries.keySet()) {
+					dev.vestiges.codex.CodexService.setStageQuiet(p, id, stage);
+				}
+				dev.vestiges.codex.CodexService.refresh(p);
+				continue;
+			}
+			if (!dev.vestiges.codex.CodexService.setStage(p, entry, stage)) {
+				src.sendFailure(Component.literal("Unknown Codex entry: " + entry + " (for example blocks/stone, mobs/zombie)"));
+				return 0;
+			}
+		}
+		src.sendSuccess(() -> Component.literal("Set " + entry + " to stage " + stage + " for " + targets.size() + " player(s)"), true);
+		return targets.size();
+	}
+
+	private static int codexReset(CommandSourceStack src, Collection<ServerPlayer> targets) {
+		targets.forEach(dev.vestiges.codex.CodexService::reset);
+		src.sendSuccess(() -> Component.literal("Reset the Codex of " + targets.size() + " player(s)"), true);
+		return targets.size();
 	}
 
 	private static final java.util.List<String> RARITIES = java.util.List.of("common", "uncommon", "superior", "rare", "epic", "legendary", "relic");

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Cornflower",
+ "class": "common",
+ "members": [
+  "minecraft:cornflower"
+ ],
+ "icon": "minecraft:cornflower",
+ "line1": "A blue meadow flower.",
+ "line2": "Weavers get their best blue from it."
+}

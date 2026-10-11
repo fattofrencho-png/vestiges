@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Mace",
+ "members": [
+  "minecraft:mace"
+ ],
+ "rare": true,
+ "icon": "minecraft:mace",
+ "line1": "A heavy weapon. Fall onto a target for huge damage.",
+ "line2": "The Delvers' favourite argument."
+}

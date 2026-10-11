@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Iron Golem",
+ "members": [
+  "minecraft:iron_golem"
+ ],
+ "boss": false,
+ "icon": "minecraft:iron_golem_spawn_egg",
+ "line1": "Guards villages, hands poppies to children, and hits very hard.",
+ "line2": "It never says what it was built to protect them from."
+}

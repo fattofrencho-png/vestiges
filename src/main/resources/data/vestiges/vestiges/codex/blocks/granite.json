@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Granite",
+ "class": "common",
+ "members": [
+  "minecraft:granite",
+  "minecraft:granite_stairs",
+  "minecraft:granite_slab",
+  "minecraft:granite_wall"
+ ],
+ "icon": "minecraft:granite",
+ "line1": "Speckled red stone. Polish it for floors.",
+ "line2": "Masons of Restena call it \"kings' stone\"."
+}

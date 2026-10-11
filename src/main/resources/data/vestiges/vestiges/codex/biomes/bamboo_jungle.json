@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Bamboo Jungle",
+ "members": [
+  "minecraft:bamboo_jungle"
+ ],
+ "icon": "minecraft:bamboo",
+ "line1": "Bamboo thick enough to lose a friend in. Pandas love it.",
+ "line2": "The rarest pandas wander here, if you are patient."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Dirt",
+ "class": "common",
+ "members": [
+  "minecraft:dirt"
+ ],
+ "icon": "minecraft:dirt",
+ "line1": "The humblest block. Everything grows from it.",
+ "line2": "The Primas bless it as the Stone's gentle child."
+}

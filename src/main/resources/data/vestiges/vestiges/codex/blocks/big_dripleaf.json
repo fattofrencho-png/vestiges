@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Big Dripleaf",
+ "class": "uncommon",
+ "members": [
+  "minecraft:big_dripleaf",
+  "minecraft:big_dripleaf_stem"
+ ],
+ "icon": "minecraft:big_dripleaf",
+ "line1": "A leaf you can stand on, until it tips.",
+ "line2": "Lush caves are full of these traps, made by nobody."
+}

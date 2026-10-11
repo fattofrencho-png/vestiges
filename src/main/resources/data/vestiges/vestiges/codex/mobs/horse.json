@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Horse",
+ "members": [
+  "minecraft:horse"
+ ],
+ "boss": false,
+ "icon": "minecraft:horse_spawn_egg",
+ "line1": "Fast and strong, each one a little different. Tame it by riding.",
+ "line2": "Skeleton horsemen ride out in lightning storms. Ride the other way."
+}

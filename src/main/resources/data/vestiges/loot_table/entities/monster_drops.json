@@ -27,7 +27,7 @@
       "type": "minecraft:killed_by_player"
      },
      {
-      "type": "minecraft:random_chance",
+      "type": "vestiges:drop_chance",
       "chance": 0.167
      },
      {
@@ -63,7 +63,7 @@
       "type": "minecraft:killed_by_player"
      },
      {
-      "type": "minecraft:random_chance",
+      "type": "vestiges:drop_chance",
       "chance": 0.167
      },
      {
@@ -114,7 +114,7 @@
       "type": "minecraft:killed_by_player"
      },
      {
-      "type": "minecraft:random_chance",
+      "type": "vestiges:drop_chance",
       "chance": 0.2
      },
      {
@@ -191,7 +191,7 @@
       "type": "minecraft:killed_by_player"
      },
      {
-      "type": "minecraft:random_chance",
+      "type": "vestiges:drop_chance",
       "chance": 0.2
      },
      {
@@ -269,7 +269,7 @@
       "type": "minecraft:killed_by_player"
      },
      {
-      "type": "minecraft:random_chance",
+      "type": "vestiges:drop_chance",
       "chance": 0.2
      },
      {

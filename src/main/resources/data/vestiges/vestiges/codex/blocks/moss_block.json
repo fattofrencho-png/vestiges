@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Moss Block",
+ "class": "uncommon",
+ "members": [
+  "minecraft:moss_block"
+ ],
+ "icon": "minecraft:moss_block",
+ "line1": "Spreads over stone with bone meal.",
+ "line2": "The oldest brewer of all, the Brewers said."
+}

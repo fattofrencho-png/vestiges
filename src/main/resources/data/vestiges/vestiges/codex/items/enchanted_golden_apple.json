@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Enchanted Golden Apple",
+ "members": [
+  "minecraft:enchanted_golden_apple"
+ ],
+ "rare": true,
+ "icon": "minecraft:enchanted_golden_apple",
+ "line1": "A golden apple glowing with old power. Never crafted.",
+ "line2": "Found only in ruins. Somebody grew these once."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Skeleton",
+ "members": [
+  "minecraft:skeleton"
+ ],
+ "boss": false,
+ "icon": "minecraft:skeleton_spawn_egg",
+ "line1": "Bones and a bow. It burns at dawn and runs from wolves.",
+ "line2": "Its arrows never run out. Neither does its spite."
+}

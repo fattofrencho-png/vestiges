@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Ravager",
+ "members": [
+  "minecraft:ravager"
+ ],
+ "boss": false,
+ "icon": "minecraft:ravager_spawn_egg",
+ "line1": "The battering ram of every raid. Block its charge with a shield.",
+ "line2": "The Hollow Kings rode them to war."
+}

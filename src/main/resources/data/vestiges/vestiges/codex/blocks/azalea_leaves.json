@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Azalea Leaves",
+ "class": "uncommon",
+ "members": [
+  "minecraft:azalea_leaves",
+  "minecraft:flowering_azalea_leaves"
+ ],
+ "icon": "minecraft:azalea_leaves",
+ "line1": "Leaves of the azalea tree, some with flowers.",
+ "line2": "Shear them before they fall."
+}

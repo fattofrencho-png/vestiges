@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Phantom Membrane",
+ "members": [
+  "minecraft:phantom_membrane"
+ ],
+ "rare": false,
+ "icon": "minecraft:phantom_membrane",
+ "line1": "Dropped by phantoms. Repairs elytra; brews slow falling.",
+ "line2": "The Sleepless would have hated what it's used for."
+}

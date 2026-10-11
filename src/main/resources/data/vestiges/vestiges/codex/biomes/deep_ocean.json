@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Deep Ocean",
+ "members": [
+  "minecraft:deep_ocean"
+ ],
+ "icon": "minecraft:kelp",
+ "line1": "Open water too deep to see the bottom.",
+ "line2": "Monuments rise from the deep like teeth."
+}

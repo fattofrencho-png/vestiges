@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Cobweb",
+ "class": "uncommon",
+ "members": [
+  "minecraft:cobweb"
+ ],
+ "icon": "minecraft:cobweb",
+ "line1": "Sticky. Shears or swords cut it fast.",
+ "line2": "Mineshafts are full of it, and of what spun it."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Copper Golem",
+ "members": [
+  "minecraft:copper_golem"
+ ],
+ "boss": false,
+ "icon": "minecraft:copper_golem_spawn_egg",
+ "line1": "Carries items from copper chests to others. Scrape it with an axe or it becomes a statue.",
+ "line2": "Its design came from a vault no one built, an old engineer claims."
+}

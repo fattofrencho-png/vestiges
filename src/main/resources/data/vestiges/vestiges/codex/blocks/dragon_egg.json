@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Dragon Egg",
+ "class": "unique",
+ "members": [
+  "minecraft:dragon_egg"
+ ],
+ "icon": "minecraft:dragon_egg",
+ "line1": "Left on the portal after the first dragon falls. Teleports when touched.",
+ "line2": "One per world. Only one. Never two."
+}

@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Dappled Forest",
+ "members": [
+  "minecraft:dappled_forest"
+ ],
+ "icon": "minecraft:poplar_sapling",
+ "line1": "Poplars in autumn colours, with red shrubs underfoot.",
+ "line2": "The leaves stay gold all year, as if the season were painted on."
+}

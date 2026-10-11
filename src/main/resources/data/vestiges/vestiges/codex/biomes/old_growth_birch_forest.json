@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Old Growth Birch Forest",
+ "members": [
+  "minecraft:old_growth_birch_forest"
+ ],
+ "icon": "minecraft:birch_log",
+ "line1": "Birches twice as tall as usual.",
+ "line2": "The Weavers' oldest looms were birch."
+}

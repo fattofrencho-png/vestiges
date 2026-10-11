@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Magma Cube",
+ "members": [
+  "minecraft:magma_cube"
+ ],
+ "boss": false,
+ "icon": "minecraft:magma_cube_spawn_egg",
+ "line1": "Bounces through basalt deltas and splits when struck.",
+ "line2": "Frogs love them. That should tell you something."
+}

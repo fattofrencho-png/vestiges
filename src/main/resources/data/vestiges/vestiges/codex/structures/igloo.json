@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Igloo",
+ "icon": "minecraft:snow_block",
+ "line1": "A snow hut with a secret: look under the carpet.",
+ "line2": "The Frostwardens kept their secrets under the floor too.",
+ "members": [
+  "minecraft:igloo"
+ ]
+}

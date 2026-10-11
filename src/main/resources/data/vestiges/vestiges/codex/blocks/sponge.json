@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sponge",
+ "class": "very_rare",
+ "members": [
+  "minecraft:sponge"
+ ],
+ "icon": "minecraft:sponge",
+ "line1": "Soaks up water. Dry it in a furnace to reuse.",
+ "line2": "Monuments keep them in hidden rooms."
+}

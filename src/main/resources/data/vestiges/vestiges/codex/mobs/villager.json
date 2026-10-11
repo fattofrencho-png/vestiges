@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Villager",
+ "members": [
+  "minecraft:villager"
+ ],
+ "boss": false,
+ "icon": "minecraft:villager_spawn_egg",
+ "line1": "Every one has a name, a trade and a story. Ask.",
+ "line2": "Most have no idea how old the world is. The ones who do keep quiet."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Silverfish",
+ "members": [
+  "minecraft:silverfish"
+ ],
+ "boss": false,
+ "icon": "minecraft:silverfish_spawn_egg",
+ "line1": "Hides inside stone in strongholds and mountains. Hit one and the rest wake.",
+ "line2": "The vault-builders guarded the eye-door with pests, it seems."
+}

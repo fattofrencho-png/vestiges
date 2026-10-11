@@ -1,0 +1,11 @@
+{
+ "section": "structures",
+ "name": "Mineshaft",
+ "icon": "minecraft:rail",
+ "line1": "Wooden tunnels, rails and cave spiders.",
+ "line2": "The Deepdelvers dug the first ones, the stories say.",
+ "members": [
+  "minecraft:mineshaft",
+  "minecraft:mineshaft_mesa"
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Deep Lukewarm Ocean",
+ "members": [
+  "minecraft:deep_lukewarm_ocean"
+ ],
+ "icon": "minecraft:seagrass",
+ "line1": "Warm deep water where monuments and drowned gather.",
+ "line2": "The Tidefolk built their finest halls in water like this."
+}

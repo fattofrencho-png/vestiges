@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Village (Savanna)",
+ "icon": "minecraft:bell",
+ "line1": "Acacia homes in the hot grass.",
+ "line2": "Their ranchers trust llamas more than people.",
+ "members": [
+  "minecraft:village_savanna"
+ ]
+}

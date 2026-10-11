@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Warped Forest",
+ "members": [
+  "minecraft:warped_forest"
+ ],
+ "icon": "minecraft:warped_fungus",
+ "line1": "Blue fungus where endermen gather. The calmest place in the Nether.",
+ "line2": "Endermen come here to be left alone."
+}

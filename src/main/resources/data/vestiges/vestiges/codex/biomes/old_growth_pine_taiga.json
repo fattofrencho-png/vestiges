@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Old Growth Pine Taiga",
+ "members": [
+  "minecraft:old_growth_pine_taiga"
+ ],
+ "icon": "minecraft:podzol",
+ "line1": "Huge pines, podzol and mossy boulders.",
+ "line2": "The boulders were here before the trees."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Tadpole",
+ "members": [
+  "minecraft:tadpole"
+ ],
+ "boss": false,
+ "icon": "minecraft:tadpole_spawn_egg",
+ "line1": "Grows into a frog. Scoop it up in a bucket to bring it home.",
+ "line2": "Where it grows up decides its colour."
+}

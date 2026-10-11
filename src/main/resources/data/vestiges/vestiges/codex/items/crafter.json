@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Crafter",
+ "members": [
+  "minecraft:crafter"
+ ],
+ "rare": false,
+ "icon": "minecraft:crafter",
+ "line1": "Crafts one recipe when powered.",
+ "line2": "Your Crafter workers prefer it to any table."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Slime",
+ "members": [
+  "minecraft:slime"
+ ],
+ "boss": false,
+ "icon": "minecraft:slime_spawn_egg",
+ "line1": "Bounces in swamps by moonlight, and in certain chunks underground.",
+ "line2": "Slime chunks never move. The Seers called that proof the map never changes."
+}

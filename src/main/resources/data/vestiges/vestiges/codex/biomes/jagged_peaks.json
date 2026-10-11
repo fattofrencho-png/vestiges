@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Jagged Peaks",
+ "members": [
+  "minecraft:jagged_peaks"
+ ],
+ "icon": "minecraft:snow_block",
+ "line1": "Sharp summits, goats and long falls.",
+ "line2": "The wind up here sounds almost like words."
+}

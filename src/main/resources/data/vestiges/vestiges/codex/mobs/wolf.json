@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Wolf",
+ "members": [
+  "minecraft:wolf"
+ ],
+ "boss": false,
+ "icon": "minecraft:wolf_spawn_egg",
+ "line1": "Tame it with bones and it fights at your side. Armour it with scutes.",
+ "line2": "Every forest raises its own coat, from pale to rusty."
+}

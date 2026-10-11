@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Frozen Peaks",
+ "members": [
+  "minecraft:frozen_peaks"
+ ],
+ "icon": "minecraft:packed_ice",
+ "line1": "Ice and packed snow at the roof of the world.",
+ "line2": "Thornner's miners climb here to pray before going deep."
+}

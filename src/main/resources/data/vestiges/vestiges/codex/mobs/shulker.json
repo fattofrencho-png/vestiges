@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Shulker",
+ "members": [
+  "minecraft:shulker"
+ ],
+ "boss": false,
+ "icon": "minecraft:shulker_spawn_egg",
+ "line1": "Hides in its shell and fires bullets that make you float.",
+ "line2": "The Ascended trusted them to guard their towers."
+}

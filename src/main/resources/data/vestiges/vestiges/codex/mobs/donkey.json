@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Donkey",
+ "members": [
+  "minecraft:donkey"
+ ],
+ "boss": false,
+ "icon": "minecraft:donkey_spawn_egg",
+ "line1": "Carries a chest, stubborn and loud.",
+ "line2": "Crossed with a horse, it gives a mule, and the mule gives nothing more."
+}

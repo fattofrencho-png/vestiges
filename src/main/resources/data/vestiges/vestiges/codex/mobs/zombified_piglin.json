@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Zombified Piglin",
+ "members": [
+  "minecraft:zombified_piglin"
+ ],
+ "boss": false,
+ "icon": "minecraft:zombified_piglin_spawn_egg",
+ "line1": "Peaceful until you hit one. Then all of them remember.",
+ "line2": "A piglin brought to the overworld becomes this. The Nether doesn't travel well."
+}

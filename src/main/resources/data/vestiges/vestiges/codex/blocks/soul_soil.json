@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Soul Soil",
+ "class": "common",
+ "members": [
+  "minecraft:soul_soil"
+ ],
+ "icon": "minecraft:soul_soil",
+ "line1": "Firmer soul sand. Soul fire burns blue on it.",
+ "line2": "The soul valley's ground. Quiet, and sad."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Hoglin",
+ "members": [
+  "minecraft:hoglin"
+ ],
+ "boss": false,
+ "icon": "minecraft:hoglin_spawn_egg",
+ "line1": "Charges through crimson forests. Warped fungus makes it back away.",
+ "line2": "Brought to the overworld, it turns into a zoglin."
+}

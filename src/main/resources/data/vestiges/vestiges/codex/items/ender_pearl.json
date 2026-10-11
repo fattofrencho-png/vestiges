@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Ender Pearl",
+ "members": [
+  "minecraft:ender_pearl"
+ ],
+ "rare": false,
+ "icon": "minecraft:ender_pearl",
+ "line1": "Throw it to teleport. Dropped by endermen.",
+ "line2": "It was part of someone, once."
+}

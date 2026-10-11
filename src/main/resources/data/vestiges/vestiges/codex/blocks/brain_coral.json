@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Brain Coral",
+ "class": "rare",
+ "members": [
+  "minecraft:brain_coral",
+  "minecraft:brain_coral_block",
+  "minecraft:brain_coral_fan",
+  "minecraft:brain_coral_wall_fan"
+ ],
+ "icon": "minecraft:brain_coral",
+ "line1": "Pink, wrinkled coral. Dies out of water.",
+ "line2": "It looks like it is thinking."
+}

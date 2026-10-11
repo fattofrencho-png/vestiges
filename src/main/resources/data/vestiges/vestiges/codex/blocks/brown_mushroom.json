@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Brown Mushroom",
+ "class": "common",
+ "members": [
+  "minecraft:brown_mushroom"
+ ],
+ "icon": "minecraft:brown_mushroom",
+ "line1": "Grows in the dark, and in stews.",
+ "line2": "Fermented spider eye needs it. Brewers love that sentence."
+}

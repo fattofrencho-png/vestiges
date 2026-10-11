@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Bat",
+ "members": [
+  "minecraft:bat"
+ ],
+ "boss": false,
+ "icon": "minecraft:bat_spawn_egg",
+ "line1": "Harmless, noisy, and always in the way.",
+ "line2": "Miners say a cave without bats has something worse in it."
+}

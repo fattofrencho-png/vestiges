@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Trail Ruins",
+ "icon": "minecraft:brush",
+ "line1": "Buried ruins full of suspicious gravel. Bring a brush.",
+ "line2": "Sherds tell stories in pictures. Nobody can tell which age.",
+ "members": [
+  "minecraft:trail_ruins"
+ ]
+}

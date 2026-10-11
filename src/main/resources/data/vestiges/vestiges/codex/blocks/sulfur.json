@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Sulfur",
+ "class": "uncommon",
+ "members": [
+  "minecraft:sulfur",
+  "minecraft:sulfur_stairs",
+  "minecraft:sulfur_slab",
+  "minecraft:sulfur_wall"
+ ],
+ "icon": "minecraft:sulfur",
+ "line1": "Yellow stone from the sulfur caves.",
+ "line2": "Brewers pay well for it, and ask no questions."
+}

@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Nether Fossil",
+ "icon": "minecraft:bone_block",
+ "line1": "Bone ribs rising from soul sand.",
+ "line2": "Whatever it was, it died before the fire.",
+ "members": [
+  "minecraft:nether_fossil"
+ ]
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Llama",
+ "members": [
+  "minecraft:llama"
+ ],
+ "boss": false,
+ "icon": "minecraft:llama_spawn_egg",
+ "line1": "Spits when annoyed. Carries chests and follows in caravans.",
+ "line2": "A llama caravan is never in a hurry. Neither are its owners."
+}

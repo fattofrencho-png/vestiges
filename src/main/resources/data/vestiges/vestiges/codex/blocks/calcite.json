@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Calcite",
+ "class": "common",
+ "members": [
+  "minecraft:calcite"
+ ],
+ "icon": "minecraft:calcite",
+ "line1": "Pale stone around amethyst geodes; masons love it for white walls.",
+ "line2": "Miners swear the geodes hum at night."
+}

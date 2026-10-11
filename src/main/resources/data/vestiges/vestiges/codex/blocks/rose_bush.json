@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Rose Bush",
+ "class": "common",
+ "members": [
+  "minecraft:rose_bush"
+ ],
+ "icon": "minecraft:rose_bush",
+ "line1": "A tall bush of red roses.",
+ "line2": "The thorns are decorative. Mostly."
+}

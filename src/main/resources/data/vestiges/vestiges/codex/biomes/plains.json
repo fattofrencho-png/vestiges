@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Plains",
+ "members": [
+  "minecraft:plains"
+ ],
+ "icon": "minecraft:short_grass",
+ "line1": "Open grass, horses and villages. A good start.",
+ "line2": "Every kingdom began on a plain, the Walkers say."
+}

@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Birch Forest",
+ "members": [
+  "minecraft:birch_forest"
+ ],
+ "icon": "minecraft:birch_sapling",
+ "line1": "Pale trunks, bright leaves, few dangers.",
+ "line2": "Weavers say birch bark was the first paper."
+}

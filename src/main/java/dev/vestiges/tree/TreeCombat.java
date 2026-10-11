@@ -116,6 +116,7 @@ public final class TreeCombat {
 		boolean tree = !target.isInvulnerableTo(level, source);
 		if (source.getEntity() instanceof ServerPlayer attacker && attacker != target) {
 			out *= (float) LevelService.damageMultiplier(attacker);
+			out *= (float) dev.vestiges.codex.CodexService.damageMultiplier(attacker, target);
 			if (tree) {
 				out = outgoing(attacker, target, source, out, level, t);
 			}

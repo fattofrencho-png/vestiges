@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Wooded Badlands",
+ "members": [
+  "minecraft:wooded_badlands"
+ ],
+ "icon": "minecraft:terracotta",
+ "line1": "Badlands with oak groves on top.",
+ "line2": "The trees up there are the only shade for days."
+}

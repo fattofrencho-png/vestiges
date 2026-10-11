@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Pink Petals",
+ "class": "uncommon",
+ "members": [
+  "minecraft:pink_petals"
+ ],
+ "icon": "minecraft:pink_petals",
+ "line1": "Pink petals scattered under cherry trees.",
+ "line2": "Up to four on one block. Bees count them."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Salmon",
+ "members": [
+  "minecraft:salmon"
+ ],
+ "boss": false,
+ "icon": "minecraft:salmon_spawn_egg",
+ "line1": "Swims rivers and cold oceans, in sizes small to large.",
+ "line2": "Frostwardens fished them through the ice, until the ice won."
+}

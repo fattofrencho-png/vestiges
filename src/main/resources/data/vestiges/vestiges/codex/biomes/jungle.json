@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Jungle",
+ "members": [
+  "minecraft:jungle"
+ ],
+ "icon": "minecraft:jungle_sapling",
+ "line1": "Tall trees, vines, parrots and hidden temples.",
+ "line2": "Every temple has a trap. Every trap has a story."
+}

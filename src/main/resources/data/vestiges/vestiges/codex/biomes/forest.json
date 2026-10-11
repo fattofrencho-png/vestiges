@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Forest",
+ "members": [
+  "minecraft:forest"
+ ],
+ "icon": "minecraft:oak_sapling",
+ "line1": "Oak and birch, wolves and mushrooms. Home for most.",
+ "line2": "Every age had forests like this, the Seers wrote. The very same ones."
+}

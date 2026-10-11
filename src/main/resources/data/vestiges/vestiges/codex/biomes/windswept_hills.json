@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Windswept Hills",
+ "members": [
+  "minecraft:windswept_hills"
+ ],
+ "icon": "minecraft:emerald_ore",
+ "line1": "Steep hills, emerald ore and llamas.",
+ "line2": "Miners dig for emeralds here; the Bright Path taxes them."
+}

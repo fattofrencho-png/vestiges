@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Frog",
+ "members": [
+  "minecraft:frog"
+ ],
+ "boss": false,
+ "icon": "minecraft:frog_spawn_egg",
+ "line1": "Eats small slimes and magma cubes. Its colour depends on where it grew up.",
+ "line2": "A frog that eats a magma cube leaves a froglight. Alchemy, or appetite."
+}

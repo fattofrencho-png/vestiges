@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Pointed Dripstone",
+ "class": "uncommon",
+ "members": [
+  "minecraft:pointed_dripstone"
+ ],
+ "icon": "minecraft:pointed_dripstone",
+ "line1": "Sharp stone teeth. Falling ones hurt; landing on them hurts more.",
+ "line2": "Under a water source, it drips; under lava, it fills cauldrons."
+}

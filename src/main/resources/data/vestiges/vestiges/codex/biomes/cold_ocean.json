@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Cold Ocean",
+ "members": [
+  "minecraft:cold_ocean"
+ ],
+ "icon": "minecraft:cod",
+ "line1": "Chilly water, salmon and old stone ruins.",
+ "line2": "The cold ruins hold the oldest maps, sailors say."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Melon",
+ "class": "uncommon",
+ "members": [
+  "minecraft:melon"
+ ],
+ "icon": "minecraft:melon",
+ "line1": "Grows from a stem. Slices heal a little.",
+ "line2": "Gild a slice and brewers turn it into healing."
+}

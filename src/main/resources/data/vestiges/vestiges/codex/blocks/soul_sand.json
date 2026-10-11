@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Soul Sand",
+ "class": "common",
+ "members": [
+  "minecraft:soul_sand"
+ ],
+ "icon": "minecraft:soul_sand",
+ "line1": "Slows walkers. Bubbles push up through water.",
+ "line2": "Faces in the sand. Don't look too long."
+}

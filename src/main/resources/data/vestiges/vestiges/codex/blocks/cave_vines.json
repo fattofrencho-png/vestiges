@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Cave Vines",
+ "class": "uncommon",
+ "members": [
+  "minecraft:cave_vines",
+  "minecraft:cave_vines_plant"
+ ],
+ "icon": "minecraft:glow_berries",
+ "line1": "Vines with glow berries. A free lamp, and a snack.",
+ "line2": "Foxes love the berries. So do you."
+}

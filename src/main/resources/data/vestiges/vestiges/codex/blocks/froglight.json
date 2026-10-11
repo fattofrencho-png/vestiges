@@ -1,0 +1,13 @@
+{
+ "section": "blocks",
+ "name": "Froglight",
+ "class": "rare",
+ "members": [
+  "minecraft:ochre_froglight",
+  "minecraft:verdant_froglight",
+  "minecraft:pearlescent_froglight"
+ ],
+ "icon": "minecraft:ochre_froglight",
+ "line1": "Glowing blocks left when frogs eat small magma cubes.",
+ "line2": "Each frog colour makes its own light."
+}

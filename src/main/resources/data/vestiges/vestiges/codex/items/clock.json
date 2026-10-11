@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Clock",
+ "members": [
+  "minecraft:clock"
+ ],
+ "rare": false,
+ "icon": "minecraft:clock",
+ "line1": "Shows the time of day, even underground.",
+ "line2": "The Clockmakers made the first one, and found the world skips."
+}

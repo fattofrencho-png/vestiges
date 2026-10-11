@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Budding Amethyst",
+ "class": "unique",
+ "members": [
+  "minecraft:budding_amethyst"
+ ],
+ "icon": "minecraft:budding_amethyst",
+ "line1": "Grows amethyst buds. Cannot be moved, not even with Silk Touch.",
+ "line2": "The only thing in the world that cannot be carried. Think about why."
+}

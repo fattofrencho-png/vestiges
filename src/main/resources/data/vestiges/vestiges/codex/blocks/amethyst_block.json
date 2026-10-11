@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Amethyst Block",
+ "class": "rare",
+ "members": [
+  "minecraft:amethyst_block"
+ ],
+ "icon": "minecraft:amethyst_block",
+ "line1": "Purple crystal from geodes. It chimes when walked on.",
+ "line2": "The Glassmakers sang to it, a chapter says."
+}

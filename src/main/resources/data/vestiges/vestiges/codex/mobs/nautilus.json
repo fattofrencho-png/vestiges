@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Nautilus",
+ "members": [
+  "minecraft:nautilus"
+ ],
+ "boss": false,
+ "icon": "minecraft:nautilus_spawn_egg",
+ "line1": "Swims the open sea. Tamed, it can be ridden and wear armour.",
+ "line2": "Its shell turns up in drowned hands. The drowned know where they live."
+}

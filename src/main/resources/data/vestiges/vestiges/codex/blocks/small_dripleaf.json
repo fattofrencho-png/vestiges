@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Small Dripleaf",
+ "class": "uncommon",
+ "members": [
+  "minecraft:small_dripleaf"
+ ],
+ "icon": "minecraft:small_dripleaf",
+ "line1": "A small leaf plant. Bone meal grows it big.",
+ "line2": "Gardeners keep it as a lucky plant."
+}

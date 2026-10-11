@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Ghast",
+ "members": [
+  "minecraft:ghast"
+ ],
+ "boss": false,
+ "icon": "minecraft:ghast_spawn_egg",
+ "line1": "Wails and fires exploding fireballs. Hit them back.",
+ "line2": "Fortress diaries call them the crying sky."
+}

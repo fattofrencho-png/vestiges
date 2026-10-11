@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Lily Pad",
+ "class": "common",
+ "members": [
+  "minecraft:lily_pad"
+ ],
+ "icon": "minecraft:lily_pad",
+ "line1": "Floats on still water. Stand on it.",
+ "line2": "Frogs sit on them like little kings."
+}

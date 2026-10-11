@@ -83,6 +83,27 @@ public final class LootTypes {
 		}
 	}
 
+	/** A drop chance plus the killer's Bestiary bonus for this mob (+1% at 50 kills, +2% at 250). */
+	public record DropChance(float chance) implements LootItemCondition {
+		public static final MapCodec<DropChance> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+			Codec.FLOAT.fieldOf("chance").forGetter(DropChance::chance)
+		).apply(i, DropChance::new));
+
+		@Override
+		public boolean test(LootContext ctx) {
+			double bonus = 0;
+			if (ctx.getOptional(LootContextParams.LAST_DAMAGE_PLAYER) instanceof net.minecraft.server.level.ServerPlayer killer) {
+				bonus = dev.vestiges.codex.CodexService.dropBonus(killer, ctx.getOptional(LootContextParams.THIS_ENTITY));
+			}
+			return ctx.getRandom().nextFloat() < chance + bonus;
+		}
+
+		@Override
+		public MapCodec<DropChance> codec() {
+			return CODEC;
+		}
+	}
+
 	public record Gear(String kind, Optional<String> minRarity, Optional<String> rarity) implements LootItemFunction {
 		public static final MapCodec<Gear> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
 			Codec.STRING.fieldOf("kind").forGetter(Gear::kind),
@@ -109,6 +130,7 @@ public final class LootTypes {
 		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, Vestiges.id("loot_level"), LootLevel.CODEC);
 		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, Vestiges.id("loot_enabled"), LootEnabled.CODEC);
 		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, Vestiges.id("mob_rank"), MobRank.CODEC);
+		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, Vestiges.id("drop_chance"), DropChance.CODEC);
 		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Vestiges.id("loot_gear"), Gear.CODEC);
 	}
 }

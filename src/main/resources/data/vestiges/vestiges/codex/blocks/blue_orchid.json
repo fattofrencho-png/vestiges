@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Blue Orchid",
+ "class": "uncommon",
+ "members": [
+  "minecraft:blue_orchid"
+ ],
+ "icon": "minecraft:blue_orchid",
+ "line1": "A blue flower of swamps.",
+ "line2": "It grows only where the water stays."
+}

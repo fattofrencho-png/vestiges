@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Warped Nylium",
+ "class": "uncommon",
+ "members": [
+  "minecraft:warped_nylium"
+ ],
+ "icon": "minecraft:warped_nylium",
+ "line1": "Blue fungus-covered netherrack.",
+ "line2": "Bone meal grows warped fungus on it."
+}

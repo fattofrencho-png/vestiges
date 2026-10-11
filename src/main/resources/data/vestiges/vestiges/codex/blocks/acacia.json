@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Acacia",
+ "class": "uncommon",
+ "members": [
+  "minecraft:acacia_log",
+  "minecraft:acacia_wood"
+ ],
+ "icon": "minecraft:acacia_log",
+ "line1": "Crooked orange wood of the savanna.",
+ "line2": "No two acacias grow alike."
+}

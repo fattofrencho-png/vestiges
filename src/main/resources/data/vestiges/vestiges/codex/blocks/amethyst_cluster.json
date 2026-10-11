@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Amethyst Cluster",
+ "class": "rare",
+ "members": [
+  "minecraft:amethyst_cluster",
+  "minecraft:small_amethyst_bud",
+  "minecraft:medium_amethyst_bud",
+  "minecraft:large_amethyst_bud"
+ ],
+ "icon": "minecraft:amethyst_cluster",
+ "line1": "Fully grown amethyst. Breaks into shards.",
+ "line2": "Shards make spyglasses, and tinted glass."
+}

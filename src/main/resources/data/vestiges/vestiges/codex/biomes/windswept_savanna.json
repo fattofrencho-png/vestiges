@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Windswept Savanna",
+ "members": [
+  "minecraft:windswept_savanna"
+ ],
+ "icon": "minecraft:acacia_leaves",
+ "line1": "Shattered acacia hills, strange and high.",
+ "line2": "The ground looks broken and put back wrong."
+}

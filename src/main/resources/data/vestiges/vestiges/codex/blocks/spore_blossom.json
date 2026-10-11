@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Spore Blossom",
+ "class": "very_rare",
+ "members": [
+  "minecraft:spore_blossom"
+ ],
+ "icon": "minecraft:spore_blossom",
+ "line1": "Hangs from lush cave ceilings and showers green spores.",
+ "line2": "It grows only where the sky has never been."
+}

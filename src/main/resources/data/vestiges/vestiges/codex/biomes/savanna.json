@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Savanna",
+ "members": [
+  "minecraft:savanna"
+ ],
+ "icon": "minecraft:acacia_sapling",
+ "line1": "Acacia, llamas and dry grass under a hot sun.",
+ "line2": "The Kilnfolk traded here, long ago."
+}

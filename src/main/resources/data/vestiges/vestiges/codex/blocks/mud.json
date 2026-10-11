@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Mud",
+ "class": "uncommon",
+ "members": [
+  "minecraft:mud"
+ ],
+ "icon": "minecraft:mud",
+ "line1": "Wet dirt. Over dripstone it dries into clay; with wheat it packs for bricks.",
+ "line2": "Mud bricks built half the villages of the south."
+}

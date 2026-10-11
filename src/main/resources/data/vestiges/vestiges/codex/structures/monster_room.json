@@ -1,0 +1,9 @@
+{
+ "section": "structures",
+ "name": "Monster Room",
+ "icon": "minecraft:spawner",
+ "line1": "A mossy room with a spawner and two chests.",
+ "line2": "Someone built these on purpose. Nobody knows who.",
+ "members": [],
+ "detect": "monster_room"
+}

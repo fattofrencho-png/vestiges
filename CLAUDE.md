@@ -35,6 +35,7 @@ dev runServer      rem needs eula.txt accepted by the author; never accept it on
 
 Loot tables are generated: edit `tools/build_loot.py` and run `python tools/build_loot.py` (never hand-edit `data/vestiges/loot_table/`
 or `data/minecraft/loot_table/chests/`).
+Codex entries are generated too: `python tools/build_codex.py` reads `docs/lore/codex-flavour.md` (never hand-edit `data/vestiges/vestiges/codex/`).
 
 The machine's default Java is 24 and **cannot** build this (`release = 25`); always go through `dev.bat` or set `JAVA_HOME` to the JDK 25.
 From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.

@@ -1,0 +1,13 @@
+{
+ "section": "blocks",
+ "name": "Mushroom Block",
+ "class": "uncommon",
+ "members": [
+  "minecraft:brown_mushroom_block",
+  "minecraft:red_mushroom_block",
+  "minecraft:mushroom_stem"
+ ],
+ "icon": "minecraft:brown_mushroom_block",
+ "line1": "The cap and stem of a huge mushroom.",
+ "line2": "Bone meal turns a small mushroom into a house."
+}

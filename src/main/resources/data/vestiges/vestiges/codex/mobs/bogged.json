@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Bogged",
+ "members": [
+  "minecraft:bogged"
+ ],
+ "boss": false,
+ "icon": "minecraft:bogged_spawn_egg",
+ "line1": "A swamp skeleton grown over with mushrooms. Its arrows poison.",
+ "line2": "Shear it for mushrooms. It does not seem to notice."
+}

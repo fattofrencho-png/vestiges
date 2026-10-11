@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Dead Bush",
+ "class": "common",
+ "members": [
+  "minecraft:dead_bush"
+ ],
+ "icon": "minecraft:dead_bush",
+ "line1": "A dry twig of desert and badlands. Breaks into sticks.",
+ "line2": "Even dead, it keeps growing in stories."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Mule",
+ "members": [
+  "minecraft:mule"
+ ],
+ "boss": false,
+ "icon": "minecraft:mule_spawn_egg",
+ "line1": "Carries a chest, cannot breed, never complains.",
+ "line2": "Half horse, half donkey, all opinion."
+}

@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Emerald Ore",
+ "class": "rare",
+ "members": [
+  "minecraft:emerald_ore",
+  "minecraft:deepslate_emerald_ore"
+ ],
+ "icon": "minecraft:emerald_ore",
+ "line1": "Found only in mountains. The currency of every village.",
+ "line2": "Emeralds are the one thing every faith agrees on."
+}

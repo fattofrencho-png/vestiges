@@ -34,6 +34,11 @@ public final class ClientNotices {
 				case "pages" -> dev.vestiges.client.inventory.ClientInventory.onPages(json);
 				case "discovery" -> XpHud.discovery(json.get("key").getAsString(), json.get("xp").getAsLong());
 				case "layer" -> XpHud.layer(json.get("name").getAsString(), json.get("cap").getAsInt());
+				case "codex_step" -> dev.vestiges.client.codex.ClientCodex.onStep(json);
+				case "codex_point" -> dev.vestiges.client.codex.ClientCodex.onPoint();
+				case "meal" -> dev.vestiges.client.farming.ClientMeals.onMeal(json);
+				case "meal_defs" -> dev.vestiges.client.farming.ClientMeals.onDefs(json);
+				case "entity_info" -> dev.vestiges.client.hud.EntityInfo.onAnswer(json);
 				default -> Vestiges.LOGGER.debug("Vestiges: unknown notice {}", payload.kind());
 			}
 		}));

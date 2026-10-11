@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Mossy Cobblestone",
+ "class": "uncommon",
+ "members": [
+  "minecraft:mossy_cobblestone",
+  "minecraft:mossy_cobblestone_stairs",
+  "minecraft:mossy_cobblestone_slab",
+  "minecraft:mossy_cobblestone_wall"
+ ],
+ "icon": "minecraft:mossy_cobblestone",
+ "line1": "Cobblestone that has met moss and time.",
+ "line2": "Found in old rooms nobody remembers building."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Ender Dragon",
+ "members": [
+  "minecraft:ender_dragon"
+ ],
+ "boss": true,
+ "icon": "minecraft:dragon_head",
+ "line1": "The beast at the end of everything. Its crystals heal it; break them first.",
+ "line2": "Every age has killed it. Every age, it came back."
+}

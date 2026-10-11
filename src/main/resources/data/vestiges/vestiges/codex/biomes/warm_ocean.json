@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Warm Ocean",
+ "members": [
+  "minecraft:warm_ocean"
+ ],
+ "icon": "minecraft:brain_coral",
+ "line1": "Coral reefs, tropical fish and sea pickles.",
+ "line2": "The reef is never the same twice. Divers like that."
+}

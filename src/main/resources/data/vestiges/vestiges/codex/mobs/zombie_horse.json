@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Zombie Horse",
+ "members": [
+  "minecraft:zombie_horse"
+ ],
+ "boss": false,
+ "icon": "minecraft:zombie_horse_spawn_egg",
+ "line1": "A horse that came back wrong.",
+ "line2": "Ridden by the dead on dark plains, travellers say."
+}

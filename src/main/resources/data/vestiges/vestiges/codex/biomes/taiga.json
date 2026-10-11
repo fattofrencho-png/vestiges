@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Taiga",
+ "members": [
+  "minecraft:taiga"
+ ],
+ "icon": "minecraft:spruce_sapling",
+ "line1": "Spruce forest, wolves, foxes and berries.",
+ "line2": "Thornner's villages smell of spruce smoke."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Parched",
+ "members": [
+  "minecraft:parched"
+ ],
+ "boss": false,
+ "icon": "minecraft:parched_spawn_egg",
+ "line1": "A sun-dried skeleton that shoots tipped arrows.",
+ "line2": "Desert travellers swear it was once a Kilnfolk archer."
+}

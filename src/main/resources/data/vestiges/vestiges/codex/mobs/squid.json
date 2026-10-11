@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Squid",
+ "members": [
+  "minecraft:squid"
+ ],
+ "boss": false,
+ "icon": "minecraft:squid_spawn_egg",
+ "line1": "Harmless, inky, and good for black dye.",
+ "line2": "Fishers say squid count the boats."
+}

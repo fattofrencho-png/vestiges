@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Warden",
+ "members": [
+  "minecraft:warden"
+ ],
+ "boss": true,
+ "icon": "minecraft:warden_spawn_egg",
+ "line1": "Blind, it hunts by sound and smell. Sneak, or leave.",
+ "line2": "Made to guard the silence, a Deep One wrote. It still does."
+}

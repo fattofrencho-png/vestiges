@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Flower Forest",
+ "members": [
+  "minecraft:flower_forest"
+ ],
+ "icon": "minecraft:allium",
+ "line1": "Every flower at once, and bees everywhere.",
+ "line2": "Gardeners come here to find their first seed."
+}

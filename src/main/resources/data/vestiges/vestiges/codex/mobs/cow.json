@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Cow",
+ "members": [
+  "minecraft:cow"
+ ],
+ "boss": false,
+ "icon": "minecraft:cow_spawn_egg",
+ "line1": "Milk, beef and leather. A bucket of milk clears any potion effect.",
+ "line2": "The Brewers' cough spared every cow. Nobody knows why."
+}

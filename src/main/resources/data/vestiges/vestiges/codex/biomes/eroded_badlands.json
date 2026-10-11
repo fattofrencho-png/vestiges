@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Eroded Badlands",
+ "members": [
+  "minecraft:eroded_badlands"
+ ],
+ "icon": "minecraft:red_sand",
+ "line1": "Badlands carved into spires.",
+ "line2": "The spires look like something chewed them."
+}

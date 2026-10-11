@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Blaze Rod",
+ "members": [
+  "minecraft:blaze_rod"
+ ],
+ "rare": false,
+ "icon": "minecraft:blaze_rod",
+ "line1": "Dropped by blazes. Grind it into powder for brewing.",
+ "line2": "A rank-up gift for Expert workers. They value it."
+}

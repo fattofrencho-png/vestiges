@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Lush Caves",
+ "members": [
+  "minecraft:lush_caves"
+ ],
+ "icon": "minecraft:moss_block",
+ "line1": "Moss, glow berries, axolotls and dripleaf.",
+ "line2": "A garden under the stone, tended by nobody."
+}

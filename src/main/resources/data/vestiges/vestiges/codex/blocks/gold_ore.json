@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Gold Ore",
+ "class": "uncommon",
+ "members": [
+  "minecraft:gold_ore",
+  "minecraft:deepslate_gold_ore"
+ ],
+ "icon": "minecraft:gold_ore",
+ "line1": "Rare and soft; piglins adore it.",
+ "line2": "The Hollow Kings melted their crowns into armies."
+}

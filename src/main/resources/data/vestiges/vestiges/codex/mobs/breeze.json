@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Breeze",
+ "members": [
+  "minecraft:breeze"
+ ],
+ "boss": false,
+ "icon": "minecraft:breeze_spawn_egg",
+ "line1": "Leaps around trial chambers firing wind charges, and turns arrows aside.",
+ "line2": "The Primas call its wind holy. The old vault walls say otherwise."
+}

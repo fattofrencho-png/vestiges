@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Saddle",
+ "members": [
+  "minecraft:saddle"
+ ],
+ "rare": false,
+ "icon": "minecraft:saddle",
+ "line1": "Lets you ride horses, pigs, striders and more.",
+ "line2": "Nobody remembers who made the first one."
+}

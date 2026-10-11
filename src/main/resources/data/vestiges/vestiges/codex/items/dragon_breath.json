@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Dragon's Breath",
+ "members": [
+  "minecraft:dragon_breath"
+ ],
+ "rare": false,
+ "icon": "minecraft:dragon_breath",
+ "line1": "Bottled from the dragon's purple cloud. Makes lingering potions.",
+ "line2": "The breath of the thing that ends every age."
+}

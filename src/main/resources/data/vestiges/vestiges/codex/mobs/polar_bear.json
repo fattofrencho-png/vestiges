@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Polar Bear",
+ "members": [
+  "minecraft:polar_bear"
+ ],
+ "boss": false,
+ "icon": "minecraft:polar_bear_spawn_egg",
+ "line1": "Calm, until you go near its cubs.",
+ "line2": "The Frostwardens carved them from ice for their children."
+}

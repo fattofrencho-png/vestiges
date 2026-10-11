@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Oxeye Daisy",
+ "class": "common",
+ "members": [
+  "minecraft:oxeye_daisy"
+ ],
+ "icon": "minecraft:oxeye_daisy",
+ "line1": "A white daisy with a yellow heart.",
+ "line2": "Its stew heals a little."
+}

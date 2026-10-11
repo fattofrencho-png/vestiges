@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Village (Plains)",
+ "icon": "minecraft:bell",
+ "line1": "Oak homes, fields and a bell in the square.",
+ "line2": "Most villagers here have never seen the sea.",
+ "members": [
+  "minecraft:village_plains"
+ ]
+}

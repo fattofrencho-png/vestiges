@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Trial Chambers",
+ "icon": "minecraft:trial_key",
+ "line1": "Copper halls under the hills; the doors open only for fighters.",
+ "line2": "Heroes walked these halls in every age, the stories say. Every one.",
+ "members": [
+  "minecraft:trial_chambers"
+ ]
+}

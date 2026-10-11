@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Obsidian",
+ "class": "common",
+ "members": [
+  "minecraft:obsidian"
+ ],
+ "icon": "minecraft:obsidian",
+ "line1": "Water meets lava and makes the hardest stone you can mine.",
+ "line2": "Every Nether portal ever built is made of it."
+}

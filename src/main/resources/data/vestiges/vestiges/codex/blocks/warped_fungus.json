@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Warped Fungus",
+ "class": "uncommon",
+ "members": [
+  "minecraft:warped_fungus"
+ ],
+ "icon": "minecraft:warped_fungus",
+ "line1": "Grows into a huge warped fungus. Hoglins fear it.",
+ "line2": "Put it on a stick and striders follow."
+}

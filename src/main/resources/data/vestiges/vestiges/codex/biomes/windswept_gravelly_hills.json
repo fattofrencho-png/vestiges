@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Windswept Gravelly Hills",
+ "members": [
+  "minecraft:windswept_gravelly_hills"
+ ],
+ "icon": "minecraft:gravel",
+ "line1": "Gravel slopes that slide under your feet.",
+ "line2": "Flint is cheap here. Footing is not."
+}

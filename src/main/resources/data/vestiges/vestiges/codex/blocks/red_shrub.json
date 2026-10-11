@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Red Shrub",
+ "class": "uncommon",
+ "members": [
+  "minecraft:red_shrub"
+ ],
+ "icon": "minecraft:red_shrub",
+ "line1": "A small red bush of the dappled forest.",
+ "line2": "Its red never fades, even in winter."
+}

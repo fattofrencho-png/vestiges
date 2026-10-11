@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Frogspawn",
+ "class": "uncommon",
+ "members": [
+  "minecraft:frogspawn"
+ ],
+ "icon": "minecraft:frog_spawn_egg",
+ "line1": "Frog eggs on water. They hatch into tadpoles.",
+ "line2": "Frogspawn waits for no one."
+}

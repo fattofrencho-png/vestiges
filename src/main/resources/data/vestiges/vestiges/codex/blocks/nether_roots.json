@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Nether Roots",
+ "class": "common",
+ "members": [
+  "minecraft:crimson_roots",
+  "minecraft:warped_roots"
+ ],
+ "icon": "minecraft:crimson_roots",
+ "line1": "Crimson and warped roots on nylium.",
+ "line2": "Pretty enough to pot: the only Nether thing that is."
+}

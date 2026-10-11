@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Weeping Vines",
+ "class": "uncommon",
+ "members": [
+  "minecraft:weeping_vines",
+  "minecraft:weeping_vines_plant"
+ ],
+ "icon": "minecraft:weeping_vines",
+ "line1": "Red vines hanging from crimson fungus.",
+ "line2": "They grow down; twisting vines grow up. Neither explains why."
+}

@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Soul Sand Valley",
+ "members": [
+  "minecraft:soul_sand_valley"
+ ],
+ "icon": "minecraft:soul_sand",
+ "line1": "Soul sand, blue fire, ghasts and skeletons.",
+ "line2": "Giant fossils lie here. Nobody alive knows what they were."
+}

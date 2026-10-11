@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Conduit",
+ "members": [
+  "minecraft:conduit"
+ ],
+ "rare": true,
+ "icon": "minecraft:conduit",
+ "line1": "Gives water breathing and sight around it, near prismarine.",
+ "line2": "Built from a heart of the sea. The Heart is still listening."
+}

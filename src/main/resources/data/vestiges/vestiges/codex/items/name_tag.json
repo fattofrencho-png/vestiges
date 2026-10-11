@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Name Tag",
+ "members": [
+  "minecraft:name_tag"
+ ],
+ "rare": false,
+ "icon": "minecraft:name_tag",
+ "line1": "Names a mob. Named mobs never despawn.",
+ "line2": "Villagers already have names. Ask them."
+}

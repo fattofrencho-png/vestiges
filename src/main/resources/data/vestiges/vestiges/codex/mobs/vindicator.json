@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Vindicator",
+ "members": [
+  "minecraft:vindicator"
+ ],
+ "boss": false,
+ "icon": "minecraft:vindicator_spawn_egg",
+ "line1": "Axe-swinging raider of mansions and raids.",
+ "line2": "Name one Johnny and watch it lose its temper with everyone."
+}

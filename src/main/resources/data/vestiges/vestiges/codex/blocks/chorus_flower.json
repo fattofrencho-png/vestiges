@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Chorus Flower",
+ "class": "very_rare",
+ "members": [
+  "minecraft:chorus_flower"
+ ],
+ "icon": "minecraft:chorus_flower",
+ "line1": "The bud of a chorus plant. Plant it on end stone.",
+ "line2": "Plant it in the overworld, on end stone. It remembers home."
+}

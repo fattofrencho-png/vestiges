@@ -1,0 +1,8 @@
+{
+ "item": "minecraft:mushroom_stew",
+ "minutes": 10,
+ "stats": {
+  "mining_speed": 5
+ },
+ "text": "+5% mining speed"
+}

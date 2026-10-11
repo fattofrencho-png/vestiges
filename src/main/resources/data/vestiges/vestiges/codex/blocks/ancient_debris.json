@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Ancient Debris",
+ "class": "very_rare",
+ "members": [
+  "minecraft:ancient_debris"
+ ],
+ "icon": "minecraft:ancient_debris",
+ "line1": "Deep in the Nether, it shrugs off explosions. Smelt it for scrap.",
+ "line2": "Netherite outlasts fire, lava and, maybe, the cycle."
+}

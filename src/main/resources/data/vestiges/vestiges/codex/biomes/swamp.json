@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Swamp",
+ "members": [
+  "minecraft:swamp"
+ ],
+ "icon": "minecraft:lily_pad",
+ "line1": "Murky water, lily pads, slimes and witch huts.",
+ "line2": "The Brewers' valley looked like this, before."
+}

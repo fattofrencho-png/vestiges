@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Stony Shore",
+ "members": [
+  "minecraft:stony_shore"
+ ],
+ "icon": "minecraft:gravel",
+ "line1": "Rocky coast where the land breaks into the sea.",
+ "line2": "Ships end here more often than sailors admit."
+}

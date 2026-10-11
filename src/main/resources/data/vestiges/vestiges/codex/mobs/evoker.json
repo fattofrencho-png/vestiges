@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Evoker",
+ "members": [
+  "minecraft:evoker"
+ ],
+ "boss": false,
+ "icon": "minecraft:evoker_spawn_egg",
+ "line1": "Calls fangs from the ground and vexes from the air. Drops a totem.",
+ "line2": "Its words were found in a vault no one built, an old scribe wrote."
+}

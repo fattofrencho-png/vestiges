@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Woodland Mansion",
+ "icon": "minecraft:dark_oak_planks",
+ "line1": "A dark oak palace of illagers, deep in the forest.",
+ "line2": "The Hollow Kings' halls had rooms like these.",
+ "members": [
+  "minecraft:mansion"
+ ]
+}

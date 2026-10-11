@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sweet Berry Bush",
+ "class": "uncommon",
+ "members": [
+  "minecraft:sweet_berry_bush"
+ ],
+ "icon": "minecraft:sweet_berries",
+ "line1": "Prickly bush with berries. Foxes love it.",
+ "line2": "It slows and scratches anything that walks through."
+}

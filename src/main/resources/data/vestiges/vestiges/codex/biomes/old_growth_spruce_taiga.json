@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Old Growth Spruce Taiga",
+ "members": [
+  "minecraft:old_growth_spruce_taiga"
+ ],
+ "icon": "minecraft:spruce_log",
+ "line1": "Giant spruces and deep, quiet shade.",
+ "line2": "Rangers of Thornner learn to track here."
+}

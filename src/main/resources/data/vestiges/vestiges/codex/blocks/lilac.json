@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Lilac",
+ "class": "common",
+ "members": [
+  "minecraft:lilac"
+ ],
+ "icon": "minecraft:lilac",
+ "line1": "A tall purple flower.",
+ "line2": "Smells like spring, even in winter."
+}

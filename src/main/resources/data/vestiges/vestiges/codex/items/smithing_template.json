@@ -1,0 +1,29 @@
+{
+ "section": "items",
+ "name": "Smithing Template",
+ "members": [
+  "minecraft:bolt_armor_trim_smithing_template",
+  "minecraft:coast_armor_trim_smithing_template",
+  "minecraft:dune_armor_trim_smithing_template",
+  "minecraft:eye_armor_trim_smithing_template",
+  "minecraft:flow_armor_trim_smithing_template",
+  "minecraft:host_armor_trim_smithing_template",
+  "minecraft:netherite_upgrade_smithing_template",
+  "minecraft:raiser_armor_trim_smithing_template",
+  "minecraft:rib_armor_trim_smithing_template",
+  "minecraft:sentry_armor_trim_smithing_template",
+  "minecraft:shaper_armor_trim_smithing_template",
+  "minecraft:silence_armor_trim_smithing_template",
+  "minecraft:snout_armor_trim_smithing_template",
+  "minecraft:spire_armor_trim_smithing_template",
+  "minecraft:tide_armor_trim_smithing_template",
+  "minecraft:vex_armor_trim_smithing_template",
+  "minecraft:ward_armor_trim_smithing_template",
+  "minecraft:wayfinder_armor_trim_smithing_template",
+  "minecraft:wild_armor_trim_smithing_template"
+ ],
+ "rare": true,
+ "icon": "minecraft:bolt_armor_trim_smithing_template",
+ "line1": "Upgrades gear to netherite, or adds a trim. Copy it with diamonds.",
+ "line2": "Every pattern was carved by someone who wanted to be remembered."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Nether Wart Block",
+ "class": "uncommon",
+ "members": [
+  "minecraft:nether_wart_block"
+ ],
+ "icon": "minecraft:nether_wart_block",
+ "line1": "The red cap of a crimson fungus.",
+ "line2": "Not edible. Brewers have tried."
+}

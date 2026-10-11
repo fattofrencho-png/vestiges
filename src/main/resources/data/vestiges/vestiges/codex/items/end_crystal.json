@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "End Crystal",
+ "members": [
+  "minecraft:end_crystal"
+ ],
+ "rare": false,
+ "icon": "minecraft:end_crystal",
+ "line1": "Heals the dragon. Placed on the portal, it summons one.",
+ "line2": "Four of them call it back. Every time."
+}

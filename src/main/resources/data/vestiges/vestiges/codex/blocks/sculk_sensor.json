@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sculk Sensor",
+ "class": "rare",
+ "members": [
+  "minecraft:sculk_sensor"
+ ],
+ "icon": "minecraft:sculk_sensor",
+ "line1": "Hears vibrations and sends a signal.",
+ "line2": "Wool muffles your steps around it."
+}

@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Cobbled Deepslate",
+ "class": "common",
+ "members": [
+  "minecraft:cobbled_deepslate",
+  "minecraft:cobbled_deepslate_stairs",
+  "minecraft:cobbled_deepslate_slab",
+  "minecraft:cobbled_deepslate_wall"
+ ],
+ "icon": "minecraft:cobbled_deepslate",
+ "line1": "Broken deepslate, perfect for dark walls.",
+ "line2": "The Deep Ones built entire cities from it."
+}

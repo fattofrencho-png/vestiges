@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Wither Skeleton",
+ "members": [
+  "minecraft:wither_skeleton"
+ ],
+ "boss": false,
+ "icon": "minecraft:wither_skeleton_spawn_egg",
+ "line1": "Tall and black; its blade withers. Sometimes drops its skull.",
+ "line2": "They still guard the halls of a king who lost his mind."
+}

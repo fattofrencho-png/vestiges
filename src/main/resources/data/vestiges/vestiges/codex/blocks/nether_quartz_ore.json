@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Nether Quartz Ore",
+ "class": "uncommon",
+ "members": [
+  "minecraft:nether_quartz_ore"
+ ],
+ "icon": "minecraft:nether_quartz_ore",
+ "line1": "White crystals in netherrack.",
+ "line2": "Quartz from the Nether builds the whitest halls."
+}

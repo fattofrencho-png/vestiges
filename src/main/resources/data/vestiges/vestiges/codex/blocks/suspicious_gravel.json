@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Suspicious Gravel",
+ "class": "unique",
+ "members": [
+  "minecraft:suspicious_gravel"
+ ],
+ "icon": "minecraft:suspicious_gravel",
+ "line1": "Gravel hiding something. Brush it, don't break it.",
+ "line2": "Trail ruins are full of it. Somebody buried their history."
+}

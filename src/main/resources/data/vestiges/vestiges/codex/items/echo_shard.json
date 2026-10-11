@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Echo Shard",
+ "members": [
+  "minecraft:echo_shard"
+ ],
+ "rare": false,
+ "icon": "minecraft:echo_shard",
+ "line1": "Found in ancient cities. Makes recovery compasses.",
+ "line2": "A Master worker's rank item. It hums with old voices."
+}

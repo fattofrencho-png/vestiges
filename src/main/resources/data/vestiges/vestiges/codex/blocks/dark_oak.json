@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Dark Oak",
+ "class": "uncommon",
+ "members": [
+  "minecraft:dark_oak_log",
+  "minecraft:dark_oak_wood"
+ ],
+ "icon": "minecraft:dark_oak_log",
+ "line1": "Thick trees of the dark forest. Plant four saplings together.",
+ "line2": "The Hollow Kings built halls from every one."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Packed Ice",
+ "class": "uncommon",
+ "members": [
+  "minecraft:packed_ice"
+ ],
+ "icon": "minecraft:packed_ice",
+ "line1": "Ice that never melts. Fast to slide on.",
+ "line2": "Ice-road traders cross whole biomes on it."
+}

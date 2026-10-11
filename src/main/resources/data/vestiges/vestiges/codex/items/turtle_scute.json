@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Turtle Scute",
+ "members": [
+  "minecraft:turtle_scute"
+ ],
+ "rare": false,
+ "icon": "minecraft:turtle_scute",
+ "line1": "Dropped as baby turtles grow. Five make a turtle shell.",
+ "line2": "Wear the shell and breathe longer under water."
+}

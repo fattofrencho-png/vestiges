@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Ice Spikes",
+ "members": [
+  "minecraft:ice_spikes"
+ ],
+ "icon": "minecraft:packed_ice",
+ "line1": "Towers of packed ice rising from the snow.",
+ "line2": "Nobody carved them. Everybody asks who did."
+}

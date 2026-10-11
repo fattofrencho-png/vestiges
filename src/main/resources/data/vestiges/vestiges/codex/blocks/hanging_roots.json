@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Hanging Roots",
+ "class": "uncommon",
+ "members": [
+  "minecraft:hanging_roots"
+ ],
+ "icon": "minecraft:hanging_roots",
+ "line1": "Roots dangling from the ceilings of lush caves.",
+ "line2": "Something above is always growing."
+}

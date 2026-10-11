@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Cocoa",
+ "class": "uncommon",
+ "members": [
+  "minecraft:cocoa"
+ ],
+ "icon": "minecraft:cocoa_beans",
+ "line1": "Beans on jungle logs. Cookies and brown dye.",
+ "line2": "Cookies are the only meal the Walkers call sinful."
+}

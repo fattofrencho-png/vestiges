@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Goat",
+ "members": [
+  "minecraft:goat"
+ ],
+ "boss": false,
+ "icon": "minecraft:goat_spawn_egg",
+ "line1": "Rams you off cliffs. The screaming ones are worse.",
+ "line2": "A goat that rams a tree or stone may leave its horn behind."
+}

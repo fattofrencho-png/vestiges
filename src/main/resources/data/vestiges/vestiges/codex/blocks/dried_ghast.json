@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Dried Ghast",
+ "class": "rare",
+ "members": [
+  "minecraft:dried_ghast"
+ ],
+ "icon": "minecraft:dried_ghast",
+ "line1": "A shrivelled ghast. Keep it in water and it may wake.",
+ "line2": "Even the Nether's tears can be dried out and forgiven."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Vines",
+ "class": "common",
+ "members": [
+  "minecraft:vine"
+ ],
+ "icon": "minecraft:vine",
+ "line1": "Climb them. Shear to collect.",
+ "line2": "Mossy stone needs vines, or moss."
+}

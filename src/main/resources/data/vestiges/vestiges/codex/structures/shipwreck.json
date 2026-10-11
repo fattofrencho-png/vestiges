@@ -1,0 +1,11 @@
+{
+ "section": "structures",
+ "name": "Shipwreck",
+ "icon": "minecraft:oak_boat",
+ "line1": "A sunken ship with maps, supplies and treasure.",
+ "line2": "Its logbook always ends mid-sentence.",
+ "members": [
+  "minecraft:shipwreck",
+  "minecraft:shipwreck_beached"
+ ]
+}

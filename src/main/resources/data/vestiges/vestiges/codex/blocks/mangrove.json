@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Mangrove",
+ "class": "uncommon",
+ "members": [
+  "minecraft:mangrove_log",
+  "minecraft:mangrove_wood",
+  "minecraft:mangrove_roots",
+  "minecraft:muddy_mangrove_roots"
+ ],
+ "icon": "minecraft:mangrove_log",
+ "line1": "Trees on stilts of roots, in the swamp.",
+ "line2": "Mangrove roots hold mud like hands."
+}

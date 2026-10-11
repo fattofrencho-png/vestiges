@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Stony Peaks",
+ "members": [
+  "minecraft:stony_peaks"
+ ],
+ "icon": "minecraft:stone",
+ "line1": "Bare stone and calcite at the summit.",
+ "line2": "Masons say the best calcite is the highest."
+}

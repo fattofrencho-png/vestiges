@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Vex",
+ "members": [
+  "minecraft:vex"
+ ],
+ "boss": false,
+ "icon": "minecraft:vex_spawn_egg",
+ "line1": "Called by evokers. It flies through walls and dies on its own.",
+ "line2": "Small, winged and furious: a curse with a sword."
+}

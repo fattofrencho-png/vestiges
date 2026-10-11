@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Vault",
+ "class": "unique",
+ "members": [
+  "minecraft:vault"
+ ],
+ "icon": "minecraft:vault",
+ "line1": "A locked chest of the trial chambers. Opens once per key, per hero.",
+ "line2": "It knows who has already been rewarded."
+}

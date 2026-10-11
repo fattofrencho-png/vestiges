@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Respawn Anchor",
+ "members": [
+  "minecraft:respawn_anchor"
+ ],
+ "rare": false,
+ "icon": "minecraft:respawn_anchor",
+ "line1": "Charged with glowstone, lets you respawn in the Nether. Explodes elsewhere.",
+ "line2": "Even the Nether can be a home, if you are stubborn."
+}

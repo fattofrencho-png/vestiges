@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Wither Rose",
+ "class": "rare",
+ "members": [
+  "minecraft:wither_rose"
+ ],
+ "icon": "minecraft:wither_rose",
+ "line1": "A black rose that grows where the Wither kills.",
+ "line2": "Touching it withers you. Some gardeners grow it anyway."
+}

@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Lukewarm Ocean",
+ "members": [
+  "minecraft:lukewarm_ocean"
+ ],
+ "icon": "minecraft:seagrass",
+ "line1": "Mild water, fish, and the edge of the coral.",
+ "line2": "Drowned here sometimes carry nautilus shells."
+}

@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Red Sandstone",
+ "class": "uncommon",
+ "members": [
+  "minecraft:red_sandstone",
+  "minecraft:red_sandstone_stairs",
+  "minecraft:red_sandstone_slab",
+  "minecraft:red_sandstone_wall"
+ ],
+ "icon": "minecraft:red_sandstone",
+ "line1": "The badlands' carving stone.",
+ "line2": "The red comes from the iron in it, smiths say."
+}

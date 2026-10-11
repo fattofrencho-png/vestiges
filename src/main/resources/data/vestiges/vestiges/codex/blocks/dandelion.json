@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Dandelion",
+ "class": "common",
+ "members": [
+  "minecraft:dandelion"
+ ],
+ "icon": "minecraft:dandelion",
+ "line1": "Yellow flower of the plains.",
+ "line2": "Rabbits like it. So do wishes."
+}

@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Redstone Ore",
+ "class": "uncommon",
+ "members": [
+  "minecraft:redstone_ore",
+  "minecraft:deepslate_redstone_ore"
+ ],
+ "icon": "minecraft:redstone_ore",
+ "line1": "Glows when touched. Powers machines.",
+ "line2": "The Kesmar's vaults hum with something like it."
+}

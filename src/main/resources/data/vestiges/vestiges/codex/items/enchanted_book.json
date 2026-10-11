@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Enchanted Book",
+ "members": [
+  "minecraft:enchanted_book"
+ ],
+ "rare": false,
+ "icon": "minecraft:enchanted_book",
+ "line1": "Holds an enchantment for the anvil.",
+ "line2": "Level VI books exist. Nobody knows who wrote them."
+}

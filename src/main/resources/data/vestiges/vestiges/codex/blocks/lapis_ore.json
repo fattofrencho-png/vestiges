@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Lapis Ore",
+ "class": "uncommon",
+ "members": [
+  "minecraft:lapis_ore",
+  "minecraft:deepslate_lapis_ore"
+ ],
+ "icon": "minecraft:lapis_ore",
+ "line1": "Blue stone. Feeds the enchanting table.",
+ "line2": "No enchanting without lapis. The glyphs drink it."
+}

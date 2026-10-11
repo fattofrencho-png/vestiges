@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Goat Horn",
+ "members": [
+  "minecraft:goat_horn"
+ ],
+ "rare": false,
+ "icon": "minecraft:goat_horn",
+ "line1": "Dropped when a goat rams something hard. Each one plays a different call.",
+ "line2": "Rangers signal each other across valleys with them."
+}

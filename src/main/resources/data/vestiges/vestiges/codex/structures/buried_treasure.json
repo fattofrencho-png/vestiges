@@ -1,0 +1,10 @@
+{
+ "section": "structures",
+ "name": "Buried Treasure",
+ "icon": "minecraft:heart_of_the_sea",
+ "line1": "X marks the spot: a chest, and a heart of the sea.",
+ "line2": "The Heart was hidden on purpose, a Tidefolk wrote.",
+ "members": [
+  "minecraft:buried_treasure"
+ ]
+}

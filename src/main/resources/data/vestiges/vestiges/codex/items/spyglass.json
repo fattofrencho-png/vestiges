@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Spyglass",
+ "members": [
+  "minecraft:spyglass"
+ ],
+ "rare": false,
+ "icon": "minecraft:spyglass",
+ "line1": "Zooms in on distant things.",
+ "line2": "The Sleepless watched the sky through one. They saw too much."
+}

@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Shelf Mushroom",
+ "class": "uncommon",
+ "members": [
+  "minecraft:shelf_mushroom"
+ ],
+ "icon": "minecraft:shelf_mushroom",
+ "line1": "A mushroom that grows like a shelf on trees.",
+ "line2": "Woodcutters leave them, out of old superstition."
+}

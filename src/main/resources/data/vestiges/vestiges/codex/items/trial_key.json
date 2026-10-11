@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Trial Key",
+ "members": [
+  "minecraft:trial_key"
+ ],
+ "rare": false,
+ "icon": "minecraft:trial_key",
+ "line1": "Dropped in trial chambers. Opens a vault.",
+ "line2": "Each vault remembers whose key it took."
+}

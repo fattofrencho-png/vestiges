@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Trident",
+ "members": [
+  "minecraft:trident"
+ ],
+ "rare": true,
+ "icon": "minecraft:trident",
+ "line1": "Thrown, it returns with Loyalty. Drowned drop it.",
+ "line2": "Tidecallers dash with it through the rain."
+}

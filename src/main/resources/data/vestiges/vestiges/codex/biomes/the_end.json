@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "The End",
+ "members": [
+  "minecraft:the_end"
+ ],
+ "icon": "minecraft:end_stone",
+ "line1": "The dragon's island, ringed by obsidian pillars and void.",
+ "line2": "A crack in the wall of the world, one diary called it."
+}

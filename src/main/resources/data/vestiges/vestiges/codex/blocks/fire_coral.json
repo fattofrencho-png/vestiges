@@ -1,0 +1,14 @@
+{
+ "section": "blocks",
+ "name": "Fire Coral",
+ "class": "rare",
+ "members": [
+  "minecraft:fire_coral",
+  "minecraft:fire_coral_block",
+  "minecraft:fire_coral_fan",
+  "minecraft:fire_coral_wall_fan"
+ ],
+ "icon": "minecraft:fire_coral",
+ "line1": "Red coral of warm reefs. Dies out of water.",
+ "line2": "It never burns. It only looks like it."
+}

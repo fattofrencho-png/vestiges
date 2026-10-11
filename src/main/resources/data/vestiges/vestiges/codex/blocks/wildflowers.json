@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Wildflowers",
+ "class": "common",
+ "members": [
+  "minecraft:wildflowers"
+ ],
+ "icon": "minecraft:wildflowers",
+ "line1": "A scatter of tiny flowers.",
+ "line2": "Bees prefer it to grand gardens."
+}

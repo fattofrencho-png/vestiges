@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Sea Lantern",
+ "class": "rare",
+ "members": [
+  "minecraft:sea_lantern"
+ ],
+ "icon": "minecraft:sea_lantern",
+ "line1": "A glowing block of monuments.",
+ "line2": "Light that the sea cannot put out."
+}

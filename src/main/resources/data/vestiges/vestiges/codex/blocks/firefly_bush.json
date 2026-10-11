@@ -1,0 +1,11 @@
+{
+ "section": "blocks",
+ "name": "Firefly Bush",
+ "class": "uncommon",
+ "members": [
+  "minecraft:firefly_bush"
+ ],
+ "icon": "minecraft:firefly_bush",
+ "line1": "A bush where fireflies glow at night.",
+ "line2": "Children believe fireflies are lost stars."
+}

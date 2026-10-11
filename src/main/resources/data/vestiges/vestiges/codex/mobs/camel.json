@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Camel",
+ "members": [
+  "minecraft:camel"
+ ],
+ "boss": false,
+ "icon": "minecraft:camel_spawn_egg",
+ "line1": "Two can ride it, and it dashes across the sand.",
+ "line2": "Desert traders measure distance in camel days, never in blocks."
+}

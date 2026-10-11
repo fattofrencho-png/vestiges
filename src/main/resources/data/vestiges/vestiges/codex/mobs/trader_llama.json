@@ -1,0 +1,11 @@
+{
+ "section": "mobs",
+ "name": "Trader Llama",
+ "members": [
+  "minecraft:trader_llama"
+ ],
+ "boss": false,
+ "icon": "minecraft:trader_llama_spawn_egg",
+ "line1": "Follows a wandering trader. Hurt the trader and it spits.",
+ "line2": "Its patterned carpet marks it as a trader's beast."
+}

@@ -1,0 +1,10 @@
+{
+ "section": "biomes",
+ "name": "Grove",
+ "members": [
+  "minecraft:grove"
+ ],
+ "icon": "minecraft:snowball",
+ "line1": "Snowy spruce on the mountain shoulders. Foxes nest here.",
+ "line2": "Wolves here are thick-coated and patient."
+}

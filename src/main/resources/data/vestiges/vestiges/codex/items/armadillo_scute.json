@@ -1,0 +1,11 @@
+{
+ "section": "items",
+ "name": "Armadillo Scute",
+ "members": [
+  "minecraft:armadillo_scute"
+ ],
+ "rare": false,
+ "icon": "minecraft:armadillo_scute",
+ "line1": "Brushed from an armadillo. Makes wolf armour.",
+ "line2": "Wolves wear it proudly. Armadillos don't seem to miss it."
+}

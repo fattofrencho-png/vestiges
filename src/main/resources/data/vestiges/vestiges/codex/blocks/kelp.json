@@ -1,0 +1,12 @@
+{
+ "section": "blocks",
+ "name": "Kelp",
+ "class": "common",
+ "members": [
+  "minecraft:kelp",
+  "minecraft:kelp_plant"
+ ],
+ "icon": "minecraft:kelp",
+ "line1": "Underwater weed. Dry it for food or fuel.",
+ "line2": "Dried kelp blocks burn for a long time."
+}
