@@ -4,5 +4,6 @@
   "name": "Dragonslayer",
   "requirement": "Kill dragon 1",
   "reward": "Title \"Dragonslayer\"",
-  "xp": 500
+  "xp": 500,
+  "later": "the End (M9)"
 }

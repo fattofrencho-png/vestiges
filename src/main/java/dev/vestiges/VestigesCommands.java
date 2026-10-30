@@ -39,7 +39,31 @@ public final class VestigesCommands {
 					.then(Commands.argument("targets", EntityArgument.players())
 						.executes(ctx -> giveWaystone(ctx.getSource(), EntityArgument.getPlayers(ctx, "targets"), 1))
 						.then(Commands.argument("count", IntegerArgumentType.integer(1, 64))
-							.executes(ctx -> giveWaystone(ctx.getSource(), EntityArgument.getPlayers(ctx, "targets"), IntegerArgumentType.getInteger(ctx, "count")))))))
+							.executes(ctx -> giveWaystone(ctx.getSource(), EntityArgument.getPlayers(ctx, "targets"), IntegerArgumentType.getInteger(ctx, "count"))))))
+				.then(Commands.literal("marker")
+					.then(Commands.argument("type", StringArgumentType.word())
+						.suggests((ctx, b) -> net.minecraft.commands.SharedSuggestionProvider.suggest(
+							java.util.Arrays.stream(dev.vestiges.settlement.MarkerType.values()).map(t -> t.id), b))
+						.executes(ctx -> giveMarker(ctx.getSource(), java.util.List.of(ctx.getSource().getPlayerOrException()), StringArgumentType.getString(ctx, "type")))
+						.then(Commands.argument("targets", EntityArgument.players())
+							.executes(ctx -> giveMarker(ctx.getSource(), EntityArgument.getPlayers(ctx, "targets"), StringArgumentType.getString(ctx, "type")))))))
+			.then(Commands.literal("feat")
+				.then(Commands.literal("grant")
+					.then(Commands.argument("targets", EntityArgument.players())
+						.then(Commands.argument("feat", StringArgumentType.word())
+							.suggests((ctx, b) -> net.minecraft.commands.SharedSuggestionProvider.suggest(
+								dev.vestiges.data.VestigesData.FEATS.all().keySet().stream().map(k -> k.getPath()), b))
+							.executes(ctx -> featGrant(ctx.getSource(), EntityArgument.getPlayers(ctx, "targets"), StringArgumentType.getString(ctx, "feat"), true)))))
+				.then(Commands.literal("revoke")
+					.then(Commands.argument("targets", EntityArgument.players())
+						.then(Commands.argument("feat", StringArgumentType.word())
+							.suggests((ctx, b) -> net.minecraft.commands.SharedSuggestionProvider.suggest(
+								dev.vestiges.data.VestigesData.FEATS.all().keySet().stream().map(k -> k.getPath()), b))
+							.executes(ctx -> featGrant(ctx.getSource(), EntityArgument.getPlayers(ctx, "targets"), StringArgumentType.getString(ctx, "feat"), false))))))
+			.then(Commands.literal("settlement")
+				.then(Commands.literal("info").executes(ctx -> settlementInfo(ctx.getSource())))
+				.then(Commands.literal("renown").executes(ctx -> settlementRenown(ctx.getSource())))
+				.then(Commands.literal("finish").executes(ctx -> settlementFinish(ctx.getSource()))))
 			.then(Commands.literal("level")
 				.then(Commands.literal("set")
 					.then(Commands.argument("targets", EntityArgument.players())
@@ -108,6 +132,96 @@ public final class VestigesCommands {
 						.suggests((ctx, builder) -> SharedSuggestionProvider.suggest(Arrays.stream(VestigesSystem.values()).map(s -> s.id), builder))
 						.then(Commands.argument("on", BoolArgumentType.bool())
 							.executes(ctx -> setSystem(ctx.getSource(), StringArgumentType.getString(ctx, "id"), BoolArgumentType.getBool(ctx, "on"))))))));
+	}
+
+	private static int giveMarker(CommandSourceStack src, Collection<ServerPlayer> targets, String type) {
+		dev.vestiges.settlement.MarkerType t = dev.vestiges.settlement.MarkerType.byId(type);
+		if (t == null) {
+			src.sendFailure(Component.literal("Marker types: bell, banner16, banner48, ward6, ward12, ward30, gold_block"));
+			return 0;
+		}
+		for (ServerPlayer p : targets) {
+			net.minecraft.world.item.ItemStack stack = dev.vestiges.settlement.MarkerItems.create(t);
+			if (!p.getInventory().add(stack)) {
+				p.level().addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(p.level(), p.getX(), p.getY(), p.getZ(), stack));
+			}
+		}
+		src.sendSuccess(() -> Component.literal("Gave a " + t.label + " to " + targets.size() + " player(s)"), true);
+		return targets.size();
+	}
+
+	private static int featGrant(CommandSourceStack src, Collection<ServerPlayer> targets, String feat, boolean on) {
+		for (ServerPlayer p : targets) {
+			if (!dev.vestiges.feats.FeatService.grant(p, feat, on)) {
+				src.sendFailure(Component.literal("Unknown feat: " + feat));
+				return 0;
+			}
+		}
+		src.sendSuccess(() -> Component.literal((on ? "Granted " : "Revoked ") + feat + " for " + targets.size() + " player(s)"), true);
+		return targets.size();
+	}
+
+	/** The settlement you stand in (or the nearest of yours): its renown breakdown. */
+	private static dev.vestiges.settlement.SettlementData.Settlement settlementHere(CommandSourceStack src) {
+		ServerPlayer p = src.getPlayer();
+		java.util.List<dev.vestiges.settlement.SettlementData.Settlement> all = dev.vestiges.settlement.SettlementService.world(src.getServer()).settlements();
+		dev.vestiges.settlement.SettlementData.Settlement best = null;
+		double bestD = Double.MAX_VALUE;
+		for (dev.vestiges.settlement.SettlementData.Settlement s : all) {
+			if (!s.hasBell() || p == null || !s.dimension().equals(dev.vestiges.settlement.SettlementService.dim(p.level()))) {
+				continue;
+			}
+			double d = s.bellPos().distSqr(p.blockPosition());
+			if (d < bestD) {
+				bestD = d;
+				best = s;
+			}
+		}
+		return best;
+	}
+
+	private static int settlementInfo(CommandSourceStack src) {
+		dev.vestiges.settlement.SettlementData.Settlement s = settlementHere(src);
+		if (s == null) {
+			src.sendFailure(Component.literal("No settlement in this dimension"));
+			return 0;
+		}
+		dev.vestiges.settlement.SettlementData.Stats st = s.stats();
+		String msg = s.displayName() + " (" + s.state() + "): " + dev.vestiges.settlement.Renown.name(st.level()) + ", " + st.total() + " renown = size "
+			+ st.size() + " + variety " + st.variety() + " + homes " + st.homes() + " + people " + st.people() + " + deeds " + st.deeds() + "; radius " + s.radius()
+			+ "; members " + s.members().size() + (st.belowTicks() > 0 ? "; below its level for " + st.belowTicks() / 1200 + " min" : "");
+		src.sendSuccess(() -> Component.literal(msg), false);
+		return 1;
+	}
+
+	/** Testing: finishes setting up your settlements and Ward Lanterns (they complete on the next second). */
+	private static int settlementFinish(CommandSourceStack src) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+		ServerPlayer p = src.getPlayerOrException();
+		dev.vestiges.settlement.SettlementData.World w = dev.vestiges.settlement.SettlementService.world(src.getServer());
+		for (dev.vestiges.settlement.SettlementData.Settlement s : w.settlements()) {
+			if (s.owner().equals(p.getUUID()) && dev.vestiges.settlement.SettlementData.SETUP.equals(s.state())) {
+				w = w.put(s.withState(dev.vestiges.settlement.SettlementData.SETUP, 20));
+			}
+		}
+		for (dev.vestiges.settlement.SettlementData.Marker m : w.markers()) {
+			if (m.owner().equals(p.getUUID()) && !m.active()) {
+				w = w.putMarker(m.withSetupLeft(20));
+			}
+		}
+		dev.vestiges.settlement.SettlementService.save(src.getServer(), w);
+		src.sendSuccess(() -> Component.literal("Setting up finishes now (stay within 128 blocks)"), false);
+		return 1;
+	}
+
+	/** Counts renown now instead of waiting for the 10-minute count (testing). */
+	private static int settlementRenown(CommandSourceStack src) {
+		dev.vestiges.settlement.SettlementData.Settlement s = settlementHere(src);
+		if (s == null) {
+			src.sendFailure(Component.literal("No settlement in this dimension"));
+			return 0;
+		}
+		dev.vestiges.settlement.SettlementService.renown(src.getServer(), s.id());
+		return settlementInfo(src);
 	}
 
 	private static int codexInfo(CommandSourceStack src, Collection<ServerPlayer> targets) {
@@ -391,7 +505,7 @@ public final class VestigesCommands {
 	}
 
 	private static int reload(CommandSourceStack src) {
-		ConfigStore.loadServer();
+		dev.vestiges.server.FeatureNet.change(src.getServer(), c -> ConfigStore.loadServer());
 		src.sendSuccess(() -> Component.literal("Vestiges config reloaded"), true);
 		return 1;
 	}
@@ -402,8 +516,15 @@ public final class VestigesCommands {
 			src.sendFailure(Component.literal("Unknown system: " + id));
 			return 0;
 		}
-		ConfigStore.server().set(s, on);
-		ConfigStore.saveServer();
+		if (s.core()) {
+			src.sendFailure(Component.literal(s.label + " is the core of Vestiges and stays on"));
+			return 0;
+		}
+		if (s.creationOnly()) {
+			src.sendFailure(Component.literal(s.label + " can only be chosen when the world is created"));
+			return 0;
+		}
+		dev.vestiges.server.FeatureNet.change(src.getServer(), c -> c.setWithNeeds(s, on));
 		src.sendSuccess(() -> Component.literal("Vestiges: " + s.label + " is now " + (on ? "on" : "off")), true);
 		return 1;
 	}

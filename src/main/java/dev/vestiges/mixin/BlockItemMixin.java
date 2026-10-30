@@ -17,6 +17,8 @@ public abstract class BlockItemMixin {
 	private void vestiges$rememberPlaced(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir) {
 		if (cir.getReturnValue().consumesAction() && context.getLevel() instanceof ServerLevel level && context.getPlayer() != null) {
 			PlacedBlocks.markPlaced(level, context.getClickedPos());
+		} else if (cir.getReturnValue().consumesAction() && context.getLevel().isClientSide() && context.getPlayer() != null) {
+			dev.vestiges.tree.BuildingNodes.clientPlacedAdd.accept(context.getClickedPos().immutable());
 		}
 	}
 }

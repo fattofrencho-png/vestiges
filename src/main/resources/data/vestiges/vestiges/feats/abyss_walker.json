@@ -4,5 +4,7 @@
   "name": "Abyss Walker",
   "requirement": "Clear dungeon tier 25",
   "reward": "2nd Gold Block",
-  "xp": 2000
+  "xp": 2000,
+  "item": "gold_block",
+  "later": "dungeons (M8)"
 }

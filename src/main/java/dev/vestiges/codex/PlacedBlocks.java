@@ -42,6 +42,13 @@ public final class PlacedBlocks {
 	private PlacedBlocks() {
 	}
 
+	/**
+	 * Called at startup: the attachment types must exist before the first chunk loads, or the game drops the saved positions as "unknown
+	 * attachment type" (that happened before this was called, so blocks placed before a restart were forgotten).
+	 */
+	public static void init() {
+	}
+
 	public static void mark(ServerLevel level, BlockPos pos) {
 		LevelChunk chunk = level.getChunkAt(pos);
 		Placed placed = chunk.getAttached(PLACED);
@@ -54,18 +61,29 @@ public final class PlacedBlocks {
 		}
 	}
 
-	/** Marks a just-placed block, both halves for tall plants and doors. */
+	/** Marks a just-placed block, both halves for tall plants, doors and beds. */
 	public static void markPlaced(ServerLevel level, BlockPos pos) {
 		mark(level, pos);
 		BlockState state = level.getBlockState(pos);
 		if (state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)) {
 			mark(level, state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below());
 		}
+		if (state.getBlock() instanceof net.minecraft.world.level.block.AbstractBedBlock) {
+			mark(level, pos.relative(net.minecraft.world.level.block.AbstractBedBlock.getConnectedDirection(state)));
+		}
 	}
 
 	public static boolean isPlaced(ServerLevel level, BlockPos pos) {
 		Placed placed = level.getChunkAt(pos).getAttached(PLACED);
 		return placed != null && placed.positions.contains(pos.asLong());
+	}
+
+	/** Every player-placed position in a chunk (renown counts them). */
+	public static void forEach(LevelChunk chunk, java.util.function.LongConsumer action) {
+		Placed placed = chunk.getAttached(PLACED);
+		if (placed != null) {
+			placed.positions.forEach(action);
+		}
 	}
 
 	/** Forgets a spot and says whether a player had placed the block there. */

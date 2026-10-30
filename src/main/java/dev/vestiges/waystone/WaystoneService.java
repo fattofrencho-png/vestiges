@@ -62,7 +62,7 @@ public final class WaystoneService {
 	}
 
 	private static boolean enabled() {
-		return ConfigStore.server().enabled(VestigesSystem.MAP);
+		return ConfigStore.server().enabled(VestigesSystem.WAYSTONES);
 	}
 
 	// ---- placing, using, breaking ------------------------------------------------------------------------------------
@@ -90,6 +90,10 @@ public final class WaystoneService {
 		}
 		if (WaystoneItems.isWaystone(stack)) {
 			BlockPlaceContext ctx = new BlockPlaceContext(new UseOnContext(player, hand, hit));
+			if (dev.vestiges.settlement.SettlementService.enabled() && !dev.vestiges.settlement.SettlementService.claimedBy(sp, sl, ctx.getClickedPos())) {
+				MapNet.message(sp, "A waystone can only be placed inside your settlement or ward.", true);
+				return dev.vestiges.settlement.SettlementService.refuse(sp);
+			}
 			PENDING.add(new Pending(sl, ctx.getClickedPos().immutable(), sp.getUUID(), 2));
 		}
 		return InteractionResult.PASS;

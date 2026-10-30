@@ -32,6 +32,10 @@ public final class LootSparkles {
 		if (level == null || mc.player == null || mc.isPaused() || ++timer % 4 != 0) {
 			return;
 		}
+		if (!dev.vestiges.client.features.ClientFeatures.on(dev.vestiges.config.VestigesSystem.LOOT)
+			&& !dev.vestiges.client.features.ClientFeatures.on(dev.vestiges.config.VestigesSystem.PER_PLAYER_LOOT)) {
+			return;
+		}
 		RandomSource r = level.getRandom();
 		UUID me = mc.player.getUUID();
 		BlockPos at = mc.player.blockPosition();

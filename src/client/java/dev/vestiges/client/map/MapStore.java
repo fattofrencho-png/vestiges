@@ -19,7 +19,7 @@ import net.minecraft.world.level.storage.LevelResource;
 public final class MapStore {
 	private static final int MAX_LOADED = 48;
 	/** Bumped when the map colours change, so old tiles are not mixed with new ones. */
-	private static final String MAP_VERSION = "v2";
+	private static final String MAP_VERSION = "v3";
 	private static final Map<String, MapRegion> LOADED = new LinkedHashMap<>(64, 0.75f, true);
 	private static final Set<String> MISSING = new HashSet<>();
 	private static Path worldDir;

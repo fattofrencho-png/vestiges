@@ -23,7 +23,8 @@ public record Grave(int id, UUID owner, String ownerName, String dimension, Bloc
 		Codec.LONG.fieldOf("created").forGetter(Grave::created),
 		Codec.BOOL.optionalFieldOf("warned", false).forGetter(Grave::warned),
 		Codec.BOOL.optionalFieldOf("decayed", false).forGetter(Grave::decayed),
-		ItemStack.CODEC.listOf().optionalFieldOf("items", List.of()).forGetter(Grave::items)
+		// Saved with the server's registries: an enchanted item used to break the whole overworld save.
+		dev.vestiges.server.SavedItems.CODEC.listOf().optionalFieldOf("items", List.of()).forGetter(Grave::items)
 	).apply(i, Grave::new));
 
 	public Grave warnedNow() {

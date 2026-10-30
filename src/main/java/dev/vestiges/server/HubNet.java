@@ -62,9 +62,11 @@ public final class HubNet {
 			o.addProperty("reward", f.reward());
 			o.addProperty("xp", f.xp());
 			o.addProperty("repeatable", f.repeatable());
+			dev.vestiges.feats.FeatService.progress(player, e.getKey().getPath(), f).entrySet().forEach(p -> o.add(p.getKey(), p.getValue()));
 			feats.add(o);
 		}
 		root.add("feats", feats);
+		root.add("settlements", dev.vestiges.settlement.SettlementService.snapshot(player));
 
 		JsonObject data = new JsonObject();
 		for (DataType<?> type : VestigesData.ALL) {

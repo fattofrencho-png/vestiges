@@ -27,6 +27,12 @@ public final class ClientConfig {
 	public boolean healthBars = true;
 	public boolean damageNumbers = true;
 	public java.util.List<String> blockedPlayers = new java.util.ArrayList<>();
+	/** Which markers the maps show, by kind; a kind the file does not mention defaults to on. */
+	public Map<String, Boolean> mapMarkers = new LinkedHashMap<>();
+	/** The hub tab open when it was last closed. */
+	public String hubTab = "FEATS";
+	/** Our screens: "dark" or "light" (vanilla's window grey). */
+	public String theme = "dark";
 
 	public ClientConfig normalize() {
 		if (lookAtLines == null) {
@@ -34,6 +40,12 @@ public final class ClientConfig {
 		}
 		if (blockedPlayers == null) {
 			blockedPlayers = new java.util.ArrayList<>();
+		}
+		if (mapMarkers == null) {
+			mapMarkers = new LinkedHashMap<>();
+		}
+		if (hubTab == null) {
+			hubTab = "FEATS";
 		}
 		minimapSize = Math.max(64, Math.min(256, minimapSize));
 		minimapZoom = Math.max(1, Math.min(4, minimapZoom));
@@ -53,5 +65,14 @@ public final class ClientConfig {
 
 	public void setLine(String providerId, boolean on) {
 		lookAtLines.put(providerId, on);
+	}
+
+	public boolean markerOn(String kind) {
+		Boolean v = mapMarkers.get(kind);
+		return v == null || v;
+	}
+
+	public void setMarker(String kind, boolean on) {
+		mapMarkers.put(kind, on);
 	}
 }

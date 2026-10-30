@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 /**
@@ -20,6 +21,18 @@ public abstract class MinecraftMixin {
 	private void vestiges$rackKeys(Inventory inventory, int slot, Operation<Void> original) {
 		if (!ClientInventory.onNumberKey(inventory, slot)) {
 			original.call(inventory, slot);
+		}
+	}
+
+	@Shadow
+	private int rightClickDelay;
+
+	@org.spongepowered.asm.mixin.injection.Inject(method = "startUseItem", at = @At("RETURN"))
+	private void vestiges$placingSpeed(org.spongepowered.asm.mixin.injection.callback.CallbackInfo ci) {
+		Minecraft mc = (Minecraft) (Object) this;
+		if (rightClickDelay == 4 && mc.player != null && (mc.player.getMainHandItem().getItem() instanceof net.minecraft.world.item.BlockItem
+			|| mc.player.getOffhandItem().getItem() instanceof net.minecraft.world.item.BlockItem)) {
+			rightClickDelay = dev.vestiges.tree.BuildingNodes.placeDelay(mc.player, rightClickDelay);
 		}
 	}
 

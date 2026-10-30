@@ -5,5 +5,7 @@
   "requirement": "Every 5 dungeon clears",
   "reward": "Small Banner (radius 16)",
   "xp": 100,
-  "repeatable": true
+  "repeatable": true,
+  "item": "banner16",
+  "later": "dungeons (M8)"
 }

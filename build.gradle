@@ -17,6 +17,16 @@ loom {
 	}
 }
 
+// Dev only, never in the mod jar: `dev runClientGameTest` plays through src/gametest and saves real screenshots to build/run/clientGameTest/screenshots.
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "vestiges-gametest"
+		enableGameTests = false
+		enableClientGameTests = true
+	}
+}
+
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"

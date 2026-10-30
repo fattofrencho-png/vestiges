@@ -13,12 +13,10 @@ public final class TreeLabels {
 	private TreeLabels() {
 	}
 
-	private static final String BUILDING = "settlements (M5)";
 	private static final String LATER = "a later update";
 
 	/** Effects that are not live yet, with the system that brings them. Everything else works today. */
 	private static final Map<String, String> PENDING = Map.ofEntries(
-		Map.entry("rebuilder", BUILDING), Map.entry("placing_speed", BUILDING), Map.entry("climb_speed", BUILDING), Map.entry("own_block_break", BUILDING),
 		Map.entry("cartographer", LATER), Map.entry("fletcher", LATER), Map.entry("brewing_speed", LATER), Map.entry("wide_splash", LATER),
 		Map.entry("potion_duration", LATER), Map.entry("drunk_potion_duration", LATER), Map.entry("potion_healing", LATER),
 		Map.entry("parry_window", LATER), Map.entry("shield_raise", LATER), Map.entry("perfect_parry", LATER), Map.entry("shield_disable", LATER),

@@ -49,14 +49,15 @@ public final class MinimapHud implements HudElement {
 		g.enableScissor(x0, y0, x0 + size, y0 + size);
 		MapView.drawTiles(g, dim, layer, x0, y0, size, size, px, pz, zoom);
 		String dimId = dim.toString();
+		dev.vestiges.client.settlement.ClientSettlements.draw(g, font, dimId, x0, y0, size, size, px, pz, zoom, false);
 		for (ClientWaypoints.Waypoint w : ClientWaypoints.all()) {
-			if (w.dimension.equals(dimId)) {
+			if (w.dimension.equals(dimId) && MapMarkers.shown(w)) {
 				int[] p = clamp(MapView.toScreen(x0, y0, size, size, px, pz, zoom, w.x + 0.5, w.z + 0.5), x0, y0, size);
 				MapIcons.forWaypoint(g, w, p[0], p[1], 8);
 			}
 		}
 		for (ClientWaypoints.WaystoneMarker w : ClientWaypoints.waystones()) {
-			if (w.dimension().equals(dimId)) {
+			if (w.dimension().equals(dimId) && MapMarkers.on("waystone")) {
 				int[] p = clamp(MapView.toScreen(x0, y0, size, size, px, pz, zoom, w.x() + 0.5, w.z() + 0.5), x0, y0, size);
 				MapIcons.waystone(g, p[0], p[1], 8);
 			}

@@ -5,5 +5,8 @@
   "requirement": "Every 10 elites killed",
   "reward": "Ward Lantern (radius 6)",
   "xp": 100,
-  "repeatable": true
+  "repeatable": true,
+  "item": "ward6",
+  "counter": "elites",
+  "every": 10
 }

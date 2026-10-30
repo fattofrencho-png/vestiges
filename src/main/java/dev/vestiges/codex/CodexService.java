@@ -84,6 +84,7 @@ public final class CodexService {
 		ServerTickEvents.END_SERVER_TICK.register(CodexService::tick);
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> server.execute(() -> {
 			backfillPlaces(handler.player);
+			mergeShared(handler.player);
 			sendSnapshot(handler.player);
 		}));
 		ServerPlayNetworking.registerGlobalReceiver(dev.vestiges.net.CodexPayloads.Request.TYPE,
@@ -143,6 +144,9 @@ public final class CodexService {
 		CodexProgress prog = get(p);
 		prog = prog.withCount(id, prog.count(id) + amount);
 		save(p, settle(p, prog, id));
+		if (id.startsWith(CodexEntry.BLOCKS + "/")) {
+			dev.vestiges.settlement.SettlementService.shareCodex(p, id, get(p).count(id), null);
+		}
 	}
 
 	/** Adds a place spot unless one within {@code minDistance} blocks (0 = same spot) is already known. */
@@ -164,6 +168,47 @@ public final class CodexService {
 			}
 		}
 		save(p, settle(p, prog.withSpot(id, spot), id));
+		if (id.startsWith(CodexEntry.BIOMES + "/")) {
+			dev.vestiges.settlement.SettlementService.shareCodex(p, id, 0, get(p).spots(id));
+		}
+	}
+
+	/** Progress shared by a settlement member: the highest count wins; the stage moves without XP or toast. */
+	public static void receiveShared(ServerPlayer p, String id, int count, List<Long> spots) {
+		if (!enabled()) {
+			return;
+		}
+		CodexEntry e = CodexIndex.get().entry(id);
+		if (e == null) {
+			return;
+		}
+		CodexProgress prog = get(p);
+		if (spots == null) {
+			if (count <= prog.count(id)) {
+				return;
+			}
+			prog = prog.withCount(id, count);
+		} else {
+			for (long s : spots) {
+				if (!prog.spots(id).contains(s) && prog.spots(id).size() < CodexRules.BIOME_CHUNKS) {
+					prog = prog.withSpot(id, s);
+				}
+			}
+		}
+		int have = e.isPlace() ? prog.spots(id).size() : prog.count(id);
+		int stage = Math.min(CodexRules.maxStage(e), CodexRules.stageFor(e, have, stats(p).get("codex_gathering")));
+		if (stage > prog.stage(id)) {
+			prog = prog.withStage(id, stage);
+		}
+		save(p, prog);
+	}
+
+	/** On joining or being added to a settlement: take in its shared block and biome progress. */
+	public static void mergeShared(ServerPlayer p) {
+		for (dev.vestiges.settlement.SettlementData.Settlement s : dev.vestiges.settlement.SettlementService.of(p)) {
+			s.shared().counts().forEach((id, c) -> receiveShared(p, id, c, null));
+			s.shared().spots().forEach((id, list) -> receiveShared(p, id, 0, list));
+		}
 	}
 
 	/** Discovered by seeing it (peaceful mobs, Unique blocks). */

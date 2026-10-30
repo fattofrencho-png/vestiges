@@ -4,5 +4,6 @@
   "name": "The Breaking",
   "requirement": "Kill dragon 12",
   "reward": "Respec Tome, a Relic item",
-  "xp": 2000
+  "xp": 2000,
+  "later": "the End (M9)"
 }

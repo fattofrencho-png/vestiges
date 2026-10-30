@@ -4,5 +4,20 @@
   "name": "Founder",
   "requirement": "Level 10, 5 beds in one area, meet 1 villager",
   "reward": "1st Bell",
-  "xp": 150
+  "xp": 150,
+  "goals": [
+    {
+      "type": "level",
+      "amount": 10
+    },
+    {
+      "type": "beds",
+      "amount": 5
+    },
+    {
+      "type": "villagers",
+      "amount": 1
+    }
+  ],
+  "item": "bell"
 }

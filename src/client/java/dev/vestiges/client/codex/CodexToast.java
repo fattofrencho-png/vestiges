@@ -20,9 +20,14 @@ public final class CodexToast implements Toast {
 	private long shown;
 
 	public CodexToast(Item icon, String name, String label, long xp) {
+		this(icon, "Codex: " + name, label + (xp > 0 ? "  +" + xp + " XP" : ""));
+	}
+
+	/** Any Vestiges toast: an icon, a gold title and a white line (feats use it too). */
+	public CodexToast(Item icon, String title, String sub) {
 		this.icon = new ItemStack(icon);
-		this.title = name;
-		this.sub = label + (xp > 0 ? "  +" + xp + " XP" : "");
+		this.title = title;
+		this.sub = sub;
 	}
 
 	@Override
@@ -41,7 +46,7 @@ public final class CodexToast implements Toast {
 		if (!icon.isEmpty()) {
 			g.item(icon, 8, 8);
 		}
-		g.text(font, "Codex: " + title, 30, 7, 0xFFE6C36A, false);
+		g.text(font, title, 30, 7, 0xFFE6C36A, false);
 		g.text(font, sub, 30, 18, 0xFFFFFFFF, false);
 	}
 }

@@ -51,7 +51,7 @@ public final class GearService {
 		Map.entry("lapis", new TrimStat("enchant_cost", -4, "-4% enchanting cost")),
 		Map.entry("emerald", new TrimStat("trade_discount", 2, "villager trades 2% cheaper")));
 	/** Trim stats whose system comes later (shown greyed in tooltips). */
-	public static final Map<String, String> TRIM_LATER = Map.of("placing_speed", "settlements (M5)", "trade_discount", "villagers (M6)");
+	public static final Map<String, String> TRIM_LATER = Map.of("trade_discount", "villagers (M6)");
 
 	private static final Identifier LADDER_ARMOR = Vestiges.id("ladder_armor");
 	private static final Identifier LADDER_TOUGHNESS = Vestiges.id("ladder_toughness");

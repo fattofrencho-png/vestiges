@@ -38,6 +38,8 @@ public final class WorldMapScreen extends Screen {
 		int color();
 
 		void icon(GuiGraphicsExtractor g, int cx, int cy, int size);
+
+		boolean shown();
 	}
 
 	private record WaypointEntry(ClientWaypoints.Waypoint w) implements Entry {
@@ -48,6 +50,10 @@ public final class WorldMapScreen extends Screen {
 
 		public void icon(GuiGraphicsExtractor g, int cx, int cy, int size) {
 			MapIcons.forWaypoint(g, w, cx, cy, size);
+		}
+
+		public boolean shown() {
+			return MapMarkers.shown(w);
 		}
 
 		public String dimension() {
@@ -78,6 +84,10 @@ public final class WorldMapScreen extends Screen {
 
 		public void icon(GuiGraphicsExtractor g, int cx, int cy, int size) {
 			MapIcons.waystone(g, cx, cy, size);
+		}
+
+		public boolean shown() {
+			return MapMarkers.on("waystone");
 		}
 
 		public String dimension() {
@@ -114,6 +124,8 @@ public final class WorldMapScreen extends Screen {
 	private double dragStartX;
 	private double dragStartY;
 	private int[] pendingSpot;
+	private boolean markersOpen;
+	private int headerEnd;
 	private final List<Object[]> rowIcons = new ArrayList<>();
 
 	public WorldMapScreen() {
@@ -187,6 +199,15 @@ public final class WorldMapScreen extends Screen {
 				cz = mc.player.getZ();
 			}
 		}).bounds(x, 3, 80, 20).build());
+		x += 82;
+		addRenderableWidget(Button.builder(Component.literal("Markers"), b -> {
+			markersOpen = !markersOpen;
+			rebuildWidgets();
+		}).bounds(x, 3, 60, 20).build());
+		headerEnd = x + 60;
+		if (markersOpen) {
+			MapMarkers.addButtons(this::addRenderableWidget, Math.min(x, mapW() - 112), HEADER + 2, 110);
+		}
 
 		// Side panel.
 		int px = width - PANEL + 4;
@@ -314,10 +335,15 @@ public final class WorldMapScreen extends Screen {
 		int mh = mapH();
 		g.enableScissor(0, HEADER, mw, HEADER + mh);
 		MapView.drawTiles(g, dimension, layer, 0, HEADER, mw, mh, cx, cz, zoom);
+		dev.vestiges.client.settlement.ClientSettlements.draw(g, font, dimension.toString(), 0, HEADER, mw, mh, cx, cz, zoom, true);
 		for (Entry e : entries()) {
+			boolean picked = selected != null && same(selected, e);
+			if (!e.shown() && !picked) {
+				continue;
+			}
 			int[] p = MapView.toScreen(0, HEADER, mw, mh, cx, cz, zoom, e.x() + 0.5, e.z() + 0.5);
 			e.icon(g, p[0], p[1], 10);
-			if (zoom >= 0.5f || selected != null && same(selected, e)) {
+			if (zoom >= 0.5f && MapMarkers.on(MapMarkers.NAMES) || picked) {
 				g.text(font, e.label(), p[0] + 8, p[1] - 4, 0xFFFFFFFF, true);
 			}
 		}
@@ -328,18 +354,24 @@ public final class WorldMapScreen extends Screen {
 		g.disableScissor();
 
 		// Header and panel backgrounds, then widgets on top.
-		g.fill(0, 0, width, HEADER, 0xE0101418);
-		g.fill(width - PANEL, HEADER, width, height, 0xE0101418);
-		g.fill(width - PANEL, HEADER, width - PANEL + 1, height, 0x55FFFFFF);
+		g.fill(0, 0, width, HEADER, dev.vestiges.client.UiTheme.panel());
+		g.fill(width - PANEL, HEADER, width, height, dev.vestiges.client.UiTheme.panel());
+		g.fill(width - PANEL, HEADER, width - PANEL + 1, height, dev.vestiges.client.UiTheme.line());
 		super.extractRenderState(g, mouseX, mouseY, delta);
 		for (Object[] r : rowIcons) {
 			((Entry) r[0]).icon(g, (int) r[1], (int) r[2], 10);
 		}
 
 		String title = MapMath.label(layer, MapView.isNether(mc));
-		g.text(font, title, mw - font.width(title) - 6, 9, 0xFFE6C36A);
+		// Beside the buttons when it fits, otherwise on the map just under them.
+		int titleX = mw - font.width(title) - 6;
+		if (titleX > headerEnd + 4) {
+			g.text(font, title, titleX, 9, dev.vestiges.client.UiTheme.head(), dev.vestiges.client.UiTheme.shadow());
+		} else {
+			g.text(font, title, 6, HEADER + 4, 0xFFE6C36A, true);
+		}
 		int px = width - PANEL + 4;
-		g.text(font, "Waypoints and waystones", px, HEADER + 3, 0xFFFFFFFF);
+		g.text(font, "Waypoints and waystones", px, HEADER + 3, dev.vestiges.client.UiTheme.text(), dev.vestiges.client.UiTheme.shadow());
 		if (!ClientWaypoints.inbox().isEmpty()) {
 			int y = HEADER + 14 + ROWS * 19 + 22 + (selected != null ? (selected instanceof WaypointEntry ? 44 : 22) : 0) + 22;
 			for (ClientWaypoints.Shared s : ClientWaypoints.inbox()) {

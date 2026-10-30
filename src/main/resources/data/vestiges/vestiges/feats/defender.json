@@ -4,5 +4,12 @@
   "name": "Defender",
   "requirement": "Defend a raid",
   "reward": "Ward Lantern (radius 12)",
-  "xp": 300
+  "xp": 300,
+  "goals": [
+    {
+      "type": "raids",
+      "amount": 1
+    }
+  ],
+  "item": "ward12"
 }

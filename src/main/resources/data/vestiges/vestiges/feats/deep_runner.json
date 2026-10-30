@@ -4,5 +4,7 @@
   "name": "Deep Runner",
   "requirement": "Clear dungeon tier 10",
   "reward": "Gold Block (chunk loader)",
-  "xp": 800
+  "xp": 800,
+  "item": "gold_block",
+  "later": "dungeons (M8)"
 }

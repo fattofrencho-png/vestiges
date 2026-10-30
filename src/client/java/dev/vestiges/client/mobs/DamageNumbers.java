@@ -52,7 +52,7 @@ public final class DamageNumbers {
 		ClientMobs.onHit(entityId);
 		Minecraft mc = Minecraft.getInstance();
 		ClientLevel level = mc.level;
-		if (level == null || !ClientConfigStore.get().damageNumbers) {
+		if (level == null || !ClientConfigStore.get().damageNumbers || !dev.vestiges.client.features.ClientFeatures.on(dev.vestiges.config.VestigesSystem.MOB_SCALING)) {
 			return;
 		}
 		Entity target = level.getEntity(entityId);

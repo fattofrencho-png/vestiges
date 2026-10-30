@@ -4,5 +4,17 @@
   "name": "Second Bell",
   "requirement": "Level 50, a settlement at renown 5, 3 workers Journeyman or above",
   "reward": "2nd Bell",
-  "xp": 800
+  "xp": 800,
+  "goals": [
+    {
+      "type": "level",
+      "amount": 50
+    },
+    {
+      "type": "renown",
+      "amount": 5
+    }
+  ],
+  "item": "bell",
+  "later": "workers (M7)"
 }

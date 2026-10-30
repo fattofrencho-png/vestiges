@@ -1,0 +1,12 @@
+{
+	"schemaVersion": 1,
+	"id": "vestiges-gametest",
+	"version": "1",
+	"name": "Vestiges screenshot tour",
+	"environment": "client",
+	"entrypoints": {
+		"fabric-client-gametest": [
+			"dev.vestiges.gametest.ScreenshotTour"
+		]
+	}
+}

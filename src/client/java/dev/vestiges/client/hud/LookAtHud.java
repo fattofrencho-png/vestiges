@@ -59,7 +59,7 @@ public final class LookAtHud implements HudElement {
 		boolean elite = mob != null && mob.elite();
 		Component banner = elite ? dev.vestiges.client.mobs.ClientMobs.banner(mob) : null;
 		Component title = title(target, mob);
-		boolean showNew = config.lineOn(LookAtProviders.NEW_TAG) && isNew(target.id().toString());
+		boolean showNew = dev.vestiges.client.features.ClientFeatures.on(dev.vestiges.config.VestigesSystem.CODEX) && config.lineOn(LookAtProviders.NEW_TAG) && isNew(target.id().toString());
 		Component newTag = Component.literal("  NEW").withStyle(ChatFormatting.YELLOW, ChatFormatting.BOLD);
 		int width = font.width(title) + (showNew ? font.width(newTag) : 0);
 		for (Component c : lines) {

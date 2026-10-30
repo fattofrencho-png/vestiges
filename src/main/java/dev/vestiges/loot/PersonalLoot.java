@@ -76,7 +76,7 @@ public final class PersonalLoot {
 	/** Each player's copy (27 slots), by player UUID. */
 	public record LootCopies(Map<String, List<ItemStack>> byPlayer) {
 		public static final LootCopies EMPTY = new LootCopies(Map.of());
-		public static final Codec<LootCopies> CODEC = Codec.unboundedMap(Codec.STRING, ItemStack.OPTIONAL_CODEC.listOf())
+		public static final Codec<LootCopies> CODEC = Codec.unboundedMap(Codec.STRING, dev.vestiges.server.SavedItems.CODEC.listOf())
 			.xmap(LootCopies::new, LootCopies::byPlayer);
 	}
 

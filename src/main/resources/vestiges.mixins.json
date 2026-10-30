@@ -12,6 +12,7 @@
 		"ApplyBonusCountMixin",
 		"AttributesMixin",
 		"BlockItemMixin",
+		"BlockStateBaseMixin",
 		"BoneMealItemMixin",
 		"BonusLevelTableConditionMixin",
 		"BowItemMixin",
@@ -29,6 +30,7 @@
 		"InventoryMenuMixin",
 		"InventoryMixin",
 		"ItemStackMixin",
+		"LivingEntityClimbMixin",
 		"LivingEntityMixin",
 		"LivingEntityUseMixin",
 		"PistonBaseBlockMixin",
@@ -38,7 +40,8 @@
 		"ProjectileWeaponItemMixin",
 		"RandomizableContainerBlockEntityMixin",
 		"ServerGamePacketListenerImplMixin",
-		"ServerPlayerMixin"
+		"ServerPlayerMixin",
+		"SpawnPlacementsMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -4,5 +4,16 @@
   "name": "Third Bell",
   "requirement": "Level 80, two settlements at renown 6",
   "reward": "3rd Bell",
-  "xp": 1500
+  "xp": 1500,
+  "goals": [
+    {
+      "type": "level",
+      "amount": 80
+    },
+    {
+      "type": "renown_two",
+      "amount": 6
+    }
+  ],
+  "item": "bell"
 }

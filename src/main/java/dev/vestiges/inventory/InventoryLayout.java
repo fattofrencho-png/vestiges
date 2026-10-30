@@ -14,8 +14,25 @@ public final class InventoryLayout {
 	public static final int TOOLS_Y = 20;
 	public static final int WEAPONS_Y = 66;
 	public static final int BELT_Y = 118;
+	/** The recipe book's width and the gap between it and the window. */
+	public static final int BOOK_W = 147;
+	public static final int BOOK_GAP = 2;
+	/** The narrowest screen that fits the book (with its tabs, 30 wide) beside the whole window. */
+	public static final int BOOK_MIN_SCREEN = WIDTH + BOOK_W + BOOK_GAP + 30;
 
 	private InventoryLayout() {
+	}
+
+	/** Left edge of the inventory window: the window alone, or the book and the window together, are centred on the screen. */
+	public static int windowLeft(int screenWidth, boolean bookOpen) {
+		return bookOpen ? (screenWidth - WIDTH - BOOK_W - BOOK_GAP) / 2 + BOOK_W + BOOK_GAP : (screenWidth - WIDTH) / 2;
+	}
+
+	/**
+	 * The screen width to tell the recipe book, which draws itself at (width - 147) / 2 - 86: chosen so it lands right beside the window.
+	 */
+	public static int bookScreenWidth(int screenWidth) {
+		return screenWidth - WIDTH - BOOK_GAP + 2 * 86;
 	}
 
 	/** Item position (top-left of the 16x16 item) of an extra slot. */

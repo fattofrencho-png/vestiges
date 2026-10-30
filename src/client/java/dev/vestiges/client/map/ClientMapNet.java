@@ -63,6 +63,7 @@ public final class ClientMapNet {
 					Component.literal(from + " shared a place with you. Open the map (M) to add it."));
 			}
 			case "waystones" -> ClientWaypoints.receiveWaystones(json.getAsJsonArray("waystones"));
+			case "settlements" -> dev.vestiges.client.settlement.ClientSettlements.receive(json);
 			case "waystone_terminal" -> mc.setScreenAndShow(new WaystoneTerminalScreen(json));
 			default -> Vestiges.LOGGER.debug("Vestiges: unknown map event {}", e.event());
 		}

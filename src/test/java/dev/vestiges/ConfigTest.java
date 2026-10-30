@@ -14,12 +14,93 @@ class ConfigTest {
 	private static final Gson GSON = new Gson();
 
 	@Test
-	void defaultsTurnEverySystemOn() {
+	void defaultsMatchTheFullPreset() {
 		ServerConfig c = new ServerConfig().normalize();
 		assertEquals(VestigesSystem.values().length, c.systems.size());
 		for (VestigesSystem s : VestigesSystem.values()) {
-			assertTrue(c.enabled(s), s.id);
+			assertEquals(s.onByDefault(), c.enabled(s), s.id);
 		}
+		assertEquals(VestigesSystem.Preset.FULL, c.preset());
+	}
+
+	@Test
+	void theCoreCanNeverBeSwitchedOff() {
+		ServerConfig c = GSON.fromJson("{\"systems\":{\"inventory\":false,\"map\":false}}", ServerConfig.class).normalize();
+		assertTrue(c.enabled(VestigesSystem.INVENTORY));
+		assertTrue(c.enabled(VestigesSystem.MAP));
+		c.set(VestigesSystem.MAP, false);
+		c.setWithNeeds(VestigesSystem.INVENTORY, false);
+		assertTrue(c.enabled(VestigesSystem.MAP));
+		assertTrue(c.enabled(VestigesSystem.INVENTORY));
+		for (VestigesSystem.Preset p : VestigesSystem.Preset.values()) {
+			assertTrue(VestigesSystem.MAP.inPreset(p), p.label);
+			assertTrue(VestigesSystem.INVENTORY.inPreset(p), p.label);
+		}
+	}
+
+	@Test
+	void presetsAreRecognised() {
+		ServerConfig c = new ServerConfig().normalize();
+		c.applyPreset(VestigesSystem.Preset.CORE);
+		assertEquals(VestigesSystem.Preset.CORE, c.preset());
+		assertFalse(c.enabled(VestigesSystem.CHARACTER));
+		assertFalse(c.enabled(VestigesSystem.ENCHANT_LEVELS));
+		c.applyPreset(VestigesSystem.Preset.COMFORT);
+		assertEquals(VestigesSystem.Preset.COMFORT, c.preset());
+		assertTrue(c.enabled(VestigesSystem.FARMING));
+		assertFalse(c.enabled(VestigesSystem.CHARACTER));
+		c.setWithNeeds(VestigesSystem.CODEX, true);
+		assertEquals(null, c.preset(), "a changed switch makes it a custom choice");
+	}
+
+	@Test
+	void switchesKeepWhatTheyNeed() {
+		ServerConfig c = new ServerConfig().normalize();
+		c.setWithNeeds(VestigesSystem.FEATS, false);
+		assertFalse(c.enabled(VestigesSystem.SETTLEMENTS), "needs feats");
+		assertFalse(c.enabled(VestigesSystem.WORKERS), "needs settlements, which needs feats");
+		c.setWithNeeds(VestigesSystem.WORKERS, true);
+		assertTrue(c.enabled(VestigesSystem.SETTLEMENTS));
+		assertTrue(c.enabled(VestigesSystem.VILLAGERS));
+		assertTrue(c.enabled(VestigesSystem.FEATS));
+	}
+
+	@Test
+	void eachWorldKeepsItsOwnSettings(@org.junit.jupiter.api.io.TempDir java.nio.file.Path dir) throws java.io.IOException {
+		java.nio.file.Path older = dir.resolve("older/vestiges/settings.json");
+		dev.vestiges.config.ConfigStore.openWorld(older);
+		assertTrue(java.nio.file.Files.exists(older));
+		assertTrue(dev.vestiges.config.ConfigStore.newWorld());
+		assertFalse(dev.vestiges.config.ConfigStore.chosenAtCreation(), "a world from before the welcome page keeps its game rules");
+		assertTrue(dev.vestiges.config.ConfigStore.server().enabled(VestigesSystem.CHARACTER), "and everything stays on");
+
+		ServerConfig choice = new ServerConfig().normalize();
+		choice.applyPreset(VestigesSystem.Preset.CORE);
+		dev.vestiges.config.ConfigStore.setPendingWorld(choice);
+		java.nio.file.Path created = dir.resolve("created/vestiges/settings.json");
+		dev.vestiges.config.ConfigStore.openWorld(created);
+		assertTrue(dev.vestiges.config.ConfigStore.chosenAtCreation());
+		assertFalse(dev.vestiges.config.ConfigStore.server().enabled(VestigesSystem.CHARACTER));
+
+		dev.vestiges.config.ConfigStore.openWorld(older);
+		assertFalse(dev.vestiges.config.ConfigStore.newWorld());
+		assertTrue(dev.vestiges.config.ConfigStore.server().enabled(VestigesSystem.CHARACTER), "the other world's choice doesn't leak");
+
+		dev.vestiges.config.ConfigStore.openWorld(created);
+		assertFalse(dev.vestiges.config.ConfigStore.server().enabled(VestigesSystem.CHARACTER), "reopening keeps the choice");
+		dev.vestiges.config.ConfigStore.closeWorld();
+	}
+
+	@Test
+	void everyNeedExistsAndOnlyBuiltFeaturesAreLive() {
+		for (VestigesSystem s : VestigesSystem.values()) {
+			for (VestigesSystem n : s.needs()) {
+				assertTrue(n != null && n != s, s.id);
+			}
+			assertFalse(s.help.isBlank(), s.id);
+		}
+		assertTrue(VestigesSystem.ENCHANT_LEVELS.creationOnly());
+		assertFalse(VestigesSystem.FREECAM.built());
 	}
 
 	@Test

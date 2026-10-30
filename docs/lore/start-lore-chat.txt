@@ -1,0 +1,11 @@
+The Vestiges project folder is:
+E:\Program Files\Antigravity\Life AI Projects\Hobby\Minecraft\RPG Mod
+
+Read these first:
+E:\Program Files\Antigravity\Life AI Projects\Hobby\Minecraft\RPG Mod\docs\lore\README.md
+E:\Program Files\Antigravity\Life AI Projects\Hobby\Minecraft\RPG Mod\docs\lore\lore-log.md
+E:\Program Files\Antigravity\Life AI Projects\Hobby\Minecraft DataPacks\RPG_Lore_Mod\bible\lore_source.md
+
+This chat is only for the lore of Vestiges, my Minecraft mod. Follow the rules in the README: only edit the docs\lore folder, never paraphrase the bible, draft first and let me approve. Use simple words, short messages, one topic at a time, numbered questions.
+
+Tell me in a few lines what is decided and what is still open, then ask what I want to talk about.

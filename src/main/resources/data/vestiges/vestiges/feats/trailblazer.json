@@ -5,5 +5,8 @@
   "requirement": "Every 50 new Codex entries",
   "reward": "Waystone",
   "xp": 150,
-  "repeatable": true
+  "repeatable": true,
+  "item": "waystone",
+  "counter": "codex",
+  "every": 50
 }

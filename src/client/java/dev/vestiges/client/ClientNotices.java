@@ -39,6 +39,18 @@ public final class ClientNotices {
 				case "meal" -> dev.vestiges.client.farming.ClientMeals.onMeal(json);
 				case "meal_defs" -> dev.vestiges.client.farming.ClientMeals.onDefs(json);
 				case "entity_info" -> dev.vestiges.client.hud.EntityInfo.onAnswer(json);
+				case "setup" -> dev.vestiges.client.settlement.SetupBar.on(json);
+				case "area" -> XpHud.area(json.get("title").getAsString(), json.get("subtitle").getAsString());
+				case "name_prompt" -> net.minecraft.client.Minecraft.getInstance().setScreenAndShow(new dev.vestiges.client.settlement.NameScreen(
+					json.get("kind").getAsString(), json.get("id").getAsString(), json.get("title").getAsString()));
+				case "feat" -> {
+					net.minecraft.resources.Identifier icon = net.minecraft.resources.Identifier.tryParse(json.get("icon").getAsString());
+					net.minecraft.world.item.Item item = icon == null ? net.minecraft.world.item.Items.BOOK
+						: net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(icon);
+					long xp = json.get("xp").getAsLong();
+					net.minecraft.client.Minecraft.getInstance().gui.toastManager().addToast(new dev.vestiges.client.codex.CodexToast(item,
+						"Feat: " + json.get("name").getAsString(), json.get("reward").getAsString() + (xp > 0 ? "  +" + xp + " XP" : "")));
+				}
 				default -> Vestiges.LOGGER.debug("Vestiges: unknown notice {}", payload.kind());
 			}
 		}));

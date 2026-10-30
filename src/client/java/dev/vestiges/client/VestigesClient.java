@@ -35,6 +35,7 @@ public class VestigesClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientConfigStore.load();
 		ClientData.register();
+		dev.vestiges.client.features.ClientFeatures.register();
 		ClientMapNet.register();
 		ClientNotices.register();
 		dev.vestiges.client.tree.ClientTree.register();
@@ -43,6 +44,7 @@ public class VestigesClient implements ClientModInitializer {
 		dev.vestiges.client.mobs.DamageNumbers.register();
 		dev.vestiges.client.codex.ClientCodex.register();
 		dev.vestiges.client.farming.ClientMeals.register();
+		dev.vestiges.client.settlement.ClientSettlements.register();
 		MapScanner.register();
 		KeyMapping.Category category = KeyMapping.Category.register(Vestiges.id("main"));
 		hubKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.hub", InputConstants.KEY_H, category));
@@ -58,9 +60,10 @@ public class VestigesClient implements ClientModInitializer {
 		HudElementRegistry.addLast(Vestiges.id("xp"), new XpHud());
 		HudElementRegistry.addLast(Vestiges.id("thick_hide"), new dev.vestiges.client.hud.ThickHideHud());
 		HudElementRegistry.addLast(Vestiges.id("meal"), new dev.vestiges.client.farming.ClientMeals());
+		HudElementRegistry.addLast(Vestiges.id("setup_bar"), new dev.vestiges.client.settlement.SetupBar());
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Vestiges.id("extra_hotbar"), new dev.vestiges.client.hud.ExtraHotbarHud());
 		// Hearts as a percentage: our 10-heart bar replaces vanilla's and takes one row, so the armour bar sits right above it.
-		HudElementRegistry.replaceElement(VanillaHudElements.HEALTH_BAR, old -> new HeartsHud());
+		HudElementRegistry.replaceElement(VanillaHudElements.HEALTH_BAR, HeartsHud::new);
 		try {
 			HudStatusBarHeightRegistry.addLeft(VanillaHudElements.HEALTH_BAR, player -> 10);
 		} catch (RuntimeException e) {
@@ -75,6 +78,7 @@ public class VestigesClient implements ClientModInitializer {
 			dev.vestiges.client.codex.ClientCodex.reset();
 			dev.vestiges.client.farming.ClientMeals.reset();
 			dev.vestiges.client.hud.EntityInfo.reset();
+			dev.vestiges.client.settlement.ClientSettlements.reset();
 			deathRecorded = false;
 		}));
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
@@ -82,12 +86,13 @@ public class VestigesClient implements ClientModInitializer {
 			MapStore.close();
 			MapStore.forget();
 			MapScanner.reset();
+			HubScreen.forgetPage();
 		}));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			while (hubKey.consumeClick()) {
 				if (client.gui.screen() == null) {
-					client.setScreenAndShow(new HubScreen());
+					client.setScreenAndShow(HubScreen.reopen());
 				}
 			}
 			while (mapKey.consumeClick()) {

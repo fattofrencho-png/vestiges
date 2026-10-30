@@ -26,6 +26,7 @@ public final class MapScanner {
 	private static final int NEARBY_RADIUS = 3;
 	private static final int ROCK = 0xFF1E1E1E;
 	private static final int VOID = 0xFF0C0C0C;
+	private static final int WINDOW = 16 + MapMath.SHADOW_REACH;
 	private static final ArrayDeque<Long> QUEUE = new ArrayDeque<>();
 	private static final Set<Long> QUEUED = new HashSet<>();
 	private static int ticks;
@@ -34,7 +35,15 @@ public final class MapScanner {
 	}
 
 	public static void register() {
-		ClientChunkEvents.CHUNK_LOAD.register((level, chunk) -> enqueue(chunk.getPos()));
+		ClientChunkEvents.CHUNK_LOAD.register((level, chunk) -> {
+			enqueue(chunk.getPos());
+			if (!level.dimensionType().hasCeiling()) {
+				// Its shadows and relief reach the chunks to the south and east.
+				enqueue(new ChunkPos(chunk.getPos().x() + 1, chunk.getPos().z()));
+				enqueue(new ChunkPos(chunk.getPos().x(), chunk.getPos().z() + 1));
+				enqueue(new ChunkPos(chunk.getPos().x() + 1, chunk.getPos().z() + 1));
+			}
+		});
 	}
 
 	public static void reset() {
@@ -101,18 +110,16 @@ public final class MapScanner {
 		int minZ = chunk.getPos().getMinBlockZ();
 		int minY = level.getMinY();
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-		int[] heights = new int[16];
-		for (int lx = 0; lx < 16; lx++) {
-			heights[lx] = level.getHeight(Heightmap.Types.MOTION_BLOCKING, minX + lx, minZ - 1);
-		}
+		int size = WINDOW;
+		int[] heights = heightWindow(level, chunk);
 		for (int lz = 0; lz < 16; lz++) {
 			for (int lx = 0; lx < 16; lx++) {
 				int wx = minX + lx;
 				int wz = minZ + lz;
-				int h = chunk.getHeight(Heightmap.Types.MOTION_BLOCKING, lx, lz) + 1;
+				int index = (lz + MapMath.SHADOW_REACH) * size + lx + MapMath.SHADOW_REACH;
+				int h = heights[index];
 				int y = h - 1;
 				if (y < minY) {
-					heights[lx] = h;
 					continue;
 				}
 				pos.set(wx, y + 1, wz);
@@ -128,11 +135,30 @@ public final class MapScanner {
 				} else {
 					color = TerrainColors.color(level, state, pos);
 				}
-				color = MapMath.shade(color, MapMath.relief(h, heights[lx]));
-				heights[lx] = h;
-				MapStore.setPixel(dim, MapMath.SURFACE, wx, wz, color);
+				float light = MapMath.relief(h, heights[index - size]) * MapMath.relief(h, heights[index - 1])
+					* MapMath.shadow(heights, size, lx + MapMath.SHADOW_REACH, lz + MapMath.SHADOW_REACH);
+				MapStore.setPixel(dim, MapMath.SURFACE, wx, wz, MapMath.shade(color, light));
 			}
 		}
+	}
+
+	/** Column heights of this chunk and of the strip north and west of it that can shade it; chunks not loaded give {@link MapMath#NO_HEIGHT}. */
+	private static int[] heightWindow(ClientLevel level, LevelChunk chunk) {
+		int cx = chunk.getPos().x();
+		int cz = chunk.getPos().z();
+		LevelChunk west = loaded(level, cx - 1, cz);
+		LevelChunk north = loaded(level, cx, cz - 1);
+		LevelChunk corner = loaded(level, cx - 1, cz - 1);
+		int[] out = new int[WINDOW * WINDOW];
+		for (int z = 0; z < WINDOW; z++) {
+			int lz = z - MapMath.SHADOW_REACH;
+			for (int x = 0; x < WINDOW; x++) {
+				int lx = x - MapMath.SHADOW_REACH;
+				LevelChunk c = lz < 0 ? (lx < 0 ? corner : north) : (lx < 0 ? west : chunk);
+				out[z * WINDOW + x] = c == null ? MapMath.NO_HEIGHT : c.getHeight(Heightmap.Types.MOTION_BLOCKING, lx & 15, lz & 15) + 1;
+			}
+		}
+		return out;
 	}
 
 	/** Water: tinted by biome, darker the deeper it is, with a hint of the floor in shallow water. */

@@ -1,6 +1,100 @@
 # Vestiges (RPG Mod) — Design Log
 *Every topic below was agreed with you one at a time. Approving this starts with the tree review page; no code is written until you sign off on the tree.*
 
+## ▶ Current plan: the new ideas (2026-10-30)
+
+### Context
+You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one mod, so you don't need to find and update other mods. Once it's published, other players can switch off what they don't want. **Core version that can't be switched off: the new inventory and the map.** Everything else gets a switch, chosen on a welcome page when a world is created.
+
+### Decisions so far
+- **Name:** stays Vestiges. The page is "Welcome to Vestiges".
+- **Order:** switches, welcome page, settings, inventory ideas and character sheet come first, then M6. Other ideas are spread across later milestones.
+- **No new block types:** windmills, statues and miniblocks use vanilla blocks with a marker plus display entities, so removing the mod leaves nothing broken.
+- **Switches:** per world (presets and single switches at creation, operators can change them later), plus personal switches for HUD and screen features.
+- **Freecam:** free flying, including through walls. The server can turn it off. It works like x-ray in survival, so the welcome page says so.
+- **Mob bucket:** overworld only, passive mobs only, no bosses, elites or villagers. Mobs keep their data.
+- **Peek:** only containers you could open. Unopened loot chests stay hidden.
+- **Sorting:** sort, move all, locked slots. Nothing is locked by default (user, 2026-10-30).
+- **Ctrl+Alt + scroll:** exact recipe cost, and you can undo.
+- **Stacks:** everything stackable goes to 99. Potions and stews also stack (my pick: 16, with the number in settings). The Bank is not affected.
+- **H key:** the character sheet on the first H after starting the game; after that, your last page.
+- **Character sheet:** who you are, stats, records, achievements.
+- **Crops:** only sneak + left-click breaks them. Water and pistons can't. Right-click harvest and no trampling already exist (M4).
+- **After death:** each player picks in Settings from what the server allows.
+- **Drafts reviewed (user, 2026-10-30), page: https://claude.ai/artifact/Ga4rSVwrVr2ntrFWpjdPJ4**
+  - **Inventory:** table, ender chest and totem in one row under the grid; align things better, with slightly smaller boxes (drawn with 17-pixel slots for the grid, table row and racks); extra grid slots hidden without a table; Bank at the bottom of the right panel; Sort button under the result, in line with the table row. The new alignment waits for a last look.
+  - **Welcome page:** a Vestiges tab beside Game, World and More. Custom can change every feature, but Core can't be modified. **The presets are still to be decided.**
+  - **Settings:** categories OK, buttons stay on the left half for now, vanilla grey as the light theme for now.
+  - **Character sheet:** open book, pages OK for now, title and level bold and coloured.
+
+### Step 0: drafts, no code (lore room done; render reviewed, see above)
+1. **Lore room:** a separate Claude chat in this project that only edits `docs/lore/`.
+   - I write `docs/lore/README.md` (rules: lore only, no code, never paraphrase the bible, new lore needs your OK), `docs/lore/lore-log.md` (starts with Batch 5's lore decisions) and a message to paste into the new chat.
+   - This chat reads `lore-log.md` before using any lore, and `CLAUDE.md` says so.
+2. **A proper render:** a private page for you to review, drawn to the game's real sizes with its real textures and the real slot positions from `InventoryLayout`.
+   - Inventory with and without the table, with the recipe book open, and the Bank options side by side.
+   - Also the welcome page, the Settings categories and the character sheet. **No inventory code until you approve this.**
+
+### Batch A: before M6, one playtest per part
+**A1. Switches, welcome page, settings: built 2026-10-30, waiting for a playtest**
+- **Last polish approved (user):** H map, marker switches and centring good. Shadow colour good, angle too strong: the sun now stands twice as high (shadows half as long). Right panel spread out so the labels have room; the Tool belt needn't line up exactly.
+- **Decisions while building:** Sleep percentage and No mob griefing start off in every preset, because they change vanilla rules. Griefing is vanilla's single mobGriefing rule for now. Banded loot needs Enchant levels (its gear uses levels V and VI). A world from before this keeps everything on and keeps its game rules. The look-at HUD and minimap stay personal settings, on in Core too (asked the user). The light theme covers the hub and the full map's side panel; the trees, Codex and feats tree are still dark.
+- **Feature list:** grow `config/VestigesSystem` into one list with name, category, per-world or personal, default, what it depends on, and its help text. Inventory and map lose their switches. Waystones get their own switch, separate from the map.
+- **Where it's saved:** in the world's own folder. `config/vestiges/server.json` becomes the default for new worlds. Existing worlds stay fully on.
+- **Welcome page:** a Vestiges tab in the Create World screen. Presets Core / Comfort / Full RPG / Custom, a "learn more" for each feature, a full FAQ, and the recommended mods list. On a dedicated server, the first operator to join gets the page.
+- **Later changes:** H → Settings → World, operators only.
+- **Core must really work:** today only 16 files check a switch. Every system gets checked, and a Core world must play as vanilla plus inventory and map (vanilla hearts, XP, mobs, loot and enchants).
+- **Enchant rebalance optional:** chosen at world creation only, because existing items carry levels V and VI. Reuses the `enchant_levels` pack (`Vestiges.java:66`) and `EnchantScale`.
+- **Settings by category:** a list on the left (HUD, Map, Inventory, Combat, Look-at, Sharing, World) replaces the long scrolling page in `HubScreen.buildSettings`.
+- **Light and dark UI:** shared colours for the hub, map, tree, Codex and feats screens.
+- **Sleep percentage and griefing switches:** added here because they're quick, using vanilla game rules where they exist.
+
+**A2. Inventory**
+- **Rename bug:** while the page name box has focus, the container screen still takes keys like E, Q and 1–9. Fix in `AbstractContainerScreenMixin`: the box gets every key except Esc.
+- **Crafting table slot and 3×3 grid:** once the render is approved. Vanilla's slot numbers don't move, and 5 extra grid slots are added after them. Taking the table out returns those items to your inventory. **This is the riskiest change, in `InventoryMenuMixin`** (recipe book and shift-click need care).
+- **Bank:** moves to the bottom of the right panel, next to the recipe book button.
+- **Sorting:** the server does the moving, through `InventoryService`, so nothing can be duplicated. Locked slots save with the player, and none start locked.
+- **Ctrl+Alt + scroll:** works on an item you hover over or hold.
+  - Only recipes with a single ingredient (crafting and stonecutter).
+  - **Undo uses a per-player record, not a hidden tag on the item,** because tagged stairs wouldn't stack with normal stairs. The record is cleared on logout, and you can only undo what you converted.
+- **Shulker boxes:** right-click in the inventory to open; rename them; their colour tints the screen. The box's slot locks while open, so it can't be duplicated.
+- **Small features:** shulker and bundle preview tooltip, drag-to-move like Mouse Tweaks, pickup notice bottom right, durability warning, durability HUD on the right side, higher stacks.
+- **Stacks need a mixin on `ItemStack`:** Fabric's item defaults are set at game start, so they can't differ per world.
+
+**A3. Character sheet and food info**
+- **Book-style sheet** replaces the Character tab, with the passive trees button kept. The server sends the stats through `HubNet`.
+- **AppleSkin-style food info:** saturation on the hunger bar, a preview of what food will restore, and food tooltips that also show meal buffs.
+
+### Later batches: each gets its own questions and drafts first
+| When | Ideas |
+|---|---|
+| **B, after M6** | Chat heads and heads on the Locator Bar · better F3, spawn sphere, mod spheres, light levels · cave detection · map: mobs, 3D and isometric views, moving sun, drawing areas · peek · freecam · riding and boat view · better sign writing |
+| **M6 Villagers** | Named villagers and villages on the map (already designed) · **new:** villages can be destroyed or taken over |
+| **C, after M7** | Graveyard page, cemetery, tracking friends and pets · after-death choices · screenshot album and paintings · rankings page · armor stand editor |
+| **D** | Mob bucket · ride more mobs · mob heads · Codex cards, duplicates, trading · miniblocks · statues |
+| **E** | Better enchanting, brewing and banner screens · better archaeology |
+| **M8 Dungeons** | Isometric-camera dungeons in the style of Minecraft Dungeons |
+| **M9 World** | Optional world preset with continents and bigger biomes (vanilla terrain stays the default) |
+| **M10 Blueprints** | Schematics page in H · material list HUD · Litematica files · build layers |
+| **Not priority** | Explosion and other effects · happy ghast speed · more mobs · skin and model variety · windmills and moving parts (needs its own talk first) |
+
+**Questions saved for those batches:**
+- Where does cave detection go wrong for you?
+- Should a taken-over village keep its villagers?
+- Can cards be traded for anything, or only for other cards?
+- Should the mob bucket be earned, or free from day one?
+
+### Risks
+- **Scope:** this is several mods' worth of work. Batch A alone is about three milestones.
+- **Switching off mid-world:** items, levels and stacks already in the world stay as they are. The welcome page warns about this for each feature it affects.
+- **Other mods:** the 3×3 grid and our stack sizes may clash with mods that change the same screens or items.
+
+### Verification
+- `dev build` and `dev test` pass. Unit tests cover presets and dependencies, sort order, Ctrl+Alt costs and undo (no way to duplicate items), and slot layout. `MixinLoadTest` covers every new mixin.
+- Deploy to modtesting, then send a test guide with a kit block and copy-paste commands. I can't see the game, so looks and feel are checked in your playtest.
+- A1 also needs test worlds on every preset, plus one existing world that must load unchanged.
+- The next part starts only after your OK.
+
 ## Vision (agreed)
 - **The character is the core.** Explore, fight and build like vanilla, then go on runs.
 - **"Simple but still interesting" base game.** You go looking for new blocks, then new areas. **Hard content is opt-in, through dungeons of various difficulties.**
@@ -749,6 +843,32 @@
 - ✅ **M3a Mobs — approved after playtest 2 (2026-10-11, "all good").** M3b Loot plan next.
 - ✅ **M3 Mobs & loot — approved after playtest (2026-10-11, "all good"): M3a Mobs and M3b Loot both done.** Next: M4 Codex & farming.
 - ✅ **M4 Codex & farming — approved after playtest (2026-10-11, "all good").** Next: M5 Feats & settlements.
+- ✅ **M5 Feats & settlements — approved after playtest (2026-10-30, "the test was good").** Next: M6 Villagers.
+  - **Polish asked after the M5 playtest (2026-10-30), built, waiting for a check:**
+    - **Hub Map tab = a simple map (user):** the same tiles at your current layer, your markers and you; drag and zoom; buttons Center on me, Markers, Open the full map (M). Layers, the waypoint list and sharing stay on the full map.
+    - **Marker switches (user):** a Markers button on both maps with Waypoints, Death markers, Waystones, Settlements, Banners, Ward Lanterns, Gold Blocks and Names; saved, and also applied to the minimap. The side list on the full map still lists everything.
+    - **H reopens where you left (user):** the last tab (kept across restarts) and the page opened from it (passive trees, Codex, feats tree); Back returns to the hub. The full map has no Back button, so H goes to the Map tab instead.
+    - **Inventory centred (user):** the window plus the recipe book are centred together when the book is open, and the whole window (racks included) when it is closed. Screens too narrow for both overlay the book, like vanilla.
+    - **Map shadows (user):** the sun is in the north-west; terrain and trees cast soft shadows up to 12 blocks to the south-east, and relief now reads two sides and is stronger. Surface only. Map tiles move to `maps/v3` (the map fills in again as you explore; waypoints stay).
+    - **Also fixed (seen in the screenshots):** the thin light lines across the map (a chunk mapped before its northern neighbour loaded looked like a cliff); the Settings tab now scrolls (the last buttons ran off the screen).
+- ✅ **M5 Feats & settlements — decisions (approved 2026-10-11):**
+  - **One milestone**, one playtest.
+  - **Feats needing later systems** show greyed "Comes with …" (Camp Breaker, Pilgrim → world events; First Key, Deep Runner, Abyss Walker, Regular → dungeons; dragon feats → the End; Second Bell's workers step → workers). Feats earnable now with a later reward (Charted, Surveyor = blueprint sizes) are recorded and the reward handed out when that system arrives.
+  - **Founder's "meet 1 villager":** right-clicking any villager counts until the villager library (M6).
+  - **Marker items:** vanilla blocks with a name, glint and tooltip (like the Waystone); Banners can take loom patterns and stay markers.
+  - **Names:** the settlement is named once when its Bell finishes setting up; each Banner's area once when placed; no renaming after.
+  - **Members:** the owner adds players in the Settlements tab; members share the settlement's block and biome Codex progress (highest count wins).
+  - **Land protection (user):** inside a settlement, players who are not members can open doors but cannot break anything or take things from player-placed chests and containers.
+  - **Setting-up bar** at the top of the screen ("Setting up settlement 6:12") for the owner nearby.
+  - **Renown updates every 10 minutes (user)** while the area is loaded; the Settlements tab shows the 5 scores, level, members and markers against the limits.
+  - **Building XP:** 5 XP per new renown point (only the settlement's highest total ever counts).
+  - Raids: raiders already level like other monsters; "scaled up" raids wait for the balancing pass.
+  - Admin: `/vestiges feat grant | revoke <player> <feat>`, `/vestiges give marker <type> [player]`, `/vestiges settlement info`.
+  - **Playtest fixes (2026-10-29):** beds count (both halves remembered, older beds counted by their foot); a refused placement gives the item back on screen; the placed-block memory is loaded at startup (it was dropped on every world load); the Settlements tab shows when the next renown count happens and a "?" tooltip on each score explains what counts (user).; world data failed to save whenever a grave held an enchanted item (Fabric saves world attachments without the enchantment registry), which also lost settlements and waystones: grave and loot-copy items now save with the server's registries.
+  - **Villages allowed (user, 2026-10-29):** markers can be placed in vanilla villages (houses and paths); every other structure stays banned.
+  - **Testing guides (user, 2026-10-29), applies to every milestone from now on:** each test step comes with copy-paste commands for everything it needs, in the order to run them: items to place (enough copies, e.g. `/give @s minecraft:white_bed 5`), marker and admin items, levels and XP, gear to wear (armor, weapons, tools), effects that speed testing up (speed, haste, night vision, resistance, strength, fire resistance, water breathing), time and weather, mobs to summon, and the admin shortcuts (`settlement finish`, `settlement renown`, `feat grant`, `codex set`...). A short "kit" block at the top gives the whole loadout in one go.
+    - Saved as a feedback memory and in `CLAUDE.md` working preferences; the M5 test list was re-issued in this format.
+  - **M5 built (2026-10-11), waiting for playtest:** marker items (Bell, Banner r16/r48 keeping loom patterns, Ward Lantern r6/r12/r30, Gold Block) with all placement rules (no fights, no End, no structures, Bells 2,000 apart, same type no overlap, limits, Gold Blocks and waystones only inside your settlement or ward); setup timers with the bar (owner within 128 blocks; a fight restarts); naming once (prompt when set up / placed; right-click it again if you chose Later; Settlements tab "Name it"); no natural monster spawns or patrols in active settlements and wards (spawners still work); Gold Block forces 3x3 chunks; broken markers come back to the owner (never despawn on the ground); records of markers destroyed by explosions are cleaned up every minute. Protection: non-members can't break, place (blocks, buckets, fire) or open player-placed containers, item frames or armor stands; doors, trapdoors, gates, buttons and levers stay usable; operators in creative bypass. Renown every 10 minutes (only when 90% of the area is loaded): Size, Variety, Homes counted from player-placed blocks; People waits for villagers (M6); Deeds +30 per Bad Omen level for raids won inside; level up at once, down after 3 days with a warning; 5 XP per new renown point for the owner. Members share block and biome Codex progress (no XP for shared steps). Entry titles for settlements and Banner areas; map circles. Feats: data now holds goals/counters/items; checked every 2 s; toast + item + XP; feats tree screen (drag, hover for progress); greyed "Comes with" feats. Building nodes live: placing speed (and copper trims), climb speed, faster breaking of your blocks, Rebuilder. Admin also: `/vestiges settlement renown | finish`. 61 JUnit tests.
 - ✅ **M4 Codex & farming — decisions (approved 2026-10-11):**
   - **One milestone** (no split), one playtest.
   - **Codex screen:** own full screen from the hub's Codex tab; Blocks · Bestiary · Places · Items; search box; filters (all / in progress / mastered); entry card with icon, class, progress bar, the 2 flavour lines and what it unlocks; "???" until found.

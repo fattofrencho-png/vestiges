@@ -4,5 +4,7 @@
   "name": "The Waking",
   "requirement": "Kill dragon 6",
   "reward": "Extra Waystone, a Relic item",
-  "xp": 1000
+  "xp": 1000,
+  "item": "waystone",
+  "later": "the End (M9)"
 }

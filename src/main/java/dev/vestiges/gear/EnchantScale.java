@@ -47,7 +47,7 @@ public final class EnchantScale {
 		return e.unwrapKey().map(k -> k.identifier().getPath()).orElse("");
 	}
 
-	/** True when the I-VI pack is active for this enchantment (its max level is IV). */
+	/** True when the I-VI pack is active for this enchantment (its max level is IV): with the pack off, every rule here falls back to vanilla. */
 	public static boolean scaled(Holder<Enchantment> e) {
 		return e.value().getMaxLevel() == TABLE_MAX && VANILLA_MAX.containsKey(path(e));
 	}

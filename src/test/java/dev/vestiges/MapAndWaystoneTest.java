@@ -73,4 +73,23 @@ class MapAndWaystoneTest {
 		assertEquals("Old Mill", WaystoneRules.cleanName("Old    Mill", "X"));
 		assertEquals(32, WaystoneRules.cleanName("a".repeat(50), "X").length());
 	}
+
+	@Test
+	void shadowsFallAwayFromTheSunAndIgnoreUnloadedChunks() {
+		int size = 8;
+		int[] flat = new int[size * size];
+		java.util.Arrays.fill(flat, 64);
+		assertEquals(1f, MapMath.shadow(flat, size, 4, 4));
+
+		int[] tree = flat.clone();
+		tree[2 * size + 2] = 70;
+		assertTrue(MapMath.shadow(tree, size, 3, 3) < 1f, "right behind the tree, away from the sun");
+		assertEquals(1f, MapMath.shadow(tree, size, 1, 1), "on the sunny side");
+		assertTrue(MapMath.shadow(tree, size, 3, 3) < MapMath.shadow(tree, size, 7, 7), "weaker further away");
+
+		int[] unknown = flat.clone();
+		unknown[2 * size + 2] = MapMath.NO_HEIGHT;
+		assertEquals(1f, MapMath.shadow(unknown, size, 3, 3));
+		assertEquals(1f, MapMath.relief(64, MapMath.NO_HEIGHT), "an unloaded neighbour is no cliff");
+	}
 }

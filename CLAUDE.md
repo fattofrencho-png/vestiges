@@ -10,8 +10,9 @@ building: it ports **RPG Craft** (datapack) to Java and rebuilds **Hearthbook** 
 villager system. Never modify those source projects; copy what is needed.
 
 Every design decision was agreed with the author one topic at a time and lives in **`docs/design-log.md`** (the source of truth).
-Approved lore: `docs/lore/` (fragments and Codex flavour text) and the author's own bible in Hearthbook (`bible/lore_source.md`, never
-paraphrase it). Design rules that every change must respect:
+Approved lore: `docs/lore/` (fragments, Codex flavour text, and `lore-log.md`, the lore decisions) and the author's own bible in Hearthbook
+(`bible/lore_source.md`, never paraphrase it). Lore is discussed in a separate chat that only edits `docs/lore/` (rules in its `README.md`):
+read `lore-log.md` before using any lore, and handle its "For the main chat" list. Design rules that every change must respect:
 
 - **The character is the core.** The base game stays "simple but still interesting"; hard content is opt-in through portal dungeons.
 - **Vanilla-style:** boost vanilla features first; new things only if they feel Mojang-made. No classes, no new blocks, no new enchants.
@@ -31,6 +32,8 @@ dev test           rem JUnit tests
 dev deploy         rem build + replace the jar in the modtesting instance's mods folder (VESTIGES_MODS overrides)
 dev runClient      rem dev client; H opens the hub
 dev runServer      rem needs eula.txt accepted by the author; never accept it on their behalf
+dev runClientGameTest  rem plays src/gametest in a real world and saves screenshots to build/run/clientGameTest/screenshots; the game stalls when
+                       rem closing the world (inside Fabric's test tool, no Vestiges code in the thread dump), so stop it after the last screenshot; set VESTIGES_TOUR=core for a Core world
 ```
 
 Loot tables are generated: edit `tools/build_loot.py` and run `python tools/build_loot.py` (never hand-edit `data/vestiges/loot_table/`
@@ -43,14 +46,18 @@ From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.
 ## Working preferences
 
 - Simple words, short messages, one topic at a time; numbered questions; drafts before code. Plan first for anything non-trivial.
+- **Testing guides:** a kit block at the top, then copy-paste commands for each step (items with enough copies, gear, effects such as speed
+  and haste, time, mobs to summon, `/vestiges` shortcuts), so the author can paste them in a row.
 - **Commit and push only when asked.** Remote: private repo https://github.com/fattofrencho-png/vestiges (CI builds every push to main). `gh` is not installed.
 
 ## Architecture (M0)
 
 - `Vestiges` (main entrypoint), `VestigesCommands` (`/vestiges info | data | config list | config system <id> <bool> | config reload`,
   operator only; later systems add their tools here).
-- `config/`: `ServerConfig` (systems on/off + agreed numbers, `config/vestiges/server.json`), `ClientConfig` (HUD toggles,
-  `config/vestiges/client.json`), `VestigesSystem` (every switchable system). Pure Java, unit-tested.
+- `config/`: `ServerConfig` (features on/off + agreed numbers, per world in `<world>/vestiges/settings.json`; `config/vestiges/server.json` is only where new worlds
+  start), `ClientConfig` (personal settings, `config/vestiges/client.json`), `VestigesSystem` (every feature: category, help, needs, presets; inventory and map are the
+  core and can't be switched off). Pure Java, unit-tested. `server/FeatureNet` opens each world's file and syncs the switches; on the client check `ClientFeatures.on(...)`.
+  Every new feature gets a `VestigesSystem` entry and must leave vanilla behaviour when off. Welcome page: `client/features/` (`FeaturePanel`, `WelcomeTab`, `FeaturesScreen`).
 - `data/`: `DataType<T>` = one datapack content type (`data/<ns>/vestiges/<type>/*.json`, decoded by a codec, reloaded by `/reload`);
   `VestigesData` lists them. M0 ships `feats` (the 24 approved feats as display text; M5 makes them real).
 - `net/VestigesPayloads` + `server/HubNet`: the client asks (`HubRequest`), the server answers with a complete JSON snapshot (`HubData`),
@@ -59,6 +66,8 @@ From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.
 - Client: `client/hub/HubScreen` (H; tabs Character, Codex, Villagers, Settlements, Feats, Map, Settings), `client/hud/LookAtHud` (own
   look-at HUD written from scratch, no Jade code) with `LookAtProvider`s registered in `LookAtProviders`; each line can be switched off.
 - Pitfalls seen in 26.3: mixin `@Unique` field initialisers did not run for `Player` (create such fields lazily in a getter); no
-  `ItemStack` in static initialisers of classes loaded at client start (components are bound later); unit tests can't build item stacks.
+  `ItemStack` in static initialisers of classes loaded at client start (components are bound later); unit tests can't build item stacks. Fabric saves world (overworld) attachments without the dynamic registries: items in world data must use
+  `server/SavedItems.CODEC`, and every class holding an `AttachmentRegistry.create` must be touched in `Vestiges.onInitialize` (else saved
+  data is dropped as "unknown attachment type").
 - 26.3 API notes: GUI drawing goes through `GuiGraphicsExtractor` (`extractRenderState`), HUD through Fabric `HudElementRegistry`,
   data reloads through Fabric `ResourceLoader.get(PackType.SERVER_DATA)` + vanilla `SimpleJsonResourceReloadListener`.

@@ -74,6 +74,32 @@ public final class MapView {
 		}
 	}
 
+	/** Areas, waypoints and waystones of this dimension, as far as the marker switches allow (the hub's simple map). */
+	public static void drawMarkers(GuiGraphicsExtractor g, net.minecraft.client.gui.Font font, String dim, int sx, int sy, int w, int h, double cx, double cz, float zoom) {
+		dev.vestiges.client.settlement.ClientSettlements.draw(g, font, dim, sx, sy, w, h, cx, cz, zoom, true);
+		boolean names = zoom >= 0.5f && MapMarkers.on(MapMarkers.NAMES);
+		Minecraft mc = Minecraft.getInstance();
+		long time = mc.level != null ? mc.level.getGameTime() : 0;
+		for (ClientWaypoints.Waypoint p : ClientWaypoints.all()) {
+			if (p.dimension.equals(dim) && MapMarkers.shown(p)) {
+				int[] s = toScreen(sx, sy, w, h, cx, cz, zoom, p.x + 0.5, p.z + 0.5);
+				MapIcons.forWaypoint(g, p, s[0], s[1], 10);
+				if (names) {
+					g.text(font, ClientWaypoints.label(p, time), s[0] + 8, s[1] - 4, 0xFFFFFFFF, true);
+				}
+			}
+		}
+		for (ClientWaypoints.WaystoneMarker m : ClientWaypoints.waystones()) {
+			if (m.dimension().equals(dim) && MapMarkers.on("waystone")) {
+				int[] s = toScreen(sx, sy, w, h, cx, cz, zoom, m.x() + 0.5, m.z() + 0.5);
+				MapIcons.waystone(g, s[0], s[1], 10);
+				if (names) {
+					g.text(font, m.name(), s[0] + 8, s[1] - 4, 0xFFFFFFFF, true);
+				}
+			}
+		}
+	}
+
 	/** Rounds a view centre to whole screen pixels, so the map moves in clean 1-pixel steps instead of shaking. */
 	public static double snap(double c, float zoom) {
 		return Math.floor(c * zoom) / zoom;

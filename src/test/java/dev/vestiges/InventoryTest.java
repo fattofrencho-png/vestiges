@@ -24,4 +24,17 @@ class InventoryTest {
 		}
 		assertFalse(seen.contains(InventoryLayout.BANK_X + "," + InventoryLayout.BANK_Y), "the Bank sits on its own spot");
 	}
+
+	@Test
+	void windowAndRecipeBookStayCentred() {
+		int screen = 853;
+		int alone = dev.vestiges.inventory.InventoryLayout.windowLeft(screen, false);
+		org.junit.jupiter.api.Assertions.assertEquals(screen / 2.0, alone + dev.vestiges.inventory.InventoryLayout.WIDTH / 2.0, 1.0);
+
+		int left = dev.vestiges.inventory.InventoryLayout.windowLeft(screen, true);
+		// The book draws itself at (width - 147) / 2 - 86, here with the width the mixin gives it.
+		int bookLeft = (dev.vestiges.inventory.InventoryLayout.bookScreenWidth(screen) - 147) / 2 - 86;
+		org.junit.jupiter.api.Assertions.assertEquals(left - dev.vestiges.inventory.InventoryLayout.BOOK_GAP - 147, bookLeft, 1.0, "the book touches the window");
+		org.junit.jupiter.api.Assertions.assertEquals(screen / 2.0, (bookLeft + left + dev.vestiges.inventory.InventoryLayout.WIDTH) / 2.0, 1.0, "both together are centred");
+	}
 }

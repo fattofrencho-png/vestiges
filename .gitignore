@@ -36,3 +36,6 @@ runclient.log
 
 # test runs (Fabric loader JUnit)
 logs/
+
+# written when unit tests open a world
+/config/

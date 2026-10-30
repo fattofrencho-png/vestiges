@@ -16,9 +16,18 @@ import net.minecraft.world.effect.MobEffects;
  */
 public final class HeartsHud implements HudElement {
 	private static final int HEARTS = 10;
+	private final HudElement vanilla;
+
+	public HeartsHud(HudElement vanilla) {
+		this.vanilla = vanilla;
+	}
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, DeltaTracker deltaTracker) {
+		if (!dev.vestiges.client.features.ClientFeatures.on(dev.vestiges.config.VestigesSystem.CHARACTER)) {
+			vanilla.extractRenderState(g, deltaTracker);
+			return;
+		}
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
 		if (player == null || mc.gameMode == null || !mc.gameMode.canHurtPlayer() || mc.level == null) {

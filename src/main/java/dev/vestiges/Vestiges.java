@@ -23,7 +23,9 @@ public class Vestiges implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		dev.vestiges.server.SavedItems.register();
 		ModAttachments.init();
+		dev.vestiges.codex.PlacedBlocks.init();
 		dev.vestiges.loot.LootTypes.register();
 		VestigesData.register();
 		VestigesPayloads.register();
@@ -56,12 +58,16 @@ public class Vestiges implements ModInitializer {
 		dev.vestiges.net.LookAtPayloads.register();
 		dev.vestiges.farming.FarmingService.register();
 		dev.vestiges.farming.MealService.register();
-		// Every enchantment from I to VI. On by default; a server can turn it off with /datapack disable.
+		dev.vestiges.net.SettlementPayloads.register();
+		dev.vestiges.settlement.SettlementService.register();
+		dev.vestiges.feats.FeatService.register();
+		// Every enchantment from I to VI. On by default; the welcome page leaves it out of a new world.
 		net.fabricmc.loader.api.FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(mod ->
 			net.fabricmc.fabric.api.resource.v1.ResourceLoader.registerBuiltinPack(id("enchant_levels"), mod,
 				net.minecraft.network.chat.Component.literal("Vestiges enchant levels (I-VI)"),
 				net.fabricmc.fabric.api.resource.v1.pack.PackActivationType.DEFAULT_ENABLED));
-		ServerLifecycleEvents.SERVER_STARTING.register(server -> ConfigStore.loadServer());
+		dev.vestiges.net.FeaturePayloads.register();
+		dev.vestiges.server.FeatureNet.register();
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> VestigesCommands.register(dispatcher));
 		LOGGER.info("Vestiges loaded");
 	}

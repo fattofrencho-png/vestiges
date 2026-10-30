@@ -128,7 +128,7 @@ public final class ClientMobs {
 	/** Whether this mob gets a health bar now (picked each tick by {@link #pickBars}). */
 	public static boolean showBar(Mob mob) {
 		Minecraft mc = Minecraft.getInstance();
-		return barred.contains(mob.getId()) && ClientConfigStore.get().healthBars && mc.player != null && !mob.isInvisibleTo(mc.player)
+		return barred.contains(mob.getId()) && ClientConfigStore.get().healthBars && dev.vestiges.client.features.ClientFeatures.on(dev.vestiges.config.VestigesSystem.MOB_SCALING) && mc.player != null && !mob.isInvisibleTo(mc.player)
 			&& mob.isAlive();
 	}
 
@@ -137,7 +137,7 @@ public final class ClientMobs {
 	 * within 32 blocks (nearest first).
 	 */
 	private static void pickBars(Minecraft mc) {
-		if (mc.level == null || mc.player == null || !ClientConfigStore.get().healthBars) {
+		if (mc.level == null || mc.player == null || !ClientConfigStore.get().healthBars || !dev.vestiges.client.features.ClientFeatures.on(dev.vestiges.config.VestigesSystem.MOB_SCALING)) {
 			barred = java.util.Set.of();
 			return;
 		}

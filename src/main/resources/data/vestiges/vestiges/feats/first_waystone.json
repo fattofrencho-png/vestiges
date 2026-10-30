@@ -4,5 +4,16 @@
   "name": "First Waystone",
   "requirement": "Level 15, visit 10 biomes",
   "reward": "Waystone",
-  "xp": 200
+  "xp": 200,
+  "goals": [
+    {
+      "type": "level",
+      "amount": 15
+    },
+    {
+      "type": "biomes",
+      "amount": 10
+    }
+  ],
+  "item": "waystone"
 }

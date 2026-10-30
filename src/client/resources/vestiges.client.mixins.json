@@ -11,6 +11,8 @@
 		"AnvilScreenMixin",
 		"AvatarRendererMixin",
 		"ClientTextTooltipMixin",
+		"CreateWorldScreenAccessor",
+		"CreateWorldScreenMixin",
 		"CreativeModeInventoryScreenMixin",
 		"EnchantmentScreenMixin",
 		"EntityRendererMixin",

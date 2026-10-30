@@ -4,5 +4,12 @@
   "name": "Charted",
   "requirement": "100 Codex entries",
   "reward": "Blueprint size 32",
-  "xp": 400
+  "xp": 400,
+  "goals": [
+    {
+      "type": "codex",
+      "amount": 100
+    }
+  ],
+  "owed": "blueprint_32"
 }

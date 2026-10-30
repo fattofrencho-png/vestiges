@@ -28,6 +28,10 @@ public final class XpHud implements HudElement {
 	private static final ArrayDeque<Object[]> TOASTS = new ArrayDeque<>();
 	private static long toastStart;
 	private static final long LAYER_MS = 3500;
+	private static final long AREA_MS = 4000;
+	private static String areaTitle = "";
+	private static String areaSub = "";
+	private static long areaStart;
 	private static String layerText = "";
 	private static long layerStart;
 
@@ -45,6 +49,13 @@ public final class XpHud implements HudElement {
 		paragon = newParagon;
 		bannerText = level >= 100 && newParagon > 0 ? "Paragon " + newParagon + "!" : "Level " + level + "!";
 		bannerStart = System.currentTimeMillis();
+	}
+
+	/** Entering a settlement or a Banner's area: its name, big, with a line under it. */
+	public static void area(String title, String subtitle) {
+		areaTitle = title;
+		areaSub = subtitle;
+		areaStart = System.currentTimeMillis();
 	}
 
 	/** Entering a new layer: "Caves: mobs up to level 40". */
@@ -103,7 +114,8 @@ public final class XpHud implements HudElement {
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, DeltaTracker deltaTracker) {
 		Minecraft mc = Minecraft.getInstance();
-		if (mc.player == null || mc.gameMode == null || !mc.gameMode.canHurtPlayer()) {
+		if (mc.player == null || mc.gameMode == null || !mc.gameMode.canHurtPlayer()
+			|| !dev.vestiges.client.features.ClientFeatures.on(dev.vestiges.config.VestigesSystem.CHARACTER)) {
 			return;
 		}
 		Font font = mc.font;
@@ -127,6 +139,18 @@ public final class XpHud implements HudElement {
 			g.text(font, p, g.guiWidth() / 2 + 94, barY - 1, 0xFFE6C36A, true);
 		}
 		drawToast(g, font, now);
+		if (now - areaStart < AREA_MS && !areaTitle.isEmpty()) {
+			float t = (now - areaStart) / (float) AREA_MS;
+			int alpha = Math.max(8, (int) (255 * Math.min(1f, Math.min(t * 6f, (1f - t) * 3f))));
+			g.pose().pushMatrix();
+			g.pose().translate(g.guiWidth() / 2f, g.guiHeight() / 5f);
+			g.pose().scale(2f, 2f);
+			g.text(font, areaTitle, -font.width(areaTitle) / 2, 0, (alpha << 24) | 0xE6C36A, true);
+			g.pose().popMatrix();
+			if (!areaSub.isEmpty()) {
+				g.text(font, areaSub, (g.guiWidth() - font.width(areaSub)) / 2, (int) (g.guiHeight() / 5f) + 22, (alpha << 24) | 0xCCCCCC, true);
+			}
+		}
 		if (now - layerStart < LAYER_MS && !layerText.isEmpty()) {
 			float t = (now - layerStart) / (float) LAYER_MS;
 			int alpha = Math.max(8, (int) (255 * Math.min(1f, Math.min(t * 6f, (1f - t) * 3f))));
