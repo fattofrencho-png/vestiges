@@ -3,6 +3,7 @@ package dev.vestiges.client.codex;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.vestiges.client.UiTheme;
 import dev.vestiges.client.hub.HubScreen;
+import dev.vestiges.client.ui.Scrollbar;
 import dev.vestiges.client.ui.TabButton;
 import java.util.ArrayList;
 import java.util.List;
@@ -209,6 +210,7 @@ public final class CodexScreen extends Screen {
 			y += CELL;
 		}
 		g.disableScissor();
+		Scrollbar.draw(g, width - cardWidth() - 11, top, bottom, scroll, maxScroll);
 		if (rows.isEmpty()) {
 			g.text(font, search.isBlank() ? "Nothing here yet." : "No entry matches.", 8, top + 4, UiTheme.faint(), UiTheme.shadow());
 		}

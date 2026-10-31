@@ -45,6 +45,18 @@ public final class FeatScreen extends Screen {
 		addRenderableWidget(Button.builder(Component.literal("Back"), b -> minecraft.setScreenAndShow(new HubScreen())).bounds(width - 66, 4, 60, 20).build());
 	}
 
+	/** The tree can't be dragged away from the screen: it stops once its far edge is in view. */
+	private void keepInView() {
+		int columns = 1;
+		for (JsonObject f : feats()) {
+			columns = Math.max(columns, f.get("order").getAsInt());
+		}
+		double minX = Math.min(40, width - 110 - columns * COL - 20);
+		double minY = Math.min(0, height - HEADER - 24 - CHAINS.length * ROW);
+		panX = Math.max(minX, Math.min(40, panX));
+		panY = Math.max(minY, Math.min(0, panY));
+	}
+
 	private List<JsonObject> feats() {
 		List<JsonObject> out = new ArrayList<>();
 		JsonObject s = ClientData.snapshot();
@@ -186,6 +198,7 @@ public final class FeatScreen extends Screen {
 		if (dragging) {
 			panX += dx;
 			panY += dy;
+			keepInView();
 			return true;
 		}
 		return super.mouseDragged(event, dx, dy);

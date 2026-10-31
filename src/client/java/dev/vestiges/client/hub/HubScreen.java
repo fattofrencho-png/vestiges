@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import dev.vestiges.client.ClientConfigStore;
 import dev.vestiges.client.ClientData;
 import dev.vestiges.client.UiTheme;
+import dev.vestiges.client.ui.Scrollbar;
 import dev.vestiges.client.ui.TabButton;
 import dev.vestiges.client.features.ClientFeatures;
 import dev.vestiges.client.hud.LookAtProvider;
@@ -322,6 +323,9 @@ public final class HubScreen extends Screen {
 			case MAP -> {
 			}
 			default -> renderPlaceholder(g, top);
+		}
+		if (tab == Tab.FEATS || tab == Tab.SETTINGS) {
+			Scrollbar.draw(g, width - 4, top, height - FOOTER - 2, scroll, Math.max(0, contentHeight - (height - FOOTER - HEADER - 10)));
 		}
 	}
 

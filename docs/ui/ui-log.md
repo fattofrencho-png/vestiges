@@ -4,52 +4,70 @@ Newest decisions go at the top of their section, with the date.
 
 ## Decisions
 
+- **2026-10-31:** Dark theme dims the world behind full screens, so text stays readable. The author chose this from before and after screenshots (https://claude.ai/artifact/Csb3JMRJP4QTRnySmWcd8m).
 - **2026-10-31:** UI work happens in its own chat, in the `RPG Mod UI` folder on the `ui` branch. This chat commits to `ui` only and never pushes. `ui` goes into main only when the author says so.
 - **2026-10-31:** Fix clear problems first. A new overall look is decided only after that.
+
+## Shared parts
+
+- `client/UiTheme`: every colour for panels and text, with a dark and a light value. `paintBackground` is the first thing a full screen draws. `noMilestone` removes codes like "(M8)" from text players read.
+- `client/ui/TabButton`: tabs and picked rows. The selected one is lit with a gold label and clicking it does nothing. `widthFor` gives the width that fits a label.
+- `client/ui/Scrollbar`: a thin bar that shows there's more to scroll to.
 
 ## Problems found
 
 From the screenshot tour of 2026-10-31, at normal size (GUI scale 4 at 1080p, 480 x 270), a small window (427 x 240) and GUI scale 2 (960 x 540), in dark and light. `[ ]` is open and `[x]` is fixed on the `ui` branch.
 
 **Tabs**
-- [ ] Selected tabs look switched off (hub, Settings, trees, Codex, map layers).
-- [ ] "Character" and "Settlements" are cut off in the hub tabs. Every tab has the same width, whatever its label.
+- [x] Selected tabs look switched off (hub, Settings, trees, Codex, map layers).
+- [x] "Character" and "Settlements" are cut off in the hub tabs.
 
 **Text and controls that collide or get lost**
-- [ ] Waystone screen: Close runs off the screen at normal size, and Share and Close at the small size.
-- [ ] Waystone screen: a long name pushes the price off its button.
-- [ ] Codex: the search box is missing at normal size and below, because the tabs leave it no room.
-- [ ] Codex card: text runs past the card and off the screen ("Uncommon · Discovered", "+4% damage, +1% drop chance").
-- [ ] Trees: the "Search nodes..." hint runs out of its box and under Center. The search box is missing at the small size.
-- [ ] Ascendancy: the cards run off the right edge, their text is cut off ("Splinter Bol"), and the fifth card covers the footer.
-- [ ] Hub Feats: the intro line runs under "Open the feats tree".
-- [ ] Hub Settlements: "Renown is counted..." runs off the screen at the small size.
-- [ ] Full map: the hint line runs under the side panel at the small size.
-- [ ] Trees: the footer hint is cut off at the small size ("V: utility po").
+- [x] Waystone screen: Close runs off the screen at normal size, and Share and Close at the small size.
+- [x] Waystone screen: a long name pushes the price off its button.
+- [x] Codex: the search box is missing at normal size and below.
+- [x] Codex card: text runs past the card and off the screen.
+- [x] Trees: the "Search nodes..." hint runs out of its box and under Center. The search box is missing at the small size.
+- [x] Ascendancy: the cards run off the right edge, their text is cut off, and the fifth card covers the footer. At the small size a few long names are still shortened; hovering the card shows them in full.
+- [x] Hub Feats: the intro line runs under "Open the feats tree".
+- [x] Hub Settlements: "Renown is counted..." runs off the screen at the small size.
+- [x] Full map: the hint line runs under the side panel at the small size.
+- [x] Full map: the buttons under the waypoint list could run off a short window.
+- [x] Trees: the footer hint is cut off at the small size.
 
 **Messages**
-- [ ] The map and waystone screens keep showing the last server message forever, however old it is.
+- [x] The map and waystone screens keep showing the last server message forever. It now goes after 10 seconds.
 
 **Colours**
-- [ ] Light theme doesn't reach the trees, Codex, feats tree, waystone screen, naming screen or features screen.
-- [ ] Light theme: the hub map tab has no header or footer background, and the "?" marks are hard to read.
-- [ ] Light theme: the green message on the full map's side panel is hard to read.
-- [ ] Dark theme: grey text over a bright world is hard to read (hub, trees, Codex, naming screen). This needs a choice, so it gets a before and after for the author.
+- [x] Light theme doesn't reach the trees, Codex, feats tree, waystone screen, naming screen or features screen.
+- [x] Light theme: the hub map tab has no header or footer background, and the "?" marks are hard to read.
+- [x] Light theme: the green message on the full map's side panel is hard to read.
+- [x] Dark theme: grey text over a bright world is hard to read.
 
 **Wording**
-- [ ] Players see milestone codes ("arrive in M6", "Comes with dungeons (M8)", "Villagers can sell it (M6)"), and "24 loaded from data" in the hub's Feats tab.
+- [x] Players see milestone codes ("arrive in M6", "Comes with dungeons (M8)", "Villagers can sell it (M6)"), and "24 loaded from data" in the hub's Feats tab.
 
-**Noted, not fixed yet**
-- Map labels overlap when markers sit close together ("Gold Block" and "Waystone 1").
-- The feats tree can be dragged away from everything, with no limit.
-- Long lists have no scrollbar (Codex grid, hub Feats tab).
+**Other**
+- [x] The feats tree can be dragged away from everything. It now stops once its far edge is in view.
+- [x] Long lists have no scrollbar (Codex grid, hub Feats and Settings tabs). The bar only shows the position; the mouse wheel does the scrolling.
+
+**Not fixed yet**
+- Map labels overlap when markers sit close together ("Gold Block" and "Waystone 1"). This needs a choice about which label gives way.
+- The inventory panels still use their own colours. The main chat is working on those screens in A2, so they wait.
 
 ## Needs a playtest
 
 Things screenshots can't confirm, for the next combined test guide:
 
-- (nothing yet)
+- Tabs: click each one in the hub, Settings, trees, Codex and full map. Clicking the selected tab does nothing. Tab and Enter work from the keyboard.
+- Full map: pick a waypoint, then Go there, Delete and Share still work.
+- Waystone screen: page arrows, Close, Rename and Share work, in a small window too.
+- Ascendancy: hovering a card shows its full names, and the Become buttons work once the checklist is done.
+- Feats tree: dragging stops at the edges in every direction.
+- Scrolling: the Codex and hub Feats scrollbars follow the mouse wheel.
+- Map and waystone screens: a server message goes after 10 seconds.
+- Light theme: the tree popup's buttons and the welcome page inside Create World.
 
 ## For the main chat
 
-- (nothing yet)
+- New screens: use `UiTheme` colours, `paintBackground` first, and `TabButton` for tabs.
