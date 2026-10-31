@@ -4,6 +4,7 @@ Newest decisions go at the top of their section, with the date.
 
 ## Decisions
 
+- **2026-10-31:** First round of fixes goes into main now. The UI chat then stops until the main chat has shipped more first versions of screens. Next jobs when it restarts: the author picks (new overall look, quest screens, HUD and map labels).
 - **2026-10-31:** Dark theme dims the world behind full screens, so text stays readable. The author chose this from before and after screenshots (https://claude.ai/artifact/Csb3JMRJP4QTRnySmWcd8m).
 - **2026-10-31:** UI work happens in its own chat, in the `RPG Mod UI` folder on the `ui` branch. This chat commits to `ui` only and never pushes. `ui` goes into main only when the author says so.
 - **2026-10-31:** Fix clear problems first. A new overall look is decided only after that.
