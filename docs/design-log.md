@@ -50,7 +50,11 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
 - **Step types:** hunt, gather, explore, make, grow, talk, deliver, escort. **Guide quests teach:** levels, trees and gear · inventory and map · Codex and farming · feats and settlements.
 - **Build order:** right now, before A2. First build: quest system, guide quests, notes found in loot chests, reputation for the faiths and the Vitera, and temporary quests from vanilla villagers (M6 moves them to the new screen and keeps progress). Later: escorts and village quests (M6), region reputation (M9), hunters, other cosmetics.
 - **Testing:** this joins the later combined test.
-- **Review page:** https://claude.ai/artifact/9865axdC79JV3hWn9Bcu7z (draft list; not reviewed yet).
+- **Review page:** https://claude.ai/artifact/9865axdC79JV3hWn9Bcu7z (draft list).
+- **Review moved (user, 2026-10-31):** reviewing every quest now is too early and too long. Build what quests need first; a side chat for quest content then reviews the list. The draft lists stay drafts until then.
+- **Screen notes (user, 2026-10-31):** Quests tab layout OK. Tracker: smaller, with a clearer background so it blocks less of the view. Offer page: book style with colour, bold and a better presentation. Choice page: stays a book, and you select an option with a check mark.
+- **Rich text in books:** quest pages are our own screen, and vanilla written books can already hold colour, bold and underline, so quests don't need a book editor. Letting players write such text themselves would be a separate feature, not decided.
+- **Passive tree shortcut (user, 2026-10-31):** a quicker way to open the trees; its key gets a default (K, rebindable), and guide quests teach that key.
 
 ### Lore handed over by the lore chat (2026-10-31; details in `docs/lore/`)
 - **Dilecta (user, 2026-10-30):** the main city, the one the bible describes. Anagram of CITADEL, also a Latin word for "beloved, chosen". It is on the continent Trenec, and its region is not fixed. Use it wherever the bible's city is needed (Places page, villager birthplaces, Hero texts).

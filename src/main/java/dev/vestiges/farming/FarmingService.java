@@ -97,6 +97,7 @@ public final class FarmingService {
 	}
 
 	private static void harvest(ServerLevel level, ServerPlayer player, BlockPos pos, BlockState state) {
+		dev.vestiges.quest.QuestService.event(player, "harvest", net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString(), 1);
 		ItemStack tool = player.getMainHandItem();
 		List<ItemStack> drops = Block.getDrops(state, level, pos, null, player, tool);
 		Item seed = state.getBlock().asItem();

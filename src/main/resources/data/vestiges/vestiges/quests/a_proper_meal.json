@@ -1,0 +1,22 @@
+{
+  "kind": "guide",
+  "chain": "field_notes",
+  "order": 5,
+  "name": "A Proper Meal",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "use",
+      "text": "Eat a mushroom stew and see its buff beside the hunger bar.",
+      "amount": 1,
+      "targets": [
+        "minecraft:mushroom_stew"
+      ]
+    }
+  ],
+  "reward": {
+    "xp": 50,
+    "emeralds": 0,
+    "items": []
+  }
+}

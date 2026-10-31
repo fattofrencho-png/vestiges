@@ -36,6 +36,7 @@ public final class HubScreen extends Screen {
 	enum Tab {
 		CHARACTER("Character", "", VestigesSystem.CHARACTER),
 		CODEX("Codex", "Blocks, Bestiary, Places and Items: everything you find fills it in.", VestigesSystem.CODEX),
+		QUESTS("Quests", "", VestigesSystem.QUESTS),
 		VILLAGERS("Villagers", "Your villager library and the villager screen arrive in M6.", VestigesSystem.VILLAGERS),
 		SETTLEMENTS("Settlements", "Earn the Founder feat for your first Bell.", VestigesSystem.SETTLEMENTS),
 		FEATS("Feats", "", VestigesSystem.FEATS),
@@ -142,6 +143,9 @@ public final class HubScreen extends Screen {
 		if (tab == Tab.MAP) {
 			buildMap();
 		}
+		if (tab == Tab.QUESTS) {
+			dev.vestiges.client.quest.QuestPanel.build(this::addRenderableWidget, width, height, HEADER + 4, height - FOOTER - 2, this::rebuildWidgets);
+		}
 	}
 
 	/** The simple map's buttons, in the footer: the full map (M) has the layers, the waypoint list and the sharing. */
@@ -228,6 +232,8 @@ public final class HubScreen extends Screen {
 			case "HUD" -> {
 				row(toggle(x, settingsY, w, "Mob health bars", c.healthBars, on -> c.healthBars = on));
 				row(toggle(x, settingsY, w, "Damage numbers", c.damageNumbers, on -> c.damageNumbers = on));
+				row(toggle(x, settingsY, w, "Quest tracker", c.questTracker, on -> c.questTracker = on));
+				row(cycle(x + 10, settingsY, w - 10, "Corner", new String[] {"top_right", "top_left", "bottom_right", "bottom_left"}, c.questTrackerCorner, v -> c.questTrackerCorner = v));
 			}
 			case "Look-at" -> {
 				row(toggle(x, settingsY, w, "Look-at HUD", c.lookAtEnabled, on -> c.lookAtEnabled = on));
@@ -320,6 +326,7 @@ public final class HubScreen extends Screen {
 		int top = HEADER + 8;
 		switch (tab) {
 			case FEATS -> renderFeats(g, top);
+			case QUESTS -> dev.vestiges.client.quest.QuestPanel.render(g, font, width, HEADER + 26, height - FOOTER - 26);
 			case SETTLEMENTS -> renderSettlements(g, top, mouseX, mouseY);
 			case SETTINGS -> renderSettings(g, top);
 			case CHARACTER -> renderCharacter(g, top, s);

@@ -47,7 +47,8 @@ From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.
 
 - Simple words, short messages, one topic at a time; questions through the selectable form (several choices or Other); drafts before code. Plan first for anything non-trivial.
 - **Playtests are batched (author, 2026-10-30):** no playtest after each part; keep building, keep a list of what's untested, and send one combined guide when the author asks. Design decisions and drafts still need the author's OK.
-- **Side chats (author, 2026-10-31):** the main chat drives development and syncs the others. Side chats handle one area: Lore (`docs/lore/`, rules in its `README.md`) and UI (how it works is still being decided). More may come.
+- **Side chats (author, 2026-10-31):** the main chat drives development and syncs the others. Side chats handle one area: Lore (`docs/lore/`, rules in its `README.md`) and UI (see below). The main chat handles all pushes. More side chats may come, such as one for quest content.
+- **UI room (author, 2026-10-31):** UI polish happens in a separate chat, in the `RPG Mod UI` folder on the `ui` branch (rules in `docs/ui/README.md`, decisions in `docs/ui/ui-log.md`; that folder exists only on `ui` until the author says to merge). That chat commits to `ui` only and never pushes; `ui` goes into main only when the author says so. The main chat ships simple first versions of screens and leaves polish to the UI room. New screens use `UiTheme` colours.
 - **Testing guides:** a kit block at the top, then copy-paste commands for each step (items with enough copies, gear, effects such as speed
   and haste, time, mobs to summon, `/vestiges` shortcuts), so the author can paste them in a row.
 - **Commit and push only when asked.** Remote: private repo https://github.com/fattofrencho-png/vestiges (CI builds every push to main). `gh` is not installed.
@@ -60,6 +61,7 @@ From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.
   start), `ClientConfig` (personal settings, `config/vestiges/client.json`), `VestigesSystem` (every feature: category, help, needs, presets; inventory and map are the
   core and can't be switched off). Pure Java, unit-tested. `server/FeatureNet` opens each world's file and syncs the switches; on the client check `ClientFeatures.on(...)`.
   Every new feature gets a `VestigesSystem` entry and must leave vanilla behaviour when off. Welcome page: `client/features/` (`FeaturePanel`, `WelcomeTab`, `FeaturesScreen`).
+- `quest/`: `QuestService` (server: accept, steps, rewards, offers), `QuestRules` (pure numbers and reputation), `QuestState` (saved per player); quests are JSON in `data/vestiges/vestiges/quests/`. Texts and numbers are drafts until the quest side chat reviews them. Screens in `client/quest/`.
 - `data/`: `DataType<T>` = one datapack content type (`data/<ns>/vestiges/<type>/*.json`, decoded by a codec, reloaded by `/reload`);
   `VestigesData` lists them. M0 ships `feats` (the 24 approved feats as display text; M5 makes them real).
 - `net/VestigesPayloads` + `server/HubNet`: the client asks (`HubRequest`), the server answers with a complete JSON snapshot (`HubData`),

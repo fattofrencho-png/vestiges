@@ -1,0 +1,19 @@
+{
+  "kind": "guide",
+  "chain": "first_steps",
+  "order": 2,
+  "name": "The Other Wheel",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "craft_points",
+      "text": "Take a node on the Craft wheel. It earns 1 point every 2 levels.",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "xp": 50,
+    "emeralds": 0,
+    "items": []
+  }
+}

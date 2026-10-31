@@ -1,0 +1,19 @@
+{
+  "kind": "guide",
+  "chain": "first_steps",
+  "order": 0,
+  "name": "A Little Stronger",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "level",
+      "text": "Reach level 2. Kills, ores and new places all give XP.",
+      "amount": 2
+    }
+  ],
+  "reward": {
+    "xp": 25,
+    "emeralds": 0,
+    "items": []
+  }
+}

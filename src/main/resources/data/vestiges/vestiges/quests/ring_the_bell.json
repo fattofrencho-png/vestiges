@@ -1,0 +1,19 @@
+{
+  "kind": "guide",
+  "chain": "putting_down_roots",
+  "order": 1,
+  "name": "Ring the Bell",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "named_settlement",
+      "text": "Place your Bell, don't fight for 10 minutes while it sets up, and name your settlement.",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "xp": 200,
+    "emeralds": 5,
+    "items": []
+  }
+}

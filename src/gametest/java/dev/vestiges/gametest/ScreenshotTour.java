@@ -69,6 +69,7 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		hub(ctx, mode, off);
 		if (!off) {
 			worldMap(ctx);
+			quests(ctx, server);
 		}
 		inventory(ctx, mode);
 		if (off) {
@@ -144,6 +145,57 @@ public final class ScreenshotTour implements FabricClientGameTest {
 			}
 		}
 		throw new IllegalStateException("no feature panel on " + mc.gui.screen());
+	}
+
+	/** The quest screens: a running quest on the tracker and in the tab, then the offer page and the choice page. */
+	private static void quests(ClientGameTestContext ctx, TestServerContext server) {
+		ctx.setScreen(() -> null);
+		server.runCommand("execute as @p run vestiges quest start side_farmer");
+		server.runCommand("execute as @p run vestiges quest start test_choice");
+		server.runCommand("execute as @p run vestiges quest start your_first_point");
+		ctx.waitTicks(60);
+		shot(ctx, "full_quest_tracker");
+		ctx.runOnClient(mc -> ClientConfigStore.get().hubTab = "QUESTS");
+		ctx.setScreen(HubScreen::new);
+		ctx.waitTicks(20);
+		shot(ctx, "full_quests_active");
+		com.google.gson.JsonObject offer = com.google.gson.JsonParser.parseString("{\"id\":\"side_farmer\",\"name\":\"A Poor Harvest\",\"giver\":\"Farmer\",\"intro\":\"Half the field has rotted, and something walks the rows at night.\",\"steps\":[\"Bring 24 Wheat.\",\"Kill 5 monsters.\"],\"reward\":\"50 XP, 6 emeralds\"}").getAsJsonObject();
+		ctx.setScreen(() -> dev.vestiges.client.quest.QuestBookScreen.offer(offer));
+		ctx.waitTicks(5);
+		shot(ctx, "full_quest_offer");
+		com.google.gson.JsonArray choices = com.google.gson.JsonParser.parseString("[{\"label\":\"Side with the Bright Path\",\"effects\":\"the Bright Path +20, the Promise -10, the Vitera -10\"},{\"label\":\"Side with the Vitera\",\"effects\":\"the Vitera +20\"}]").getAsJsonArray();
+		ctx.setScreen(() -> dev.vestiges.client.quest.QuestBookScreen.choice("test_choice", "Test choice", "Test", "Pick one to test standing.", choices));
+		ctx.waitTicks(5);
+		shot(ctx, "full_quest_choice");
+		// The real flow on the server: hand in, kill, finish with the reward, and a choice moving standing.
+		server.runCommand("clear @p");
+		for (String item : new String[] {"wheat", "carrot", "potato", "beetroot"}) {
+			server.runCommand("give @p minecraft:" + item + " 40");
+		}
+		ctx.waitTicks(10);
+		ctx.runOnClient(mc -> dev.vestiges.client.quest.ClientQuests.send("hand_in", "side_farmer", ""));
+		ctx.runOnClient(mc -> dev.vestiges.client.quest.ClientQuests.send("choose", "test_choice", "0"));
+		ctx.waitTicks(20);
+		server.runCommand("execute at @p run summon minecraft:zombie ~2 ~ ~ {Health:1f}");
+		printQuests(ctx, server, "after hand-in and choice");
+		for (int i = 0; i < 5; i++) {
+			server.runCommand("execute at @p run summon minecraft:zombie ~2 ~ ~");
+			server.runCommand("execute as @p run damage @e[type=minecraft:zombie,limit=1,sort=nearest] 1000 minecraft:player_attack by @p");
+			ctx.waitTicks(10);
+		}
+		ctx.waitTicks(60);
+		printQuests(ctx, server, "after five kills");
+		ctx.setScreen(() -> null);
+	}
+
+	private static void printQuests(ClientGameTestContext ctx, TestServerContext server, String when) {
+		ctx.waitTicks(5);
+		String state = server.computeOnServer(s -> {
+			net.minecraft.server.level.ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			dev.vestiges.quest.QuestState st = dev.vestiges.quest.QuestService.get(p);
+			return "running " + st.active().keySet() + ", finished " + st.finished() + ", standing " + st.standing() + ", emeralds " + dev.vestiges.server.Emeralds.count(p);
+		});
+		System.out.println("[tour] quests " + when + ": " + state);
 	}
 
 	/** Flies over the area so the map has something to show. */
@@ -247,6 +299,12 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		ctx.setScreen(HubScreen::new);
 		ctx.waitTicks(20);
 		shot(ctx, mode + "hub_map");
+		if (!off) {
+			ctx.runOnClient(mc -> ClientConfigStore.get().hubTab = "QUESTS");
+			ctx.setScreen(HubScreen::new);
+			ctx.waitTicks(20);
+			shot(ctx, mode + "hub_quests");
+		}
 		ctx.runOnClient(mc -> ClientConfigStore.get().hubTab = "SETTINGS");
 		ctx.setScreen(HubScreen::new);
 		ctx.waitTicks(10);

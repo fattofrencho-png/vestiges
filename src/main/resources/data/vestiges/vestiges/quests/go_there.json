@@ -1,0 +1,20 @@
+{
+  "kind": "guide",
+  "chain": "pack_and_path",
+  "order": 5,
+  "name": "Go There",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "go_there",
+      "text": "Use Go there on a waypoint. The Locator Bar guides you.",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "xp": 50,
+    "emeralds": 0,
+    "items": [],
+    "title": "the Well-Packed"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "kind": "guide",
+  "chain": "pack_and_path",
+  "order": 2,
+  "name": "The Belt",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "belt",
+      "text": "Put a map on the tool belt. The minimap appears.",
+      "amount": 1,
+      "targets": [
+        "minecraft:map"
+      ]
+    },
+    {
+      "type": "belt",
+      "text": "Put a compass on it too. N, E, S and W appear.",
+      "amount": 1,
+      "targets": [
+        "minecraft:compass"
+      ]
+    }
+  ],
+  "reward": {
+    "xp": 50,
+    "emeralds": 0,
+    "items": [
+      "minecraft:compass:1"
+    ]
+  }
+}

@@ -128,6 +128,9 @@ public final class ClientWaypoints {
 		w.type = type;
 		waypoints.add(w);
 		save();
+		if ("waypoint".equals(type)) {
+			dev.vestiges.client.quest.ClientQuests.send("event", "waypoint", "");
+		}
 		return w;
 	}
 

@@ -1,0 +1,28 @@
+{
+  "kind": "side",
+  "name": "The One That Got Away",
+  "giver": "Fisherman",
+  "intro": "It took my best line, and I want it back.",
+  "steps": [
+    {
+      "type": "fish",
+      "text": "Catch {amount} fish.",
+      "amount": 10
+    },
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 1,
+      "targets": [
+        "minecraft:pufferfish",
+        "minecraft:salmon"
+      ]
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "fisherman"
+}

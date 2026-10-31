@@ -315,6 +315,7 @@ public final class WorldMapScreen extends Screen {
 	}
 
 	private void pin(Entry e) {
+		dev.vestiges.client.quest.ClientQuests.send("event", "go_there", "");
 		JsonObject a = new JsonObject();
 		a.addProperty("dimension", e.dimension());
 		a.addProperty("x", e.x());

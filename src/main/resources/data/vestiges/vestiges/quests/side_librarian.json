@@ -1,0 +1,27 @@
+{
+  "kind": "side",
+  "name": "Lost Pages",
+  "giver": "Librarian",
+  "intro": "Someone must go and look, and it won't be me.",
+  "steps": [
+    {
+      "type": "structure",
+      "text": "Find a structure you haven't found before.",
+      "amount": 1
+    },
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 3,
+      "targets": [
+        "minecraft:book"
+      ]
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "librarian"
+}

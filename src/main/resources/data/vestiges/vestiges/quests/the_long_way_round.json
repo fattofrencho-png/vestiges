@@ -1,0 +1,29 @@
+{
+  "kind": "guide",
+  "chain": "putting_down_roots",
+  "order": 3,
+  "name": "The Long Way Round",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "feat",
+      "text": "Earn First Waystone: level 15, 10 biomes.",
+      "amount": 1,
+      "targets": [
+        "first_waystone"
+      ]
+    },
+    {
+      "type": "waystone_trip",
+      "text": "Place it in your settlement and make one trip.",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "xp": 200,
+    "emeralds": 0,
+    "items": [
+      "minecraft:emerald:5"
+    ]
+  }
+}

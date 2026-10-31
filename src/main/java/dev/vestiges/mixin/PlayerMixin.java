@@ -33,6 +33,18 @@ public abstract class PlayerMixin {
 		}
 	}
 
+	/** The title a player wears, beside their name in chat and server messages. */
+	@ModifyReturnValue(method = "getDisplayName", at = @At("RETURN"))
+	private net.minecraft.network.chat.Component vestiges$title(net.minecraft.network.chat.Component name) {
+		if ((Object) this instanceof ServerPlayer player) {
+			String title = dev.vestiges.quest.QuestService.title(player);
+			if (!title.isEmpty()) {
+				return name.copy().append(net.minecraft.network.chat.Component.literal(" " + title).withStyle(net.minecraft.ChatFormatting.GRAY));
+			}
+		}
+		return name;
+	}
+
 	@ModifyReturnValue(method = "getDestroySpeed", at = @At("RETURN"))
 	private float vestiges$breakSpeed(float speed, BlockState state) {
 		return TreeHooks.breakSpeed((Player) (Object) this, state, speed);

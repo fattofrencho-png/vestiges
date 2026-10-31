@@ -1,0 +1,24 @@
+{
+  "kind": "side",
+  "name": "Blank Space",
+  "giver": "Cartographer",
+  "intro": "There's a hole in my map.",
+  "steps": [
+    {
+      "type": "new_biome",
+      "text": "Discover a new biome.",
+      "amount": 1
+    },
+    {
+      "type": "talk",
+      "text": "Sneak and right-click the villager again.",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "cartographer"
+}

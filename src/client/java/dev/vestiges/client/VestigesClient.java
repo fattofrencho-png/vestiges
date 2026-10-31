@@ -50,7 +50,7 @@ public class VestigesClient implements ClientModInitializer {
 		hubKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.hub", InputConstants.KEY_H, category));
 		mapKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.map", InputConstants.KEY_M, category));
 		utilityKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.utility", InputConstants.KEY_V, category));
-		treeKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.tree", InputConstants.UNKNOWN.getValue(), category));
+		treeKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.tree", InputConstants.KEY_K, category));
 		codexKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.codex", InputConstants.UNKNOWN.getValue(), category));
 		dev.vestiges.client.inventory.ClientInventory.zoomKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.zoom", InputConstants.KEY_Z, category));
 		dev.vestiges.client.inventory.ClientInventory.toolKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.tool_slot", InputConstants.UNKNOWN.getValue(), category));
@@ -61,6 +61,7 @@ public class VestigesClient implements ClientModInitializer {
 		HudElementRegistry.addLast(Vestiges.id("thick_hide"), new dev.vestiges.client.hud.ThickHideHud());
 		HudElementRegistry.addLast(Vestiges.id("meal"), new dev.vestiges.client.farming.ClientMeals());
 		HudElementRegistry.addLast(Vestiges.id("setup_bar"), new dev.vestiges.client.settlement.SetupBar());
+		HudElementRegistry.addLast(Vestiges.id("quest_tracker"), new dev.vestiges.client.quest.QuestTracker());
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Vestiges.id("extra_hotbar"), new dev.vestiges.client.hud.ExtraHotbarHud());
 		// Hearts as a percentage: our 10-heart bar replaces vanilla's and takes one row, so the armour bar sits right above it.
 		HudElementRegistry.replaceElement(VanillaHudElements.HEALTH_BAR, HeartsHud::new);
@@ -79,6 +80,7 @@ public class VestigesClient implements ClientModInitializer {
 			dev.vestiges.client.farming.ClientMeals.reset();
 			dev.vestiges.client.hud.EntityInfo.reset();
 			dev.vestiges.client.settlement.ClientSettlements.reset();
+			dev.vestiges.client.quest.ClientQuests.reset();
 			deathRecorded = false;
 		}));
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {

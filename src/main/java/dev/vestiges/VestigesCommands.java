@@ -28,6 +28,33 @@ public final class VestigesCommands {
 	private VestigesCommands() {
 	}
 
+	private static com.mojang.brigadier.builder.RequiredArgumentBuilder<CommandSourceStack, String> questId() {
+		return Commands.argument("quest", StringArgumentType.word())
+			.suggests((ctx, b) -> SharedSuggestionProvider.suggest(dev.vestiges.data.VestigesData.QUESTS.all().keySet().stream().map(k -> k.getPath()), b));
+	}
+
+	private static int questList(CommandSourceStack src) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+		dev.vestiges.quest.QuestState st = dev.vestiges.quest.QuestService.get(src.getPlayerOrException());
+		src.sendSuccess(() -> Component.literal(dev.vestiges.data.VestigesData.QUESTS.all().size() + " quests, running: " + st.active().keySet() + ", finished: " + st.finished().keySet()), false);
+		return 1;
+	}
+
+	private static int questOp(CommandSourceStack src, String op, String id) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+		net.minecraft.server.level.ServerPlayer p = src.getPlayerOrException();
+		boolean ok = switch (op) {
+			case "start" -> dev.vestiges.quest.QuestService.adminStart(p, id);
+			case "complete" -> dev.vestiges.quest.QuestService.adminComplete(p, id);
+			case "reset" -> dev.vestiges.quest.QuestService.adminReset(p, id);
+			default -> p.getInventory().add(dev.vestiges.quest.QuestService.note(id));
+		};
+		if (!ok) {
+			src.sendFailure(Component.literal("Vestiges: could not " + op + " quest " + id));
+			return 0;
+		}
+		src.sendSuccess(() -> Component.literal("Vestiges: quest " + id + ": " + op + " done"), false);
+		return 1;
+	}
+
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		dispatcher.register(Commands.literal("vestiges")
 			.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
@@ -60,6 +87,21 @@ public final class VestigesCommands {
 							.suggests((ctx, b) -> net.minecraft.commands.SharedSuggestionProvider.suggest(
 								dev.vestiges.data.VestigesData.FEATS.all().keySet().stream().map(k -> k.getPath()), b))
 							.executes(ctx -> featGrant(ctx.getSource(), EntityArgument.getPlayers(ctx, "targets"), StringArgumentType.getString(ctx, "feat"), false))))))
+			.then(Commands.literal("quest")
+				.then(Commands.literal("list").executes(ctx -> questList(ctx.getSource())))
+				.then(Commands.literal("start").then(questId().executes(ctx -> questOp(ctx.getSource(), "start", StringArgumentType.getString(ctx, "quest")))))
+				.then(Commands.literal("complete").then(questId().executes(ctx -> questOp(ctx.getSource(), "complete", StringArgumentType.getString(ctx, "quest")))))
+				.then(Commands.literal("reset").then(questId().executes(ctx -> questOp(ctx.getSource(), "reset", StringArgumentType.getString(ctx, "quest")))))
+				.then(Commands.literal("note").then(questId().executes(ctx -> questOp(ctx.getSource(), "note", StringArgumentType.getString(ctx, "quest"))))))
+			.then(Commands.literal("reputation")
+				.then(Commands.argument("group", StringArgumentType.word())
+					.suggests((ctx, b) -> SharedSuggestionProvider.suggest(dev.vestiges.quest.QuestRules.GROUP_NAMES.keySet(), b))
+					.then(Commands.argument("value", IntegerArgumentType.integer(-100, 100))
+						.executes(ctx -> {
+							dev.vestiges.quest.QuestService.adminReputation(ctx.getSource().getPlayerOrException(), StringArgumentType.getString(ctx, "group"), IntegerArgumentType.getInteger(ctx, "value"));
+							ctx.getSource().sendSuccess(() -> Component.literal("Vestiges: standing set"), false);
+							return 1;
+						}))))
 			.then(Commands.literal("settlement")
 				.then(Commands.literal("info").executes(ctx -> settlementInfo(ctx.getSource())))
 				.then(Commands.literal("renown").executes(ctx -> settlementRenown(ctx.getSource())))

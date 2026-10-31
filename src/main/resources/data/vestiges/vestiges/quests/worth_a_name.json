@@ -1,0 +1,19 @@
+{
+  "kind": "guide",
+  "chain": "putting_down_roots",
+  "order": 2,
+  "name": "Worth a Name",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "renown",
+      "text": "Reach renown 2 (Settlement). Blocks, variety and beds raise it.",
+      "amount": 2
+    }
+  ],
+  "reward": {
+    "xp": 300,
+    "emeralds": 5,
+    "items": []
+  }
+}

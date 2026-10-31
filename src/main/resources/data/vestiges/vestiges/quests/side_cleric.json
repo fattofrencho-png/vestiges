@@ -1,0 +1,32 @@
+{
+  "kind": "side",
+  "name": "Rare Ingredients",
+  "giver": "Cleric",
+  "intro": "My shelves are running low.",
+  "steps": [
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 4,
+      "targets": [
+        "minecraft:spider_eye",
+        "minecraft:bone",
+        "minecraft:gunpowder"
+      ]
+    },
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 1,
+      "targets": [
+        "minecraft:potion"
+      ]
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "cleric"
+}

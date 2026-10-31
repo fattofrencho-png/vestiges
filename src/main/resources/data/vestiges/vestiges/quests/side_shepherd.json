@@ -1,0 +1,31 @@
+{
+  "kind": "side",
+  "name": "Something in the Pasture",
+  "giver": "Shepherd",
+  "intro": "Something has been at the flock.",
+  "steps": [
+    {
+      "type": "kill",
+      "text": "Kill {amount} monsters.",
+      "amount": 5,
+      "targets": [
+        "any"
+      ],
+      "elite_from": 2
+    },
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 8,
+      "targets": [
+        "minecraft:white_wool"
+      ]
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "shepherd"
+}

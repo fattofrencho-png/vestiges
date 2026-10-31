@@ -1,0 +1,34 @@
+{
+  "kind": "side",
+  "name": "A Poor Harvest",
+  "giver": "Farmer",
+  "intro": "Half the field has rotted, and something walks the rows at night.",
+  "steps": [
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 24,
+      "targets": [
+        "minecraft:wheat",
+        "minecraft:carrot",
+        "minecraft:potato",
+        "minecraft:beetroot"
+      ]
+    },
+    {
+      "type": "kill",
+      "text": "Kill {amount} monsters.",
+      "amount": 5,
+      "targets": [
+        "any"
+      ],
+      "elite_from": 2
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "farmer"
+}

@@ -1,0 +1,22 @@
+{
+  "kind": "guide",
+  "chain": "putting_down_roots",
+  "order": 0,
+  "name": "Founder",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "feat",
+      "text": "Earn the Founder feat: level 10, 5 beds in one area, meet a villager.",
+      "amount": 1,
+      "targets": [
+        "founder"
+      ]
+    }
+  ],
+  "reward": {
+    "xp": 100,
+    "emeralds": 0,
+    "items": []
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "kind": "guide",
+  "chain": "first_steps",
+  "order": 1,
+  "name": "Your First Point",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "fight_points",
+      "text": "Press K to open the passive trees, pick a start and take a node on the Fight wheel.",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "xp": 50,
+    "emeralds": 0,
+    "items": []
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "kind": "guide",
+  "chain": "pack_and_path",
+  "order": 1,
+  "name": "Two Quick Slots",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "hold_tool",
+      "text": "Hold the Tool slot. The mouse wheel goes past slot 9.",
+      "amount": 1
+    },
+    {
+      "type": "hold_weapon",
+      "text": "Hold the Weapon slot.",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "xp": 25,
+    "emeralds": 0,
+    "items": []
+  }
+}

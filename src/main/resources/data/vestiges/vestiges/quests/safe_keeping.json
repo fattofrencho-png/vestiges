@@ -1,0 +1,19 @@
+{
+  "kind": "guide",
+  "chain": "pack_and_path",
+  "order": 3,
+  "name": "Safe Keeping",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "bank",
+      "text": "Drop 5 emeralds on the Bank slot. It pays for waystones, repairs and tree refunds.",
+      "amount": 5
+    }
+  ],
+  "reward": {
+    "xp": 50,
+    "emeralds": 1,
+    "items": []
+  }
+}

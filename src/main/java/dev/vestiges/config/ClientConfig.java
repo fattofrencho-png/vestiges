@@ -26,6 +26,9 @@ public final class ClientConfig {
 	/** M3a: a health bar over a mob after you hit it (elites while in view), and damage numbers floating up from each hit. */
 	public boolean healthBars = true;
 	public boolean damageNumbers = true;
+	/** The on-screen quest tracker and its corner. */
+	public boolean questTracker = true;
+	public String questTrackerCorner = "top_right";
 	public java.util.List<String> blockedPlayers = new java.util.ArrayList<>();
 	/** Which markers the maps show, by kind; a kind the file does not mention defaults to on. */
 	public Map<String, Boolean> mapMarkers = new LinkedHashMap<>();

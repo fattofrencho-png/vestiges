@@ -61,6 +61,8 @@ public class Vestiges implements ModInitializer {
 		dev.vestiges.net.SettlementPayloads.register();
 		dev.vestiges.settlement.SettlementService.register();
 		dev.vestiges.feats.FeatService.register();
+		dev.vestiges.net.QuestPayloads.register();
+		dev.vestiges.quest.QuestService.register();
 		// Every enchantment from I to VI. On by default; the welcome page leaves it out of a new world.
 		net.fabricmc.loader.api.FabricLoader.getInstance().getModContainer(MOD_ID).ifPresent(mod ->
 			net.fabricmc.fabric.api.resource.v1.ResourceLoader.registerBuiltinPack(id("enchant_levels"), mod,

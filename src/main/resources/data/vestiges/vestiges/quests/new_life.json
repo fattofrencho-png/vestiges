@@ -1,0 +1,20 @@
+{
+  "kind": "guide",
+  "chain": "field_notes",
+  "order": 6,
+  "name": "New Life",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "breed",
+      "text": "Breed animals. Look at them to see the timers.",
+      "amount": 2
+    }
+  ],
+  "reward": {
+    "xp": 75,
+    "emeralds": 0,
+    "items": [],
+    "title": "the Curious"
+  }
+}

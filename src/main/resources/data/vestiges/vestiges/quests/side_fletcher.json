@@ -1,0 +1,39 @@
+{
+  "kind": "side",
+  "name": "Straight and True",
+  "giver": "Fletcher",
+  "intro": "Good shafts need good feathers.",
+  "steps": [
+    {
+      "type": "kill",
+      "text": "Kill {amount} monsters.",
+      "amount": 5,
+      "targets": [
+        "any"
+      ],
+      "elite_from": 3
+    },
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 16,
+      "targets": [
+        "minecraft:feather"
+      ]
+    },
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 16,
+      "targets": [
+        "minecraft:flint"
+      ]
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "fletcher"
+}
