@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.InputConstants;
+import dev.vestiges.client.UiTheme;
 import dev.vestiges.client.hub.HubScreen;
 import dev.vestiges.client.ui.TabButton;
 import dev.vestiges.tree.PlayerTree;
@@ -34,8 +35,8 @@ public final class TreeScreen extends Screen {
 	private static final int INFO = 14;
 	private static final int FOOTER = 22;
 	private static final int GOLD = 0xFFE6C36A;
-	private static final int GREY = 0xFFAAAAAA;
-	private static final int DIM = 0xFF888888;
+	private static final int CARD_H = 54;
+	private static final int CARD_STEP = 56;
 
 	enum Tab {
 		FIGHT("fight", "Fight wheel"), CRAFT("craft", "Craft wheel"), ASC("asc", "Ascendancy");
@@ -308,14 +309,15 @@ public final class TreeScreen extends Screen {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta) {
+		UiTheme.paintBackground(g, width, height);
 		super.extractRenderState(g, mouseX, mouseY, delta);
-		g.fill(0, HEADER, width, HEADER + 1, 0x55FFFFFF);
+		g.fill(0, HEADER, width, HEADER + 1, UiTheme.line());
 		if (!ClientTree.loaded()) {
-			g.text(font, "Waiting for the server...", 8, HEADER + 6, GREY);
+			g.text(font, "Waiting for the server...", 8, HEADER + 6, UiTheme.muted(), UiTheme.shadow());
 			return;
 		}
 		if (!ClientTree.enabled()) {
-			g.text(font, "The passive trees are switched off on this server.", 8, HEADER + 6, GREY);
+			g.text(font, "The passive trees are switched off on this server.", 8, HEADER + 6, UiTheme.muted(), UiTheme.shadow());
 			return;
 		}
 		hoverNode = null;
@@ -338,23 +340,23 @@ public final class TreeScreen extends Screen {
 	}
 
 	private void renderFooter(GuiGraphicsExtractor g) {
-		g.fill(0, height - FOOTER, width, height - FOOTER + 1, 0x55FFFFFF);
+		g.fill(0, height - FOOTER, width, height - FOOTER + 1, UiTheme.line());
 		String msg = ClientTree.message();
 		if (!msg.isEmpty()) {
 			boolean error = msg.startsWith("!");
-			g.text(font, error ? msg.substring(1) : msg, 8, height - FOOTER + 7, error ? 0xFFFF7070 : 0xFF8FD18F);
+			g.text(font, error ? msg.substring(1) : msg, 8, height - FOOTER + 7, error ? UiTheme.error() : UiTheme.good(), UiTheme.shadow());
 			return;
 		}
 		String hint = tab == Tab.ASC
-			? "Left-click: take the next node  ·  Right-click: refund the last one  ·  V: utility powers on/off"
-			: "Drag: move  ·  Scroll: zoom  ·  Left-click: take  ·  Right-click: refund  ·  V: utility powers";
-		g.text(font, font.plainSubstrByWidth(hint, width - 16), 8, height - FOOTER + 7, DIM);
+			? "Click: take the next node  ·  Right-click: refund the last  ·  V: powers on/off"
+			: "Drag: move  ·  Scroll: zoom  ·  Click: take  ·  Right-click: refund  ·  V: powers";
+		g.text(font, font.plainSubstrByWidth(hint, width - 16), 8, height - FOOTER + 7, UiTheme.faint(), UiTheme.shadow());
 	}
 
 	private void renderWheel(GuiGraphicsExtractor g, int mouseX, int mouseY) {
 		TreeDefs.Wheel wheel = ClientTree.wheel(tab.id);
 		if (wheel == null) {
-			g.text(font, "This wheel is missing from the server's data.", 8, HEADER + 6, GREY);
+			g.text(font, "This wheel is missing from the server's data.", 8, HEADER + 6, UiTheme.muted(), UiTheme.shadow());
 			return;
 		}
 		PlayerTree.WheelState st = ClientTree.tree().wheel(tab.id);
@@ -370,7 +372,7 @@ public final class TreeScreen extends Screen {
 		if (found >= 0) {
 			info = found + " node" + (found == 1 ? "" : "s") + " found (yellow rings)  ·  " + info;
 		}
-		g.text(font, font.plainSubstrByWidth(info, width - 16), 8, HEADER + 5, startId == null ? 0xFF7CE0FF : 0xFFFFFFFF);
+		g.text(font, font.plainSubstrByWidth(info, width - 16), 8, HEADER + 5, startId == null ? UiTheme.info() : UiTheme.text(), UiTheme.shadow());
 
 		double[] v = view(wheel);
 		Map<String, TreeDefs.Node> byId = new HashMap<>();
@@ -513,7 +515,7 @@ public final class TreeScreen extends Screen {
 		}
 		Set<String> pending = TreeLabels.pending(effects);
 		if (!pending.isEmpty()) {
-			out.add(Component.literal("Not active yet: comes with " + String.join(", ", pending) + ".").withStyle(ChatFormatting.GOLD));
+			out.add(Component.literal("Not active yet: comes with " + UiTheme.noMilestone(String.join(", ", pending)) + ".").withStyle(ChatFormatting.GOLD));
 		}
 		if (effects.stream().anyMatch(e -> e.mechanic().map(TreeLabels.UTILITY::contains).orElse(false))) {
 			out.add(Component.literal("Utility power: V switches all of them on or off.").withStyle(ChatFormatting.AQUA));
@@ -550,13 +552,13 @@ public final class TreeScreen extends Screen {
 		int x = (width - w) / 2;
 		int y = popupTop();
 		int h = popupTextHeight() + 8 + (popup.choices().size() + 1) * 22 + 6;
-		g.fill(x, y, x + w, y + h, 0xF0181818);
-		g.outline(x, y, w, h, GOLD);
-		g.text(font, popup.title(), x + 10, y + 6, GOLD);
+		g.fill(x, y, x + w, y + h, UiTheme.popup());
+		g.outline(x, y, w, h, UiTheme.head());
+		g.text(font, popup.title(), x + 10, y + 6, UiTheme.head(), UiTheme.shadow());
 		int ty = y + 20;
 		for (String line : popup.lines()) {
 			for (FormattedCharSequence part : font.split(Component.literal(line), w - 20)) {
-				g.text(font, part, x + 10, ty, 0xFFFFFFFF);
+				g.text(font, part, x + 10, ty, UiTheme.text(), UiTheme.shadow());
 				ty += 10;
 			}
 			ty += 2;
@@ -734,14 +736,14 @@ public final class TreeScreen extends Screen {
 			boolean ready = allDone(checks("first"));
 			int cardW = cardWidth();
 			int x = cardsLeft();
-			int y = canvasTop() + 4;
+			int y = canvasTop() + 2;
 			int i = 0;
 			for (TreeDefs.Ascendancy a : ClientTree.ascendancies()) {
 				int cx = x + (i % 2) * (cardW + 6);
-				int cy = y + (i / 2) * 76;
+				int cy = y + (i / 2) * CARD_STEP;
 				Button b = Button.builder(Component.literal("Become a " + a.name()), btn -> open(new Popup("Become a " + a.name() + "?",
 					List.of(a.kit() + ".", "You can change it later only with a Respec Tome (from dragon 12)."),
-					List.of(new Choice("Ascend", () -> ClientTree.send("asc_choose", "", a.id(), 0)))))).bounds(cx + 4, cy + 52, cardW - 8, 18).build();
+					List.of(new Choice("Ascend", () -> ClientTree.send("asc_choose", "", a.id(), 0)))))).bounds(cx + 4, cy + 34, cardW - 8, 18).build();
 				b.active = ready;
 				addRenderableWidget(b);
 				i++;
@@ -755,11 +757,11 @@ public final class TreeScreen extends Screen {
 	}
 
 	private int cardWidth() {
-		return Math.max(150, Math.min(220, (width - checklistWidth() - 30) / 2));
+		return Math.max(130, Math.min(220, (width - checklistWidth() - 28) / 2));
 	}
 
 	private int checklistWidth() {
-		return Math.min(240, width / 3);
+		return Math.min(240, width / 4);
 	}
 
 	private int cardsLeft() {
@@ -767,15 +769,15 @@ public final class TreeScreen extends Screen {
 	}
 
 	private void renderChecklist(GuiGraphicsExtractor g, String title, List<JsonObject> checks, int x, int y, int w) {
-		g.text(font, title, x, y, GOLD);
+		g.text(font, title, x, y, UiTheme.head(), UiTheme.shadow());
 		y += 13;
 		for (JsonObject c : checks) {
 			boolean done = c.get("done").getAsBoolean();
-			String later = c.has("later") ? c.get("later").getAsString() : null;
+			String later = c.has("later") ? UiTheme.noMilestone(c.get("later").getAsString()) : null;
 			String line = (later != null ? "– " : done ? "✔ " : "✘ ") + c.get("text").getAsString()
 				+ (later != null ? " (skipped: " + later + ")" : "  " + Math.min(c.get("have").getAsLong(), c.get("goal").getAsLong()) + "/" + c.get("goal").getAsLong());
 			for (FormattedCharSequence part : font.split(Component.literal(line), w)) {
-				g.text(font, part, x, y, later != null ? DIM : done ? 0xFF8FD18F : 0xFFD18F8F);
+				g.text(font, part, x, y, later != null ? UiTheme.faint() : done ? UiTheme.good() : UiTheme.bad(), UiTheme.shadow());
 				y += 10;
 			}
 			y += 2;
@@ -817,23 +819,33 @@ public final class TreeScreen extends Screen {
 		boolean utility = tree.utilityOn();
 		String util = "Utility powers: " + (utility ? "On" : "Off") + " (V)";
 		if (tree.ascendancy().isEmpty()) {
-			g.text(font, "Ascend to pick a weapon and a tool to master. Each ascension gives 2 points.", 8, HEADER + 5, 0xFFFFFFFF);
+			g.text(font, "Ascend to pick a weapon and a tool to master. Each ascension gives 2 points.", 8, HEADER + 5, UiTheme.text(), UiTheme.shadow());
 			renderChecklist(g, "First ascension", checks("first"), 8, canvasTop() + 4, checklistWidth());
 			int cardW = cardWidth();
 			int i = 0;
 			for (TreeDefs.Ascendancy a : ClientTree.ascendancies()) {
 				int cx = cardsLeft() + (i % 2) * (cardW + 6);
-				int cy = canvasTop() + 4 + (i / 2) * 76;
-				g.fill(cx, cy, cx + cardW, cy + 72, 0xC0101010);
-				g.outline(cx, cy, cardW, 72, 0xFF555555);
-				g.text(font, a.name(), cx + 5, cy + 4, GOLD);
-				g.text(font, font.plainSubstrByWidth(a.kit(), cardW - 10), cx + 5, cy + 15, GREY);
-				int ly = cy + 27;
+				int cy = canvasTop() + 2 + (i / 2) * CARD_STEP;
+				g.fill(cx, cy, cx + cardW, cy + CARD_H, UiTheme.card());
+				g.outline(cx, cy, cardW, CARD_H, UiTheme.cardLine());
+				g.text(font, a.name(), cx + 5, cy + 3, UiTheme.head(), UiTheme.shadow());
+				int kitX = cx + 5 + font.width(a.name()) + 6;
+				g.text(font, font.plainSubstrByWidth(a.kit(), cx + cardW - 5 - kitX), kitX, cy + 3, UiTheme.muted(), UiTheme.shadow());
+				int ly = cy + 13;
+				List<Component> tip = new ArrayList<>();
+				tip.add(Component.literal(a.name()).withStyle(ChatFormatting.GOLD));
+				tip.add(Component.literal(a.kit()).withStyle(ChatFormatting.GRAY));
 				for (TreeDefs.Branch b : a.branches()) {
 					String crafting = b.nodes().size() > 1 ? b.nodes().get(1).name() : b.name();
 					String fighting = b.nodes().size() > 3 ? b.nodes().get(3).name() : "";
-					g.text(font, font.plainSubstrByWidth("• " + crafting + " → " + fighting, cardW - 10), cx + 5, ly, 0xFFFFFFFF);
-					ly += 11;
+					String branch = "• " + crafting + " → " + fighting;
+					g.text(font, font.plainSubstrByWidth(branch, cardW - 10), cx + 5, ly, UiTheme.text(), UiTheme.shadow());
+					tip.add(Component.literal(branch));
+					ly += 10;
+				}
+				// The buttons are drawn over the card, so only its text area shows the full names.
+				if (popup == null && mouseX >= cx && mouseX < cx + cardW && mouseY >= cy && mouseY < cy + 33) {
+					g.setComponentTooltipForNextFrame(font, tip, mouseX, mouseY);
 				}
 				i++;
 			}
@@ -841,7 +853,7 @@ public final class TreeScreen extends Screen {
 		}
 		TreeDefs.Ascendancy asc = ClientTree.ascendancy(tree.ascendancy());
 		if (asc == null) {
-			g.text(font, "Your ascendancy is missing from the server's data.", 8, HEADER + 5, GREY);
+			g.text(font, "Your ascendancy is missing from the server's data.", 8, HEADER + 5, UiTheme.muted(), UiTheme.shadow());
 			return;
 		}
 		JsonObject ascState = state().getAsJsonObject("asc");
@@ -875,7 +887,7 @@ public final class TreeScreen extends Screen {
 		// Branch names, at the left of each row.
 		for (int b = 0; b < Math.min(2, asc.branches().size()); b++) {
 			int y = rootY + (b == 0 ? -34 : 34) - 4;
-			g.text(font, font.plainSubstrByWidth(asc.branches().get(b).name(), ASC_ROOT_X + 80 - 22 - 6), 6, y + (b == 0 ? -14 : 14), GOLD);
+			g.text(font, font.plainSubstrByWidth(asc.branches().get(b).name(), ASC_ROOT_X + 80 - 22 - 6), 6, y + (b == 0 ? -14 : 14), UiTheme.head(), UiTheme.shadow());
 		}
 		int spacing = ascSpacing();
 		for (AscSpot sp : spots) {
@@ -899,10 +911,10 @@ public final class TreeScreen extends Screen {
 			if (lines.size() > 2) {
 				lines = lines.subList(0, 2);
 			}
-			int color = taken ? GOLD : travel ? GREY : 0xFFFFFFFF;
+			int color = taken ? UiTheme.head() : travel ? UiTheme.muted() : UiTheme.text();
 			int ly = sp.branch() == 0 ? sp.y() - h - 4 - lines.size() * 10 : sp.y() + h + 5;
 			for (FormattedCharSequence part : lines) {
-				g.text(font, part, sp.x() - font.width(part) / 2, ly, color);
+				g.text(font, part, sp.x() - font.width(part) / 2, ly, color, UiTheme.shadow());
 				ly += 10;
 			}
 			if (popup == null && Math.abs(mouseX - sp.x()) <= h + 2 && Math.abs(mouseY - sp.y()) <= h + 2) {
@@ -917,7 +929,7 @@ public final class TreeScreen extends Screen {
 				tip.add(Component.literal(n.text()).withStyle(ChatFormatting.WHITE));
 				Set<String> pending = TreeLabels.pending(n.effects());
 				if (!pending.isEmpty()) {
-					tip.add(Component.literal("Not active yet: comes with " + String.join(", ", pending) + ".").withStyle(ChatFormatting.GOLD));
+					tip.add(Component.literal("Not active yet: comes with " + UiTheme.noMilestone(String.join(", ", pending)) + ".").withStyle(ChatFormatting.GOLD));
 				}
 				if (n.effects().stream().anyMatch(e -> e.mechanic().map(TreeLabels.UTILITY::contains).orElse(false))) {
 					tip.add(Component.literal("Utility power: V switches all of them on or off.").withStyle(ChatFormatting.AQUA));
@@ -939,7 +951,7 @@ public final class TreeScreen extends Screen {
 		if (tree.ascensions() == 1) {
 			renderChecklist(g, "Second ascension (+2 points)", checks("second"), 8, y, Math.min(360, width - 16));
 		} else {
-			g.text(font, "You have ascended twice: all 4 ascendancy points are yours.", 8, y, GREY);
+			g.text(font, "You have ascended twice: all 4 ascendancy points are yours.", 8, y, UiTheme.muted(), UiTheme.shadow());
 		}
 	}
 
