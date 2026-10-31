@@ -21,8 +21,15 @@ public final class ClientMapNet {
 	/** The last short message from the server, shown in the map's footer. */
 	public static String lastMessage = "";
 	public static boolean lastError;
+	private static final long MESSAGE_MS = 10_000;
+	private static long lastMessageAt;
 
 	private ClientMapNet() {
+	}
+
+	/** The last message while it's still fresh, so screens don't keep showing an old one. */
+	public static String message() {
+		return System.currentTimeMillis() - lastMessageAt < MESSAGE_MS ? lastMessage : "";
 	}
 
 	public static void register() {
@@ -48,6 +55,7 @@ public final class ClientMapNet {
 			case "message" -> {
 				lastMessage = json.get("text").getAsString();
 				lastError = json.get("error").getAsBoolean();
+				lastMessageAt = System.currentTimeMillis();
 				if (mc.player != null) {
 					mc.player.sendSystemMessage(Component.literal(lastMessage).withStyle(lastError ? ChatFormatting.RED : ChatFormatting.GREEN));
 				}

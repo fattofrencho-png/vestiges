@@ -1,5 +1,6 @@
 package dev.vestiges.client.settlement;
 
+import dev.vestiges.client.UiTheme;
 import dev.vestiges.net.SettlementPayloads;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -44,10 +45,11 @@ public final class NameScreen extends Screen {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta) {
+		UiTheme.paintBackground(g, width, height);
 		super.extractRenderState(g, mouseX, mouseY, delta);
-		g.text(font, getTitle(), (width - font.width(getTitle())) / 2, height / 2 - 40, 0xFFE6C36A);
+		g.text(font, getTitle(), (width - font.width(getTitle())) / 2, height / 2 - 40, UiTheme.head(), UiTheme.shadow());
 		String hint = "You can't rename it later. (Later: right-click it again to name it.)";
-		g.text(font, hint, (width - font.width(hint)) / 2, height / 2 - 26, 0xFF888888);
+		g.text(font, hint, (width - font.width(hint)) / 2, height / 2 - 26, UiTheme.muted(), UiTheme.shadow());
 	}
 
 	@Override
