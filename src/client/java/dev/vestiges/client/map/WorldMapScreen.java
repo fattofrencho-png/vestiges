@@ -146,6 +146,11 @@ public final class WorldMapScreen extends Screen {
 		return height - HEADER;
 	}
 
+	/** Waypoint rows: fewer in a short window, so the buttons under the list stay on screen. */
+	private int rows() {
+		return Math.max(2, Math.min(ROWS, (height - HEADER - 14 - 22 - 66 - 22) / 19));
+	}
+
 	private List<Entry> entries() {
 		List<Entry> list = new ArrayList<>();
 		String dim = dimension.toString();
@@ -213,9 +218,10 @@ public final class WorldMapScreen extends Screen {
 		int y = HEADER + 14;
 		List<Entry> list = entries();
 		rowIcons.clear();
-		int pages = Math.max(1, (list.size() + ROWS - 1) / ROWS);
+		int rows = rows();
+		int pages = Math.max(1, (list.size() + rows - 1) / rows);
 		page = Math.min(page, pages - 1);
-		for (int i = page * ROWS; i < Math.min(list.size(), page * ROWS + ROWS); i++) {
+		for (int i = page * rows; i < Math.min(list.size(), page * rows + rows); i++) {
 			Entry e = list.get(i);
 			rowIcons.add(new Object[] {e, px + 10, y + 9});
 			addRenderableWidget(new TabButton(px, y, pw, 18, font.plainSubstrByWidth(e.label(), pw - 30), selected != null && same(selected, e), () -> {
@@ -240,7 +246,7 @@ public final class WorldMapScreen extends Screen {
 			next.active = page < pages - 1;
 			addRenderableWidget(next);
 		}
-		y = HEADER + 14 + ROWS * 19 + 22;
+		y = HEADER + 14 + rows * 19 + 22;
 
 		if (selected != null) {
 			Entry sel = selected;
@@ -369,13 +375,13 @@ public final class WorldMapScreen extends Screen {
 		int px = width - PANEL + 4;
 		g.text(font, "Waypoints and waystones", px, HEADER + 3, dev.vestiges.client.UiTheme.text(), dev.vestiges.client.UiTheme.shadow());
 		if (!ClientWaypoints.inbox().isEmpty()) {
-			int y = HEADER + 14 + ROWS * 19 + 22 + (selected != null ? (selected instanceof WaypointEntry ? 44 : 22) : 0) + 22;
+			int y = HEADER + 14 + rows() * 19 + 22 + (selected != null ? (selected instanceof WaypointEntry ? 44 : 22) : 0) + 22;
 			for (ClientWaypoints.Shared s : ClientWaypoints.inbox()) {
 				if (y > height - 44) {
 					break;
 				}
-				g.text(font, "Shared by " + s.from() + ":", px, y, 0xFFAAAAAA);
-				g.text(font, font.plainSubstrByWidth(s.waypoint().name, PANEL - 84), px, y + 14, 0xFFFFFFFF);
+				g.text(font, "Shared by " + s.from() + ":", px, y, dev.vestiges.client.UiTheme.muted(), dev.vestiges.client.UiTheme.shadow());
+				g.text(font, font.plainSubstrByWidth(s.waypoint().name, PANEL - 84), px, y + 14, dev.vestiges.client.UiTheme.text(), dev.vestiges.client.UiTheme.shadow());
 				y += 30;
 			}
 		}
@@ -390,10 +396,12 @@ public final class WorldMapScreen extends Screen {
 			g.text(font, "New waypoint at " + pendingSpot[0] + ", " + pendingSpot[1] + ", " + pendingSpot[2], 6, height - 38, 0xFFE6C36A, true);
 		} else {
 			String hint = "Drag to move · scroll to zoom · right-click to add a waypoint";
-			g.text(font, hint, 6, height - 24, 0xFF888888, true);
+			g.text(font, font.plainSubstrByWidth(hint, mw - 12), 6, height - 24, 0xFFCCCCCC, true);
 		}
-		if (!ClientMapNet.lastMessage.isEmpty()) {
-			g.text(font, font.plainSubstrByWidth(ClientMapNet.lastMessage, PANEL - 8), px, height - 12, ClientMapNet.lastError ? 0xFFFF5555 : 0xFF55FF55);
+		String message = ClientMapNet.message();
+		if (!message.isEmpty()) {
+			int color = ClientMapNet.lastError ? dev.vestiges.client.UiTheme.error() : dev.vestiges.client.UiTheme.good();
+			g.text(font, font.plainSubstrByWidth(message, PANEL - 8), px, height - 12, color, dev.vestiges.client.UiTheme.shadow());
 		}
 	}
 
