@@ -2,6 +2,7 @@ package dev.vestiges.client.map;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.InputConstants;
+import dev.vestiges.client.ui.TabButton;
 import dev.vestiges.map.MapMath;
 import java.util.ArrayList;
 import java.util.List;
@@ -167,20 +168,17 @@ public final class WorldMapScreen extends Screen {
 		boolean nether = MapView.isNether(mc);
 		int x = 4;
 		if (!nether) {
-			Button surface = Button.builder(Component.literal("Surface"), b -> {
+			addRenderableWidget(new TabButton(x, 3, 60, 20, "Surface", MapMath.isSurface(layer), () -> {
 				layer = MapMath.SURFACE;
 				rebuildWidgets();
-			}).bounds(x, 3, 60, 20).build();
-			surface.active = !MapMath.isSurface(layer);
-			addRenderableWidget(surface);
+			}));
 			x += 62;
 		}
-		Button under = Button.builder(Component.literal(nether ? "Nether" : "Underground"), b -> {
+		// In the Nether this button goes back to the player's height from any slice, so it stays clickable there.
+		addRenderableWidget(new TabButton(x, 3, 76, 20, nether ? "Nether" : "Underground", !nether && !MapMath.isSurface(layer), () -> {
 			layer = MapMath.sliceKey(MapMath.slice(mc.player != null ? mc.player.getBlockY() : 0));
 			rebuildWidgets();
-		}).bounds(x, 3, 76, 20).build();
-		under.active = MapMath.isSurface(layer) || nether;
-		addRenderableWidget(under);
+		}));
 		x += 78;
 		if (!MapMath.isSurface(layer)) {
 			addRenderableWidget(Button.builder(Component.literal("▲"), b -> {
@@ -220,14 +218,12 @@ public final class WorldMapScreen extends Screen {
 		for (int i = page * ROWS; i < Math.min(list.size(), page * ROWS + ROWS); i++) {
 			Entry e = list.get(i);
 			rowIcons.add(new Object[] {e, px + 10, y + 9});
-			Button row = Button.builder(Component.literal(font.plainSubstrByWidth(e.label(), pw - 30)), b -> {
+			addRenderableWidget(new TabButton(px, y, pw, 18, font.plainSubstrByWidth(e.label(), pw - 30), selected != null && same(selected, e), () -> {
 				selected = e;
 				cx = e.x() + 0.5;
 				cz = e.z() + 0.5;
 				rebuildWidgets();
-			}).bounds(px, y, pw, 18).build();
-			row.active = selected == null || !same(selected, e);
-			addRenderableWidget(row);
+			}));
 			y += 19;
 		}
 		if (pages > 1) {

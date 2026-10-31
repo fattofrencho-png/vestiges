@@ -2,6 +2,7 @@ package dev.vestiges.client.codex;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.vestiges.client.hub.HubScreen;
+import dev.vestiges.client.ui.TabButton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -62,17 +63,16 @@ public final class CodexScreen extends Screen {
 		ClientCodex.request();
 		int x = 6;
 		for (Section s : Section.values()) {
-			Button b = Button.builder(Component.literal(s.label), btn -> {
+			int bw = TabButton.widthFor(font, s.label);
+			addRenderableWidget(new TabButton(x, 4, bw, 20, s.label, s == section, () -> {
 				section = s;
 				scroll = 0;
 				rebuildWidgets();
-			}).bounds(x, 4, 64, 20).build();
-			b.active = s != section;
-			addRenderableWidget(b);
-			x += 66;
+			}));
+			x += bw + 2;
 		}
 		int sw = Math.min(140, width - x - 160);
-		if (sw >= 60) {
+		if (sw >= 44) {
 			EditBox box = new EditBox(font, x + 4, 5, sw, 18, Component.literal("Search"));
 			box.setMaxLength(40);
 			box.setValue(search);

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import dev.vestiges.client.ClientConfigStore;
 import dev.vestiges.client.ClientData;
 import dev.vestiges.client.UiTheme;
+import dev.vestiges.client.ui.TabButton;
 import dev.vestiges.client.features.ClientFeatures;
 import dev.vestiges.client.hud.LookAtProvider;
 import dev.vestiges.client.hud.LookAtProviders;
@@ -180,18 +181,16 @@ public final class HubScreen extends Screen {
 		if (!tab.available()) {
 			tab = Tab.MAP;
 		}
-		int x = 70;
-		int bw = Math.max(44, Math.min(74, (width - x - GAP) / tabs.size() - 2));
+		int x = 54;
 		for (Tab t : tabs) {
-			Button b = Button.builder(Component.literal(t.label), btn -> {
+			int bw = TabButton.widthFor(font, t.label);
+			addRenderableWidget(new TabButton(x, 4, bw, 20, t.label, t == tab, () -> {
 				tab = t;
 				ClientConfigStore.get().hubTab = t.name();
 				ClientConfigStore.save();
 				scroll = 0;
 				rebuildWidgets();
-			}).bounds(x, 4, bw, 20).build();
-			b.active = t != tab;
-			addRenderableWidget(b);
+			}));
 			x += bw + 2;
 		}
 	}
@@ -202,13 +201,11 @@ public final class HubScreen extends Screen {
 			if (c.equals("World") && !ClientFeatures.operator()) {
 				continue;
 			}
-			Button b = Button.builder(Component.literal(c), btn -> {
+			addRenderableWidget(new TabButton(GAP, y, 80, 18, c, c.equals(settingsCategory), () -> {
 				settingsCategory = c;
 				scroll = 0;
 				rebuildWidgets();
-			}).bounds(GAP, y, 80, 18).build();
-			b.active = !c.equals(settingsCategory);
-			addRenderableWidget(b);
+			}));
 			y += 20;
 		}
 		if (settingsCategory.equals("World") && !ClientFeatures.operator()) {

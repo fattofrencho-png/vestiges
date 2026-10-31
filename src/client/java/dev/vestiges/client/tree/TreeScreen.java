@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.vestiges.client.hub.HubScreen;
+import dev.vestiges.client.ui.TabButton;
 import dev.vestiges.tree.PlayerTree;
 import dev.vestiges.tree.TreeDefs;
 import dev.vestiges.tree.TreeLabels;
@@ -86,15 +87,14 @@ public final class TreeScreen extends Screen {
 	protected void init() {
 		int x = 6;
 		for (Tab t : Tab.values()) {
-			Button b = Button.builder(Component.literal(t.label), btn -> {
+			int bw = TabButton.widthFor(font, t.label);
+			addRenderableWidget(new TabButton(x, 4, bw, 20, t.label, t == tab, () -> {
 				tab = t;
 				lastTab = t;
 				popup = null;
 				rebuildWidgets();
-			}).bounds(x, 4, 90, 20).build();
-			b.active = t != tab;
-			addRenderableWidget(b);
-			x += 92;
+			}));
+			x += bw + 2;
 		}
 		addRenderableWidget(Button.builder(Component.literal("Back"), b -> minecraft.setScreenAndShow(new HubScreen()))
 			.bounds(width - 66, 4, 60, 20).build());
@@ -104,13 +104,13 @@ public final class TreeScreen extends Screen {
 			}).bounds(width - 130, 4, 60, 20).build());
 		}
 		if (tab != Tab.ASC) {
-			int sx = 6 + Tab.values().length * 92;
+			int sx = x + 2;
 			int sw = Math.min(150, width - 136 - sx);
-			if (sw >= 60) {
+			if (sw >= 44) {
 				EditBox box = new EditBox(font, sx, 5, sw, 18, Component.literal("Search"));
 				box.setMaxLength(40);
 				box.setValue(search);
-				box.setHint(Component.literal("Search nodes...").withStyle(ChatFormatting.DARK_GRAY));
+				box.setHint(Component.literal("Search...").withStyle(ChatFormatting.DARK_GRAY));
 				box.setResponder(v -> search = v);
 				addRenderableWidget(box);
 			}
