@@ -70,7 +70,7 @@ public final class CodexScreen extends Screen {
 			}));
 			x += bw + 2;
 		}
-		int sw = Math.min(140, width - x - 160);
+		int sw = Math.min(140, width - x - 166);
 		if (sw >= 44) {
 			EditBox box = new EditBox(font, x + 4, 5, sw, 18, Component.literal("Search"));
 			box.setMaxLength(40);

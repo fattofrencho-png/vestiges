@@ -13,6 +13,7 @@ import dev.vestiges.client.settlement.FeatScreen;
 import dev.vestiges.client.settlement.NameScreen;
 import dev.vestiges.client.tree.ClientTree;
 import dev.vestiges.client.tree.TreeScreen;
+import dev.vestiges.client.ui.TabButton;
 import dev.vestiges.client.waystone.WaystoneTerminalScreen;
 import dev.vestiges.config.ConfigStore;
 import dev.vestiges.config.ServerConfig;
@@ -412,6 +413,16 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		ctx.setScreen(WorldMapScreen::new);
 		ctx.waitTicks(15);
 		shot(ctx, tag + "_full_map");
+		ctx.runOnClient(mc -> {
+			for (GuiEventListener child : mc.gui.screen().children()) {
+				if (child instanceof TabButton row && row.getMessage().getString().equals("Home mine")) {
+					row.onClick(null, false);
+					break;
+				}
+			}
+		});
+		ctx.waitTicks(3);
+		shot(ctx, tag + "_full_map_selected");
 		ctx.setScreen(() -> new dev.vestiges.client.features.FeaturesScreen(null, false));
 		ctx.waitTicks(5);
 		shot(ctx, tag + "_features");

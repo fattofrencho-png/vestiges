@@ -395,7 +395,7 @@ public final class WorldMapScreen extends Screen {
 		if (pendingSpot != null) {
 			g.text(font, "New waypoint at " + pendingSpot[0] + ", " + pendingSpot[1] + ", " + pendingSpot[2], 6, height - 38, 0xFFE6C36A, true);
 		} else {
-			String hint = "Drag to move · scroll to zoom · right-click to add a waypoint";
+			String hint = "Drag: move · Scroll: zoom · Right-click: waypoint";
 			g.text(font, font.plainSubstrByWidth(hint, mw - 12), 6, height - 24, 0xFFCCCCCC, true);
 		}
 		String message = ClientMapNet.message();
