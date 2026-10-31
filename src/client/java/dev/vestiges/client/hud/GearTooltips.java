@@ -47,7 +47,7 @@ public final class GearTooltips {
 					lines.add(Component.literal("Trim: " + t.text() + " per piece, +25% with 4 of this material")
 						.withStyle(later == null ? ChatFormatting.AQUA : ChatFormatting.DARK_GRAY));
 					if (later != null) {
-						lines.add(Component.literal("Not active yet: comes with " + later + ".").withStyle(ChatFormatting.DARK_GRAY));
+						lines.add(Component.literal("Not active yet: comes with " + dev.vestiges.client.UiTheme.noMilestone(later) + ".").withStyle(ChatFormatting.DARK_GRAY));
 					}
 				});
 				lines.add(Component.literal("4 pieces with the same pattern: +2 max health, +2% movement speed").withStyle(ChatFormatting.DARK_AQUA));

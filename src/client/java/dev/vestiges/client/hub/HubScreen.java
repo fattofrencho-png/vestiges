@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import dev.vestiges.client.ClientConfigStore;
 import dev.vestiges.client.ClientData;
 import dev.vestiges.client.UiTheme;
+import dev.vestiges.client.ui.Scrollbar;
+import dev.vestiges.client.ui.TabButton;
 import dev.vestiges.client.features.ClientFeatures;
 import dev.vestiges.client.hud.LookAtProvider;
 import dev.vestiges.client.hud.LookAtProviders;
@@ -37,7 +39,7 @@ public final class HubScreen extends Screen {
 		CHARACTER("Character", "", VestigesSystem.CHARACTER),
 		CODEX("Codex", "Blocks, Bestiary, Places and Items: everything you find fills it in.", VestigesSystem.CODEX),
 		QUESTS("Quests", "", VestigesSystem.QUESTS),
-		VILLAGERS("Villagers", "Your villager library and the villager screen arrive in M6.", VestigesSystem.VILLAGERS),
+		VILLAGERS("Villagers", "Your villager library and the villager screen come in a later update.", VestigesSystem.VILLAGERS),
 		SETTLEMENTS("Settlements", "Earn the Founder feat for your first Bell.", VestigesSystem.SETTLEMENTS),
 		FEATS("Feats", "", VestigesSystem.FEATS),
 		MAP("Map", "", VestigesSystem.MAP),
@@ -131,7 +133,7 @@ public final class HubScreen extends Screen {
 		}
 		if (tab == Tab.FEATS) {
 			addRenderableWidget(Button.builder(Component.literal("Open the feats tree"), b -> openPage(dev.vestiges.client.settlement.FeatScreen::new))
-				.bounds(width - 170, HEADER + 4, 160, 20).build());
+				.bounds(width - GAP - 130, height - FOOTER + 5, 130, 20).build());
 		}
 		if (tab == Tab.SETTLEMENTS) {
 			buildSettlements();
@@ -184,18 +186,22 @@ public final class HubScreen extends Screen {
 		if (!tab.available()) {
 			tab = Tab.MAP;
 		}
-		int x = 70;
-		int bw = Math.max(44, Math.min(74, (width - x - GAP) / tabs.size() - 2));
+		int x = 54;
+		// Tabs give up some of their padding when the window is too narrow for all of them.
+		int total = 0;
 		for (Tab t : tabs) {
-			Button b = Button.builder(Component.literal(t.label), btn -> {
+			total += TabButton.widthFor(font, t.label) + 2;
+		}
+		int squeeze = Math.max(0, (total - (width - x - GAP) + tabs.size() - 1) / tabs.size());
+		for (Tab t : tabs) {
+			int bw = TabButton.widthFor(font, t.label) - squeeze;
+			addRenderableWidget(new TabButton(x, 4, bw, 20, t.label, t == tab, () -> {
 				tab = t;
 				ClientConfigStore.get().hubTab = t.name();
 				ClientConfigStore.save();
 				scroll = 0;
 				rebuildWidgets();
-			}).bounds(x, 4, bw, 20).build();
-			b.active = t != tab;
-			addRenderableWidget(b);
+			}));
 			x += bw + 2;
 		}
 	}
@@ -206,13 +212,11 @@ public final class HubScreen extends Screen {
 			if (c.equals("World") && !ClientFeatures.operator()) {
 				continue;
 			}
-			Button b = Button.builder(Component.literal(c), btn -> {
+			addRenderableWidget(new TabButton(GAP, y, 80, 18, c, c.equals(settingsCategory), () -> {
 				settingsCategory = c;
 				scroll = 0;
 				rebuildWidgets();
-			}).bounds(GAP, y, 80, 18).build();
-			b.active = !c.equals(settingsCategory);
-			addRenderableWidget(b);
+			}));
 			y += 20;
 		}
 		if (settingsCategory.equals("World") && !ClientFeatures.operator()) {
@@ -310,10 +314,9 @@ public final class HubScreen extends Screen {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta) {
+		UiTheme.paintBackground(g, width, height);
 		if (tab == Tab.MAP) {
 			renderMap(g, mouseX, mouseY);
-		} else if (UiTheme.light()) {
-			g.fill(0, 0, width, height, UiTheme.background());
 		}
 		super.extractRenderState(g, mouseX, mouseY, delta);
 		g.text(font, "Vestiges", GAP, 10, UiTheme.head(), UiTheme.shadow());
@@ -334,6 +337,9 @@ public final class HubScreen extends Screen {
 			}
 			default -> renderPlaceholder(g, top);
 		}
+		if (tab == Tab.FEATS || tab == Tab.SETTINGS) {
+			Scrollbar.draw(g, width - 4, top, height - FOOTER - 2, scroll, Math.max(0, contentHeight - (height - FOOTER - HEADER - 10)));
+		}
 	}
 
 	private void renderCharacter(GuiGraphicsExtractor g, int top, JsonObject s) {
@@ -350,7 +356,7 @@ public final class HubScreen extends Screen {
 		long need = l.get("need").getAsLong();
 		g.text(font, "Level " + level + (paragon > 0 ? "  \u00B7  Paragon " + paragon : ""), GAP, top + 16, UiTheme.head(), UiTheme.shadow());
 		int bw = Math.min(260, width - GAP * 2);
-		g.fill(GAP, top + 30, GAP + bw, top + 36, 0xFF2A2F33);
+		g.fill(GAP, top + 30, GAP + bw, top + 36, UiTheme.barTrack());
 		g.fill(GAP, top + 30, GAP + (int) (bw * Math.min(1.0, xp / (double) Math.max(1, need))), top + 36, 0xFF80FF20);
 		g.text(font, xp + " / " + need + " XP", GAP, top + 40, UiTheme.muted(), UiTheme.shadow());
 		g.text(font, "From your level: +" + (int) l.get("bonusHealth").getAsDouble() + " max health, +" + l.get("damagePct").getAsDouble()
@@ -433,7 +439,7 @@ public final class HubScreen extends Screen {
 		{"Homes", "Beds placed inside the settlement.", "3 points per bed.",
 			"Later, every villager living here needs its own bed."},
 		{"People", "Villagers living in the settlement.", "5 points per villager, +5 for each worker rank above Novice.",
-			"Villagers join when you recruit them:", "this comes with the villagers update (M6)."},
+			"Villagers join when you recruit them:", "this comes with the villagers update."},
 		{"Deeds", "Points kept forever from what you do.", "Raid won here: 30 per Bad Omen level.",
 			"Coming later: bounties +10, caravan wanted lists +20,", "10 trades +1, a Hero living here +50, a Legend +100."},
 	};
@@ -445,7 +451,7 @@ public final class HubScreen extends Screen {
 			String label = help[0] + " " + s.get(help[0].toLowerCase(java.util.Locale.ROOT)).getAsInt();
 			g.text(font, label, x, y, UiTheme.muted(), UiTheme.shadow());
 			int qx = x + font.width(label) + 3;
-			g.text(font, "?", qx, y, 0xFF6FD3E0, UiTheme.shadow());
+			g.text(font, "?", qx, y, UiTheme.info(), UiTheme.shadow());
 			int end = qx + font.width("?");
 			if (mouseX >= x && mouseX < end + 2 && mouseY >= y - 2 && mouseY < y + 10) {
 				List<Component> lines = new ArrayList<>();
@@ -457,7 +463,7 @@ public final class HubScreen extends Screen {
 			}
 			x = end;
 			if (i < SCORE_HELP.length - 1) {
-				g.text(font, "  \u00B7  ", x, y, 0xFF666666, UiTheme.shadow());
+				g.text(font, "  \u00B7  ", x, y, UiTheme.faint(), UiTheme.shadow());
 				x += font.width("  \u00B7  ");
 			}
 		}
@@ -494,7 +500,7 @@ public final class HubScreen extends Screen {
 			renderScores(g, s, GAP, y + 24, mouseX, mouseY);
 			int drop = s.get("dropIn").getAsInt();
 			if (drop > 0) {
-				g.text(font, "Below its level: drops in " + Math.max(1, drop / 24000) + " day(s) unless renown comes back.", GAP, y + 36, 0xFFFF8080, UiTheme.shadow());
+				g.text(font, "Below its level: drops in " + Math.max(1, drop / 24000) + " day(s) unless renown comes back.", GAP, y + 36, UiTheme.error(), UiTheme.shadow());
 			}
 			StringBuilder members = new StringBuilder();
 			for (JsonElement m : s.getAsJsonArray("members")) {
@@ -502,7 +508,7 @@ public final class HubScreen extends Screen {
 			}
 			g.text(font, "Members: " + (members.length() > 0 ? members : "none"), GAP, y + 48, UiTheme.muted(), UiTheme.shadow());
 			int next = root.has("nextCount") ? root.get("nextCount").getAsInt() : 10;
-			g.text(font, "Renown is counted every 10 minutes while the area is loaded (next count in " + next + " min).", GAP, y + 60, UiTheme.faint(), UiTheme.shadow());
+			g.text(font, "Renown updates every 10 minutes while the area is loaded (next in " + next + " min).", GAP, y + 60, UiTheme.faint(), UiTheme.shadow());
 			y += SETTLEMENT_H;
 		}
 	}
@@ -559,8 +565,11 @@ public final class HubScreen extends Screen {
 		g.enableScissor(0, top, width, bottom);
 		int y = top - (int) scroll;
 		int start = y;
-		g.text(font, "Feats earn every special item: Bells, Banners, Ward Lanterns, waystones, keys. (" + feats.size() + " loaded from data)", GAP, y, UiTheme.muted(), UiTheme.shadow());
-		y += 16;
+		for (FormattedCharSequence part : font.split(Component.literal("Feats earn every special item: Bells, Banners, Ward Lanterns, waystones, keys."), textW)) {
+			g.text(font, part, GAP, y, UiTheme.muted(), UiTheme.shadow());
+			y += 10;
+		}
+		y += 6;
 		for (Map.Entry<String, List<JsonObject>> chain : byChain.entrySet()) {
 			if (chain.getValue().isEmpty()) {
 				continue;

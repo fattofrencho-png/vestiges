@@ -1,7 +1,10 @@
 package dev.vestiges.client.codex;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import dev.vestiges.client.UiTheme;
 import dev.vestiges.client.hub.HubScreen;
+import dev.vestiges.client.ui.Scrollbar;
+import dev.vestiges.client.ui.TabButton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -40,8 +43,6 @@ public final class CodexScreen extends Screen {
 	private static final int FOOTER = 22;
 	private static final int CELL = 22;
 	private static final int GOLD = 0xFFE6C36A;
-	private static final int GREY = 0xFFAAAAAA;
-	private static final int DIM = 0xFF777777;
 
 	private static Section section = Section.BLOCKS;
 	private static int filter;
@@ -62,17 +63,16 @@ public final class CodexScreen extends Screen {
 		ClientCodex.request();
 		int x = 6;
 		for (Section s : Section.values()) {
-			Button b = Button.builder(Component.literal(s.label), btn -> {
+			int bw = TabButton.widthFor(font, s.label);
+			addRenderableWidget(new TabButton(x, 4, bw, 20, s.label, s == section, () -> {
 				section = s;
 				scroll = 0;
 				rebuildWidgets();
-			}).bounds(x, 4, 64, 20).build();
-			b.active = s != section;
-			addRenderableWidget(b);
-			x += 66;
+			}));
+			x += bw + 2;
 		}
-		int sw = Math.min(140, width - x - 160);
-		if (sw >= 60) {
+		int sw = Math.min(140, width - x - 166);
+		if (sw >= 44) {
 			EditBox box = new EditBox(font, x + 4, 5, sw, 18, Component.literal("Search"));
 			box.setMaxLength(40);
 			box.setValue(search);
@@ -147,13 +147,14 @@ public final class CodexScreen extends Screen {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta) {
+		UiTheme.paintBackground(g, width, height);
 		super.extractRenderState(g, mouseX, mouseY, delta);
-		g.fill(0, HEADER, width, HEADER + 1, 0x55FFFFFF);
-		g.fill(0, height - FOOTER, width, height - FOOTER + 1, 0x55FFFFFF);
+		g.fill(0, HEADER, width, HEADER + 1, UiTheme.line());
+		g.fill(0, height - FOOTER, width, height - FOOTER + 1, UiTheme.line());
 		if (!ClientCodex.loaded()) {
-			g.text(font, "Waiting for the server...", 8, HEADER + 6, GREY);
+			g.text(font, "Waiting for the server...", 8, HEADER + 6, UiTheme.muted(), UiTheme.shadow());
 		} else if (!ClientCodex.enabled()) {
-			g.text(font, "The Codex is switched off on this server.", 8, HEADER + 6, GREY);
+			g.text(font, "The Codex is switched off on this server.", 8, HEADER + 6, UiTheme.muted(), UiTheme.shadow());
 		} else {
 			if (seenVersion != ClientCodex.version()) {
 				seenVersion = ClientCodex.version();
@@ -163,7 +164,7 @@ public final class CodexScreen extends Screen {
 			renderCard(g);
 			String next = ClientCodex.nextPoint() > 0 ? " (next at " + ClientCodex.nextPoint() + ")" : "";
 			g.text(font, "Found " + ClientCodex.discovered() + " of " + ClientCodex.total() + " entries  ·  Codex bonus Craft points: "
-				+ ClientCodex.points() + next, 8, height - FOOTER + 7, GREY);
+				+ ClientCodex.points() + next, 8, height - FOOTER + 7, UiTheme.muted(), UiTheme.shadow());
 		}
 		for (var child : children()) {
 			if (child instanceof AbstractWidget w) {
@@ -186,7 +187,7 @@ public final class CodexScreen extends Screen {
 		int y = top - (int) scroll;
 		for (Object[] row : rows) {
 			if (row.length == 1 && row[0] instanceof String title) {
-				g.text(font, title, 8, y + 7, GOLD);
+				g.text(font, title, 8, y + 7, UiTheme.head(), UiTheme.shadow());
 				y += CELL;
 				continue;
 			}
@@ -199,7 +200,7 @@ public final class CodexScreen extends Screen {
 				if (e.known() && !e.icon().getDefaultInstance().isEmpty()) {
 					g.item(new ItemStack(e.icon()), x + 2, y + 2);
 				} else {
-					g.text(font, "?", x + 8, y + 6, DIM);
+					g.text(font, "?", x + 8, y + 6, 0xFF777777);
 				}
 				if (mouseX >= x && mouseX < x + CELL - 2 && mouseY >= y && mouseY < y + CELL - 2 && mouseY >= top && mouseY < bottom) {
 					hover = e;
@@ -209,8 +210,9 @@ public final class CodexScreen extends Screen {
 			y += CELL;
 		}
 		g.disableScissor();
+		Scrollbar.draw(g, width - cardWidth() - 11, top, bottom, scroll, maxScroll);
 		if (rows.isEmpty()) {
-			g.text(font, search.isBlank() ? "Nothing here yet." : "No entry matches.", 8, top + 4, DIM);
+			g.text(font, search.isBlank() ? "Nothing here yet." : "No entry matches.", 8, top + 4, UiTheme.faint(), UiTheme.shadow());
 		}
 	}
 
@@ -218,8 +220,14 @@ public final class CodexScreen extends Screen {
 		int w = cardWidth();
 		int x = width - w - 6;
 		int top = HEADER + 6;
-		g.fill(x, top, x + w, height - FOOTER - 4, 0xC0101418);
-		g.outline(x, top, w, height - FOOTER - 4 - top, 0x60FFFFFF);
+		g.fill(x, top, x + w, height - FOOTER - 4, UiTheme.card());
+		g.outline(x, top, w, height - FOOTER - 4 - top, UiTheme.cardLine());
+		g.enableScissor(x, top, x + w, height - FOOTER - 4);
+		renderCardText(g, x, top, w);
+		g.disableScissor();
+	}
+
+	private void renderCardText(GuiGraphicsExtractor g, int x, int top, int w) {
 		ClientCodex.Entry e = null;
 		for (ClientCodex.Entry c : ClientCodex.entries()) {
 			if (c.id().equals(selected)) {
@@ -229,7 +237,7 @@ public final class CodexScreen extends Screen {
 		int tx = x + 8;
 		int y = top + 8;
 		if (e == null) {
-			g.text(font, "Pick an entry.", tx, y, DIM);
+			g.text(font, "Pick an entry.", tx, y, UiTheme.faint(), UiTheme.shadow());
 			return;
 		}
 		if (e.known()) {
@@ -240,32 +248,42 @@ public final class CodexScreen extends Screen {
 			g.pose().popMatrix();
 		}
 		int nx = tx + (e.known() ? 40 : 0);
-		g.text(font, e.known() ? e.name() : "???", nx, y + 4, 0xFFFFFFFF);
-		g.text(font, e.cls().isEmpty() ? e.label() : className(e.cls()) + "  ·  " + e.label(), nx, y + 16, frame(e));
+		int nw = x + w - 6 - nx;
+		g.text(font, font.plainSubstrByWidth(e.known() ? e.name() : "???", nw), nx, y, UiTheme.text(), UiTheme.shadow());
+		int classColor = UiTheme.light() ? UiTheme.muted() : frame(e);
+		if (e.cls().isEmpty()) {
+			g.text(font, font.plainSubstrByWidth(e.label(), nw), nx, y + 11, classColor, UiTheme.shadow());
+		} else {
+			g.text(font, font.plainSubstrByWidth(className(e.cls()), nw), nx, y + 11, classColor, UiTheme.shadow());
+			g.text(font, font.plainSubstrByWidth(e.label(), nw), nx, y + 21, classColor, UiTheme.shadow());
+		}
 		y += 40;
 		if (!e.later().isEmpty()) {
-			g.text(font, "Comes with " + e.later() + ".", tx, y, DIM);
+			g.text(font, "Comes with " + UiTheme.noMilestone(e.later()) + ".", tx, y, UiTheme.faint(), UiTheme.shadow());
 			return;
 		}
 		if (e.need() > 0) {
 			int bw = w - 16;
-			g.fill(tx, y, tx + bw, y + 5, 0xFF2A2F33);
+			g.fill(tx, y, tx + bw, y + 5, UiTheme.barTrack());
 			g.fill(tx, y, tx + (int) (bw * Math.min(1.0, e.count() / (double) e.need())), y + 5, 0xFF80C0FF);
-			g.text(font, e.count() + " / " + e.need() + " toward the next stage", tx, y + 8, GREY);
+			g.text(font, e.count() + " / " + e.need() + " to the next stage", tx, y + 8, UiTheme.muted(), UiTheme.shadow());
 			y += 24;
 		}
-		y = paragraph(g, e.line1().isEmpty() ? "???" : e.line1(), tx, y, w - 16, e.line1().isEmpty() ? DIM : 0xFFE0D8C8);
-		y = paragraph(g, e.line2().isEmpty() ? "??? (Mastered)" : e.line2(), tx, y + 4, w - 16, e.line2().isEmpty() ? DIM : 0xFFE0D8C8);
+		y = paragraph(g, e.line1().isEmpty() ? "???" : e.line1(), tx, y, w - 16, e.line1().isEmpty() ? UiTheme.faint() : UiTheme.flavour());
+		y = paragraph(g, e.line2().isEmpty() ? "??? (Mastered)" : e.line2(), tx, y + 4, w - 16, e.line2().isEmpty() ? UiTheme.faint() : UiTheme.flavour());
 		y += 8;
 		for (Map.Entry<String, Boolean> u : e.unlocks()) {
-			g.text(font, (u.getValue() ? "✔ " : "✖ ") + u.getKey(), tx, y, u.getValue() ? 0xFF8FD18F : DIM);
-			y += 11;
+			for (FormattedCharSequence part : font.split(Component.literal((u.getValue() ? "✔ " : "✖ ") + UiTheme.noMilestone(u.getKey())), w - 16)) {
+				g.text(font, part, tx, y, u.getValue() ? UiTheme.good() : UiTheme.faint(), UiTheme.shadow());
+				y += 10;
+			}
+			y += 1;
 		}
 	}
 
 	private int paragraph(GuiGraphicsExtractor g, String text, int x, int y, int w, int color) {
 		for (FormattedCharSequence line : font.split(Component.literal(text).withStyle(ChatFormatting.ITALIC), w)) {
-			g.text(font, line, x, y, color);
+			g.text(font, line, x, y, color, UiTheme.shadow());
 			y += 10;
 		}
 		return y;

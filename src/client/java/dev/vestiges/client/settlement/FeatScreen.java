@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.vestiges.client.ClientData;
+import dev.vestiges.client.UiTheme;
 import dev.vestiges.client.hub.HubScreen;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,18 @@ public final class FeatScreen extends Screen {
 	@Override
 	protected void init() {
 		addRenderableWidget(Button.builder(Component.literal("Back"), b -> minecraft.setScreenAndShow(new HubScreen())).bounds(width - 66, 4, 60, 20).build());
+	}
+
+	/** The tree can't be dragged away from the screen: it stops once its far edge is in view. */
+	private void keepInView() {
+		int columns = 1;
+		for (JsonObject f : feats()) {
+			columns = Math.max(columns, f.get("order").getAsInt());
+		}
+		double minX = Math.min(40, width - 110 - columns * COL - 20);
+		double minY = Math.min(0, height - HEADER - 24 - CHAINS.length * ROW);
+		panX = Math.max(minX, Math.min(40, panX));
+		panY = Math.max(minY, Math.min(0, panY));
 	}
 
 	private List<JsonObject> feats() {
@@ -82,24 +95,27 @@ public final class FeatScreen extends Screen {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta) {
+		UiTheme.paintBackground(g, width, height);
 		super.extractRenderState(g, mouseX, mouseY, delta);
-		g.fill(0, HEADER, width, height, 0xFF14110C);
-		g.fill(0, HEADER, width, HEADER + 1, 0x55FFFFFF);
-		g.text(font, "Feats", 8, 10, 0xFFE6C36A);
-		g.text(font, "Drag to look around. Each feat gives its item, a toast and XP.", 50, 10, 0xFF888888);
+		if (!UiTheme.light()) {
+			g.fill(0, HEADER, width, height, 0xFF14110C);
+		}
+		g.fill(0, HEADER, width, HEADER + 1, UiTheme.line());
+		g.text(font, "Feats", 8, 10, UiTheme.head(), UiTheme.shadow());
+		g.text(font, font.plainSubstrByWidth("Drag to look around. Each feat gives its item, a toast and XP.", width - 124), 50, 10, UiTheme.muted(), UiTheme.shadow());
 		List<JsonObject> feats = feats();
 		hover = null;
 		g.enableScissor(0, HEADER + 1, width, height);
 		for (int r = 0; r < CHAINS.length; r++) {
 			int y = (int) (panY + HEADER + 24 + r * ROW);
 			String name = Character.toUpperCase(CHAINS[r].charAt(0)) + CHAINS[r].substring(1);
-			g.text(font, name, (int) panX, y + 9, 0xFFC8B48A, true);
+			g.text(font, name, (int) panX, y + 9, UiTheme.head(), UiTheme.shadow());
 		}
 		for (JsonObject a : feats) {
 			for (JsonObject b : feats) {
 				if (a.get("chain").getAsString().equals(b.get("chain").getAsString()) && b.get("order").getAsInt() == a.get("order").getAsInt() + 1) {
 					int y = nodeY(a) + NODE / 2;
-					g.fill(nodeX(a) + NODE, y, nodeX(b), y + 2, done(a) ? 0xFFE6C36A : 0xFF555044);
+					g.fill(nodeX(a) + NODE, y, nodeX(b), y + 2, done(a) ? UiTheme.head() : 0xFF555044);
 				}
 			}
 		}
@@ -143,7 +159,7 @@ public final class FeatScreen extends Screen {
 		lines.add(Component.literal(f.get("name").getAsString()).withStyle(d ? ChatFormatting.GOLD : ChatFormatting.WHITE));
 		lines.add(Component.literal(f.get("requirement").getAsString()).withStyle(ChatFormatting.GRAY));
 		if (later(f)) {
-			lines.add(Component.literal(f.has("off") && f.get("off").getAsBoolean() ? "Off in this world" : "Comes with " + f.get("later").getAsString()).withStyle(ChatFormatting.DARK_GRAY));
+			lines.add(Component.literal(f.has("off") && f.get("off").getAsBoolean() ? "Off in this world" : "Comes with " + UiTheme.noMilestone(f.get("later").getAsString())).withStyle(ChatFormatting.DARK_GRAY));
 		} else if (f.has("goals")) {
 			JsonArray goals = f.getAsJsonArray("goals");
 			for (JsonElement e : goals) {
@@ -182,6 +198,7 @@ public final class FeatScreen extends Screen {
 		if (dragging) {
 			panX += dx;
 			panY += dy;
+			keepInView();
 			return true;
 		}
 		return super.mouseDragged(event, dx, dy);
