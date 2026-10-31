@@ -1,17 +1,30 @@
 package dev.vestiges.gametest;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import dev.vestiges.client.ClientConfigStore;
+import dev.vestiges.client.codex.ClientCodex;
+import dev.vestiges.client.codex.CodexScreen;
 import dev.vestiges.client.features.FeaturePanel;
 import dev.vestiges.client.hub.HubScreen;
 import dev.vestiges.client.map.ClientWaypoints;
 import dev.vestiges.client.map.WorldMapScreen;
+import dev.vestiges.client.settlement.FeatScreen;
+import dev.vestiges.client.settlement.NameScreen;
+import dev.vestiges.client.tree.ClientTree;
+import dev.vestiges.client.tree.TreeScreen;
+import dev.vestiges.client.waystone.WaystoneTerminalScreen;
 import dev.vestiges.config.ConfigStore;
 import dev.vestiges.config.ServerConfig;
 import dev.vestiges.config.VestigesSystem;
 import dev.vestiges.inventory.ExtraSlots;
 import dev.vestiges.inventory.InventoryHooks;
+import dev.vestiges.tree.TreeDefs;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
@@ -71,6 +84,9 @@ public final class ScreenshotTour implements FabricClientGameTest {
 			worldMap(ctx);
 		}
 		inventory(ctx, mode);
+		if (!off) {
+			everyScreen(ctx, server);
+		}
 		if (off) {
 			// An operator switches levels on in the running world.
 			ctx.runOnClient(mc -> dev.vestiges.client.features.ClientFeatures.send("apply", "{\"character\":true}"));
@@ -305,6 +321,152 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		ctx.setScreen(() -> null);
 	}
 
+	/** Every screen in the dark and light themes, in a small window (427 x 240) and at GUI scale 2 (960 x 540), to check layouts and colours. */
+	private static void everyScreen(ClientGameTestContext ctx, TestServerContext server) {
+		server.runCommand("vestiges level set @p 25");
+		server.runCommand("vestiges feat grant @p first_waystone");
+		server.runCommand("vestiges feat grant @p founder");
+		ctx.runOnClient(mc -> ClientCodex.request());
+		ctx.waitTicks(20);
+		List<ClientCodex.Entry> entries = ctx.computeOnClient(mc -> List.copyOf(ClientCodex.entries()));
+		Map<String, Integer> perSection = new HashMap<>();
+		for (ClientCodex.Entry e : entries) {
+			int n = perSection.merge(e.section(), 1, Integer::sum);
+			if (n <= 9) {
+				server.runCommand("vestiges codex set @p \"" + e.id() + "\" " + (n % 3 == 0 ? 4 : n % 3));
+			}
+		}
+		ctx.waitTicks(20);
+		ctx.runOnClient(mc -> {
+			List<TreeDefs.Node> starts = ClientTree.wheel("fight").nodes().stream().filter(TreeDefs.Node::isStart).toList();
+			ClientTree.send("start", "fight", "", starts.get(0).start().orElse(0));
+		});
+		ctx.waitTicks(10);
+		ctx.runOnClient(mc -> {
+			TreeDefs.Wheel wheel = ClientTree.wheel("fight");
+			String start = wheel.nodes().stream().filter(TreeDefs.Node::isStart).findFirst().orElseThrow().id();
+			for (List<String> edge : wheel.edges()) {
+				if (edge.contains(start)) {
+					ClientTree.send("take", "fight", edge.get(0).equals(start) ? edge.get(1) : edge.get(0), -1);
+				}
+			}
+		});
+		ctx.waitTicks(10);
+		screens(ctx, "dark");
+		ctx.runOnClient(mc -> ClientConfigStore.get().theme = "light");
+		screens(ctx, "light");
+		ctx.runOnClient(mc -> ClientConfigStore.get().theme = "dark");
+		ctx.getInput().resizeWindow(854, 480);
+		ctx.waitTicks(5);
+		screens(ctx, "small");
+		ctx.runOnClient(mc -> mc.options.guiScale().set(2));
+		ctx.getInput().resizeWindow(1920, 1080);
+		ctx.waitTicks(5);
+		screens(ctx, "wide");
+		ctx.runOnClient(mc -> mc.options.guiScale().set(0));
+		ctx.getInput().resizeWindow(1919, 1080);
+		ctx.getInput().resizeWindow(1920, 1080);
+		ctx.waitTicks(5);
+	}
+
+	private static void screens(ClientGameTestContext ctx, String tag) {
+		for (String tab : new String[] {"CHARACTER", "CODEX", "VILLAGERS", "SETTLEMENTS", "FEATS", "MAP", "SETTINGS"}) {
+			ctx.runOnClient(mc -> ClientConfigStore.get().hubTab = tab);
+			ctx.setScreen(HubScreen::new);
+			ctx.waitTicks(15);
+			shot(ctx, tag + "_hub_" + tab.toLowerCase(java.util.Locale.ROOT));
+		}
+		ctx.runOnClient(mc -> clearViews());
+		for (String tab : new String[] {"FIGHT", "CRAFT", "ASC"}) {
+			ctx.runOnClient(mc -> setStaticEnum(TreeScreen.class, "lastTab", tab));
+			ctx.setScreen(TreeScreen::new);
+			ctx.waitTicks(15);
+			shot(ctx, tag + "_tree_" + tab.toLowerCase(java.util.Locale.ROOT));
+		}
+		ctx.runOnClient(mc -> setStaticEnum(TreeScreen.class, "lastTab", "CRAFT"));
+		ctx.setScreen(TreeScreen::new);
+		ctx.waitTicks(15);
+		ctx.runOnClient(mc -> treePopup(mc.gui.screen()));
+		ctx.waitTicks(3);
+		shot(ctx, tag + "_tree_popup");
+		String[][] sections = {{"BLOCKS", "blocks"}, {"MOBS", "mobs"}, {"PLACES", "biomes"}, {"ITEMS", "items"}};
+		for (String[] section : sections) {
+			ctx.runOnClient(mc -> {
+				setStaticEnum(CodexScreen.class, "section", section[0]);
+				ClientCodex.entries().stream().filter(e -> e.section().equals(section[1]) && e.known() && e.need() > 0).findFirst()
+					.ifPresent(e -> setStatic(CodexScreen.class, "selected", e.id()));
+			});
+			ctx.setScreen(CodexScreen::new);
+			ctx.waitTicks(15);
+			shot(ctx, tag + "_codex_" + section[0].toLowerCase(java.util.Locale.ROOT));
+		}
+		ctx.setScreen(FeatScreen::new);
+		ctx.waitTicks(15);
+		shot(ctx, tag + "_feats_tree");
+		ctx.setScreen(() -> new WaystoneTerminalScreen(sampleWaystones()));
+		ctx.waitTicks(5);
+		shot(ctx, tag + "_waystone");
+		ctx.setScreen(() -> new NameScreen("settlement", "tour", "Name your settlement"));
+		ctx.waitTicks(5);
+		shot(ctx, tag + "_name");
+		ctx.setScreen(WorldMapScreen::new);
+		ctx.waitTicks(15);
+		shot(ctx, tag + "_full_map");
+		ctx.setScreen(() -> new dev.vestiges.client.features.FeaturesScreen(null, false));
+		ctx.waitTicks(5);
+		shot(ctx, tag + "_features");
+		ctx.setScreen(() -> null);
+		ctx.waitTicks(2);
+	}
+
+	/** Enough waystones for two pages, some too far to pay for and one in another dimension. */
+	private static JsonObject sampleWaystones() {
+		JsonArray list = new JsonArray();
+		for (int i = 1; i <= 8; i++) {
+			JsonObject w = new JsonObject();
+			w.addProperty("id", i);
+			w.addProperty("name", i == 3 ? "The very long road to the northern harbour" : "Waystone " + i);
+			w.addProperty("distance", i * 120);
+			w.addProperty("cost", i);
+			w.addProperty("sameDimension", i != 8);
+			w.addProperty("mine", i != 2);
+			w.addProperty("owner", "Friend");
+			list.add(w);
+		}
+		JsonObject data = new JsonObject();
+		data.add("waystones", list);
+		data.addProperty("inCombat", false);
+		data.addProperty("free", false);
+		data.addProperty("emeralds", 4);
+		data.addProperty("from", 0);
+		data.addProperty("fromMine", true);
+		data.addProperty("fromName", "Home");
+		return data;
+	}
+
+	/** Clicks a starting point on the untouched Craft wheel, which asks whether to start there. */
+	private static void treePopup(Screen screen) {
+		try {
+			String id = ClientTree.wheel("craft").nodes().stream().filter(TreeDefs.Node::isStart).findFirst().orElseThrow().id();
+			Method m = TreeScreen.class.getDeclaredMethod("leftClickNode", String.class);
+			m.setAccessible(true);
+			m.invoke(screen, id);
+		} catch (ReflectiveOperationException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	/** The wheels remember their zoom, which depends on the window size. */
+	private static void clearViews() {
+		try {
+			Field f = TreeScreen.class.getDeclaredField("VIEWS");
+			f.setAccessible(true);
+			((Map<?, ?>) f.get(null)).clear();
+		} catch (ReflectiveOperationException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
 	private static void shot(ClientGameTestContext ctx, String name) {
 		ctx.runOnClient(mc -> mc.gui.toastManager().clear());
 		ctx.waitTicks(2);
@@ -342,6 +504,17 @@ public final class ScreenshotTour implements FabricClientGameTest {
 			Field f = owner.getDeclaredField(field);
 			f.setAccessible(true);
 			f.set(null, value);
+		} catch (ReflectiveOperationException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	private static void setStaticEnum(Class<?> owner, String field, String name) {
+		try {
+			Field f = owner.getDeclaredField(field);
+			f.setAccessible(true);
+			f.set(null, Enum.valueOf((Class) f.getType(), name));
 		} catch (ReflectiveOperationException e) {
 			throw new IllegalStateException(e);
 		}
