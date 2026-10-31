@@ -1,5 +1,6 @@
 package dev.vestiges.client.features;
 
+import dev.vestiges.client.UiTheme;
 import dev.vestiges.config.ServerConfig;
 import dev.vestiges.config.VestigesSystem;
 import java.util.ArrayList;
@@ -25,9 +26,6 @@ public final class FeaturePanel extends AbstractWidget {
 	private static final Identifier CHECK = Identifier.withDefaultNamespace("widget/checkbox");
 	private static final Identifier CHECK_ON = Identifier.withDefaultNamespace("widget/checkbox_selected");
 	private static final int GOLD = 0xFFE6C36A;
-	private static final int TEXT = 0xFFDDDDDD;
-	private static final int MUTED = 0xFFAAAAAA;
-	private static final int LINE = 0xFF3A3A3A;
 	private static final int ROW_H = 13;
 	private static final int CATEGORY_H = 16;
 	private static final int CATEGORY_W = 88;
@@ -132,6 +130,14 @@ public final class FeaturePanel extends AbstractWidget {
 		return (getWidth() - 6) / 4;
 	}
 
+	private static int body() {
+		return UiTheme.light() ? UiTheme.text() : 0xFFDDDDDD;
+	}
+
+	private static int divider() {
+		return UiTheme.light() ? UiTheme.line() : 0xFF3A3A3A;
+	}
+
 	private static boolean in(double mx, double my, int x, int y, int w, int h) {
 		return mx >= x && mx < x + w && my >= y && my < y + h;
 	}
@@ -140,14 +146,14 @@ public final class FeaturePanel extends AbstractWidget {
 	protected void extractWidgetRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta) {
 		Font font = Minecraft.getInstance().font;
 		// Keeps the text readable over the bright title background.
-		g.fill(getX() - 4, getY() - 3, getX() + getWidth() + 4, getY() + getHeight() + 2, 0xA0101010);
-		g.text(font, "Welcome to Vestiges", getX(), getY(), GOLD);
+		g.fill(getX() - 4, getY() - 3, getX() + getWidth() + 4, getY() + getHeight() + 2, UiTheme.light() ? UiTheme.panel() : 0xA0101010);
+		g.text(font, "Welcome to Vestiges", getX(), getY(), UiTheme.head(), UiTheme.shadow());
 		int count = 0;
 		for (VestigesSystem s : VestigesSystem.values()) {
 			count += config.enabled(s) ? 1 : 0;
 		}
 		String total = count + " of " + VestigesSystem.values().length + " on";
-		g.text(font, total, getX() + getWidth() - font.width(total), getY(), MUTED);
+		g.text(font, total, getX() + getWidth() - font.width(total), getY(), UiTheme.muted(), UiTheme.shadow());
 
 		VestigesSystem.Preset current = config.preset();
 		for (int i = 0; i <= VestigesSystem.Preset.values().length; i++) {
@@ -167,11 +173,11 @@ public final class FeaturePanel extends AbstractWidget {
 			int y = bodyY() + i * CATEGORY_H;
 			boolean picked = cats.get(i).equals(category);
 			if (picked || in(mouseX, mouseY, getX(), y - 1, CATEGORY_W, 14)) {
-				g.fill(getX(), y - 1, getX() + CATEGORY_W, y + 13, picked ? 0x24FFFFFF : 0x12FFFFFF);
+				g.fill(getX(), y - 1, getX() + CATEGORY_W, y + 13, picked ? UiTheme.pickedRow() : UiTheme.hoverRow());
 			}
-			g.text(font, cats.get(i), getX() + 4, y + 2, picked ? 0xFFFFFFFF : 0xFFBBBBBB);
+			g.text(font, cats.get(i), getX() + 4, y + 2, picked ? UiTheme.text() : UiTheme.muted(), UiTheme.shadow());
 		}
-		g.fill(listX() - 3, bodyY() - 2, listX() - 2, getY() + getHeight(), LINE);
+		g.fill(listX() - 3, bodyY() - 2, listX() - 2, getY() + getHeight(), divider());
 
 		if (category.equals(FAQ)) {
 			drawFaq(g, font);
@@ -186,17 +192,17 @@ public final class FeaturePanel extends AbstractWidget {
 		int y = bodyY();
 		int w = getX() + getWidth() - listX();
 		for (String[] q : FAQ_LINES) {
-			g.text(font, q[0], listX(), y, GOLD);
-			y = para(g, font, q[1], listX(), y + 10, w, TEXT) + 6;
+			g.text(font, q[0], listX(), y, UiTheme.head(), UiTheme.shadow());
+			y = para(g, font, q[1], listX(), y + 10, w, body()) + 6;
 		}
 	}
 
 	private void drawMods(GuiGraphicsExtractor g, Font font) {
 		int w = getX() + getWidth() - listX();
-		int y = para(g, font, "Things we can't easily build ourselves. All optional. This first list still has to be checked against 26.3.", listX(), bodyY(), w, TEXT) + 6;
+		int y = para(g, font, "Things we can't easily build ourselves. All optional. This first list still has to be checked against 26.3.", listX(), bodyY(), w, body()) + 6;
 		for (String[] m : MOD_LINES) {
-			g.text(font, m[0], listX(), y, GOLD);
-			g.text(font, m[1], listX() + 80, y, 0xFFFFFFFF);
+			g.text(font, m[0], listX(), y, UiTheme.head(), UiTheme.shadow());
+			g.text(font, m[1], listX() + 80, y, UiTheme.text(), UiTheme.shadow());
 			y += 13;
 		}
 	}
@@ -208,32 +214,32 @@ public final class FeaturePanel extends AbstractWidget {
 			VestigesSystem s = rows.get(i);
 			int y = bodyY() + (i - first) * ROW_H;
 			if (s == selected || in(mouseX, mouseY, listX(), y - 1, listW(), ROW_H)) {
-				g.fill(listX(), y - 1, listX() + listW(), y + 12, s == selected ? 0x24FFFFFF : 0x12FFFFFF);
+				g.fill(listX(), y - 1, listX() + listW(), y + 12, s == selected ? UiTheme.pickedRow() : UiTheme.hoverRow());
 			}
 			g.blitSprite(RenderPipelines.GUI_TEXTURED, config.enabled(s) ? CHECK_ON : CHECK, listX() + 2, y, 11, 11);
 			boolean locked = s.core() || s.creationOnly() && !creating;
-			g.text(font, s.label, listX() + 16, y + 2, locked ? GOLD : s.built() ? 0xFFFFFFFF : MUTED);
+			g.text(font, s.label, listX() + 16, y + 2, locked ? UiTheme.head() : s.built() ? UiTheme.text() : UiTheme.muted(), UiTheme.shadow());
 			if (!s.built()) {
-				g.text(font, "later", listX() + listW() - font.width("later") - 2, y + 2, 0xFF777777);
+				g.text(font, "later", listX() + listW() - font.width("later") - 2, y + 2, UiTheme.faint(), UiTheme.shadow());
 			}
 		}
-		g.fill(helpX() - 5, bodyY() - 2, helpX() - 4, getY() + getHeight(), LINE);
+		g.fill(helpX() - 5, bodyY() - 2, helpX() - 4, getY() + getHeight(), divider());
 		VestigesSystem s = selected.category.label.equals(category) ? selected : rows.get(0);
-		g.text(font, s.label, helpX(), bodyY(), GOLD);
-		int y = para(g, font, s.help, helpX(), bodyY() + 13, helpW(), TEXT);
+		g.text(font, s.label, helpX(), bodyY(), UiTheme.head(), UiTheme.shadow());
+		int y = para(g, font, s.help, helpX(), bodyY() + 13, helpW(), body());
 		if (!s.needs().isEmpty()) {
 			StringBuilder needs = new StringBuilder("Needs: ");
 			for (int i = 0; i < s.needs().size(); i++) {
 				needs.append(i > 0 ? ", " : "").append(s.needs().get(i).label);
 			}
-			y = para(g, font, needs.toString(), helpX(), y + 5, helpW(), MUTED);
+			y = para(g, font, needs.toString(), helpX(), y + 5, helpW(), UiTheme.muted());
 		}
 		if (s.core()) {
-			para(g, font, "Always on.", helpX(), y + 5, helpW(), MUTED);
+			para(g, font, "Always on.", helpX(), y + 5, helpW(), UiTheme.muted());
 		} else if (s.creationOnly() && !creating) {
-			para(g, font, "This world was created with it " + (config.enabled(s) ? "on." : "off."), helpX(), y + 5, helpW(), MUTED);
+			para(g, font, "This world was created with it " + (config.enabled(s) ? "on." : "off."), helpX(), y + 5, helpW(), UiTheme.muted());
 		} else if (!s.built()) {
-			para(g, font, "Comes in a later update.", helpX(), y + 5, helpW(), MUTED);
+			para(g, font, "Comes in a later update.", helpX(), y + 5, helpW(), UiTheme.muted());
 		}
 	}
 
@@ -244,7 +250,7 @@ public final class FeaturePanel extends AbstractWidget {
 				continue;
 			}
 			for (FormattedCharSequence part : font.split(Component.literal(line), w)) {
-				g.text(font, part, x, y, color);
+				g.text(font, part, x, y, color, UiTheme.shadow());
 				y += 10;
 			}
 		}

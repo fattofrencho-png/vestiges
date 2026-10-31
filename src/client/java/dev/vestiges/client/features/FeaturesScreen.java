@@ -1,6 +1,7 @@
 package dev.vestiges.client.features;
 
 import com.google.gson.JsonObject;
+import dev.vestiges.client.UiTheme;
 import dev.vestiges.config.ServerConfig;
 import dev.vestiges.config.VestigesSystem;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -56,6 +57,7 @@ public final class FeaturesScreen extends Screen {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta) {
+		UiTheme.paintBackground(g, width, height);
 		super.extractRenderState(g, mouseX, mouseY, delta);
 	}
 }
