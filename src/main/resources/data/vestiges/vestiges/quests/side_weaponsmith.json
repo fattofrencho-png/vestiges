@@ -1,0 +1,30 @@
+{
+  "kind": "side",
+  "name": "Blood on the Blade",
+  "giver": "Weaponsmith",
+  "intro": "Prove the blade on something worth the steel.",
+  "steps": [
+    {
+      "type": "kill",
+      "text": "Kill {amount} elite.",
+      "amount": 1,
+      "targets": [
+        "elite"
+      ]
+    },
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 1,
+      "targets": [
+        "minecraft:emerald"
+      ]
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "weaponsmith"
+}

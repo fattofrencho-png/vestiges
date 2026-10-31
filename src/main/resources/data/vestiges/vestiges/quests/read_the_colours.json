@@ -1,0 +1,19 @@
+{
+  "kind": "guide",
+  "chain": "first_steps",
+  "order": 3,
+  "name": "Read the Colours",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "rarity",
+      "text": "Own an item of Uncommon rarity or better. Its name colour shows the tier.",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "xp": 75,
+    "emeralds": 2,
+    "items": []
+  }
+}

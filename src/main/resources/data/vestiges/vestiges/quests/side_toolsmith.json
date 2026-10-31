@@ -1,0 +1,31 @@
+{
+  "kind": "side",
+  "name": "A Sample of Ore",
+  "giver": "Toolsmith",
+  "intro": "I need to see what the hills are holding.",
+  "steps": [
+    {
+      "type": "mine",
+      "text": "Mine {amount} {target}.",
+      "amount": 16,
+      "targets": [
+        "minecraft:iron_ore",
+        "minecraft:deepslate_iron_ore"
+      ]
+    },
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 8,
+      "targets": [
+        "minecraft:iron_ingot"
+      ]
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "toolsmith"
+}

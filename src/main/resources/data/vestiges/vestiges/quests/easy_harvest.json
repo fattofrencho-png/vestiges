@@ -1,0 +1,21 @@
+{
+  "kind": "guide",
+  "chain": "field_notes",
+  "order": 4,
+  "name": "Easy Harvest",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "harvest",
+      "text": "Right-click ripe crops. They replant themselves.",
+      "amount": 10
+    }
+  ],
+  "reward": {
+    "xp": 50,
+    "emeralds": 0,
+    "items": [
+      "minecraft:bread:8"
+    ]
+  }
+}

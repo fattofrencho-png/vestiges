@@ -233,6 +233,7 @@ public final class WaystoneService {
 		BlockPos p = to.pos();
 		player.teleportTo(level, p.getX() + 0.5, p.getY() + 1, p.getZ() + 0.5, Set.of(), player.getYRot(), player.getXRot(), false);
 		level.playSound(null, p.getX() + 0.5, p.getY() + 1, p.getZ() + 0.5, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1f, 1f);
+		dev.vestiges.quest.QuestService.event(player, "waystone_trip", "", 1);
 		MapNet.message(player, "Arrived at " + to.name() + (free ? "." : " (" + cost + " emerald" + (cost == 1 ? "" : "s") + ")."), false);
 	}
 

@@ -1,0 +1,19 @@
+{
+  "kind": "guide",
+  "chain": "field_notes",
+  "order": 2,
+  "name": "Getting to Know It",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "familiar",
+      "text": "Reach Familiar on any block. Blocks you placed don't count.",
+      "amount": 2
+    }
+  ],
+  "reward": {
+    "xp": 150,
+    "emeralds": 3,
+    "items": []
+  }
+}

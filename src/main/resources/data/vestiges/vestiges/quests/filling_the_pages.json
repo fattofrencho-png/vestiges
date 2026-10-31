@@ -1,0 +1,19 @@
+{
+  "kind": "guide",
+  "chain": "field_notes",
+  "order": 1,
+  "name": "Filling the Pages",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "codex",
+      "text": "Discover 25 Codex entries.",
+      "amount": 25
+    }
+  ],
+  "reward": {
+    "xp": 100,
+    "emeralds": 2,
+    "items": []
+  }
+}

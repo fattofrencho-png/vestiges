@@ -1,0 +1,20 @@
+{
+  "kind": "guide",
+  "chain": "first_steps",
+  "order": 6,
+  "name": "Choose Your Path",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "ascended",
+      "text": "Finish the first ascension checklist and pick an ascendancy (level 20+).",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "xp": 300,
+    "emeralds": 8,
+    "items": [],
+    "title": "the Seasoned"
+  }
+}

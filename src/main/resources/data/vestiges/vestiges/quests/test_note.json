@@ -1,0 +1,18 @@
+{
+  "kind": "note",
+  "name": "Test note",
+  "giver": "A note",
+  "intro": "A test of the found-note page.",
+  "steps": [
+    {
+      "type": "level",
+      "text": "Be level 1.",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "share": 0.6,
+    "emeralds": 9
+  },
+  "start": "command"
+}

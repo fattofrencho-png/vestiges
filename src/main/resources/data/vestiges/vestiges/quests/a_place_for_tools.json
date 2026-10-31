@@ -1,0 +1,24 @@
+{
+  "kind": "guide",
+  "chain": "pack_and_path",
+  "order": 0,
+  "name": "A Place for Tools",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "rack_tool",
+      "text": "Put a tool in the tool rack.",
+      "amount": 1
+    },
+    {
+      "type": "rack_weapon",
+      "text": "Put a weapon in the weapon rack.",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "xp": 25,
+    "emeralds": 0,
+    "items": []
+  }
+}

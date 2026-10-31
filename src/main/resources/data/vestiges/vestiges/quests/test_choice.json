@@ -1,0 +1,30 @@
+{
+  "kind": "story",
+  "name": "Test choice",
+  "giver": "Test",
+  "intro": "A test of the choice page.",
+  "steps": [
+    {
+      "type": "choice",
+      "text": "Pick one to test standing.",
+      "amount": 1,
+      "choices": [
+        {
+          "label": "Side with the Bright Path",
+          "after": "You sided with the Bright Path.",
+          "reputation": {
+            "bright_path": 20
+          }
+        },
+        {
+          "label": "Side with the Vitera",
+          "after": "You sided with the Vitera.",
+          "reputation": {
+            "vitera": 20
+          }
+        }
+      ]
+    }
+  ],
+  "start": "command"
+}

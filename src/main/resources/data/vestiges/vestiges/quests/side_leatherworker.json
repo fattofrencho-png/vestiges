@@ -1,0 +1,30 @@
+{
+  "kind": "side",
+  "name": "Good Hide",
+  "giver": "Leatherworker",
+  "intro": "I can't work with scraps.",
+  "steps": [
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 8,
+      "targets": [
+        "minecraft:leather"
+      ]
+    },
+    {
+      "type": "craft",
+      "text": "Craft {target}.",
+      "amount": 1,
+      "targets": [
+        "minecraft:leather_chestplate"
+      ]
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "leatherworker"
+}

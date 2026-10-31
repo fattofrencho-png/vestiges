@@ -1,0 +1,19 @@
+{
+  "kind": "guide",
+  "chain": "pack_and_path",
+  "order": 4,
+  "name": "Mark the Spot",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "waypoint",
+      "text": "Press M and right-click the map to add a waypoint.",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "xp": 25,
+    "emeralds": 0,
+    "items": []
+  }
+}

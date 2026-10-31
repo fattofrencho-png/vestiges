@@ -1,0 +1,32 @@
+{
+  "kind": "side",
+  "name": "Winter Stores",
+  "giver": "Butcher",
+  "intro": "The cold is coming and the shelves are bare.",
+  "steps": [
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 16,
+      "targets": [
+        "minecraft:cooked_beef",
+        "minecraft:cooked_porkchop",
+        "minecraft:cooked_mutton"
+      ]
+    },
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target} for the smoker.",
+      "amount": 8,
+      "targets": [
+        "minecraft:coal"
+      ]
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "butcher"
+}

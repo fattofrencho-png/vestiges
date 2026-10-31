@@ -1,0 +1,30 @@
+{
+  "kind": "side",
+  "name": "Tested Metal",
+  "giver": "Armorer",
+  "intro": "A plate means nothing until something has hit it.",
+  "steps": [
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 8,
+      "targets": [
+        "minecraft:iron_ingot"
+      ]
+    },
+    {
+      "type": "kill",
+      "text": "Kill {amount} elite.",
+      "amount": 1,
+      "targets": [
+        "elite"
+      ]
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "armorer"
+}

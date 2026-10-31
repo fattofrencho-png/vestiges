@@ -1,0 +1,20 @@
+{
+  "kind": "guide",
+  "chain": "putting_down_roots",
+  "order": 4,
+  "name": "Keep Them Out",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "ward",
+      "text": "Earn and place a Ward Lantern, for example with Elite Hunter (10 elites).",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "xp": 300,
+    "emeralds": 5,
+    "items": [],
+    "title": "the Homesteader"
+  }
+}

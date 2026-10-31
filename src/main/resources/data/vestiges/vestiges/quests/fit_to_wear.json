@@ -1,0 +1,24 @@
+{
+  "kind": "guide",
+  "chain": "first_steps",
+  "order": 5,
+  "name": "Fit to Wear",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "level",
+      "text": "Reach level 10.",
+      "amount": 10
+    },
+    {
+      "type": "wear",
+      "text": "Wear 4 armor pieces. Gear above your level works at half strength.",
+      "amount": 4
+    }
+  ],
+  "reward": {
+    "xp": 150,
+    "emeralds": 5,
+    "items": []
+  }
+}

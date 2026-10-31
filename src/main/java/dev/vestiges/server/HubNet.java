@@ -67,6 +67,7 @@ public final class HubNet {
 		}
 		root.add("feats", feats);
 		root.add("settlements", dev.vestiges.settlement.SettlementService.snapshot(player));
+		root.add("quests", dev.vestiges.quest.QuestService.snapshot(player));
 
 		JsonObject data = new JsonObject();
 		for (DataType<?> type : VestigesData.ALL) {

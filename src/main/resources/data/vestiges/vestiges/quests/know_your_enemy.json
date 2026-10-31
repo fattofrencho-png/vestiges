@@ -1,0 +1,19 @@
+{
+  "kind": "guide",
+  "chain": "field_notes",
+  "order": 3,
+  "name": "Know Your Enemy",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "bestiary",
+      "text": "Kill 10 of one mob. That gives +2% damage against it.",
+      "amount": 10
+    }
+  ],
+  "reward": {
+    "xp": 100,
+    "emeralds": 0,
+    "items": []
+  }
+}

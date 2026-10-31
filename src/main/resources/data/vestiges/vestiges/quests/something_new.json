@@ -1,0 +1,19 @@
+{
+  "kind": "guide",
+  "chain": "field_notes",
+  "order": 0,
+  "name": "Something New",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "codex",
+      "text": "Discover 5 Codex entries.",
+      "amount": 5
+    }
+  ],
+  "reward": {
+    "xp": 50,
+    "emeralds": 0,
+    "items": []
+  }
+}

@@ -21,6 +21,7 @@ public enum VestigesSystem {
 	LOOT("loot", "Banded loot", Category.MOBS, F.IN_CORE | F.BUILT, "Chest and mob loot scale with your level, and gear has rarity.\n\nOff: vanilla loot.", "enchant_levels"),
 	PER_PLAYER_LOOT("per_player_loot", "Per-player chests", Category.MOBS, F.IN_CORE | F.BUILT, "Each player gets their own loot from a natural chest."),
 
+	QUESTS("quests", "Quests", Category.WORLD, F.IN_CORE | F.BUILT, "Optional quests: guide quests that teach the mod, side quests from villagers, and notes you find. Rewards never include power you can't get elsewhere."),
 	CODEX("codex", "Codex", Category.WORLD, F.IN_CORE | F.BUILT, "Blocks, Bestiary, Places and Items."),
 	FEATS("feats", "Feats", Category.WORLD, F.IN_CORE | F.BUILT, "Goals that earn Bells, Banners, Ward Lanterns and more."),
 	SETTLEMENTS("settlements", "Settlements", Category.WORLD, F.IN_CORE | F.BUILT, "Bells, renown, wards, banners and land protection.", "feats"),

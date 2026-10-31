@@ -165,6 +165,11 @@ public final class XpSources {
 			return;
 		}
 		player.setAttached(LevelService.LEVEL, l.withFirst(key));
+		if (key.startsWith("biome:")) {
+			dev.vestiges.quest.QuestService.event(player, "new_biome", key.substring(6), 1);
+		} else if (key.startsWith("structure:")) {
+			dev.vestiges.quest.QuestService.event(player, "structure", key.substring(10), 1);
+		}
 		long gained = LevelService.addXp(player, xp, reason);
 		if (gained > 0) {
 			// A short toast in the middle of the screen ("New biome discovered  +100 XP").

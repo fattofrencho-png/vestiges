@@ -1,0 +1,21 @@
+{
+  "kind": "guide",
+  "chain": "first_steps",
+  "order": 4,
+  "name": "Paid in Green",
+  "giver": "Guide",
+  "steps": [
+    {
+      "type": "enchant",
+      "text": "Enchant an item at a table. It costs lapis and emeralds, not levels.",
+      "amount": 1
+    }
+  ],
+  "reward": {
+    "xp": 100,
+    "emeralds": 3,
+    "items": [
+      "minecraft:lapis_lazuli:5"
+    ]
+  }
+}

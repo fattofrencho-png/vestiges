@@ -1,0 +1,30 @@
+{
+  "kind": "side",
+  "name": "Stone from Below",
+  "giver": "Mason",
+  "intro": "The deep stone holds an edge the surface stone doesn't.",
+  "steps": [
+    {
+      "type": "mine",
+      "text": "Mine {amount} {target}.",
+      "amount": 32,
+      "targets": [
+        "minecraft:deepslate"
+      ]
+    },
+    {
+      "type": "bring",
+      "text": "Bring {amount} {target}.",
+      "amount": 16,
+      "targets": [
+        "minecraft:polished_deepslate"
+      ]
+    }
+  ],
+  "reward": {
+    "share": 0.4,
+    "emeralds": 6
+  },
+  "start": "villager",
+  "job": "mason"
+}
