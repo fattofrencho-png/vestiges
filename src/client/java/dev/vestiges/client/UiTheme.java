@@ -16,10 +16,12 @@ public final class UiTheme {
 		return 0xFFC6C6C6;
 	}
 
-	/** The first thing a full screen draws: light screens cover the world, dark ones leave it showing. */
+	/** The first thing a full screen draws: light screens cover the world, dark ones dim it so text stays readable. */
 	public static void paintBackground(GuiGraphicsExtractor g, int width, int height) {
 		if (light()) {
 			g.fill(0, 0, width, height, background());
+		} else {
+			g.fill(0, 0, width, height, 0x90101418);
 		}
 	}
 
