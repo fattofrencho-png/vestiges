@@ -2,6 +2,8 @@ package dev.vestiges.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.vestiges.config.ServerConfig;
+import dev.vestiges.config.VestigesSystem;
 import java.util.List;
 
 /**
@@ -35,4 +37,24 @@ public record Feat(String chain, int order, String name, String requirement, Str
 		Codec.STRING.optionalFieldOf("counter", "").forGetter(Feat::counter),
 		Codec.INT.optionalFieldOf("every", 0).forGetter(Feat::every)
 	).apply(i, Feat::new));
+
+	/** True while a feature this feat counts on or rewards is switched off in this world: it can't be earned then. */
+	public boolean blockedIn(ServerConfig config) {
+		VestigesSystem reward = item.isEmpty() ? null : "waystone".equals(item) ? VestigesSystem.WAYSTONES : VestigesSystem.SETTLEMENTS;
+		return off(config, reward) || off(config, system(counter)) || goals.stream().anyMatch(g -> off(config, system(g.type())));
+	}
+
+	private static boolean off(ServerConfig config, VestigesSystem system) {
+		return system != null && !config.enabled(system);
+	}
+
+	private static VestigesSystem system(String type) {
+		return switch (type) {
+			case "level" -> VestigesSystem.CHARACTER;
+			case "codex" -> VestigesSystem.CODEX;
+			case "elites" -> VestigesSystem.ELITES;
+			case "renown", "renown_two", "renown_levels" -> VestigesSystem.SETTLEMENTS;
+			default -> null;
+		};
+	}
 }

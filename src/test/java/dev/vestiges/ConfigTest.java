@@ -43,14 +43,76 @@ class ConfigTest {
 		ServerConfig c = new ServerConfig().normalize();
 		c.applyPreset(VestigesSystem.Preset.CORE);
 		assertEquals(VestigesSystem.Preset.CORE, c.preset());
-		assertFalse(c.enabled(VestigesSystem.CHARACTER));
-		assertFalse(c.enabled(VestigesSystem.ENCHANT_LEVELS));
+		assertTrue(c.enabled(VestigesSystem.CHARACTER), "Core is the RPG");
+		assertTrue(c.enabled(VestigesSystem.ENCHANT_LEVELS));
+		assertTrue(c.enabled(VestigesSystem.FARMING));
+		assertFalse(c.enabled(VestigesSystem.STACKS));
+		assertFalse(c.enabled(VestigesSystem.WORKERS));
 		c.applyPreset(VestigesSystem.Preset.COMFORT);
 		assertEquals(VestigesSystem.Preset.COMFORT, c.preset());
-		assertTrue(c.enabled(VestigesSystem.FARMING));
-		assertFalse(c.enabled(VestigesSystem.CHARACTER));
-		c.setWithNeeds(VestigesSystem.CODEX, true);
+		assertTrue(c.enabled(VestigesSystem.CHARACTER));
+		assertTrue(c.enabled(VestigesSystem.STACKS));
+		assertFalse(c.enabled(VestigesSystem.WORKERS));
+		c.applyPreset(VestigesSystem.Preset.FULL);
+		assertEquals(VestigesSystem.Preset.FULL, c.preset());
+		assertTrue(c.enabled(VestigesSystem.WORKERS));
+		c.setWithNeeds(VestigesSystem.CODEX, false);
 		assertEquals(null, c.preset(), "a changed switch makes it a custom choice");
+	}
+
+	@Test
+	void eachPresetIncludesTheOneBefore() {
+		VestigesSystem.Preset[] presets = VestigesSystem.Preset.values();
+		for (VestigesSystem s : VestigesSystem.values()) {
+			for (int i = 1; i < presets.length; i++) {
+				assertTrue(!s.inPreset(presets[i - 1]) || s.inPreset(presets[i]), s.id + " in " + presets[i].label);
+			}
+		}
+	}
+
+	@Test
+	void gameRulesAndFreecamStartOffInEveryPreset() {
+		for (VestigesSystem.Preset p : VestigesSystem.Preset.values()) {
+			assertFalse(VestigesSystem.FREECAM.inPreset(p), p.label);
+			assertFalse(VestigesSystem.SLEEP.inPreset(p), p.label);
+			assertFalse(VestigesSystem.GRIEFING.inPreset(p), p.label);
+		}
+	}
+
+	@Test
+	void eachPresetKeepsWhatItsFeaturesNeed() {
+		for (VestigesSystem.Preset p : VestigesSystem.Preset.values()) {
+			for (VestigesSystem s : VestigesSystem.values()) {
+				for (VestigesSystem need : s.needs()) {
+					assertTrue(!s.inPreset(p) || need.inPreset(p), s.id + " needs " + need.id + " in " + p.label);
+				}
+			}
+		}
+	}
+
+	@Test
+	void ascensionStepsAreSkippedWhileTheirFeatureIsOff() {
+		ServerConfig c = new ServerConfig().normalize();
+		assertFalse(dev.vestiges.tree.TreeService.Check.needing(VestigesSystem.ELITES, c, "Kill 1 elite", 0, 1).done());
+		c.set(VestigesSystem.ELITES, false);
+		assertTrue(dev.vestiges.tree.TreeService.Check.needing(VestigesSystem.ELITES, c, "Kill 1 elite", 0, 1).done());
+	}
+
+	@Test
+	void featsAreBlockedWhileWhatTheyUseIsOff() {
+		java.util.List<dev.vestiges.data.Feat.Goal> codex = java.util.List.of(new dev.vestiges.data.Feat.Goal("codex", 100));
+		dev.vestiges.data.Feat charted = new dev.vestiges.data.Feat("explorer", 0, "Charted", "", "", 0, false, codex, "", "", "", "", 0);
+		dev.vestiges.data.Feat hunter = new dev.vestiges.data.Feat("warden", 0, "Elite Hunter", "", "", 0, true, java.util.List.of(), "ward_lantern", "", "", "elites", 10);
+		ServerConfig c = new ServerConfig().normalize();
+		assertFalse(charted.blockedIn(c));
+		assertFalse(hunter.blockedIn(c));
+		c.set(VestigesSystem.CODEX, false);
+		assertTrue(charted.blockedIn(c));
+		c.set(VestigesSystem.ELITES, false);
+		assertTrue(hunter.blockedIn(c), "counter");
+		c.set(VestigesSystem.ELITES, true);
+		c.set(VestigesSystem.SETTLEMENTS, false);
+		assertTrue(hunter.blockedIn(c), "reward");
 	}
 
 	@Test
@@ -76,6 +138,7 @@ class ConfigTest {
 
 		ServerConfig choice = new ServerConfig().normalize();
 		choice.applyPreset(VestigesSystem.Preset.CORE);
+		choice.setWithNeeds(VestigesSystem.CHARACTER, false);
 		dev.vestiges.config.ConfigStore.setPendingWorld(choice);
 		java.nio.file.Path created = dir.resolve("created/vestiges/settings.json");
 		dev.vestiges.config.ConfigStore.openWorld(created);

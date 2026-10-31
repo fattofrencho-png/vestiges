@@ -36,7 +36,7 @@ public final class FeaturePanel extends AbstractWidget {
 	private static final String[][] FAQ_LINES = {
 		{"Can I change this later?", "Yes. Operators can change it under H, Settings, World. Enchant levels are the one exception."},
 		{"What if I turn a feature off in a running world?", "Items and levels already in the world stay as they are. New ones follow the new rule."},
-		{"Why can't I turn off the inventory and map?", "They are the core. Everything else is built on them."},
+		{"Why can't I turn off the inventory and map?", "Everything else is built on them."},
 		{"Do other players need the mod?", "Yes, on servers everyone needs it."},
 	};
 	private static final String[][] MOD_LINES = {

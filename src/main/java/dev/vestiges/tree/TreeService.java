@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import dev.vestiges.Vestiges;
 import dev.vestiges.config.ConfigStore;
+import dev.vestiges.config.ServerConfig;
 import dev.vestiges.config.VestigesSystem;
 import dev.vestiges.data.VestigesData;
 import dev.vestiges.level.LevelService;
@@ -330,10 +331,15 @@ public final class TreeService {
 
 	// ---- ascendancy ------------------------------------------------------------------------------------------------
 
-	/** One line of an ascension checklist. {@code later} = the system behind it is not in the game yet, so the step is skipped. */
+	/** One line of an ascension checklist. {@code later} = the system behind it is not in the game yet or is off in this world, so the step is skipped. */
 	public record Check(String text, long have, long goal, String later) {
 		public boolean done() {
 			return later != null || have >= goal;
+		}
+
+		/** A step that can only be done while {@code needs} is on. */
+		public static Check needing(VestigesSystem needs, ServerConfig config, String text, long have, long goal) {
+			return new Check(text, have, goal, config.enabled(needs) ? null : "off in this world");
 		}
 	}
 
@@ -342,10 +348,10 @@ public final class TreeService {
 		List<Check> out = new ArrayList<>();
 		out.add(new Check("Reach level " + FIRST_ASCENSION_LEVEL, l.level(), FIRST_ASCENSION_LEVEL, null));
 		out.add(new Check("Kill 100 hostile mobs", tree.counter("kills"), 100, null));
-		out.add(new Check("Kill 1 elite", tree.counter("elites"), 1, null));
+		out.add(Check.needing(VestigesSystem.ELITES, ConfigStore.server(), "Kill 1 elite", tree.counter("elites"), 1));
 		out.add(new Check("Mine 64 ores", tree.counter("ores"), 64, null));
 		out.add(new Check("Reach the deepslate layer (below y=0)", tree.counter("deepslate"), 1, null));
-		out.add(new Check("Find 25 Codex entries", dev.vestiges.codex.CodexService.discovered(player), 25, null));
+		out.add(Check.needing(VestigesSystem.CODEX, ConfigStore.server(), "Find 25 Codex entries", dev.vestiges.codex.CodexService.discovered(player), 25));
 		return out;
 	}
 
@@ -357,7 +363,7 @@ public final class TreeService {
 			for (TreeDefs.Step s : asc.second()) {
 				String text = s.goal() + " " + s.text();
 				switch (s.counter()) {
-					case "elites" -> out.add(new Check(text, tree.counter("elites"), s.goal(), null));
+					case "elites" -> out.add(Check.needing(VestigesSystem.ELITES, ConfigStore.server(), text, tree.counter("elites"), s.goal()));
 					case "biomes" -> out.add(new Check(text, l.firsts().stream().filter(k -> k.startsWith("biome:")).count(), s.goal(), null));
 					default -> out.add(new Check(text, tree.counter(s.counter()), s.goal(), null));
 				}

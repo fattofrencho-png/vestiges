@@ -33,7 +33,7 @@ dev deploy         rem build + replace the jar in the modtesting instance's mods
 dev runClient      rem dev client; H opens the hub
 dev runServer      rem needs eula.txt accepted by the author; never accept it on their behalf
 dev runClientGameTest  rem plays src/gametest in a real world and saves screenshots to build/run/clientGameTest/screenshots; the game stalls when
-                       rem closing the world (inside Fabric's test tool, no Vestiges code in the thread dump), so stop it after the last screenshot; set VESTIGES_TOUR=core for a Core world
+                       rem closing the world (inside Fabric's test tool, no Vestiges code in the thread dump), so stop it after the last screenshot; set VESTIGES_TOUR=off for a world with every feature off
 ```
 
 Loot tables are generated: edit `tools/build_loot.py` and run `python tools/build_loot.py` (never hand-edit `data/vestiges/loot_table/`
@@ -45,7 +45,9 @@ From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.
 
 ## Working preferences
 
-- Simple words, short messages, one topic at a time; numbered questions; drafts before code. Plan first for anything non-trivial.
+- Simple words, short messages, one topic at a time; questions through the selectable form (several choices or Other); drafts before code. Plan first for anything non-trivial.
+- **Playtests are batched (author, 2026-10-30):** no playtest after each part; keep building, keep a list of what's untested, and send one combined guide when the author asks. Design decisions and drafts still need the author's OK.
+- **Side chats (author, 2026-10-31):** the main chat drives development and syncs the others. Side chats handle one area: Lore (`docs/lore/`, rules in its `README.md`) and UI (how it works is still being decided). More may come.
 - **Testing guides:** a kit block at the top, then copy-paste commands for each step (items with enough copies, gear, effects such as speed
   and haste, time, mobs to summon, `/vestiges` shortcuts), so the author can paste them in a row.
 - **Commit and push only when asked.** Remote: private repo https://github.com/fattofrencho-png/vestiges (CI builds every push to main). `gh` is not installed.

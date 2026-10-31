@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * Feats (M5, approved): checked every two seconds; each completed feat gives its item, a toast and XP. Repeatable feats pay once per step of
- * their counter. Feats waiting for a later system show "Comes with ..." and cannot be earned yet; rewards of later systems are kept as owed.
+ * their counter. Feats waiting for a later system show "Comes with ..." and cannot be earned yet, and neither can feats whose feature is off in this world; rewards of later systems are kept as owed.
  */
 public final class FeatService {
 	public static final AttachmentType<FeatState> STATE = AttachmentRegistry.create(Vestiges.id("feats"),
@@ -64,7 +64,7 @@ public final class FeatService {
 		for (Map.Entry<Identifier, Feat> e : VestigesData.FEATS.all().entrySet()) {
 			String id = e.getKey().getPath();
 			Feat f = e.getValue();
-			if (!f.later().isEmpty()) {
+			if (!f.later().isEmpty() || f.blockedIn(ConfigStore.server())) {
 				continue;
 			}
 			if (!f.counter().isEmpty() && f.every() > 0) {
@@ -198,7 +198,9 @@ public final class FeatService {
 		JsonObject o = new JsonObject();
 		o.addProperty("done", st.done().contains(id));
 		o.addProperty("times", st.repeats().getOrDefault(id, 0));
-		o.addProperty("later", f.later());
+		boolean off = f.later().isEmpty() && f.blockedIn(ConfigStore.server());
+		o.addProperty("later", off ? "off" : f.later());
+		o.addProperty("off", off);
 		o.addProperty("icon", icon(f));
 		JsonArray goals = new JsonArray();
 		if (!f.counter().isEmpty() && f.every() > 0) {

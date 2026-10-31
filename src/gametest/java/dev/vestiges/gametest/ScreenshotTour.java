@@ -6,6 +6,7 @@ import dev.vestiges.client.hub.HubScreen;
 import dev.vestiges.client.map.ClientWaypoints;
 import dev.vestiges.client.map.WorldMapScreen;
 import dev.vestiges.config.ConfigStore;
+import dev.vestiges.config.ServerConfig;
 import dev.vestiges.config.VestigesSystem;
 import dev.vestiges.inventory.ExtraSlots;
 import dev.vestiges.inventory.InventoryHooks;
@@ -33,16 +34,16 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /**
  * Plays through the screens in a real world and saves screenshots, so a layout can be looked at without a playtest. The world is made through
- * the real Create World screen. Set VESTIGES_TOUR=core to create it with the Core preset instead of Full RPG.
+ * the real Create World screen. Set VESTIGES_TOUR=off to create it with every feature switched off instead of Full RPG.
  */
 public final class ScreenshotTour implements FabricClientGameTest {
 	private static final String SEED = "vestiges";
 
 	@Override
 	public void runTest(ClientGameTestContext ctx) {
-		boolean core = "core".equals(System.getenv("VESTIGES_TOUR"));
+		boolean off = "off".equals(System.getenv("VESTIGES_TOUR"));
 		ctx.getInput().resizeWindow(1920, 1080);
-		welcome(ctx, core);
+		welcome(ctx, off);
 		ctx.waitFor(mc -> mc.player != null && mc.level != null && mc.gui.screen() == null, 3600);
 		TestServerContext server = new TestServerContextImpl(ctx.computeOnClient(Minecraft::getSingleplayerServer));
 		ctx.runOnClient(mc -> System.out.println("[tour] enchant levels " + ConfigStore.server().enabled(VestigesSystem.ENCHANT_LEVELS)
@@ -52,7 +53,7 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		server.runCommand("weather clear");
 		server.runCommand("gamemode creative @p");
 		explore(ctx, server);
-		if (core) {
+		if (off) {
 			waypoints(ctx);
 			server.runCommand("tp @p 0 " + (ground(server, 0, -6) + 1) + " -6 0 20");
 			ctx.waitTicks(60);
@@ -63,20 +64,20 @@ public final class ScreenshotTour implements FabricClientGameTest {
 
 		server.runCommand("gamemode survival @p");
 		ctx.getInput().setCursorPos(1, 1);
-		String mode = core ? "core_" : "full_";
+		String mode = off ? "off_" : "full_";
 		shot(ctx, mode + "world");
-		hub(ctx, mode, core);
-		if (!core) {
+		hub(ctx, mode, off);
+		if (!off) {
 			worldMap(ctx);
 		}
 		inventory(ctx, mode);
-		if (core) {
+		if (off) {
 			// An operator switches levels on in the running world.
 			ctx.runOnClient(mc -> dev.vestiges.client.features.ClientFeatures.send("apply", "{\"character\":true}"));
 			ctx.waitTicks(20);
 			ctx.runOnClient(mc -> System.out.println("[tour] after the switch: levels " + ConfigStore.server().enabled(VestigesSystem.CHARACTER)
 				+ ", client sees " + dev.vestiges.client.features.ClientFeatures.on(VestigesSystem.CHARACTER)));
-			shot(ctx, "core_levels_switched_on");
+			shot(ctx, "off_levels_switched_on");
 		}
 		ctx.setScreen(() -> new dev.vestiges.client.features.FeaturesScreen(null, false));
 		ctx.waitTicks(5);
@@ -86,7 +87,7 @@ public final class ScreenshotTour implements FabricClientGameTest {
 	}
 
 	/** The welcome page in the Create World screen, then Create. */
-	private static void welcome(ClientGameTestContext ctx, boolean core) {
+	private static void welcome(ClientGameTestContext ctx, boolean off) {
 		ctx.runOnClient(mc -> CreateWorldScreen.openFresh(mc, () -> mc.setScreenAndShow(null)));
 		ctx.waitForScreen(CreateWorldScreen.class);
 		ctx.runOnClient(mc -> {
@@ -95,7 +96,7 @@ public final class ScreenshotTour implements FabricClientGameTest {
 			selectTab(screen);
 		});
 		ctx.waitTicks(5);
-		ctx.takeScreenshot("welcome_core_page");
+		ctx.takeScreenshot("welcome_always_on_page");
 		ctx.runOnClient(mc -> set(panel(mc), "category", VestigesSystem.Category.WORLD.label));
 		ctx.waitTicks(2);
 		ctx.takeScreenshot("welcome_world_page");
@@ -109,8 +110,8 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		ctx.runOnClient(mc -> set(panel(mc), "category", "FAQ"));
 		ctx.waitTicks(2);
 		ctx.takeScreenshot("welcome_faq");
-		if (core) {
-			ctx.runOnClient(mc -> panel(mc).selectPreset(VestigesSystem.Preset.CORE));
+		if (off) {
+			ctx.runOnClient(mc -> allOff(panel(mc)));
 			// Leaving out the enchant levels reloads the data packs, then the screen comes back on this tab.
 			ctx.waitTicks(40);
 			ctx.waitFor(mc -> mc.gui.screen() instanceof CreateWorldScreen, 1200);
@@ -121,7 +122,7 @@ public final class ScreenshotTour implements FabricClientGameTest {
 				set(panel, "selected", VestigesSystem.ENCHANT_LEVELS);
 			});
 			ctx.waitTicks(2);
-			ctx.takeScreenshot("welcome_core_preset");
+			ctx.takeScreenshot("welcome_all_off");
 		}
 		ctx.clickScreenButton("selectWorld.create");
 	}
@@ -241,7 +242,7 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		ctx.waitTicks(20);
 	}
 
-	private static void hub(ClientGameTestContext ctx, String mode, boolean core) {
+	private static void hub(ClientGameTestContext ctx, String mode, boolean off) {
 		ctx.runOnClient(mc -> ClientConfigStore.get().hubTab = "MAP");
 		ctx.setScreen(HubScreen::new);
 		ctx.waitTicks(20);
@@ -257,7 +258,7 @@ public final class ScreenshotTour implements FabricClientGameTest {
 			ctx.waitTicks(5);
 			shot(ctx, mode + "settings_" + category.toLowerCase(java.util.Locale.ROOT).replace("-", ""));
 		}
-		if (!core) {
+		if (!off) {
 			ctx.runOnClient(mc -> {
 				ClientConfigStore.get().theme = "light";
 				setStatic(HubScreen.class, "settingsCategory", "Interface");
@@ -308,6 +309,22 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		ctx.runOnClient(mc -> mc.gui.toastManager().clear());
 		ctx.waitTicks(2);
 		ctx.takeScreenshot(name);
+	}
+
+	/** The Custom way to a world with only the inventory and map. */
+	private static void allOff(FeaturePanel panel) {
+		try {
+			Field config = FeaturePanel.class.getDeclaredField("config");
+			config.setAccessible(true);
+			for (VestigesSystem s : VestigesSystem.values()) {
+				((ServerConfig) config.get(panel)).set(s, false);
+			}
+			Field onChange = FeaturePanel.class.getDeclaredField("onChange");
+			onChange.setAccessible(true);
+			((Runnable) onChange.get(panel)).run();
+		} catch (ReflectiveOperationException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	private static void set(Object owner, String field, Object value) {

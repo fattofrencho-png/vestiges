@@ -143,7 +143,7 @@ public final class FeatScreen extends Screen {
 		lines.add(Component.literal(f.get("name").getAsString()).withStyle(d ? ChatFormatting.GOLD : ChatFormatting.WHITE));
 		lines.add(Component.literal(f.get("requirement").getAsString()).withStyle(ChatFormatting.GRAY));
 		if (later(f)) {
-			lines.add(Component.literal("Comes with " + f.get("later").getAsString()).withStyle(ChatFormatting.DARK_GRAY));
+			lines.add(Component.literal(f.has("off") && f.get("off").getAsBoolean() ? "Off in this world" : "Comes with " + f.get("later").getAsString()).withStyle(ChatFormatting.DARK_GRAY));
 		} else if (f.has("goals")) {
 			JsonArray goals = f.getAsJsonArray("goals");
 			for (JsonElement e : goals) {
