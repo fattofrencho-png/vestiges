@@ -5,12 +5,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.vestiges.client.ClientData;
 import dev.vestiges.client.UiTheme;
+import dev.vestiges.client.ui.TabButton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -54,17 +56,16 @@ public final class QuestPanel {
 	}
 
 	/** Adds the buttons. {@code rebuild} rebuilds the hub's widgets after a click that changes what shows. */
-	public static void build(Consumer<Button> add, int width, int height, int top, int bottom, Runnable rebuild) {
+	public static void build(Consumer<AbstractWidget> add, int width, int height, int top, int bottom, Runnable rebuild) {
+		Font font = Minecraft.getInstance().font;
 		int x = 6;
-		int bw = 52;
 		for (String v : VIEWS) {
-			Button b = Button.builder(Component.literal(v), btn -> {
+			int bw = TabButton.widthFor(font, v);
+			add.accept(new TabButton(x, top, bw, 18, v, v.equals(view), () -> {
 				view = v;
 				page = 0;
 				rebuild.run();
-			}).bounds(x, top, bw, 18).build();
-			b.active = !v.equals(view);
-			add.accept(b);
+			}));
 			x += bw + 2;
 		}
 		if (view.equals("Standing")) {
@@ -78,12 +79,11 @@ public final class QuestPanel {
 		page = Math.max(0, Math.min(page, Math.max(0, (rows.size() - 1) / fit)));
 		for (JsonObject r : rows.subList(Math.min(rows.size(), page * fit), Math.min(rows.size(), (page + 1) * fit))) {
 			String id = r.get("id").getAsString();
-			Button b = Button.builder(Component.literal((r.has("tracked") && r.get("tracked").getAsBoolean() ? "* " : "") + r.get("name").getAsString()), btn -> {
+			String name = (r.has("tracked") && r.get("tracked").getAsBoolean() ? "* " : "") + r.get("name").getAsString();
+			add.accept(new TabButton(6, y, LIST_W, ROW - 2, font.plainSubstrByWidth(name, LIST_W - 8), q != null && id.equals(q.get("id").getAsString()), () -> {
 				selected = id;
 				rebuild.run();
-			}).bounds(6, y, LIST_W, ROW - 2).build();
-			b.active = q == null || !id.equals(q.get("id").getAsString());
-			add.accept(b);
+			}));
 			y += ROW;
 		}
 		if (rows.size() > fit) {
@@ -101,7 +101,7 @@ public final class QuestPanel {
 		}
 	}
 
-	private static void buildActions(Consumer<Button> add, JsonObject q, int x, int y) {
+	private static void buildActions(Consumer<AbstractWidget> add, JsonObject q, int x, int y) {
 		String id = q.get("id").getAsString();
 		if (view.equals("Available")) {
 			add.accept(Button.builder(Component.literal("Accept"), b -> ClientQuests.send("accept", id, "")).bounds(x, y, 70, 20).build());
@@ -129,7 +129,7 @@ public final class QuestPanel {
 		}
 	}
 
-	private static void buildTitle(Consumer<Button> add, int top, Runnable rebuild) {
+	private static void buildTitle(Consumer<AbstractWidget> add, int top, Runnable rebuild) {
 		JsonObject root = root();
 		if (!root.has("titles")) {
 			return;
@@ -158,19 +158,25 @@ public final class QuestPanel {
 				case "Active" -> "No quests running. Look in Available.";
 				case "Available" -> "Nothing to start right now.";
 				default -> "No quests finished yet.";
-			}, x, top + 4, UiTheme.muted(), UiTheme.shadow());
+			}, 8, top + 4, UiTheme.muted(), UiTheme.shadow());
 			return;
 		}
 		JsonObject q = current(rows);
 		g.fill(LIST_W + 10, top, LIST_W + 11, bottom, UiTheme.line());
-		int w = width - x - 6;
+		// A long quest stops above the action buttons instead of running under them.
+		g.enableScissor(x, top, width, bottom);
+		renderQuest(g, font, q, x, top, width - x - 6);
+		g.disableScissor();
+	}
+
+	private static void renderQuest(GuiGraphicsExtractor g, Font font, JsonObject q, int x, int top, int w) {
 		int y = top;
 		g.text(font, q.get("name").getAsString(), x, y, UiTheme.head(), UiTheme.shadow());
 		y += 11;
 		String giver = q.get("giver").getAsString();
 		String kind = q.get("kind").getAsString();
 		int comeback = q.get("comeback").getAsInt();
-		g.text(font, label(kind) + (comeback > 1 ? " (time " + comeback + ")" : "") + (giver.isEmpty() ? "" : "  -  " + giver), x, y, UiTheme.muted(), UiTheme.shadow());
+		g.text(font, label(kind) + (comeback > 1 ? " (time " + comeback + ")" : "") + (giver.isEmpty() || giver.equals(label(kind)) ? "" : "  -  " + giver), x, y, UiTheme.muted(), UiTheme.shadow());
 		y += 13;
 		String intro = q.get("intro").getAsString();
 		if (!intro.isEmpty()) {
@@ -187,7 +193,7 @@ public final class QuestPanel {
 			g.fill(x, y, x + 7, y + 7, 0xFF555555);
 			g.fill(x + 1, y + 1, x + 6, y + 6, done ? 0xFF55FF55 : 0xFF1B1B1B);
 			int need = s.get("need").getAsInt();
-			int color = done ? 0xFF8FD18F : "now".equals(state) ? UiTheme.text() : UiTheme.faint();
+			int color = done ? UiTheme.good() : "now".equals(state) ? UiTheme.text() : UiTheme.faint();
 			String count = need > 1 ? (done ? need : s.get("have").getAsInt()) + "/" + need : "";
 			List<FormattedCharSequence> lines = font.split(Component.literal(s.get("text").getAsString()), w - 12 - font.width(count) - 4);
 			g.text(font, count, x + w - font.width(count), y, color, UiTheme.shadow());
@@ -201,7 +207,7 @@ public final class QuestPanel {
 		String reward = q.get("reward").getAsString();
 		if (!reward.isEmpty()) {
 			for (FormattedCharSequence line : font.split(Component.literal("Reward: " + reward), w)) {
-				g.text(font, line, x, y, 0xFF7EFC20, UiTheme.shadow());
+				g.text(font, line, x, y, UiTheme.good(), UiTheme.shadow());
 				y += 9;
 			}
 		}

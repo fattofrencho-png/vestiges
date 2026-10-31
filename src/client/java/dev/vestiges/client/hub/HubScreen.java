@@ -187,8 +187,14 @@ public final class HubScreen extends Screen {
 			tab = Tab.MAP;
 		}
 		int x = 54;
+		// Tabs give up some of their padding when the window is too narrow for all of them.
+		int total = 0;
 		for (Tab t : tabs) {
-			int bw = TabButton.widthFor(font, t.label);
+			total += TabButton.widthFor(font, t.label) + 2;
+		}
+		int squeeze = Math.max(0, (total - (width - x - GAP) + tabs.size() - 1) / tabs.size());
+		for (Tab t : tabs) {
+			int bw = TabButton.widthFor(font, t.label) - squeeze;
 			addRenderableWidget(new TabButton(x, 4, bw, 20, t.label, t == tab, () -> {
 				tab = t;
 				ClientConfigStore.get().hubTab = t.name();

@@ -429,7 +429,7 @@ public final class ScreenshotTour implements FabricClientGameTest {
 	}
 
 	private static void screens(ClientGameTestContext ctx, String tag) {
-		for (String tab : new String[] {"CHARACTER", "CODEX", "VILLAGERS", "SETTLEMENTS", "FEATS", "MAP", "SETTINGS"}) {
+		for (String tab : new String[] {"CHARACTER", "CODEX", "QUESTS", "VILLAGERS", "SETTLEMENTS", "FEATS", "MAP", "SETTINGS"}) {
 			ctx.runOnClient(mc -> ClientConfigStore.get().hubTab = tab);
 			ctx.setScreen(HubScreen::new);
 			ctx.waitTicks(15);

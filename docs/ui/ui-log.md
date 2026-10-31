@@ -53,6 +53,8 @@ From the screenshot tour of 2026-10-31, at normal size (GUI scale 4 at 1080p, 48
 
 **Not fixed yet**
 - Map labels overlap when markers sit close together ("Gold Block" and "Waystone 1"). This needs a choice about which label gives way.
+- A long quest in the Quests tab gets cut off above its buttons, with no scrolling yet.
+- The quest book pages are as the main chat built them; only the Quests tab has been polished.
 - The inventory panels still use their own colours. The main chat is working on those screens in A2, so they wait.
 
 ## Needs a playtest
@@ -67,6 +69,7 @@ Things screenshots can't confirm, for the next combined test guide:
 - Scrolling: the Codex and hub Feats scrollbars follow the mouse wheel.
 - Map and waystone screens: a server message goes after 10 seconds.
 - Light theme: the tree popup's buttons and the welcome page inside Create World.
+- Quests tab: the Active, Available, Done and Standing tabs and the quest rows, with a long quest that needs more room than fits (it stops above the buttons and has no scrolling yet).
 
 ## For the main chat
 
