@@ -55,6 +55,7 @@ public class VestigesClient implements ClientModInitializer {
 		dev.vestiges.client.inventory.ClientInventory.zoomKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.zoom", InputConstants.KEY_Z, category));
 		dev.vestiges.client.inventory.ClientInventory.toolKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.tool_slot", InputConstants.UNKNOWN.getValue(), category));
 		dev.vestiges.client.inventory.ClientInventory.weaponKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.weapon_slot", InputConstants.UNKNOWN.getValue(), category));
+		dev.vestiges.client.inventory.ClientInventory.hotbarSetKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.hotbar_set", InputConstants.KEY_G, category));
 		HudElementRegistry.addLast(Vestiges.id("minimap"), new MinimapHud());
 		HudElementRegistry.addLast(Vestiges.id("look_at"), new LookAtHud());
 		HudElementRegistry.addLast(Vestiges.id("xp"), new XpHud());

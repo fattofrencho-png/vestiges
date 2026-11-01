@@ -1,15 +1,22 @@
 package dev.vestiges.client.mixin;
 
+import dev.vestiges.client.features.ClientFeatures;
 import dev.vestiges.client.inventory.ClientInventory;
 import dev.vestiges.client.inventory.InventoryPanel;
+import dev.vestiges.config.VestigesSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.gui.screens.inventory.DispenserScreen;
+import net.minecraft.client.gui.screens.inventory.HopperScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.gui.screens.inventory.ShulkerBoxScreen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -49,8 +56,27 @@ public abstract class AbstractContainerScreenMixin extends Screen {
 		}
 	}
 
+	/** While the page name box has focus it gets every key except Esc, so E, Q and 1-9 type instead of closing the screen or moving items. */
+	@Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
+	private void vestiges$renameKeys(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
+		if (vestiges$rename != null && vestiges$rename.isFocused() && !event.isEscape()) {
+			vestiges$rename.keyPressed(event);
+			cir.setReturnValue(true);
+		}
+	}
+
 	@Inject(method = "init", at = @At("TAIL"))
 	private void vestiges$pageWidgets(CallbackInfo ci) {
+		if (((Object) this instanceof ContainerScreen || (Object) this instanceof ShulkerBoxScreen || (Object) this instanceof HopperScreen || (Object) this instanceof DispenserScreen) && ClientFeatures.on(VestigesSystem.SORTING)) {
+			AbstractContainerScreenAccessor a = (AbstractContainerScreenAccessor) this;
+			int right = a.vestiges$leftPos() + 176 - 7;
+			int by = a.vestiges$topPos() + 3;
+			addRenderableWidget(Button.builder(Component.literal("Out"), b -> ClientInventory.send("move_all", 1, 0, "")).bounds(right - 22, by, 22, 12)
+				.tooltip(Tooltip.create(Component.literal("Take everything out"))).build());
+			addRenderableWidget(Button.builder(Component.literal("In"), b -> ClientInventory.send("move_all", 0, 0, "")).bounds(right - 42, by, 18, 12)
+				.tooltip(Tooltip.create(Component.literal("Move your inventory in (not the hotbar)"))).build());
+			addRenderableWidget(Button.builder(Component.literal("Sort"), b -> ClientInventory.send("sort", 0, 0, "")).bounds(right - 70, by, 26, 12).build());
+		}
 		if (!vestiges$isEnderChest()) {
 			return;
 		}

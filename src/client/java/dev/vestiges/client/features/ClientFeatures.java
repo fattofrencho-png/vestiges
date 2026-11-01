@@ -17,6 +17,7 @@ public final class ClientFeatures {
 	private static final Map<String, Boolean> SYSTEMS = new HashMap<>();
 	private static boolean operator;
 	private static int sleep = 100;
+	private static int stackLimit = 64;
 
 	private ClientFeatures() {
 	}
@@ -40,6 +41,11 @@ public final class ClientFeatures {
 				ConfigStore.server().set(s, on);
 			}
 		}
+		if (mc.getSingleplayerServer() == null && root.has("brew_stack")) {
+			ConfigStore.server().numbers.brewStack = root.get("brew_stack").getAsInt();
+			ConfigStore.server().numbers.stackLimit = root.get("stack_limit").getAsInt();
+		}
+		stackLimit = root.get("stack_limit").getAsInt();
 		operator = root.get("operator").getAsBoolean();
 		sleep = root.get("sleep").getAsInt();
 		if (root.get("prompt").getAsBoolean() && mc.gui.screen() == null) {
@@ -53,6 +59,10 @@ public final class ClientFeatures {
 
 	public static boolean operator() {
 		return operator;
+	}
+
+	public static int stackLimit() {
+		return stackLimit;
 	}
 
 	public static int sleepPercent() {

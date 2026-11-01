@@ -1,6 +1,8 @@
 package dev.vestiges.client.inventory;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import dev.vestiges.client.features.ClientFeatures;
+import dev.vestiges.config.VestigesSystem;
 import dev.vestiges.inventory.ExtraHolder;
 import dev.vestiges.inventory.ExtraSlots;
 import dev.vestiges.inventory.InventoryHooks;
@@ -63,6 +65,22 @@ public final class InventoryPanel {
 			emerald = new ItemStack(Items.EMERALD);
 		}
 		g.item(emerald, left + InventoryLayout.BANK_X, top + InventoryLayout.BANK_Y);
+		if (sorting()) {
+			smallButton(g, left + InventoryLayout.SORT_X, top + InventoryLayout.SORT_Y, InventoryLayout.SORT_SIZE);
+		}
+	}
+
+	private static boolean sorting() {
+		return ClientFeatures.on(VestigesSystem.SORTING);
+	}
+
+	private static void smallButton(GuiGraphicsExtractor g, int x, int y, int size) {
+		g.fill(x, y, x + size, y + size, 0xFF373737);
+		g.fill(x + 1, y + 1, x + size - 1, y + size - 1, 0xFF8B8B8B);
+	}
+
+	private static boolean overBox(int x, int y, int size, double mx, double my) {
+		return mx >= x && mx < x + size && my >= y && my < y + size;
 	}
 
 	/** Drawn with the screen's labels (already moved to the window's corner). */
@@ -72,6 +90,9 @@ public final class InventoryPanel {
 		g.text(font, "Tools", px, InventoryLayout.TOOLS_Y - 10, LABEL, false);
 		g.text(font, "Weapons", px, InventoryLayout.WEAPONS_Y - 10, LABEL, false);
 		g.text(font, "Tool belt", px, InventoryLayout.BELT_Y - 10, LABEL, false);
+		if (sorting()) {
+			g.text(font, "S", InventoryLayout.SORT_X + 3, InventoryLayout.SORT_Y + 2, 0xFFFFFFFF, true);
+		}
 		Player p = Minecraft.getInstance().player;
 		if (p != null) {
 			String total = shortCount(((ExtraHolder) p).vestiges$bank());
@@ -111,6 +132,13 @@ public final class InventoryPanel {
 			lines.add(Component.literal("Kept when you die.").withStyle(ChatFormatting.DARK_GRAY));
 			g.setComponentTooltipForNextFrame(mc.font, lines, mouseX, mouseY);
 			return;
+		}
+		if (sorting()) {
+			if (overBox(left + InventoryLayout.SORT_X, top + InventoryLayout.SORT_Y, InventoryLayout.SORT_SIZE, mouseX, mouseY)) {
+				g.setComponentTooltipForNextFrame(mc.font, List.of(Component.literal("Sort your inventory").withStyle(ChatFormatting.GRAY),
+					Component.literal("The hotbar stays as it is.").withStyle(ChatFormatting.DARK_GRAY)), mouseX, mouseY);
+				return;
+			}
 		}
 		ExtraSlots slots = InventoryHooks.slots(p);
 		for (int i = 0; i < ExtraSlots.SIZE; i++) {
@@ -154,6 +182,12 @@ public final class InventoryPanel {
 			return false;
 		}
 		ItemStack carried = p.containerMenu.getCarried();
+		if (sorting() && carried.isEmpty()) {
+			if (overBox(left + InventoryLayout.SORT_X, top + InventoryLayout.SORT_Y, InventoryLayout.SORT_SIZE, event.x(), event.y())) {
+				ClientInventory.send("sort", 0, 0, "");
+				return true;
+			}
+		}
 		if (over(left, top, new int[] {InventoryLayout.BANK_X, InventoryLayout.BANK_Y}, event.x(), event.y())) {
 			if (carried.is(Items.EMERALD)) {
 				ClientInventory.send("bank_deposit", 0, 0, "");

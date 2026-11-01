@@ -84,6 +84,7 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		if (!off) {
 			worldMap(ctx);
 			quests(ctx, server);
+			sorting(ctx, server);
 		}
 		inventory(ctx, mode);
 		if (!off) {
@@ -203,6 +204,39 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		ctx.waitTicks(60);
 		printQuests(ctx, server, "after five kills");
 		ctx.setScreen(() -> null);
+	}
+
+	/** Sort, hotbar sets and bigger stacks on a real player: prints the counts so a lost or created item shows. */
+	private static void sorting(ClientGameTestContext ctx, TestServerContext server) {
+		ctx.setScreen(() -> null);
+		ctx.waitTicks(5);
+		String result = server.computeOnServer(s -> {
+			net.minecraft.server.level.ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			net.minecraft.world.entity.player.Inventory inv = p.getInventory();
+			inv.clearContent();
+			inv.setItem(0, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BREAD, 5));
+			inv.setItem(9, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIRT, 90));
+			inv.setItem(20, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIRT, 30));
+			inv.setItem(30, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.COBBLESTONE, 7));
+			inv.setItem(31, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.POTION, 1));
+			dev.vestiges.inventory.InventorySorter.sort(p);
+			String sorted = inv.getItem(9) + " " + inv.getItem(10) + " " + inv.getItem(11) + " " + inv.getItem(12);
+			dev.vestiges.inventory.HotbarSets.switchTo(p, 1);
+			String set1 = "slot0 " + inv.getItem(0) + " potion limit " + new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.POTION).getMaxStackSize();
+			inv.setItem(3, inv.getItem(9).copy());
+			inv.setItem(9, net.minecraft.world.item.ItemStack.EMPTY);
+			dev.vestiges.inventory.HotbarSets.switchTo(p, 0);
+			String back = "slot0 " + inv.getItem(0) + " slot3 " + inv.getItem(3);
+			dev.vestiges.inventory.HotbarSets.switchTo(p, 1);
+			p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+			net.minecraft.world.item.ItemStack water = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.WATER_BUCKET, 5);
+			String bucket = "water limit " + water.getMaxStackSize() + ", after one use " + net.minecraft.world.item.BucketItem.getEmptySuccessItem(water, p)
+				+ ", dirt limit " + new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ENDER_PEARL).getMaxStackSize()
+				+ ", empty bucket in inventory " + inv.countItem(net.minecraft.world.item.Items.BUCKET);
+			System.out.println("[tour] stacks: " + bucket);
+			return "sorted " + sorted + " | set 1 " + set1 + " | back " + back + " | again slot3 " + inv.getItem(3);
+		});
+		System.out.println("[tour] sorting: " + result);
 	}
 
 	private static void printQuests(ClientGameTestContext ctx, TestServerContext server, String when) {

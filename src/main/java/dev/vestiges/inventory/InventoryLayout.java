@@ -14,6 +14,10 @@ public final class InventoryLayout {
 	public static final int TOOLS_Y = 20;
 	public static final int WEAPONS_Y = 66;
 	public static final int BELT_Y = 118;
+	/** The Sort button, under the crafting result. */
+	public static final int SORT_X = 157;
+	public static final int SORT_Y = 66;
+	public static final int SORT_SIZE = 11;
 	/** The recipe book's width and the gap between it and the window. */
 	public static final int BOOK_W = 147;
 	public static final int BOOK_GAP = 2;

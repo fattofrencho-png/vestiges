@@ -77,7 +77,7 @@ public final class ExtraSlots extends SimpleContainer {
 	}
 
 	public static int maxStack(int slot) {
-		return slot == ARROWS || slot == OFFHAND2 ? 64 : 1;
+		return slot == ARROWS || slot == OFFHAND2 ? StackRules.BIG : 1;
 	}
 
 	public static Identifier icon(int slot) {

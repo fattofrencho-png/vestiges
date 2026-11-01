@@ -5,6 +5,11 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"AbstractArrowAccessor",
+		"BucketItemMixin",
+		"CompoundContainerAccessor",
+		"GrindstoneMenuMixin",
+		"ItemCombinerMenuMixin",
+		"SlotMixin",
 		"AbstractArrowMixin",
 		"AbstractMinecartContainerMixin",
 		"AnimalMixin",

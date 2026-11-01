@@ -44,6 +44,8 @@ public final class InventoryService {
 	}
 
 	public static void register() {
+		// Touched here so the attachment type exists before any player data loads.
+		Objects.requireNonNull(HotbarSets.DATA);
 		ServerPlayNetworking.registerGlobalReceiver(InventoryPayloads.Action.TYPE, (payload, ctx) -> ctx.server().execute(() -> handle(ctx.player(), payload)));
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> server.execute(() -> {
 			sendBank(handler.player);
@@ -139,6 +141,21 @@ public final class InventoryService {
 				names.set(page, name.length() > 24 ? name.substring(0, 24) : name);
 				holder.vestiges$setPageNames(names);
 				sendPages(player);
+			}
+			case "sort" -> {
+				if (ConfigStore.server().enabled(VestigesSystem.SORTING)) {
+					InventorySorter.sort(player);
+				}
+			}
+			case "move_all" -> {
+				if (ConfigStore.server().enabled(VestigesSystem.SORTING)) {
+					InventorySorter.moveAll(player, a.a() == 0);
+				}
+			}
+			case "hotbar_next" -> {
+				if (ConfigStore.server().enabled(VestigesSystem.SORTING)) {
+					HotbarSets.next(player);
+				}
 			}
 			default -> {
 			}
