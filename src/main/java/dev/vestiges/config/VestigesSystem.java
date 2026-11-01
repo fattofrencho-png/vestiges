@@ -36,8 +36,8 @@ public enum VestigesSystem {
 	BLUEPRINTS("blueprints", "Blueprints", Category.WORLD, 0, "Save builds and fill in ghost copies."),
 
 	FARMING("farming", "Farming help", Category.COMFORT, F.IN_CORE | F.BUILT, "Right-click harvest, no trampling, growth info and meal buffs."),
-	SORTING("sorting", "Sorting and locks", Category.COMFORT, F.COMFORT, "Sort buttons, move all, locked slots."),
-	STACKS("stacks", "Bigger stacks", Category.COMFORT, F.COMFORT, "Stackable items go to 99. Potions and stews stack to 16."),
+	SORTING("sorting", "Sorting and hotbar sets", Category.COMFORT, F.COMFORT | F.BUILT, "Sort buttons, move all, and three saved hotbars you switch between with a key."),
+	STACKS("stacks", "Bigger stacks", Category.COMFORT, F.COMFORT | F.BUILT, "Everything stackable goes to 64, or 99 with the option in Settings, World. Potions, stews, filled buckets, enchanted books, and empty minecarts and boats stack to 16."),
 	SHAPES("shapes", "Ctrl + Alt shapes", Category.COMFORT, F.COMFORT, "Scroll an item to swap it for related shapes, at the normal recipe cost. You can undo."),
 	SHULKERS("shulkers", "Open shulker boxes", Category.COMFORT, F.COMFORT, "Right-click a box in your inventory to open it."),
 	SLEEP("sleep", "Sleep percentage", Category.COMFORT, F.BUILT | F.OFF_BY_DEFAULT, "Fewer players need to sleep to skip the night. Half by default; operators can change it in Settings, World."),

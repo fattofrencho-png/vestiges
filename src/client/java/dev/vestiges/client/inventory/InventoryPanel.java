@@ -1,6 +1,8 @@
 package dev.vestiges.client.inventory;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import dev.vestiges.client.features.ClientFeatures;
+import dev.vestiges.config.VestigesSystem;
 import dev.vestiges.inventory.ExtraHolder;
 import dev.vestiges.inventory.ExtraSlots;
 import dev.vestiges.inventory.InventoryHooks;
@@ -52,6 +54,20 @@ public final class InventoryPanel {
 			int[] p = InventoryLayout.pos(i);
 			slotFrame(g, left + p[0], top + p[1]);
 		}
+		Player owner = Minecraft.getInstance().player;
+		if (owner != null && InventoryHooks.slots(owner).hasTable()) {
+			// The 3x3 grid replaces vanilla's 2x2, arrow and title.
+			g.fill(left + 96, top + 4, left + 172, top + 60, 0xFFC6C6C6);
+			for (int r = 0; r < 3; r++) {
+				for (int c = 0; c < 3; c++) {
+					slotFrame(g, left + InventoryLayout.GRID_X + c * InventoryLayout.GRID_STEP, top + InventoryLayout.GRID_Y + r * InventoryLayout.GRID_STEP);
+				}
+			}
+			slotFrame(g, left + InventoryLayout.RESULT_X, top + InventoryLayout.RESULT_Y);
+			for (int i = 0; i < 3; i++) {
+				g.fill(left + 149 + i, top + 29 + i, left + 150 + i, top + 35 - i, 0xFF8B8B8B);
+			}
+		}
 		slotFrame(g, left + InventoryLayout.BANK_X, top + InventoryLayout.BANK_Y);
 		// The offhand slot that is in your hand now (Alt + Scroll switches).
 		Player player = Minecraft.getInstance().player;
@@ -63,6 +79,22 @@ public final class InventoryPanel {
 			emerald = new ItemStack(Items.EMERALD);
 		}
 		g.item(emerald, left + InventoryLayout.BANK_X, top + InventoryLayout.BANK_Y);
+		if (sorting()) {
+			smallButton(g, left + InventoryLayout.SORT_X, top + InventoryLayout.SORT_Y, InventoryLayout.SORT_SIZE);
+		}
+	}
+
+	private static boolean sorting() {
+		return ClientFeatures.on(VestigesSystem.SORTING);
+	}
+
+	private static void smallButton(GuiGraphicsExtractor g, int x, int y, int size) {
+		g.fill(x, y, x + size, y + size, 0xFF373737);
+		g.fill(x + 1, y + 1, x + size - 1, y + size - 1, 0xFF8B8B8B);
+	}
+
+	private static boolean overBox(int x, int y, int size, double mx, double my) {
+		return mx >= x && mx < x + size && my >= y && my < y + size;
 	}
 
 	/** Drawn with the screen's labels (already moved to the window's corner). */
@@ -72,6 +104,9 @@ public final class InventoryPanel {
 		g.text(font, "Tools", px, InventoryLayout.TOOLS_Y - 10, LABEL, false);
 		g.text(font, "Weapons", px, InventoryLayout.WEAPONS_Y - 10, LABEL, false);
 		g.text(font, "Tool belt", px, InventoryLayout.BELT_Y - 10, LABEL, false);
+		if (sorting()) {
+			g.text(font, "S", InventoryLayout.SORT_X + 3, InventoryLayout.SORT_Y + 2, 0xFFFFFFFF, true);
+		}
 		Player p = Minecraft.getInstance().player;
 		if (p != null) {
 			String total = shortCount(((ExtraHolder) p).vestiges$bank());
@@ -112,6 +147,13 @@ public final class InventoryPanel {
 			g.setComponentTooltipForNextFrame(mc.font, lines, mouseX, mouseY);
 			return;
 		}
+		if (sorting()) {
+			if (overBox(left + InventoryLayout.SORT_X, top + InventoryLayout.SORT_Y, InventoryLayout.SORT_SIZE, mouseX, mouseY)) {
+				g.setComponentTooltipForNextFrame(mc.font, List.of(Component.literal("Sort your inventory").withStyle(ChatFormatting.GRAY),
+					Component.literal("The hotbar stays as it is.").withStyle(ChatFormatting.DARK_GRAY)), mouseX, mouseY);
+				return;
+			}
+		}
 		ExtraSlots slots = InventoryHooks.slots(p);
 		for (int i = 0; i < ExtraSlots.SIZE; i++) {
 			if (over(left, top, InventoryLayout.pos(i), mouseX, mouseY)) {
@@ -134,6 +176,7 @@ public final class InventoryPanel {
 
 	private static String hint(int slot) {
 		return switch (slot) {
+			case ExtraSlots.TABLE -> "Put a crafting table here for a 3x3 crafting grid.";
 			case ExtraSlots.ENDER -> "Put an ender chest here, then right-click it to open your ender chest.";
 			case ExtraSlots.TOTEM -> "A totem here saves you, without holding it.";
 			case ExtraSlots.ELYTRA -> "Glide with it while wearing a chestplate.";
@@ -154,6 +197,12 @@ public final class InventoryPanel {
 			return false;
 		}
 		ItemStack carried = p.containerMenu.getCarried();
+		if (sorting() && carried.isEmpty()) {
+			if (overBox(left + InventoryLayout.SORT_X, top + InventoryLayout.SORT_Y, InventoryLayout.SORT_SIZE, event.x(), event.y())) {
+				ClientInventory.send("sort", 0, 0, "");
+				return true;
+			}
+		}
 		if (over(left, top, new int[] {InventoryLayout.BANK_X, InventoryLayout.BANK_Y}, event.x(), event.y())) {
 			if (carried.is(Items.EMERALD)) {
 				ClientInventory.send("bank_deposit", 0, 0, "");

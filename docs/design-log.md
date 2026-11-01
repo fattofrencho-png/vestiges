@@ -3,6 +3,16 @@
 
 ## ▶ Current plan: the new ideas (2026-10-30)
 
+### MVP scope (user, 2026-11-01)
+A full loop: level up, build a home, recruit villagers, run dungeons, fight dragons.
+1. **A2, plain:** crafting table slot and 3×3 grid, Bank move, shulker boxes. The inventory's look goes to the UI chat. Ctrl+Alt shapes and the small features wait.
+2. **RPG world:** the world chat fixes mountain spawns; merge `world` on the user's word; connect place names, with fallbacks for vanilla worlds.
+3. **Villagers, simple (own chat recommended):** names, trust, recruiting, the new trade screen; quest givers move to it.
+4. **Dungeons, small (own chat recommended):** portal, keys, 1 or 2 themes, a boss, rewards.
+5. **First dragons:** summoning, the first few fights and their rewards; the ending waits.
+6. **Finish:** waystone price cap decision, quest list review, balance pass, one combined test guide, a release build without `vestiges-wiki-author.html`.
+**After the MVP:** workers, blueprints, A3, batches B to E, the other dragons and the ending, custom biomes and models.
+
 ### Context
 You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one mod, so you don't need to find and update other mods. Once it's published, other players can switch off what they don't want. **Core version that can't be switched off: the new inventory and the map.** Everything else gets a switch, chosen on a welcome page when a world is created.
 
@@ -59,6 +69,11 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
 ### Lore handed over by the lore chat (2026-10-31; details in `docs/lore/`)
 - **Dilecta (user, 2026-10-30):** the main city, the one the bible describes. Anagram of CITADEL, also a Latin word for "beloved, chosen". It is on the continent Trenec, and its region is not fixed. Use it wherever the bible's city is needed (Places page, villager birthplaces, Hero texts).
 - **Mob origins, three levels (user, 2026-10-30):** `docs/lore/mob-origins.md` holds 87 mobs with up to three texts each: Fluff (what people think), Flavour (a hint), Lore (the truth). The Lore text unlocks only after the 24 dragons are killed. Group decisions, such as the zombie kin's Sin, are listed in that file. Open points: Sulfur Cube needs a check in game.
+- **Five continents (user, 2026-10-31; replaces the older regions of Trenec):** Trenec is the central continent. Restena (east), Swetren (west), Ruthenos (south) and Thornner (north) are the 4 outer continents around it.
+- **Dilecta (user, 2026-10-31):** the capital of the World, on Trenec's north coast. It rules in name only: all five continents send taxes and envoys to its council of 3, but they run themselves and resent it. The guilds elect the council from a pool of old houses.
+- **Faiths (user, 2026-10-31):** all are on every continent and compete, but aren't equally strong, respected or tolerated everywhere. The Bright Path began in Restena and holds the most coveted positions in Dilecta; the Dawnbringer stays in Restena. The Primacy began in the north (Thornner). The Promise is tolerated but bullied almost everywhere.
+- **Other lore corrections (user, 2026-10-31):** "15,000 years" is only what people believe. End cities are only history: the Ascended's cities are gone, and you relive them in End dungeons. The name Kesmar first appears after dragon 24, with "the makers" used until then, so dragon 21's chapter line says "the makers".
+- **Still to decide:** the design placed these lands by direction from spawn, and how the 5 continents map onto a real world is now an open question for the user and the world chat.
 - **Not decided yet:** how these sit in the Codex next to its two lines, and how `tools/build_codex.py` builds them. The main chat asks the user before building.
 
 ### Batch A: before M6, one playtest per part
@@ -84,10 +99,14 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
 - **Sleep percentage and griefing switches:** added here because they're quick, using vanilla game rules where they exist.
 
 **A2. Inventory**
+- **Built so far (2026-10-31), joins the later combined test:** the rename bug fix, and bigger stacks (user, 2026-10-31: everything stackable goes to 64, and a Stack limit option in Settings, World allows 99; most unstackable items stay unstackable, except potions (16, user), and stews, filled buckets, enchanted books, and empty minecarts and boats (user; my pick: also 16), set by `brewStack` in the world's `settings.json`). Emptying a bucket from a stack keeps the rest, and anvils, smithing tables and grindstones take one enchanted book at a time. Known gap: a stack of lava buckets in a furnace fuel slot loses its empty buckets, except the last. Sort works only in containers a player placed, plus your ender chest (user, 2026-10-31); natural loot chests and minecarts refuse it. Sort, Move all (In and Out buttons on chests, barrels, shulker boxes, hoppers, dispensers and droppers) and 3 hotbar sets (user, 2026-10-31: a key switches to the next set, default G, no buttons; a small 11-pixel Sort button). Sort order follows the creative tabs by group (blocks, tools, combat, food, others), not their exact order. A set remembers the kind of item in each slot, not one exact item. A first switch to an unused set moves the hotbar into the inventory.
 - **Rename bug:** while the page name box has focus, the container screen still takes keys like E, Q and 1–9. Fix in `AbstractContainerScreenMixin`: the box gets every key except Esc.
-- **Crafting table slot and 3×3 grid:** once the render is approved. Vanilla's slot numbers don't move, and 5 extra grid slots are added after them. Taking the table out returns those items to your inventory. **This is the riskiest change, in `InventoryMenuMixin`** (recipe book and shift-click need care).
+- **Built (2026-11-01), joins the combined test:** the crafting table slot, 3×3 grid and Bank move, at the positions in `docs/ui/ui-log.md` (look approved by the user in the UI chat).
+- **Crafting table slot and 3×3 grid:** Vanilla's slot numbers don't move, and 5 extra grid slots are added after them. Taking the table out returns those items to your inventory. **This is the riskiest change, in `InventoryMenuMixin`** (recipe book and shift-click need care).
 - **Bank:** moves to the bottom of the right panel, next to the recipe book button.
-- **Sorting:** the server does the moving, through `InventoryService`, so nothing can be duplicated. Locked slots save with the player, and none start locked.
+- **Sorting:** the server does the moving, through `InventoryService`, so nothing can be duplicated. Sort covers the main inventory and open chests, in creative-tab order; the hotbar stays as you arranged it (user, 2026-10-31).
+- **Locked slots are being rethought (user, 2026-10-31):** single-slot locks are out, because tools and weapons now have their own space. A save system for the entire hotbar replaces them: 3 saved sets per player; switching swaps the current hotbar with that set's items from your inventory, and never creates items; buttons in the inventory.
+- **Shulker boxes open from your own inventory only (user, 2026-10-31).**
 - **Ctrl+Alt + scroll:** works on an item you hover over or hold.
   - Only recipes with a single ingredient (crafting and stonecutter).
   - **Undo uses a per-player record, not a hidden tag on the item,** because tagged stairs wouldn't stack with normal stairs. The record is cleared on logout, and you can only undo what you converted.
@@ -270,7 +289,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
 ## The End ✅
 - **Arena only.** No outer islands or End Cities. Elytra and shulker shells come from End-themed dungeon runs.
 - **24 lore dragons**, each distinct and harder with new mechanics, then **endless Echo dragons**.
-- **Each kill gives:** an ender chest page, level VI books or Relic★ gear, feats, and a piece of lore from the 15,000-year cycle.
+- **Each kill gives:** an ender chest page, level VI books or Relic★ gear, feats, and a piece of lore from the long cycle people believe lasts 15,000 years.
 - **Count is per world.** Every participant gets the rewards, including their own ender chest page.
 - **Summoning is level-gated:** dragon N needs a summoner of about level 4×N, so dragon 24 needs about level 96.
 - **After dragon 24:** a big ending moment (lore reveal, vanilla-style end poem, a title), then **Echo mode** with Echo dragons and endless dungeon tiers. The world is never reset.
@@ -771,7 +790,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
   - ✅ **Name style (user):** no direction-based cultures for now. **Every place and person gets a fantasy English name** tied to its job, position or history; play with languages, be creative, but follow set rules. **Players can rename later.**
   - ✅ **Fixed lore places (user):** keep **Restena, Trenec and Oscat** in every world, plus a list of important continents, cities and so on to establish together.
   - ✅ **Naming rules (draft accepted, + French):** meaning first · English roots (and **some French**) · easy to read, ≤3 syllables per part, no real-world names · feature words by type (Peaks/Crags/Horns/Spire, Wood/Weald/Holt, Sound/Deep/Mere, Run/Bourne/Water, Waste/Sands, Fields/Lea/Moor, Delve/Hollow, Isle/Holm) · people = first name + byname from job, position or history · anagram layer for lore names only · no repeats within 2,000 blocks + rude-combo filter · players can rename.
-  - ✅ **Geography (user):** **Trenec is the continent you spawn on.** Its regions by direction from spawn: **east = Restena**, **west = Swetren** (anagram of Western), **south = an anagram of "Southern"**, **north = an anagram of "Northern"** (names to pick).
+  - ✅ **Geography (user; replaced 2026-10-31, see the five continents above):** **Trenec is the continent you spawn on.** Its regions by direction from spawn: **east = Restena**, **west = Swetren** (anagram of Western), **south = an anagram of "Southern"**, **north = an anagram of "Northern"** (names to pick).
   - ✅ **Oscat = the first coastal village you encounter.**
   - ✅ **Other villages:** each rolls a purpose (why it exists, what it produces) and gets an **anagram name of that purpose**.
   - ✅ **Don't rename vanilla structures** if possible, but put them in the lore: **ancient cities belong to a previous cycle**; **trial chambers are the makers' tests that Heroes through the ages had to complete, just like you.** (Drops "Proving Vaults" and "Echo Halls".)
@@ -786,7 +805,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
     - **Act I · The Waking:** 1 Tulva (VAULT) Vault-builders, strongholds; libraries in enchanting-table glyphs · 2 Belaz (BLAZE) Kilnfolk; "the fire started in the sky" · 3 Morst (STORM) Windward towers; trial breezes = "the makers' breath" · 4 Dhars (SHARD) Glassmakers; broken things regrew overnight, as if edited · 5 Ilvig (VIGIL) the Sleepless, taken by phantoms; lights faster than the stars · 6 ⭐ Durhos (SHROUD) the Shrouded hid longest; reveal: the purges are chosen.
     - **Act II · The Breaking:** 7 Mortre (TREMOR) Deepdelvers, mineshafts; perfect-circle cracks · 8 Graciel (GLACIER) Frostwardens; "the sun was turned down" · 9 Nitox (TOXIN) Brewers; a sickness that spared animals · 10 Dunther (THUNDER) Coppersmiths, first copper golems; design from a trial chamber · 11 Megia (IMAGE) the Seers; every cycle has the same map (world seed) · 12 ⭐ Hergun (HUNGER) Hollow Kings stole at the crystals; reveal: a cycle ends when it gets too close to the truth.
     - **Act III · The Remembering:** 13 Scande (ASCEND) the Ascended, purpur cities; time runs differently beyond the edge · 14 Dreen (ENDER) the Taken came back as endermen; why they hate being looked at · 15 Nemad (AMEND) Edgewatchers; "the world was being rewritten" · 16 Basylas (ABYSSAL) Tidefolk, monuments; the Heart of the Sea is a hidden recorder · 17 Rethen (NETHER) Fortress-builders; no dimension is outside the test; the Wither was their last king · 18 ⭐ Selince (SILENCE) the Deep Ones built the ancient cities around their own gate; reveal: the Archive holds every Hero tested in the trial chambers, including your name, written before you were born.
-    - **Act IV · The Ending:** 19 Kadre (DRAKE) Dragonriders; the dragon is the makers' tool that ends each cycle · 20 Voltre (REVOLT) the Rebels toppled the pillars; the Vitera keep their teachings · 21 Mutine (MINUTE) Clockmakers; our 15,000 years are an afternoon for the Kesmar · 22 Larvi (RIVAL) the Two Crowns; "a test needs a control" · 23 Tenrys (SENTRY) the First Heroes became the Last Guard · 24 ⭐ Iginor (ORIGIN) the Seeding; the dragon was their first creation; then the choice, Unmake or Reign.
+    - **Act IV · The Ending:** 19 Kadre (DRAKE) Dragonriders; the dragon is the makers' tool that ends each cycle · 20 Voltre (REVOLT) the Rebels toppled the pillars; the Vitera keep their teachings · 21 Mutine (MINUTE) Clockmakers; our 15,000 years are an afternoon for the makers · 22 Larvi (RIVAL) the Two Crowns; "a test needs a control" · 23 Tenrys (SENTRY) the First Heroes became the Last Guard · 24 ⭐ Iginor (ORIGIN) the Seeding; the dragon was their first creation; then the choice, Unmake or Reign.
   - 🎯 **User idea:** after a dragon kill, the end gateway leads to a dungeon or room where the lore slowly fills in with each dragon: **a final repository players can build around in the End.**
   - ✅ **The Vestige** (lore hall, approved 2026-10-10):
     - **A very big island far out in the End, very low in the End**, reached through the end gateway (every gateway leads there; a return gateway goes back to the arena). **No mob spawns on the island.**
@@ -808,7 +827,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
     - Chapter tweaks for consistency: 17 Rethen (the Fortress-builders saw in the Nether what the world becomes if the makers continue) · 13 Scande (the End as the glitch level).
   - ✅ **Faiths (user):** major faith 1 is **linked to the elements**; major faith 2 is **a belief similar to Zoroastrianism**; the small faith is **a mix of Christianity, Islam and Judaism**. Names to pick.
   - ✅ **Faith content kept (names rejected):** elemental faith = four Powers (Flame, Tide, Stone, Gale); the cycle is "the Turning", the elements washing the world clean when people grow proud. Light faith = the Bright Flame against the Lie, eternal temple fires, "good thought, good word, good deed"; the cycle is "the Ordeal". Small faith = the One who promised to save a faithful few, prophets, a book, waiting for a promised one; the cycle is "the Judgment"; quietly persecuted by the two big faiths.
-  - ✅ **Regions:** Restena = light faith (state faith backing the council of 3) · Swetren and Ruthenos = elemental faith · Thornner = a mix · the small faith in hidden groups everywhere · the Vitera hunted by all three.
+  - ✅ **Regions (replaced 2026-10-31, see Faiths above):** Restena = light faith (state faith backing the council of 3) · Swetren and Ruthenos = elemental faith · Thornner = a mix · the small faith in hidden groups everywhere · the Vitera hunted by all three.
   - ✅ **The Sift and the faiths:** every faith wants to **conquer the Sift**, each sure it is its own promised realm (elemental: the world before the first Turning; light: the realm of the Flame; small faith: the promised land). The Vitera know the truth: what the world could become if the Kesmar are stopped.
   - ✅ **Faith names and ranks** (approved 2026-10-10):
     - **The Primacy** (elemental; followers **Primas**): Seeker → Initiate → Keeper (sworn to one element, e.g. Keeper of the Tide) → Warden (runs a shrine) → Elder (4, one per element) → the Arbiter (speaks for all four).

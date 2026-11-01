@@ -24,6 +24,8 @@ read `lore-log.md` before using any lore, and handle its "For the main chat" lis
 M0 Foundation (this) · Map + waystones · M1 Character · M2 Inventory · M3 Mobs & loot · M4 Codex & farming · M5 Feats & settlements ·
 M6 Villagers · M7 Workers · M8 Dungeons · M9 World & End · M10 Blueprints.
 
+**MVP first (author, 2026-11-01):** finish A2 plainly, merge the RPG world, then simple villagers, a small dungeon system and the first dragons, followed by the combined test, balance and a release build. Workers, blueprints, A3 and batches B to E wait until after it. Details are in `docs/design-log.md`.
+
 ## Commands
 
 ```bat
@@ -48,6 +50,7 @@ From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.
 - Simple words, short messages, one topic at a time; questions through the selectable form (several choices or Other); drafts before code. Plan first for anything non-trivial.
 - **Playtests are batched (author, 2026-10-30):** no playtest after each part; keep building, keep a list of what's untested, and send one combined guide when the author asks. Design decisions and drafts still need the author's OK.
 - **Side chats (author, 2026-10-31):** the main chat drives development and syncs the others. Side chats handle one area: Lore (`docs/lore/`, rules in its `README.md`) and UI (see below). The main chat handles all pushes. More side chats may come, such as one for quest content.
+- **New chats (author, 2026-11-01):** when something starts taking too much development time, cost or tokens, recommend creating a new chat for it. The main chat stays on general development and MVP versions.
 - **UI room (author, 2026-10-31):** UI polish happens in a separate chat, in the `RPG Mod UI` folder on the `ui` branch (rules in `docs/ui/README.md`, decisions in `docs/ui/ui-log.md`; that folder exists only on `ui` until the author says to merge). That chat commits to `ui` only and never pushes; `ui` goes into main only when the author says so. The main chat ships simple first versions of screens and leaves polish to the UI room. New screens use `UiTheme` colours.
 - **Testing guides:** a kit block at the top, then copy-paste commands for each step (items with enough copies, gear, effects such as speed
   and haste, time, mobs to summon, `/vestiges` shortcuts), so the author can paste them in a row.

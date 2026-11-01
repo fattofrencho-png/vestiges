@@ -34,6 +34,10 @@ public final class ServerConfig {
 		public int graveDays = 3;
 		/** Share of players who must sleep to skip the night while the Sleep percentage feature is on. */
 		public int sleepPercent = 50;
+		/** Stackable items stack this high while the Bigger stacks feature is on: 64, or 99 by option. */
+		public int stackLimit = 64;
+		/** Potions, stews, filled buckets, enchanted books, and empty minecarts and boats stack this high while the Bigger stacks feature is on. */
+		public int brewStack = 16;
 	}
 
 	/** Fills in every system the file does not mention, so new systems added in an update default to on. */

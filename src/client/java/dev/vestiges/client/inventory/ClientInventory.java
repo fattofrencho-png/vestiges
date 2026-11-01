@@ -37,6 +37,7 @@ public final class ClientInventory {
 	public static KeyMapping zoomKey;
 	public static KeyMapping toolKey;
 	public static KeyMapping weaponKey;
+	public static KeyMapping hotbarSetKey;
 
 	private ClientInventory() {
 	}
@@ -155,6 +156,9 @@ public final class ClientInventory {
 		}
 		while (weaponKey != null && weaponKey.consumeClick()) {
 			selectExtra(mc.player, Selection.WEAPON);
+		}
+		while (hotbarSetKey != null && hotbarSetKey.consumeClick()) {
+			send("hotbar_next", 0, 0, "");
 		}
 	}
 

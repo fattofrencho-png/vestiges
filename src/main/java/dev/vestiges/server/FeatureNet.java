@@ -88,6 +88,8 @@ public final class FeatureNet {
 		root.addProperty("operator", mayChange(p));
 		root.addProperty("prompt", c.setupPending && mayChange(p));
 		root.addProperty("sleep", sleepRule());
+		root.addProperty("brew_stack", c.numbers.brewStack);
+		root.addProperty("stack_limit", c.numbers.stackLimit);
 		if (ServerPlayNetworking.canSend(p, FeaturePayloads.State.TYPE)) {
 			ServerPlayNetworking.send(p, new FeaturePayloads.State(root.toString()));
 		}
@@ -116,6 +118,10 @@ public final class FeatureNet {
 					c.numbers.sleepPercent = percent;
 					c.set(VestigesSystem.SLEEP, percent < 100);
 				});
+			}
+			case "stack" -> {
+				int limit = "99".equals(payload.value()) ? 99 : 64;
+				change(server, c -> c.numbers.stackLimit = limit);
 			}
 			case "done" -> change(server, c -> c.setupPending = false);
 			default -> {

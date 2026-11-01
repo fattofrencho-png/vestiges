@@ -155,7 +155,7 @@ Not every mob gets every level. Minor animals may get only level 1, or nothing. 
 - **Current Codex:** line 1 "Small, quick and poisonous. Found around spawners in mineshafts." · line 2 "Burn the cobwebs first. They always come from the webs."
 - **L1 Fluff:** "Miners keep a canary for the gas and a torch for the small ones."
 - **L2 Flavour:** "Its poison is the miners' old fear, grown teeth."
-- **L3 Lore:** "The mineshafts held the silk farms, and the small line never left them."
+- **L3 Lore:** "When the miners left, the small ones stayed in the dark they had dug, and the dark made them bitter."
 - **Status:** approved 2026-10-30
 
 ### Slime
@@ -193,7 +193,7 @@ Not every mob gets every level. Minor animals may get only level 1, or nothing. 
 - **Status:** approved 2026-10-30
 
 ### Shulker
-- **Seen:** End cities.
+- **Seen:** End-themed dungeon runs.
 - **Current Codex:** line 1 "Hides in its shell and fires bullets that make you float." · line 2 "The Ascended trusted them to guard their towers."
 - **L1 Fluff:** "A shulker opens only to those it means to hurt."
 - **L2 Flavour:** "Its bullets lift you off your feet, as if the End had its own idea of weight."
@@ -455,7 +455,7 @@ Not every mob gets every level. Minor animals may get only level 1, or nothing. 
 - **Status:** approved 2026-10-30
 
 
-## Wildlife (mostly Level 1 only, as agreed
+## Wildlife
 
 | Mob | L1 Fluff | L2 Flavour | L3 Lore |
 |---|---|---|---|
