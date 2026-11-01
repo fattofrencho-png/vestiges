@@ -53,7 +53,7 @@ public final class ExtraSlots extends SimpleContainer {
 	private static final String[] ICONS = {"pickaxe", "axe", "shovel", "hoe", "vestiges:shears", "vestiges:fishing_rod", "vestiges:flint_and_steel",
 		"vestiges:brush", "sword", "vestiges:mace", "spear", "vestiges:trident", "vestiges:bow", "vestiges:crossbow", "vestiges:arrow",
 		"vestiges:compass", "vestiges:clock", "vestiges:map", "vestiges:spyglass", "shield", "vestiges:elytra", "vestiges:totem",
-		"vestiges:ender_chest", null};
+		"vestiges:ender_chest", "vestiges:crafting_table"};
 
 	/** What each slot is called (empty-slot tooltips). */
 	public static final String[] NAMES = {"Pickaxe", "Axe", "Shovel", "Hoe", "Shears", "Fishing rod", "Flint and steel", "Brush", "Sword",

@@ -70,6 +70,7 @@ Things screenshots can't confirm, for the next combined test guide:
 - Feats tree: dragging stops at the edges in every direction.
 - Scrolling: the Codex and hub Feats scrollbars follow the mouse wheel.
 - Map and waystone screens: a server message goes after 10 seconds.
+- Inventory: the Sort button still works and shows its tooltip with the new three-line icon; the empty table slot shows its icon and tooltip.
 - Light theme: the tree popup's buttons and the welcome page inside Create World.
 - Quests tab: the Active, Available, Done and Standing tabs and the quest rows, with a long quest that needs more room than fits (it stops above the buttons and has no scrolling yet).
 
