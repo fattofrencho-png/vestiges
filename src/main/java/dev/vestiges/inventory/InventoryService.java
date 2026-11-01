@@ -23,7 +23,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.gamerules.GameRules;
@@ -35,6 +37,7 @@ import net.minecraft.world.level.gamerules.GameRules;
 public final class InventoryService {
 	public static final int PAGES = 25;
 	private static final Map<UUID, Integer> ELYTRA_SEEN = new HashMap<>();
+	private static final int[] TABLE_GRID = {2, 5, 6, 7, 8};
 
 	private InventoryService() {
 	}
@@ -196,6 +199,9 @@ public final class InventoryService {
 		boolean every10 = server.getTickCount() % 10 == 0;
 		for (ServerPlayer p : server.getPlayerList().getPlayers()) {
 			ExtraSlots slots = InventoryHooks.slots(p);
+			if (!slots.hasTable()) {
+				returnTableGrid(p);
+			}
 			// Items on the racks and belt tick like items in the inventory (compasses track lodestones, maps update while held).
 			int held = InventoryHooks.selection(p).vestiges$heldExtraSlot();
 			for (int i = 0; i < ExtraSlots.SIZE; i++) {
@@ -213,6 +219,22 @@ public final class InventoryService {
 					}
 				}
 			}
+		}
+	}
+
+	/** Without a crafting table, what lay in the 5 extra grid slots goes back to the inventory. */
+	private static void returnTableGrid(ServerPlayer p) {
+		CraftingContainer grid = p.inventoryMenu.getCraftSlots();
+		boolean moved = false;
+		for (int i : TABLE_GRID) {
+			if (!grid.getItem(i).isEmpty()) {
+				p.getInventory().placeItemBackInInventory(grid.removeItemNoUpdate(i), Prediction.PREDICTED);
+				moved = true;
+			}
+		}
+		if (moved) {
+			p.inventoryMenu.slotsChanged(grid);
+			p.inventoryMenu.broadcastChanges();
 		}
 	}
 

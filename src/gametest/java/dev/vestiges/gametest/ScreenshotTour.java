@@ -237,6 +237,33 @@ public final class ScreenshotTour implements FabricClientGameTest {
 			return "sorted " + sorted + " | set 1 " + set1 + " | back " + back + " | again slot3 " + inv.getItem(3);
 		});
 		System.out.println("[tour] sorting: " + result);
+		// The 3x3 grid: a chest needs a table; without one, the extra slots' items go back to the inventory.
+		String grid = server.computeOnServer(s -> {
+			net.minecraft.server.level.ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			dev.vestiges.inventory.ExtraSlots x = dev.vestiges.inventory.InventoryHooks.slots(p);
+			net.minecraft.world.inventory.CraftingContainer c = p.inventoryMenu.getCraftSlots();
+			x.setItem(dev.vestiges.inventory.ExtraSlots.TABLE, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.CRAFTING_TABLE));
+			for (int i = 0; i < 9; i++) {
+				if (i != 4) {
+					c.setItem(i, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.OAK_PLANKS));
+				}
+			}
+			p.inventoryMenu.slotsChanged(c);
+			String made = p.inventoryMenu.getSlot(0).getItem().toString();
+			x.setItem(dev.vestiges.inventory.ExtraSlots.TABLE, net.minecraft.world.item.ItemStack.EMPTY);
+			return "with table " + made + ", width " + p.inventoryMenu.getGridWidth() + ", input slots " + p.inventoryMenu.getInputGridSlots().size();
+		});
+		ctx.waitTicks(5);
+		String after = server.computeOnServer(s -> {
+			net.minecraft.server.level.ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			net.minecraft.world.inventory.CraftingContainer c = p.inventoryMenu.getCraftSlots();
+			String out = "without table result " + p.inventoryMenu.getSlot(0).getItem() + ", grid slot 2 " + c.getItem(2) + ", planks in inventory " + p.getInventory().countItem(net.minecraft.world.item.Items.OAK_PLANKS);
+			c.clearContent();
+			p.inventoryMenu.slotsChanged(c);
+			return out;
+		});
+		System.out.println("[tour] grid: " + grid + " | " + after);
+		server.runOnServer(s -> dev.vestiges.inventory.InventoryHooks.slots(s.getPlayerList().getPlayers().get(0)).setItem(dev.vestiges.inventory.ExtraSlots.TABLE, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.CRAFTING_TABLE)));
 	}
 
 	private static void printQuests(ClientGameTestContext ctx, TestServerContext server, String when) {
@@ -339,6 +366,7 @@ public final class ScreenshotTour implements FabricClientGameTest {
 				x.setItem(ExtraSlots.BELT + i, new ItemStack(belt[i]));
 			}
 			x.setItem(ExtraSlots.ELYTRA, new ItemStack(Items.ELYTRA));
+			x.setItem(ExtraSlots.TABLE, new ItemStack(Items.CRAFTING_TABLE));
 			x.setItem(ExtraSlots.ENDER, new ItemStack(Items.ENDER_CHEST));
 			x.setItem(ExtraSlots.TOTEM, new ItemStack(Items.TOTEM_OF_UNDYING));
 		});

@@ -9,6 +9,7 @@
 		"CompoundContainerAccessor",
 		"GrindstoneMenuMixin",
 		"ItemCombinerMenuMixin",
+		"SlotAccessor",
 		"SlotMixin",
 		"AbstractArrowMixin",
 		"AbstractMinecartContainerMixin",

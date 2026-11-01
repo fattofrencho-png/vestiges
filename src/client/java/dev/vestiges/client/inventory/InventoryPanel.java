@@ -54,6 +54,20 @@ public final class InventoryPanel {
 			int[] p = InventoryLayout.pos(i);
 			slotFrame(g, left + p[0], top + p[1]);
 		}
+		Player owner = Minecraft.getInstance().player;
+		if (owner != null && InventoryHooks.slots(owner).hasTable()) {
+			// The 3x3 grid replaces vanilla's 2x2, arrow and title.
+			g.fill(left + 96, top + 4, left + 172, top + 60, 0xFFC6C6C6);
+			for (int r = 0; r < 3; r++) {
+				for (int c = 0; c < 3; c++) {
+					slotFrame(g, left + InventoryLayout.GRID_X + c * InventoryLayout.GRID_STEP, top + InventoryLayout.GRID_Y + r * InventoryLayout.GRID_STEP);
+				}
+			}
+			slotFrame(g, left + InventoryLayout.RESULT_X, top + InventoryLayout.RESULT_Y);
+			for (int i = 0; i < 3; i++) {
+				g.fill(left + 149 + i, top + 29 + i, left + 150 + i, top + 35 - i, 0xFF8B8B8B);
+			}
+		}
 		slotFrame(g, left + InventoryLayout.BANK_X, top + InventoryLayout.BANK_Y);
 		// The offhand slot that is in your hand now (Alt + Scroll switches).
 		Player player = Minecraft.getInstance().player;
@@ -162,6 +176,7 @@ public final class InventoryPanel {
 
 	private static String hint(int slot) {
 		return switch (slot) {
+			case ExtraSlots.TABLE -> "Put a crafting table here for a 3x3 crafting grid.";
 			case ExtraSlots.ENDER -> "Put an ender chest here, then right-click it to open your ender chest.";
 			case ExtraSlots.TOTEM -> "A totem here saves you, without holding it.";
 			case ExtraSlots.ELYTRA -> "Glide with it while wearing a chestplate.";

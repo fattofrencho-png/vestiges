@@ -3,7 +3,10 @@ package dev.vestiges.client.mixin;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import dev.vestiges.client.inventory.ClientInventory;
 import dev.vestiges.client.inventory.InventoryPanel;
+import dev.vestiges.inventory.CraftGrid;
+import dev.vestiges.inventory.InventoryHooks;
 import dev.vestiges.inventory.InventoryLayout;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -30,7 +33,18 @@ public abstract class InventoryScreenMixin {
 	private void vestiges$panel(GuiGraphicsExtractor g, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		if (ClientInventory.on()) {
 			AbstractContainerScreenAccessor s = (AbstractContainerScreenAccessor) this;
+			((CraftGrid) ((InventoryScreen) (Object) this).getMenu()).vestiges$layoutGrid();
 			InventoryPanel.background(g, s.vestiges$leftPos(), s.vestiges$topPos());
+		}
+	}
+
+	/** No "Crafting" title over the 3x3 grid. */
+	@Inject(method = "extractLabels", at = @At("HEAD"), cancellable = true)
+	private void vestiges$noTitle(GuiGraphicsExtractor g, int mouseX, int mouseY, CallbackInfo ci) {
+		Player p = Minecraft.getInstance().player;
+		if (ClientInventory.on() && p != null && InventoryHooks.slots(p).hasTable()) {
+			InventoryPanel.labels(g);
+			ci.cancel();
 		}
 	}
 

@@ -1,5 +1,6 @@
 package dev.vestiges.client.mixin;
 
+import dev.vestiges.inventory.ExtraGridSlot;
 import dev.vestiges.inventory.ExtraSlot;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.world.inventory.Slot;
@@ -14,11 +15,11 @@ public abstract class CreativeModeInventoryScreenMixin {
 
 	@ModifyArg(method = "selectTab", at = @At(value = "INVOKE", target = WRAPPER), index = 2)
 	private int vestiges$hideX(Slot slot, int index, int x, int y) {
-		return slot instanceof ExtraSlot ? -2000 : x;
+		return slot instanceof ExtraSlot || slot instanceof ExtraGridSlot ? -2000 : x;
 	}
 
 	@ModifyArg(method = "selectTab", at = @At(value = "INVOKE", target = WRAPPER), index = 3)
 	private int vestiges$hideY(Slot slot, int index, int x, int y) {
-		return slot instanceof ExtraSlot ? -2000 : y;
+		return slot instanceof ExtraSlot || slot instanceof ExtraGridSlot ? -2000 : y;
 	}
 }
