@@ -87,6 +87,9 @@ public final class ScreenshotTour implements FabricClientGameTest {
 			sorting(ctx, server);
 		}
 		inventory(ctx, mode);
+		server.runOnServer(s -> InventoryHooks.slots(s.getPlayerList().getPlayers().get(0)).setItem(ExtraSlots.TABLE, ItemStack.EMPTY));
+		inventory(ctx, mode + "no_table_");
+		server.runOnServer(s -> InventoryHooks.slots(s.getPlayerList().getPlayers().get(0)).setItem(ExtraSlots.TABLE, new ItemStack(Items.CRAFTING_TABLE)));
 		if (!off) {
 			everyScreen(ctx, server);
 		}

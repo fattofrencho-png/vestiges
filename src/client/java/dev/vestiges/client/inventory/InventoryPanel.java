@@ -54,6 +54,11 @@ public final class InventoryPanel {
 			int[] p = InventoryLayout.pos(i);
 			slotFrame(g, left + p[0], top + p[1]);
 		}
+		// Left to right, so this row's shared lines match the grid above it.
+		for (int slot : new int[] {ExtraSlots.TABLE, ExtraSlots.ENDER, ExtraSlots.TOTEM}) {
+			int[] p = InventoryLayout.pos(slot);
+			slotFrame(g, left + p[0], top + p[1]);
+		}
 		Player owner = Minecraft.getInstance().player;
 		if (owner != null && InventoryHooks.slots(owner).hasTable()) {
 			// The 3x3 grid replaces vanilla's 2x2, arrow and title.
@@ -105,7 +110,10 @@ public final class InventoryPanel {
 		g.text(font, "Weapons", px, InventoryLayout.WEAPONS_Y - 10, LABEL, false);
 		g.text(font, "Tool belt", px, InventoryLayout.BELT_Y - 10, LABEL, false);
 		if (sorting()) {
-			g.text(font, "S", InventoryLayout.SORT_X + 3, InventoryLayout.SORT_Y + 2, 0xFFFFFFFF, true);
+			// Three lines getting shorter, as in the approved render.
+			for (int i = 0; i < 3; i++) {
+				g.fill(InventoryLayout.SORT_X + 2, InventoryLayout.SORT_Y + 2 + i * 2, InventoryLayout.SORT_X + 9 - i * 2, InventoryLayout.SORT_Y + 3 + i * 2, 0xFFFFFFFF);
+			}
 		}
 		Player p = Minecraft.getInstance().player;
 		if (p != null) {

@@ -4,6 +4,7 @@ Newest decisions go at the top of their section, with the date.
 
 ## Decisions
 
+- **2026-11-01:** Inventory 3×3 crafting look approved by the author (https://claude.ai/artifact/DcxU7egj3vvZT822k1HcUC). Item positions in the window frame: grid x 98, 115, 132 and y 7, 24, 41; result 154, 24; table, ender chest and totem at x 98, 115, 132, y 62; Sort stays at 157, 66; Bank at 206, 142 beside the recipe book; no "Crafting" label with a table. Without a table: vanilla 2×2 and arrow.
 - **2026-10-31:** First round of fixes goes into main now. The UI chat then stops until the main chat has shipped more first versions of screens. Next jobs when it restarts: the author picks (new overall look, quest screens, HUD and map labels).
 - **2026-10-31:** Dark theme dims the world behind full screens, so text stays readable. The author chose this from before and after screenshots (https://claude.ai/artifact/Csb3JMRJP4QTRnySmWcd8m).
 - **2026-10-31:** UI work happens in its own chat, in the `RPG Mod UI` folder on the `ui` branch. This chat commits to `ui` only and never pushes. `ui` goes into main only when the author says so.
@@ -69,6 +70,7 @@ Things screenshots can't confirm, for the next combined test guide:
 - Feats tree: dragging stops at the edges in every direction.
 - Scrolling: the Codex and hub Feats scrollbars follow the mouse wheel.
 - Map and waystone screens: a server message goes after 10 seconds.
+- Inventory: the Sort button still works and shows its tooltip with the new three-line icon; the empty table slot shows its icon and tooltip.
 - Light theme: the tree popup's buttons and the welcome page inside Create World.
 - Quests tab: the Active, Available, Done and Standing tabs and the quest rows, with a long quest that needs more room than fits (it stops above the buttons and has no scrolling yet).
 
