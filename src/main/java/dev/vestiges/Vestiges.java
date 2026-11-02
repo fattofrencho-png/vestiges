@@ -23,6 +23,8 @@ public class Vestiges implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		dev.vestiges.world.GlobeFunction.register();
+		dev.vestiges.world.WorldPlans.register();
 		dev.vestiges.server.SavedItems.register();
 		ModAttachments.init();
 		dev.vestiges.codex.PlacedBlocks.init();

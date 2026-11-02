@@ -90,8 +90,14 @@ public final class FarmingService {
 		if (!ripe(state)) {
 			return InteractionResult.PASS;
 		}
-		if (level instanceof ServerLevel sl && player instanceof ServerPlayer sp && sl.mayInteract(sp, pos)) {
-			harvest(sl, sp, pos, state);
+		if (level instanceof ServerLevel sl && player instanceof ServerPlayer sp) {
+			dev.vestiges.settlement.SettlementData.Settlement locked = dev.vestiges.settlement.SettlementService.lockedFor(sp, sl, pos);
+			if (locked != null) {
+				return dev.vestiges.settlement.SettlementService.deny(sp, locked);
+			}
+			if (sl.mayInteract(sp, pos)) {
+				harvest(sl, sp, pos, state);
+			}
 		}
 		return InteractionResult.SUCCESS;
 	}

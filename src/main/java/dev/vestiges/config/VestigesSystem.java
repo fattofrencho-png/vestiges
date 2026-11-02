@@ -21,6 +21,7 @@ public enum VestigesSystem {
 	LOOT("loot", "Banded loot", Category.MOBS, F.IN_CORE | F.BUILT, "Chest and mob loot scale with your level, and gear has rarity.\n\nOff: vanilla loot.", "enchant_levels"),
 	PER_PLAYER_LOOT("per_player_loot", "Per-player chests", Category.MOBS, F.IN_CORE | F.BUILT, "Each player gets their own loot from a natural chest."),
 
+	CONTINENTS("continents", "Continent of Trenec", Category.WORLD, F.BUILT | F.CREATION_ONLY | F.OFF_BY_DEFAULT, "A world made for the story. You start on the continent of Trenec, with four more continents across the sea, real rivers, taller mountains, bigger caves and the capital Dilecta. Emerald ore only exists at a few rich mines.\n\nOff: vanilla terrain, where the places in the story may not match the land.\n\nOnly chosen now. It is the same as picking Vestiges Vanilla under World Type, on the World tab."),
 	QUESTS("quests", "Quests", Category.WORLD, F.IN_CORE | F.BUILT, "Optional quests: guide quests that teach the mod, side quests from villagers, and notes you find. Rewards never include power you can't get elsewhere."),
 	CODEX("codex", "Codex", Category.WORLD, F.IN_CORE | F.BUILT, "Blocks, Bestiary, Places and Items."),
 	FEATS("feats", "Feats", Category.WORLD, F.IN_CORE | F.BUILT, "Goals that earn Bells, Banners, Ward Lanterns and more."),

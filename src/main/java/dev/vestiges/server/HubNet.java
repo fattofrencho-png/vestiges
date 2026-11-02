@@ -26,8 +26,12 @@ public final class HubNet {
 	}
 
 	public static void register() {
-		ServerPlayNetworking.registerGlobalReceiver(VestigesPayloads.HubRequest.TYPE,
-			(payload, ctx) -> ctx.server().execute(() -> send(ctx.player())));
+		RequestLimit.register();
+		ServerPlayNetworking.registerGlobalReceiver(VestigesPayloads.HubRequest.TYPE, (payload, ctx) -> ctx.server().execute(() -> {
+			if (RequestLimit.allow(ctx.player(), "hub")) {
+				send(ctx.player());
+			}
+		}));
 	}
 
 	public static void send(ServerPlayer player) {

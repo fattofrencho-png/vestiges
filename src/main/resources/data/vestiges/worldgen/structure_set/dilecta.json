@@ -1,0 +1,12 @@
+{
+  "placement": {
+    "type": "vestiges:plan_site",
+    "village": "Dilecta"
+  },
+  "structures": [
+    {
+      "structure": "vestiges:dilecta",
+      "weight": 1
+    }
+  ]
+}

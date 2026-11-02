@@ -17,6 +17,7 @@
 		"BonusLevelTableConditionMixin",
 		"BowItemMixin",
 		"CakeBlockMixin",
+		"ChunkGeneratorMixin",
 		"CombatRulesMixin",
 		"CropBlockMixin",
 		"CrossbowItemMixin",
@@ -33,6 +34,7 @@
 		"LivingEntityClimbMixin",
 		"LivingEntityMixin",
 		"LivingEntityUseMixin",
+		"OreFeatureMixin",
 		"PistonBaseBlockMixin",
 		"PlayerEquipmentMixin",
 		"PlayerExtraMixin",
@@ -40,6 +42,7 @@
 		"ProjectileWeaponItemMixin",
 		"RandomizableContainerBlockEntityMixin",
 		"ServerGamePacketListenerImplMixin",
+		"ServerExplosionMixin",
 		"ServerPlayerMixin",
 		"SpawnPlacementsMixin"
 	],

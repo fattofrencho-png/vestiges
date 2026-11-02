@@ -166,6 +166,7 @@ public final class VestigesCommands {
 				.then(Commands.literal("test")
 					.then(Commands.argument("level", IntegerArgumentType.integer(1, 100))
 						.executes(ctx -> lootTest(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "level"))))))
+			.then(dev.vestiges.world.WorldCommands.tree())
 			.then(Commands.literal("config")
 				.then(Commands.literal("list").executes(ctx -> list(ctx.getSource())))
 				.then(Commands.literal("reload").executes(ctx -> reload(ctx.getSource())))
