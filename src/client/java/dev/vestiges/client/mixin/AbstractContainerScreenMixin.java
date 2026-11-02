@@ -77,6 +77,16 @@ public abstract class AbstractContainerScreenMixin extends Screen {
 				.tooltip(Tooltip.create(Component.literal("Move your inventory in (not the hotbar)"))).build());
 			addRenderableWidget(Button.builder(Component.literal("Sort"), b -> ClientInventory.send("sort", 0, 0, "")).bounds(right - 70, by, 26, 12).build());
 		}
+		if ((Object) this instanceof ShulkerBoxScreen && ClientInventory.shulkerOpen()) {
+			AbstractContainerScreenAccessor a = (AbstractContainerScreenAccessor) this;
+			int bx = a.vestiges$leftPos() + 176 + 4;
+			int top = a.vestiges$topPos();
+			vestiges$rename = new EditBox(font, bx, top, 92, 16, Component.literal("Box name"));
+			vestiges$rename.setMaxLength(35);
+			vestiges$rename.setValue(ClientInventory.shulkerName());
+			addRenderableWidget(vestiges$rename);
+			addRenderableWidget(Button.builder(Component.literal("Rename"), b -> ClientInventory.send("shulker_rename", 0, 0, vestiges$rename.getValue())).bounds(bx, top + 18, 92, 16).build());
+		}
 		if (!vestiges$isEnderChest()) {
 			return;
 		}

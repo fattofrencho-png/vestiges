@@ -56,7 +56,7 @@ public final class InventorySorter {
 
 	/** Your ender chest, or a container block a player placed. Natural loot chests, their personal copies and minecarts don't count. */
 	private static boolean placed(ServerPlayer player, Container c) {
-		if (c instanceof PlayerEnderChestContainer) {
+		if (c instanceof PlayerEnderChestContainer || c instanceof ShulkerSession) {
 			return true;
 		}
 		if (c instanceof CompoundContainerAccessor both) {

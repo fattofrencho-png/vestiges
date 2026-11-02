@@ -145,6 +145,8 @@ public final class InventoryService {
 				holder.vestiges$setPageNames(names);
 				sendPages(player);
 			}
+			case "shulker_open" -> ShulkerSession.open(player, a.a());
+			case "shulker_rename" -> ShulkerSession.rename(player, a.text());
 			case "sort" -> {
 				if (ConfigStore.server().enabled(VestigesSystem.SORTING)) {
 					InventorySorter.sort(player);

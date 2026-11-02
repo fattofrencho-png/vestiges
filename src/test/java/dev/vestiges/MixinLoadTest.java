@@ -56,6 +56,7 @@ class MixinLoadTest {
 	/** Client screens and HUD, checked when the tests run as a client. */
 	private static final List<String> CLIENT_TARGETS = List.of(
 		"net.minecraft.client.gui.screens.inventory.InventoryScreen",
+		"net.minecraft.client.gui.screens.inventory.ShulkerBoxScreen",
 		"net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen",
 		"net.minecraft.client.gui.screens.inventory.AbstractContainerScreen",
 		"net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen",

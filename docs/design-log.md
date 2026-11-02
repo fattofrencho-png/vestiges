@@ -106,7 +106,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
 - **Bank:** moves to the bottom of the right panel, next to the recipe book button.
 - **Sorting:** the server does the moving, through `InventoryService`, so nothing can be duplicated. Sort covers the main inventory and open chests, in creative-tab order; the hotbar stays as you arranged it (user, 2026-10-31).
 - **Locked slots are being rethought (user, 2026-10-31):** single-slot locks are out, because tools and weapons now have their own space. A save system for the entire hotbar replaces them: 3 saved sets per player; switching swaps the current hotbar with that set's items from your inventory, and never creates items; buttons in the inventory.
-- **Shulker boxes open from your own inventory only (user, 2026-10-31).**
+- **Shulker boxes open from your own inventory only (user, 2026-10-31).** Built (2026-11-01), joins the combined test: right-click opens it, contents stay in the item, the box's slot locks, a plain name box sits beside the screen, and a dyed box tints it. Sort works inside it. Boxes placed in the world stay vanilla.
 - **Ctrl+Alt + scroll:** works on an item you hover over or hold.
   - Only recipes with a single ingredient (crafting and stonecutter).
   - **Undo uses a per-player record, not a hidden tag on the item,** because tagged stairs wouldn't stack with normal stairs. The record is cleared on logout, and you can only undo what you converted.

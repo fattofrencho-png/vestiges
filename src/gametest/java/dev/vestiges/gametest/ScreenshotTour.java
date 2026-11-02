@@ -266,6 +266,25 @@ public final class ScreenshotTour implements FabricClientGameTest {
 			return out;
 		});
 		System.out.println("[tour] grid: " + grid + " | " + after);
+		// A shulker box from the inventory: items go into the item itself, and the box's slot is locked.
+		String box = server.computeOnServer(s -> {
+			net.minecraft.server.level.ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			net.minecraft.world.entity.player.Inventory inv = p.getInventory();
+			inv.setItem(35, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SHULKER_BOX));
+			dev.vestiges.inventory.ShulkerSession.open(p, 35);
+			net.minecraft.world.inventory.AbstractContainerMenu m = p.containerMenu;
+			m.getSlot(0).set(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND, 7));
+			boolean locked = true;
+			for (net.minecraft.world.inventory.Slot slot : m.slots) {
+				if (slot.container == inv && slot.getContainerSlot() == 35) {
+					locked = !slot.mayPickup(p);
+				}
+			}
+			boolean valid = m.stillValid(p);
+			p.closeContainer();
+			return "menu " + m.getClass().getSimpleName() + ", locked " + locked + ", valid " + valid + ", saved " + inv.getItem(35).getOrDefault(net.minecraft.core.component.DataComponents.CONTAINER, net.minecraft.world.item.component.ItemContainerContents.EMPTY).nonEmptyItemCopyStream().toList() + ", back to inventory menu " + (p.containerMenu == p.inventoryMenu);
+		});
+		System.out.println("[tour] shulker: " + box);
 		server.runOnServer(s -> dev.vestiges.inventory.InventoryHooks.slots(s.getPlayerList().getPlayers().get(0)).setItem(dev.vestiges.inventory.ExtraSlots.TABLE, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.CRAFTING_TABLE)));
 	}
 

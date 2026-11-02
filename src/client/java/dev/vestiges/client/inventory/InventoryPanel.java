@@ -17,8 +17,12 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
 
 /** Drawing and clicks for the survival inventory's new parts: slot frames, the rack panel, the Bank and the ender chest slot. */
 public final class InventoryPanel {
@@ -218,6 +222,15 @@ public final class InventoryPanel {
 				ClientInventory.send("bank_withdraw", 0, event.button() == InputConstants.MOUSE_BUTTON_RIGHT ? 1 : 64, "");
 			}
 			return true;
+		}
+		if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT && carried.isEmpty() && ClientFeatures.on(VestigesSystem.SHULKERS)) {
+			for (int i = InventoryMenu.INV_SLOT_START; i < InventoryMenu.USE_ROW_SLOT_END; i++) {
+				Slot s = p.inventoryMenu.getSlot(i);
+				if (s.getItem().getItem() instanceof BlockItem b && b.getBlock() instanceof ShulkerBoxBlock && over(left, top, new int[] {s.x, s.y}, event.x(), event.y())) {
+					ClientInventory.send("shulker_open", i, 0, "");
+					return true;
+				}
+			}
 		}
 		if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT && carried.isEmpty()
 			&& over(left, top, InventoryLayout.pos(ExtraSlots.ENDER), event.x(), event.y())

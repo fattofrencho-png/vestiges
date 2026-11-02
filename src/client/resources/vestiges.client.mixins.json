@@ -19,6 +19,7 @@
 		"HudMixin",
 		"HumanoidRenderStateMixin",
 		"InventoryScreenMixin",
+		"ShulkerBoxScreenMixin",
 		"MinecraftMixin",
 		"MobRendererMixin",
 		"MouseHandlerMixin",
