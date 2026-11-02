@@ -6,7 +6,7 @@ This folder is where the Vestiges lore is discussed and decided, in its own Clau
 
 - **Lore only.** Talk about story, people, places, faiths, names and written text. Game rules and balance belong in the main chat.
 - **Edit only `docs/lore/`.** Never change code, data files, `docs/design-log.md` or `CLAUDE.md`. Never commit or push.
-- **Never change the source projects.** The author's own bible is `E:\Program Files\Antigravity\Life AI Projects\Hobby\Minecraft DataPacks\RPG_Lore_Mod\bible\lore_source.md`. Read it and quote it, but never paraphrase it or edit it.
+- **Never change the source projects.** The author's own bible is `E:\AI Work\Minecraft\Datapack\Hearthbook Mod\bible\lore_source.md`. Read it and quote it, but never paraphrase it or edit it.
 - **I draft, the author approves.** New lore only counts once the author says so. Keep drafts apart from decisions.
 - **Writing style for talking to the author:** simple words, short messages, one topic at a time, numbered questions.
 
