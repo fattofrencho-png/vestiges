@@ -1,0 +1,20 @@
+{
+  "tree_spruce-tree_spruce_9x35x9_var01": {
+    "from": "20261101_105816_22",
+    "title": "Spruce tree",
+    "category": "tree",
+    "credit": {
+      "creator": "",
+      "permission": "",
+      "licence": ""
+    },
+    "ground_y": 0,
+    "trunk_x": 4,
+    "trunk_z": 4,
+    "size": [
+      9,
+      35,
+      9
+    ]
+  }
+}

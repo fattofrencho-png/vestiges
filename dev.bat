@@ -1,10 +1,12 @@
 @echo off
 rem Runs Gradle with the JDK 25 that Minecraft 26.3 needs.
 rem   dev build | dev test | dev runClient | dev runServer
+rem   dev assets     opens the asset preview in your browser
 rem   dev deploy     build, then replace the jar in your game instance's mods folder
 rem                  (set VESTIGES_MODS to override; default is the modtesting instance in ATLauncher)
 rem Looks for a JDK 25 in %USERPROFILE%\.jdks first, then falls back to whatever JAVA_HOME already is.
 cd /d "%~dp0"
+if /i "%~1"=="assets" (python tools\assets\studio.py & exit /b %errorlevel%)
 for /d %%D in ("%USERPROFILE%\.jdks\jdk-25*") do set "JAVA_HOME=%%~fD"
 if not defined JAVA_HOME (echo No JDK 25 found in %USERPROFILE%\.jdks. Install Temurin 25 and try again.& exit /b 1)
 if /i "%~1"=="deploy" goto deploy

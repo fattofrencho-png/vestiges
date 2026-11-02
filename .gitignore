@@ -39,3 +39,6 @@ logs/
 
 # written when unit tests open a world
 /config/
+
+# python
+__pycache__/
