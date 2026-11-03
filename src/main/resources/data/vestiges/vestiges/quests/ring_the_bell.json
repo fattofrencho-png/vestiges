@@ -4,6 +4,7 @@
   "order": 1,
   "name": "Ring the Bell",
   "giver": "Guide",
+  "intro": "A Bell makes a place yours. Place it, keep the peace while it settles, and give your settlement a name.",
   "steps": [
     {
       "type": "named_settlement",

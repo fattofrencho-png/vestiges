@@ -4,10 +4,11 @@
   "order": 4,
   "name": "Keep Them Out",
   "giver": "Guide",
+  "intro": "Your settlement already keeps monsters from spawning. A Ward Lantern does the same for a place away from home, like a mine or an outpost. Earn one by hunting elites.",
   "steps": [
     {
       "type": "ward",
-      "text": "Earn and place a Ward Lantern, for example with Elite Hunter (10 elites).",
+      "text": "Earn a Ward Lantern, for example with Elite Hunter (10 elites), and place it away from home.",
       "amount": 1
     }
   ],

@@ -4,6 +4,7 @@
   "order": 0,
   "name": "A Little Stronger",
   "giver": "Guide",
+  "intro": "Every fight, every ore and every new place teaches you something. Level 2 is the first proof.",
   "steps": [
     {
       "type": "level",

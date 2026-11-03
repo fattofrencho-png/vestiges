@@ -4,6 +4,7 @@
   "order": 6,
   "name": "Choose Your Path",
   "giver": "Guide",
+  "intro": "At level 20 you choose an ascendancy, a calling that shapes the rest of your build. Finish the checklist first.",
   "steps": [
     {
       "type": "ascended",

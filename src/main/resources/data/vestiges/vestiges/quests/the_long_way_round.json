@@ -4,6 +4,7 @@
   "order": 3,
   "name": "The Long Way Round",
   "giver": "Guide",
+  "intro": "The First Waystone feat lets you travel fast between your places. Each trip costs emeralds, so choose your waystones with care.",
   "steps": [
     {
       "type": "feat",

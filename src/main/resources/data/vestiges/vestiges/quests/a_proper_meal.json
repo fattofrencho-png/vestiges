@@ -4,6 +4,7 @@
   "order": 5,
   "name": "A Proper Meal",
   "giver": "Guide",
+  "intro": "Some food gives a buff, shown beside the hunger bar. Eat well before a long trip.",
   "steps": [
     {
       "type": "use",

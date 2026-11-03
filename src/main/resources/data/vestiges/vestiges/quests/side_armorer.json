@@ -5,19 +5,16 @@
   "intro": "A plate means nothing until something has hit it.",
   "steps": [
     {
-      "type": "bring",
-      "text": "Bring {amount} {target}.",
-      "amount": 8,
-      "targets": [
-        "minecraft:iron_ingot"
-      ]
+      "type": "wear",
+      "text": "Wear {amount} armor pieces.",
+      "amount": 4
     },
     {
       "type": "kill",
-      "text": "Kill {amount} elite.",
-      "amount": 1,
+      "text": "Kill {amount} monsters in them.",
+      "amount": 8,
       "targets": [
-        "elite"
+        "any"
       ]
     }
   ],

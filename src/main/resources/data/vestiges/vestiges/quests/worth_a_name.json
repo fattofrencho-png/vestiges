@@ -4,10 +4,11 @@
   "order": 2,
   "name": "Worth a Name",
   "giver": "Guide",
+  "intro": "Renown measures what your settlement is worth. Build up your base: more blocks, more variety and more beds raise it, and level 2 is called Settlement.",
   "steps": [
     {
       "type": "renown",
-      "text": "Reach renown 2 (Settlement). Blocks, variety and beds raise it.",
+      "text": "Reach renown 2 (Settlement). Build up your base: blocks, variety and beds raise it.",
       "amount": 2
     }
   ],
