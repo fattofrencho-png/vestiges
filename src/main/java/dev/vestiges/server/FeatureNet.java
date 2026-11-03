@@ -85,6 +85,9 @@ public final class FeatureNet {
 		}
 		JsonObject root = new JsonObject();
 		root.add("systems", systems);
+		com.google.gson.JsonArray remembered = new com.google.gson.JsonArray();
+		c.remembered.forEach(remembered::add);
+		root.add("remembered", remembered);
 		root.addProperty("operator", mayChange(p));
 		root.addProperty("prompt", c.setupPending && mayChange(p));
 		root.addProperty("sleep", sleepRule());

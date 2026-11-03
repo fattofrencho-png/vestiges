@@ -106,7 +106,7 @@ final class LevelSuite {
 		long given = server.computeOnServer(s -> LevelService.addXp(s.getPlayerList().getPlayers().get(0), 100, "autocheck"));
 		c.check("with levels switched off no XP is given", given == 0, "given " + given);
 		server.runCommand("vestiges config system character true");
-		c.check("turning levels back on does not bring back what was turned off with them (by design)", !ConfigStore.server().enabled(VestigesSystem.PASSIVE_TREE));
+		c.check("turning levels back on brings back what was turned off with them", ConfigStore.server().enabled(VestigesSystem.PASSIVE_TREE));
 		T.restore(server, snapshot);
 		ctx.waitTicks(3);
 		setLevel(server, 20, 0, 0);

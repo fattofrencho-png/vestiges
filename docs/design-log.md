@@ -14,7 +14,7 @@ A full loop: level up, build a home, recruit villagers, run dungeons, fight drag
 **After the MVP:** workers, blueprints, A3, batches B to E, the other dragons and the ending, custom biomes and models.
 
 ### Switch groups (user, 2026-11-03)
-Switches that need each other are grouped as parent and child on the welcome page and the Features screen. Build after testing Day 3.
+Switches that need each other are grouped as parent and child on the welcome page and the Features screen. **Built 2026-11-03** (`VestigesSystem.parent()/depth()/listed()`, `ServerConfig.remembered`, indented rows and section headings in `FeaturePanel`; group "Loot and enchants" added, "Mobs and loot" is now "Mobs"). Per-player chests sit in Loot and enchants as a stand-alone switch (no new dependency).
 - **Rule:** a parent off turns its children off (greyed under it); a child on turns its parent on; **a parent turned back on gives its children back exactly as they were** (the server remembers each child's last state).
 - **Groups:** Character (Levels and XP > Passive trees; Gear rarity) · **Loot and enchants** (Enchant levels I-VI > Banded loot > Per-player chests; the last placement is my reading, to confirm) · Mobs (Mob levels > Elites) · World (Feats > Settlements > Workers, Feats > Waystones, Villagers > Trade system; Workers also shows "needs Villagers"; Quests, Codex, Dungeons, Events, Nether pockets, Dragons, Blueprints stand alone) · Comfort (Inventory helpers: Sorting, Bigger stacks, Shapes, Open shulker boxes, Peek · Farming help · Server rules: Sleep, No mob griefing · Freecam).
 - **Also:** the arrows slot holds 64 at the default stack size and 99 only with the 99 option (fine, user, 2026-11-03).

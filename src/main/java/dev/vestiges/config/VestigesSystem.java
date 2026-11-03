@@ -14,12 +14,12 @@ public enum VestigesSystem {
 	CHARACTER("character", "Levels and XP", Category.CHARACTER, F.IN_CORE | F.BUILT, "Levels 1-100 and Paragon, percentage hearts and the XP readout.\n\nOff: vanilla hearts and vanilla XP."),
 	PASSIVE_TREE("passive_tree", "Passive trees", Category.CHARACTER, F.IN_CORE | F.BUILT, "The Fight and Craft wheels and the ascendancies.", "character"),
 	GEAR("gear", "Gear rarity", Category.CHARACTER, F.IN_CORE | F.BUILT, "Rarity colours, enchant costs, the gear ladder and trim stats."),
-	ENCHANT_LEVELS("enchant_levels", "Enchant levels I-VI", Category.CHARACTER, F.IN_CORE | F.BUILT | F.CREATION_ONLY, "All enchants rescaled to levels I to VI.\n\nOnly chosen now. Items keep their levels, so it can't change once the world exists."),
+	ENCHANT_LEVELS("enchant_levels", "Enchant levels I-VI", Category.LOOT, F.IN_CORE | F.BUILT | F.CREATION_ONLY, "All enchants rescaled to levels I to VI.\n\nOnly chosen now. Items keep their levels, so it can't change once the world exists."),
 
 	MOB_SCALING("mob_scaling", "Mob levels", Category.MOBS, F.IN_CORE | F.BUILT, "Monsters level up with you and with depth.\n\nOff: vanilla monsters."),
 	ELITES("elites", "Elites", Category.MOBS, F.IN_CORE | F.BUILT, "Champions, Elites and Warlords, with their powers.", "mob_scaling"),
-	LOOT("loot", "Banded loot", Category.MOBS, F.IN_CORE | F.BUILT, "Chest and mob loot scale with your level, and gear has rarity.\n\nOff: vanilla loot.", "enchant_levels"),
-	PER_PLAYER_LOOT("per_player_loot", "Per-player chests", Category.MOBS, F.IN_CORE | F.BUILT, "Each player gets their own loot from a natural chest."),
+	LOOT("loot", "Banded loot", Category.LOOT, F.IN_CORE | F.BUILT, "Chest and mob loot scale with your level, and gear has rarity.\n\nOff: vanilla loot.", "enchant_levels"),
+	PER_PLAYER_LOOT("per_player_loot", "Per-player chests", Category.LOOT, F.IN_CORE | F.BUILT, "Each player gets their own loot from a natural chest."),
 
 	QUESTS("quests", "Quests", Category.WORLD, F.IN_CORE | F.BUILT, "Optional quests: guide quests that teach the mod, side quests from villagers, and notes you find. Rewards never include power you can't get elsewhere."),
 	CODEX("codex", "Codex", Category.WORLD, F.IN_CORE | F.BUILT, "Blocks, Bestiary, Places and Items."),
@@ -28,7 +28,7 @@ public enum VestigesSystem {
 	WAYSTONES("waystones", "Waystones", Category.WORLD, F.IN_CORE | F.BUILT, "Earned fast travel between lodestones, paid in emeralds.", "feats"),
 	VILLAGERS("villagers", "Villagers", Category.WORLD, F.IN_CORE, "Library, villager screen and recruiting."),
 	TRADES("trades", "Trade system", Category.WORLD, F.IN_CORE, "Our trades replace vanilla trading.", "villagers"),
-	WORKERS("workers", "Workers", Category.WORLD, 0, "Jobs that make any item in your settlement.", "villagers", "settlements"),
+	WORKERS("workers", "Workers", Category.WORLD, 0, "Jobs that make any item in your settlement.", "settlements", "villagers"),
 	DUNGEONS("dungeons", "Dungeons", Category.WORLD, F.IN_CORE, "Portal runs and the Gate tree."),
 	EVENTS("events", "World events", Category.WORLD, 0, "Blood Moon, caravans, shrines and more."),
 	NETHER_POCKETS("nether_pockets", "Nether pockets", Category.WORLD, 0, "Rare Nether caves in deepslate."),
@@ -47,7 +47,7 @@ public enum VestigesSystem {
 
 	/** Groups on the welcome page. */
 	public enum Category {
-		CORE("Always on"), CHARACTER("Character"), MOBS("Mobs and loot"), WORLD("World"), COMFORT("Comfort");
+		CORE("Always on"), CHARACTER("Character"), LOOT("Loot and enchants"), MOBS("Mobs"), WORLD("World"), COMFORT("Comfort");
 
 		public final String label;
 
@@ -130,6 +130,63 @@ public enum VestigesSystem {
 			out.add(byId(n));
 		}
 		return out;
+	}
+
+	/** The feature this one is shown under: the first one it needs in the same group, or null when it stands alone. */
+	public VestigesSystem parent() {
+		for (String n : needs) {
+			VestigesSystem p = byId(n);
+			if (p.category == category) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	/** How many levels deep it is shown under its parents. */
+	public int depth() {
+		int d = 0;
+		for (VestigesSystem p = parent(); p != null; p = p.parent()) {
+			d++;
+		}
+		return d;
+	}
+
+	private static final List<String> SECTIONS = List.of("Inventory", "In the world", "Server rules");
+
+	/** The heading a stand-alone switch is listed under inside its group (Comfort only), or null. */
+	public String section() {
+		return switch (id) {
+			case "sorting", "stacks", "shapes", "shulkers", "peek" -> "Inventory";
+			case "farming", "freecam" -> "In the world";
+			case "sleep", "griefing" -> "Server rules";
+			default -> null;
+		};
+	}
+
+	/** A group's switches in the order they are listed: sections together, each parent followed by the features that need it. */
+	public static List<VestigesSystem> listed(Category category) {
+		List<VestigesSystem> roots = new ArrayList<>();
+		for (VestigesSystem s : values()) {
+			if (s.category == category && s.parent() == null) {
+				roots.add(s);
+			}
+		}
+		roots.sort(java.util.Comparator.comparingInt(s -> s.section() == null ? -1 : SECTIONS.indexOf(s.section())));
+		List<VestigesSystem> out = new ArrayList<>();
+		for (VestigesSystem r : roots) {
+			addWithChildren(r, out);
+		}
+		return out;
+	}
+
+	private static void addWithChildren(VestigesSystem s, List<VestigesSystem> out) {
+		out.add(s);
+		for (VestigesSystem c : values()) {
+			if (c.parent() == s) {
+				addWithChildren(c, out);
+			}
+		}
 	}
 
 	public static VestigesSystem byId(String id) {

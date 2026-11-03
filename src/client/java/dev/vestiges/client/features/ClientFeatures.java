@@ -18,6 +18,8 @@ public final class ClientFeatures {
 	private static boolean operator;
 	private static int sleep = 100;
 	private static int stackLimit = 64;
+	/** Features switched off only because something they need is off (they return with it). */
+	private static final java.util.List<String> REMEMBERED = new java.util.ArrayList<>();
 
 	private ClientFeatures() {
 	}
@@ -46,6 +48,10 @@ public final class ClientFeatures {
 			ConfigStore.server().numbers.stackLimit = root.get("stack_limit").getAsInt();
 		}
 		stackLimit = root.get("stack_limit").getAsInt();
+		REMEMBERED.clear();
+		if (root.has("remembered")) {
+			root.getAsJsonArray("remembered").forEach(e -> REMEMBERED.add(e.getAsString()));
+		}
 		operator = root.get("operator").getAsBoolean();
 		sleep = root.get("sleep").getAsInt();
 		if (root.get("prompt").getAsBoolean() && mc.gui.screen() == null) {
@@ -75,6 +81,7 @@ public final class ClientFeatures {
 		for (VestigesSystem s : VestigesSystem.values()) {
 			c.set(s, on(s));
 		}
+		c.remembered.addAll(REMEMBERED);
 		return c;
 	}
 

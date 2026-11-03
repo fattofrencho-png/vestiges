@@ -66,6 +66,7 @@ From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.
   core and can't be switched off). Pure Java, unit-tested. `server/FeatureNet` opens each world's file and syncs the switches; on the client check `ClientFeatures.on(...)`.
   Every new feature gets a `VestigesSystem` entry and must leave vanilla behaviour when off. Welcome page: `client/features/` (`FeaturePanel`, `WelcomeTab`, `FeaturesScreen`).
 - `quest/`: `QuestService` (server: accept, steps, rewards, offers), `QuestRules` (pure numbers and reputation), `QuestState` (saved per player); quests are JSON in `data/vestiges/vestiges/quests/`. Texts and numbers are drafts until the quest side chat reviews them. Screens in `client/quest/`.
+  Switches nest by `needs`: `VestigesSystem.parent()/depth()/listed()` give the tree shown in `FeaturePanel`; `ServerConfig.remembered` keeps what was switched off with a parent so it returns with it (synced to the client in `HubNet`-style state by `FeatureNet`).
 - `data/`: `DataType<T>` = one datapack content type (`data/<ns>/vestiges/<type>/*.json`, decoded by a codec, reloaded by `/reload`);
   `VestigesData` lists them. M0 ships `feats` (the 24 approved feats as display text; M5 makes them real).
 - `net/VestigesPayloads` + `server/HubNet`: the client asks (`HubRequest`), the server answers with a complete JSON snapshot (`HubData`),

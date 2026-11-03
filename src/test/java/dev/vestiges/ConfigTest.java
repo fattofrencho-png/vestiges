@@ -213,4 +213,77 @@ class ConfigTest {
 		assertFalse(c.lineOn("health"));
 		assertTrue(c.lineOn("tool"));
 	}
+
+	@Test
+	void whatWasSwitchedOffWithAParentComesBackWithIt() {
+		ServerConfig c = new ServerConfig().normalize();
+		c.setWithNeeds(VestigesSystem.CHARACTER, false);
+		assertFalse(c.enabled(VestigesSystem.PASSIVE_TREE));
+		c.setWithNeeds(VestigesSystem.CHARACTER, true);
+		assertTrue(c.enabled(VestigesSystem.PASSIVE_TREE), "the trees return with levels");
+		assertTrue(c.remembered.isEmpty());
+
+		c.setWithNeeds(VestigesSystem.PASSIVE_TREE, false);
+		c.setWithNeeds(VestigesSystem.CHARACTER, false);
+		c.setWithNeeds(VestigesSystem.CHARACTER, true);
+		assertFalse(c.enabled(VestigesSystem.PASSIVE_TREE), "a child the player had switched off stays off");
+	}
+
+	@Test
+	void aSwitchTurnedOnByNeedDoesNotBringBackItsSiblings() {
+		ServerConfig c = new ServerConfig().normalize();
+		c.setWithNeeds(VestigesSystem.FEATS, false);
+		c.setWithNeeds(VestigesSystem.WORKERS, true);
+		assertTrue(c.enabled(VestigesSystem.SETTLEMENTS));
+		assertFalse(c.enabled(VestigesSystem.WAYSTONES), "waystones were not asked for");
+		c.setWithNeeds(VestigesSystem.FEATS, false);
+		c.setWithNeeds(VestigesSystem.FEATS, true);
+		assertTrue(c.enabled(VestigesSystem.WAYSTONES) && c.enabled(VestigesSystem.SETTLEMENTS) && c.enabled(VestigesSystem.WORKERS),
+			"choosing the parent brings back everything it took with it, down the chain");
+	}
+
+	@Test
+	void aFeatureWithTwoParentsWaitsForBoth() {
+		ServerConfig c = new ServerConfig().normalize();
+		c.setWithNeeds(VestigesSystem.VILLAGERS, false);
+		c.setWithNeeds(VestigesSystem.FEATS, false);
+		assertFalse(c.enabled(VestigesSystem.WORKERS));
+		c.setWithNeeds(VestigesSystem.FEATS, true);
+		assertTrue(c.enabled(VestigesSystem.SETTLEMENTS));
+		assertFalse(c.enabled(VestigesSystem.WORKERS), "villagers are still off");
+		c.setWithNeeds(VestigesSystem.VILLAGERS, true);
+		assertTrue(c.enabled(VestigesSystem.WORKERS) && c.enabled(VestigesSystem.TRADES));
+	}
+
+	@Test
+	void rememberedSwitchesAreSavedAndPresetsForgetThem() {
+		ServerConfig c = new ServerConfig().normalize();
+		c.setWithNeeds(VestigesSystem.CHARACTER, false);
+		ServerConfig again = new com.google.gson.Gson().fromJson(new com.google.gson.Gson().toJson(c), ServerConfig.class).normalize();
+		assertTrue(again.remembered.contains("passive_tree"));
+		again.setWithNeeds(VestigesSystem.CHARACTER, true);
+		assertTrue(again.enabled(VestigesSystem.PASSIVE_TREE));
+		c.applyPreset(VestigesSystem.Preset.CORE);
+		assertTrue(c.remembered.isEmpty());
+	}
+
+	@Test
+	void switchesAreGroupedUnderTheOnesTheyNeed() {
+		assertEquals(java.util.List.of(VestigesSystem.ENCHANT_LEVELS, VestigesSystem.LOOT, VestigesSystem.PER_PLAYER_LOOT),
+			VestigesSystem.listed(VestigesSystem.Category.LOOT));
+		assertEquals(1, VestigesSystem.LOOT.depth());
+		assertEquals(1, VestigesSystem.PASSIVE_TREE.depth());
+		assertEquals(1, VestigesSystem.ELITES.depth());
+		assertEquals(2, VestigesSystem.WORKERS.depth(), "workers sit under settlements, which sit under feats");
+		assertEquals(VestigesSystem.SETTLEMENTS, VestigesSystem.WORKERS.parent());
+		assertEquals(1, VestigesSystem.TRADES.depth());
+		java.util.List<VestigesSystem> comfort = VestigesSystem.listed(VestigesSystem.Category.COMFORT);
+		assertEquals(VestigesSystem.SORTING, comfort.get(0), "inventory helpers come first");
+		assertEquals(VestigesSystem.GRIEFING, comfort.get(comfort.size() - 1), "server rules come last");
+		for (VestigesSystem.Category cat : VestigesSystem.Category.values()) {
+			for (VestigesSystem s : VestigesSystem.values()) {
+				assertEquals(s.category == cat, VestigesSystem.listed(cat).contains(s), s.id + " is listed exactly once, in its own group");
+			}
+		}
+	}
 }

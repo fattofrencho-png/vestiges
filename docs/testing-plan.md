@@ -79,6 +79,8 @@ If a Layer 2 check cannot be automated after 3 attempts, it moves to this list w
 - **JB's answers (2026-11-03):** the arrows slot holding 64 by default is fine; ascendancies/keystone rivals, fights and second-player waystone cases are dropped from the plan (not tested). Switch grouping (group and sub-group for toggles that need each other) is a new design item, see the design log once agreed.
 - **Harness lessons:** a suite must never leave the survival player falling or standing in the block it places into; each suite starts with empty pockets and an empty Bank; use `T.goTo` (loads the column first, then teleports).
 
+- **Switch groups built (2026-11-03):** parents and children, remembered children, group "Loot and enchants". 88 JUnit tests pass (5 new); all nine auto-check suites pass again (sweep 413, map 43, levels 48, inventory 60, mobs 126, loot 204, codex 69, structures 30 + 30); `groups` run (`VESTIGES_SUITE=groups`) saves screenshots of every group on the welcome page. One run of the second batch died at game start with a Mixin error for `KeyboardInputMixin` (`moveVector` not located); the rerun was clean, so it looks transient (to watch).
+
 ## Order and time (at 1-2 hours a day; estimates to confirm)
 
 1. **Day 1:** Layer 1 run; build the `AutoCheck` harness + S1 Sweep + log scan. First report.
