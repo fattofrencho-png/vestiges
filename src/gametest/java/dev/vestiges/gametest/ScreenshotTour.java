@@ -55,6 +55,9 @@ public final class ScreenshotTour implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext ctx) {
+		if (System.getenv("VESTIGES_SUITE") != null) {
+			return;
+		}
 		boolean off = "off".equals(System.getenv("VESTIGES_TOUR"));
 		ctx.getInput().resizeWindow(1920, 1080);
 		welcome(ctx, off);

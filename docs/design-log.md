@@ -13,6 +13,12 @@ A full loop: level up, build a home, recruit villagers, run dungeons, fight drag
 6. **Finish:** waystone price cap decision, quest list review, balance pass, one combined test guide, a release build without `vestiges-wiki-author.html`.
 **After the MVP:** workers, blueprints, A3, batches B to E, the other dragons and the ending, custom biomes and models.
 
+### Switch groups (user, 2026-11-03)
+Switches that need each other are grouped as parent and child on the welcome page and the Features screen. Build after testing Day 3.
+- **Rule:** a parent off turns its children off (greyed under it); a child on turns its parent on; **a parent turned back on gives its children back exactly as they were** (the server remembers each child's last state).
+- **Groups:** Character (Levels and XP > Passive trees; Gear rarity) · **Loot and enchants** (Enchant levels I-VI > Banded loot > Per-player chests; the last placement is my reading, to confirm) · Mobs (Mob levels > Elites) · World (Feats > Settlements > Workers, Feats > Waystones, Villagers > Trade system; Workers also shows "needs Villagers"; Quests, Codex, Dungeons, Events, Nether pockets, Dragons, Blueprints stand alone) · Comfort (Inventory helpers: Sorting, Bigger stacks, Shapes, Open shulker boxes, Peek · Farming help · Server rules: Sleep, No mob griefing · Freecam).
+- **Also:** the arrows slot holds 64 at the default stack size and 99 only with the 99 option (fine, user, 2026-11-03).
+
 ### Context
 You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one mod, so you don't need to find and update other mods. Once it's published, other players can switch off what they don't want. **Core version that can't be switched off: the new inventory and the map.** Everything else gets a switch, chosen on a welcome page when a world is created.
 
@@ -130,6 +136,28 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
 | **M9 World** | Optional world preset with continents and bigger biomes (vanilla terrain stays the default) |
 | **M10 Blueprints** | Schematics page in H · material list HUD · Litematica files · build layers |
 | **Not priority** | Explosion and other effects · happy ghast speed · more mobs · skin and model variety · windmills and moving parts (needs its own talk first) |
+
+**Ideas from the old Small Packs (user, 2026-11-02).** Not scheduled, and some may already be covered. Each still needs its own talk before it joins a batch. The packs themselves were removed, so these lines are all that's kept.
+- **Villagers:**
+  - Manager screen on Shift + right-click, with normal trading untouched: armor and weapon slots, plus freeze, invulnerable, invisible and mute switches. Equipped gear shows on the villager's body.
+  - Name tag commands: rename a tag Frozen or Unfrozen to toggle a mob's AI; immortal and mortal name tags.
+  - Extended trades: every profession can offer items from the whole game, with weighted rarities.
+  - A Banker villager (only the name exists; the folder was empty).
+- **Mobs:**
+  - Size variation on a bell curve, with rarer mobs trending larger.
+  - Ride and stay: saddled mobs stay put when nobody is riding them.
+- **Progression:**
+  - Equipment burden and armor gating.
+  - Nether Seal, with overworld ecosystem loot.
+  - A 13-tier progression core.
+  - Enchanter and Jeweler smithing screen with overhauled enchantments.
+  - Optional 5-act campaign through advancements, such as prospector, trade, village, iron and subterranean goals.
+- **World:**
+  - Rebalanced castles, dungeons, biome mineshafts, oceans, temples and wayside finds, with one density manager so many structure sets can coexist.
+  - Villages in 3 size tiers with cohesive mixed building pools.
+  - Better trees.
+  - An earlier experiment called Villager Civilization and Universal Scale Engine (name only, not studied).
+- **Features JB's modpack had, for the all-in-one goal:** vein miner, tree harvester, Better Combat style attacks, tool trims, starter kit, durability and shulker box tooltips, food values (AppleSkin), legendary tooltips, advancement plaques, inventory HUD, loot pickup notifier, better animations, ambient and physical sound, falling leaves, dynamic lights.
 
 **Questions saved for those batches:**
 - Where does cave detection go wrong for you?

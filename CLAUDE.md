@@ -36,6 +36,7 @@ dev runClient      rem dev client; H opens the hub
 dev runServer      rem needs eula.txt accepted by the author; never accept it on their behalf
 dev runClientGameTest  rem plays src/gametest in a real world and saves screenshots to build/run/clientGameTest/screenshots; the game stalls when
                        rem closing the world (inside Fabric's test tool, no Vestiges code in the thread dump), so stop it after the last screenshot; set VESTIGES_TOUR=off for a world with every feature off
+powershell -File tools\run_suite.ps1 sweep   rem automatic checks (AutoCheck): pass/fail report, 5-minute limit, stops the game itself; suites in docs/testing-plan.md
 ```
 
 Loot tables are generated: edit `tools/build_loot.py` and run `python tools/build_loot.py` (never hand-edit `data/vestiges/loot_table/`
