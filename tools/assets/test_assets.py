@@ -1490,5 +1490,74 @@ class FileAssets(unittest.TestCase):
         self.assertEqual(thumbs.forget(done["ids"][0]), None)
 
 
+class OwnFiles(unittest.TestCase):
+    def png(self, shade):
+        from PIL import Image
+        out = io.BytesIO()
+        Image.new("RGBA", (8, 16), (shade, 90, 40, 255)).save(out, "PNG")
+        return out.getvalue()
+
+    def test_the_type_is_guessed_from_path_extension_then_content(self):
+        guess = files.guess_type
+        self.assertEqual(guess("a.png", "a.png", b""), "texture")
+        self.assertEqual(guess("a.ogg", "a.ogg", b""), "sound")
+        self.assertEqual(guess("x.json", "assets/demo/models/block/x.json", b"{}"), "model")
+        self.assertEqual(guess("x.json", "data/demo/loot_table/x.json", b"{}"), "loot")
+        self.assertEqual(guess("x.json", "x.json", b'{"pools": []}'), "loot")
+        self.assertEqual(guess("x.json", "x.json", b'{"parent": "block/cube_all"}'), "model")
+        self.assertEqual(guess("x.json", "x.json", b'{"values": ["minecraft:stone"]}'), "tag")
+        self.assertEqual(guess("x.json", "x.json", b"not json"), "data")
+        self.assertEqual(guess("x.png", "x.png", b"", forced="sound"), "sound")
+        with self.assertRaises(files.FileProblem):
+            guess("tool.exe", "tool.exe", b"")
+        with self.assertRaises(files.FileProblem):
+            guess("pack.zip", "pack.zip", b"")
+
+    def test_own_files_are_your_own_work_unless_credit_is_given(self):
+        mine = files.create_own("my_stone.png", self.png(11), {})
+        project = projects.load(mine)
+        self.assertEqual((project["mode"], project["category"], project["source"]["type"]), ("file", "texture", "own"))
+        self.assertEqual(licences.of_project(project)["status"], "own")
+        self.assertEqual((project["file"]["width"], project["file"]["height"]), (8, 16))
+        theirs = files.create_own("their_stone.png", self.png(12), {"creator": "Ann", "licence": "All Rights Reserved"})
+        self.assertEqual(licences.of_project(projects.load(theirs))["status"], "limited")
+        self.assertIsNone(files.create_own("copy_of_my_stone.png", self.png(11), {}))  # same content
+
+    def test_files_in_a_folder_keep_their_path_for_the_type(self):
+        made = files.create_own("deep.json", b"{}", {}, path="assets/demo/models/block/deep.json")
+        project = projects.load(made)
+        self.assertEqual((project["category"], project["file"]["type"], project["file"]["path"]), ("model", "model", "assets/demo/models/block/deep.json"))
+
+    def test_sound_length_is_read_from_the_ogg_headers(self):
+        import struct
+        head = b"OggS" + bytes(22) + bytes([1]) + b"vorbis" + struct.pack("<I", 0) + bytes([2]) + struct.pack("<I", 44100)
+        last = b"OggS" + bytes([0, 4]) + struct.pack("<q", 132300) + bytes(10)
+        self.assertEqual(files.ogg_seconds(head + last), 3.0)
+        self.assertIsNone(files.ogg_seconds(b"not an ogg"))
+        made = files.create_own("boom.ogg", head + last, {})
+        self.assertEqual(projects.load(made)["file"]["seconds"], 3.0)
+
+    def test_proposed_names_carry_the_kind_name_and_size(self):
+        made = files.create_own("Mossy Rock.png", self.png(13), {})
+        project = projects.load(made)
+        names = [files.styled_name(project, i) for i in range(3)]
+        self.assertEqual(names[0], "texture_mossy_rock_8x16")
+        self.assertEqual(names[1], "mossy_rock")
+        self.assertEqual(names[2], "0008_mossy_rock_texture")
+        self.assertEqual(files.styled_name(project, 3), names[0])
+        for name in names:
+            self.assertEqual(naming.clean(name), name)
+
+    def test_renaming_keeps_the_extension_and_refuses_a_clash_or_an_empty_name(self):
+        made = files.create_own("rename_me.png", self.png(14), {})
+        self.assertEqual(files.rename_file(made, "Texture Moss 8x16"), "texture_moss_8x16.png")
+        self.assertEqual(projects.file_path(made).name, "texture_moss_8x16.png")
+        self.assertEqual(files.rename_file(made, "texture_moss_8x16"), "texture_moss_8x16.png")
+        with self.assertRaises(files.FileProblem):
+            files.rename_file(made, "  ")
+        self.assertEqual(files.rename_file(made, "../../escape"), "escape.png")  # a path becomes a plain name
+        self.assertEqual(projects.file_path(made).parent, projects._path(made) / "file")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=0)

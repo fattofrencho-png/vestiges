@@ -295,6 +295,12 @@ class Handler(BaseHTTPRequestHandler):
                                                         query.get("no_credit") == "1", query.get("not_vanilla") == "1", int(query.get("page", 0)), query.get("licence", ""), query.get("tag", ""), query.get("collection", ""), query.get("favorite") == "1"), **library.facets()})
             if url.path == "/api/thumb":
                 return self.send(thumbs.get(query.get("id", "")), "image/png")
+            if url.path == "/api/propose-file":
+                project = projects.load(query.get("id", ""))
+                if project.get("mode") != "file":
+                    raise KeyError("That asset is not a file")
+                style = int(query.get("style", 0)) % len(files.NAME_STYLES)
+                return self.send_json({"name": files.styled_name(project, style), "style": style, "label": files.NAME_STYLES[style][1]})
             if url.path == "/api/file":
                 path = projects.file_path(query.get("id", ""))
                 if path is None:
@@ -360,12 +366,14 @@ class Handler(BaseHTTPRequestHandler):
         # These can spend money, so they only accept the tool's own page.
         origin = self.headers.get("Origin", "")
         url = urlparse(self.path)
-        upload = url.path in ("/api/import/upload", "/api/explore/upload")
+        upload = url.path in ("/api/import/upload", "/api/explore/upload", "/api/files/upload")
         wanted = "application/octet-stream" if upload else "application/json"
         if (self.headers.get("Host") not in ALLOWED_HOSTS or self.headers.get("Content-Type") != wanted
                 or origin.replace("http://", "") not in ALLOWED_HOSTS):
             return self.send_json({"error": "not allowed"}, 403)
         try:
+            if upload and url.path == "/api/files/upload":
+                return self.receive_own_file({k: v[0] for k, v in parse_qs(url.query).items()})
             if upload:
                 return self.receive_upload(parse_qs(url.query).get("name", ["build"])[0], explore_only=url.path == "/api/explore/upload")
             data = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
@@ -386,6 +394,18 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_json({"error": f"Bad request: {problem}"}, 400)
         except Exception as problem:
             return self.send_json({"error": str(problem)}, 500)
+
+    def receive_own_file(self, query):
+        """One file the author brought, saved straight to the Library as their own work (unless credit is given)."""
+        size = int(self.headers.get("Content-Length", 0))
+        if size > files.MAX_BYTES:
+            self.close_connection = True
+            return self.send_json({"error": "This file is over the 32 MB limit."}, 400)
+        data = self.rfile.read(size)
+        details = {k: query.get(k, "") for k in ("creator", "permission", "licence", "link")}
+        made = files.create_own(query.get("name", "file"), data, details, query.get("kind", ""), query.get("batch") or None, query.get("path", ""))
+        library.flush()
+        return self.send_json({"id": made, "duplicate": made is None})
 
     def receive_upload(self, name, explore_only=False):
         size = int(self.headers.get("Content-Length", 0))
@@ -437,6 +457,8 @@ class Handler(BaseHTTPRequestHandler):
             projects.save(project)
             return {"ok": True}
         if path == "/api/details":
+            if data.get("rename_file"):
+                files.rename_file(project_id, data["rename_file"])
             set_details(project_id, data)
             return {"ok": True}
         if path == "/api/library/bulk":

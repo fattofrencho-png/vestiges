@@ -5,6 +5,7 @@ collections, licences, search and delete work exactly as for builds. Saved from 
 directly. The same content is only kept once.
 """
 import hashlib
+import json
 import re
 import struct
 import time
@@ -100,3 +101,125 @@ def save_from_archive(source, archive_name, paths, details):
 
 def content_type(project):
     return CONTENT_TYPES.get((project.get("file") or {}).get("ext", ""), "application/octet-stream")
+
+
+# ---- the author's own files ----
+OWN_EXTENSIONS = {".png": "texture", ".ogg": "sound", ".json": None, ".mcmeta": None, ".mcfunction": "function", ".txt": "text", ".lang": "text"}
+KIND_CHOICES = {"texture": "texture", "sound": "sound", "model": "model", "data": "data"}
+
+
+def ogg_seconds(data):
+    """Length of an Ogg Vorbis sound in seconds, read from its headers, or None."""
+    start = data.find(b"\x01vorbis")
+    last = data.rfind(b"OggS")
+    if start < 0 or last < 0 or start + 16 > len(data) or last + 14 > len(data):
+        return None
+    rate = struct.unpack("<I", data[start + 12:start + 16])[0]
+    granule = struct.unpack("<q", data[last + 6:last + 14])[0]
+    return round(granule / rate, 2) if rate and granule > 0 else None
+
+
+def guess_type(name, path, data, forced=""):
+    """The explore type for a file the author brings: from a path like assets/.../textures/, then the extension, then the content."""
+    wanted = {"texture": "texture", "sound": "sound", "model": "model", "data": "data"}.get(forced)
+    if wanted:
+        return wanted
+    by_path = explore.classify(path.replace("\\", "/")) if "/" in path.replace("\\", "/") else "other"
+    if saveable(by_path):
+        return by_path
+    ext = Path(name).suffix.lower()
+    if ext not in OWN_EXTENSIONS:
+        raise FileProblem(f"{name}: only .png, .ogg, .json and text files can be added. Zip files open in Look inside.")
+    if OWN_EXTENSIONS[ext]:
+        return OWN_EXTENSIONS[ext]
+    try:
+        content = json.loads(data.decode("utf-8-sig"))
+    except (ValueError, UnicodeDecodeError):
+        return "data"
+    if isinstance(content, dict):
+        if "elements" in content or "parent" in content or "textures" in content or "variants" in content or "multipart" in content:
+            return "model"
+        if "pools" in content:
+            return "loot"
+        if "ingredients" in content or "ingredient" in content or "key" in content and "pattern" in content:
+            return "recipe"
+        if "criteria" in content:
+            return "advancement"
+        if "values" in content:
+            return "tag"
+    return "data"
+
+
+def create_own(name, data, details, forced="", batch=None, path=""):
+    """Saves a file the author brought. Returns the new asset's id, or None when this exact content is already in the Library."""
+    ftype = guess_type(name, path or name, data, forced)
+    shown = (path or name).replace("\\", "/")
+    made = create(name, data, "my files", shown, details, batch, ftype)
+    if made:
+        project = projects.load(made)
+        project["source"] = {"type": "own", "name": "my files", "item": shown}
+        meta = project["file"]
+        if meta["ext"] == ".ogg":
+            seconds = ogg_seconds(data)
+            if seconds:
+                meta["seconds"] = seconds
+        projects.save(project)
+    return made
+
+
+# ---- names ----
+NAME_STYLES = (
+    ("descriptive", "Descriptive: kind, name and size"),
+    ("short", "Short: just the name"),
+    ("sorted", "Sorts by size: size first, so a file list orders itself"),
+)
+
+
+def _bits(project):
+    file = project.get("file") or {}
+    words = [w for w in naming.slug(Path(file.get("name", "")).stem or project.get("title", "")).split("-") if w]
+    base = "_".join(words) or "file"
+    if file.get("width"):
+        size = f"{file['width']}x{file['height']}"
+    elif file.get("seconds"):
+        size = f"{file['seconds']}s"
+    else:
+        size = f"{max(1, round(file.get('bytes', 0) / 1024))}kb"
+    return base, size, file.get("type") or project.get("category") or "file"
+
+
+def styled_name(project, style):
+    """A descriptive name (without extension) for a file asset, in one of NAME_STYLES. Lowercase letters, numbers and underscores only."""
+    base, size, ftype = _bits(project)
+    kind = project.get("category") or "file"
+    kind_part = kind if ftype == kind or kind == "data" and ftype == "data" else f"{kind}_{ftype}"
+    which = style % len(NAME_STYLES)
+    if which == 1:
+        parts = [base]
+    elif which == 2:
+        digits = re.sub(r"\D", "", size.split("x")[0]) or "0"
+        parts = [digits.zfill(4), base, kind]
+    else:
+        parts = [kind_part, base, size]
+    return naming.clean("_".join(parts)).replace("-", "_")
+
+
+def rename_file(project_id, new_name):
+    """Renames the stored file (the extension is kept) and returns the new file name."""
+    project = projects.load(project_id)
+    file = project.get("file") or {}
+    old = projects.file_path(project_id)
+    if not old:
+        raise FileProblem("That asset has no file.")
+    stem = re.sub(r"[^a-z0-9_.-]+", "_", str(new_name).strip().lower()).strip("._-")[:90]
+    if not stem:
+        raise FileProblem("Type a name first.")
+    final = stem + file.get("ext", "")
+    target = old.with_name(final)
+    if target != old and target.exists():
+        raise FileProblem("This asset already has a file with that name.")
+    old.rename(target)
+    file["name"] = final
+    project["file"] = file
+    projects.save(project)
+    return final

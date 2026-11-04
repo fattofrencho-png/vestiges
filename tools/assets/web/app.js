@@ -39,7 +39,7 @@ function spent(p) {
 }
 
 function steps() {
-  if (screen === "library" || screen === "settings" || screen === "find" || screen === "explore" || screen === "presets" || project?.mode === "file") { $("steps").replaceChildren(); return; }
+  if (screen === "library" || screen === "settings" || screen === "find" || screen === "explore" || screen === "presets" || screen === "addfiles" || project?.mode === "file") { $("steps").replaceChildren(); return; }
   if (screen === "home" || screen === "import" || project?.mode === "import") {
     let step = 0;
     if (screen === "project" && project) step = project.stage === "saved" ? 3 : project.versions.length > 1 ? 2 : 1;
@@ -810,7 +810,7 @@ async function drawLibrary(start) {
         window.__zipDone = true;
       } } }),
       el("button", { className: "danger", textContent: "Delete", on: { click: () => { if (confirm(`Delete ${chosen().length} assets? This can't be undone.`)) bulkDo({ action: "delete" }); } } })),
-    el("div", { className: "tool" }, el("span", { className: "dim", textContent: "View:" }),
+    el("div", { className: "tool" }, el("button", { textContent: "Add my files", title: "Add your own textures, sounds and JSON files", on: { click: () => drawAddFiles().catch((problem) => showFailure(problem)) } }), el("span", { className: "dim", textContent: "View:" }),
       ...[["list", "List"], ["grid", "Icons"]].map(([v, t]) => el("button", { textContent: t, className: libraryView === v ? "main" : "", "aria-pressed": String(libraryView === v),
         on: { click: () => { libraryView = v; try { localStorage.setItem("libraryView", v); } catch (problem) { /* not saved */ } drawLibrary(); } } }))),
     data.total && libraryView === "grid" ? el("div", { className: "grid" }, cards) : null,
@@ -821,6 +821,78 @@ async function drawLibrary(start) {
   );
   $("page").classList.add("wide");
   showScope();
+}
+
+// ---- add my own files ----
+const OWN_FILES = /\.(png|ogg|json|mcmeta|mcfunction|txt|lang)$/i;
+
+async function drawAddFiles() {
+  screen = "addfiles";
+  stopPolling();
+  project = null;
+  steps();
+  if (!app) app = await get("/api/state");
+  const kind = el("select", { "aria-label": "Kind" }, [["", "Guess from the file"], ["texture", "Texture"], ["sound", "Sound"], ["model", "Model"], ["data", "Data (loot, recipes, tags...)"]].map(([v, t]) => el("option", { value: v, textContent: t })));
+  const details = detailFields();
+  const status = el("div", { role: "status" });
+  const picker = el("input", { type: "file", multiple: true, accept: ".png,.ogg,.json,.mcmeta,.mcfunction,.txt,.lang,.zip,.jar", "aria-label": "Choose files", style: "display:none" });
+  const folder = el("input", { type: "file", webkitdirectory: true, "aria-label": "Choose a folder", style: "display:none" });
+  const stamp = () => { const d = new Date(), p = (n) => String(n).padStart(2, "0"); return `b${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`; };
+
+  const add = async (all) => {
+    const archives = all.filter((f) => /\.(zip|jar)$/i.test(f.name));
+    const usable = all.filter((f) => OWN_FILES.test(f.name));
+    const ignored = all.length - usable.length - archives.length;
+    if (archives.length && !usable.length) {
+      status.replaceChildren(el("span", { className: "spin" }), `Reading ${archives[0].name}…`);
+      try {
+        const reply = await fetch("/api/explore/upload?name=" + encodeURIComponent(archives[0].name), { method: "POST", headers: { "Content-Type": "application/octet-stream" }, body: archives[0] });
+        const body = await reply.json();
+        if (!reply.ok) throw new Error(body.error);
+        return drawExplore(body, {});
+      } catch (problem) { status.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); return; }
+    }
+    const batch = usable.length > 1 ? stamp() : "";
+    const shared = details.read();
+    let added = 0, duplicates = 0;
+    const failed = [];
+    for (const [index, file] of usable.entries()) {
+      status.replaceChildren(el("span", { className: "spin" }), `Adding ${index + 1} of ${usable.length}: ${file.name}`);
+      const query = new URLSearchParams({ name: file.name, path: file.picked || file.webkitRelativePath || "", kind: kind.value, batch, creator: shared.creator, permission: shared.permission, licence: shared.licence, link: shared.link });
+      try {
+        const reply = await fetch("/api/files/upload?" + query, { method: "POST", headers: { "Content-Type": "application/octet-stream" }, body: file });
+        const body = await reply.json();
+        if (!reply.ok) throw new Error(body.error);
+        if (body.duplicate) duplicates++; else added++;
+      } catch (problem) { failed.push(`${file.name}: ${problem.message}`); }
+    }
+    const parts = [`${added} added`];
+    if (duplicates) parts.push(`${duplicates} already in the Library`);
+    if (failed.length) parts.push(`${failed.length} couldn't be added`);
+    if (ignored) parts.push(`${ignored} other files ignored`);
+    if (archives.length) parts.push(`${archives.length} zip or jar left out (open those with Look inside)`);
+    status.replaceChildren(...[el("div", { className: failed.length && !added ? "bad-t" : "good-t", textContent: parts.join(" · ") + "." }),
+      failed.length ? el("ul", { className: "dim" }, failed.slice(0, 20).map((f) => el("li", { textContent: f }))) : null,
+      added ? el("div", { className: "row" }, el("button", { className: "main", textContent: "Open in Library", on: { click: () => drawLibrary(batch ? { batch } : {}) } })) : null].filter(Boolean));
+  };
+  picker.addEventListener("change", () => { add([...picker.files]); picker.value = ""; });
+  folder.addEventListener("change", () => { add([...folder.files]); folder.value = ""; });
+  const drop = el("div", { className: "drop", on: {
+    dragover: (e) => { e.preventDefault(); drop.classList.add("over"); },
+    dragleave: () => drop.classList.remove("over"),
+    drop: async (e) => {
+      e.preventDefault();
+      drop.classList.remove("over");
+      const list = [];
+      for (const item of [...e.dataTransfer.items].map((i) => i.webkitGetAsEntry()).filter(Boolean)) await readEntries(item, list);
+      add(list);
+    } } },
+    el("p", { textContent: "Drop your own textures, sounds, JSON files or folders here" }),
+    el("div", { className: "tool", style: "justify-content:center" }, el("button", { textContent: "Choose files", on: { click: () => picker.click() } }), el("button", { textContent: "Choose a folder", on: { click: () => folder.click() } })),
+    el("p", { className: "dim", textContent: ".png, .ogg, .json, .mcmeta, .mcfunction, .txt. A zip or jar opens in Look inside, where you pick what to keep." }), picker, folder);
+  page(el("h1", { textContent: "Add my files" }),
+    el("p", { className: "dim", textContent: "Files you made yourself go into the Library as your own work. Fill in the details below only for files made by someone else." }),
+    drop, el("label", { className: "field" }, "Kind", kind), details.node, status);
 }
 
 // ---- a saved file (texture, sound, JSON data, model) ----
@@ -854,6 +926,17 @@ async function drawFile() {
   const collections = el("input", { type: "text", value: (project.collections || []).join(", "), placeholder: "For example: Forest set, Village" });
   const favorite = el("input", { type: "checkbox", checked: Boolean(project.favorite) });
   const note = el("div", { className: "dim", role: "status" });
+  let nameStyle = -1, renameFile = false;
+  const styleNote = el("span", { className: "dim", role: "status" });
+  const proposeName = el("button", { textContent: "New proposed name", title: "A descriptive name with the size. Press again for the next style.", on: { click: async () => {
+    nameStyle = (nameStyle + 1) % 3;
+    try {
+      const next = await get(`/api/propose-file?id=${project.id}&style=${nameStyle}`);
+      title.value = next.name;
+      renameFile = true;
+      styleNote.textContent = next.label + ". Save details to keep it; the file is renamed too.";
+    } catch (problem) { styleNote.textContent = problem.message; }
+  } } });
   const field = (label, input) => el("label", { className: "field" }, label, input);
   page(
     queueBar(),
@@ -869,9 +952,9 @@ async function drawFile() {
         try { await post("/api/delete", { id: project.id }); drawLibrary(); } catch (problem) { showFailure(problem); }
       } } })),
     el("h2", { textContent: "Details and credit" }),
-    field("Name", title), field("Creator", creator), field("Permission", permission), field("Licence", licence), field("Link", where),
+    field("Name", title), el("div", { className: "tool" }, proposeName, styleNote), field("Creator", creator), field("Permission", permission), field("Licence", licence), field("Link", where),
     field("Tags, with commas", tags), field("Collections, with commas", collections), el("label", { className: "opt" }, favorite, " ★ Favorite"),
-    el("div", { className: "tool" }, el("button", { textContent: "Save details", on: { click: () => act(() => post("/api/details", { id: project.id, title: title.value, creator: creator.value, permission: permission.value, licence: licence.value, link: where.value, tags: tags.value, collections: collections.value, favorite: favorite.checked })) } })),
+    el("div", { className: "tool" }, el("button", { textContent: "Save details", on: { click: () => act(() => post("/api/details", { id: project.id, title: title.value, rename_file: renameFile ? title.value : "", creator: creator.value, permission: permission.value, licence: licence.value, link: where.value, tags: tags.value, collections: collections.value, favorite: favorite.checked })) } })),
     note,
   );
 }
