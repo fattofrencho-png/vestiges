@@ -60,6 +60,7 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		}
 		boolean off = "off".equals(System.getenv("VESTIGES_TOUR"));
 		ctx.getInput().resizeWindow(1920, 1080);
+		ctx.runOnClient(mc -> mc.options.getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource.MASTER).set(0.0));
 		welcome(ctx, off);
 		ctx.waitFor(mc -> mc.player != null && mc.level != null && mc.gui.screen() == null, 3600);
 		TestServerContext server = new TestServerContextImpl(ctx.computeOnClient(Minecraft::getSingleplayerServer));
@@ -89,6 +90,16 @@ public final class ScreenshotTour implements FabricClientGameTest {
 			quests(ctx, server);
 			sorting(ctx, server);
 		}
+		// Away from the lava scene, healed and not burning, so the inventory shots are readable.
+		server.runCommand("gamemode creative @p");
+		server.runOnServer(s -> {
+			var p = s.getPlayerList().getPlayers().get(0);
+			p.clearFire();
+			p.setHealth(p.getMaxHealth());
+		});
+		T.goTo(ctx, server, 0, 0, 20);
+		server.runCommand("gamemode survival @p");
+		ctx.waitTicks(20);
 		inventory(ctx, mode);
 		server.runOnServer(s -> InventoryHooks.slots(s.getPlayerList().getPlayers().get(0)).setItem(ExtraSlots.TABLE, ItemStack.EMPTY));
 		inventory(ctx, mode + "no_table_");

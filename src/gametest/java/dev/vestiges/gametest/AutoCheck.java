@@ -36,6 +36,7 @@ public final class AutoCheck implements FabricClientGameTest {
 			return;
 		}
 		ctx.getInput().resizeWindow(1920, 1080);
+		ctx.runOnClient(mc -> mc.options.getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource.MASTER).set(0.0));
 		createWorld(ctx);
 		TestServerContext server = new TestServerContextImpl(ctx.computeOnClient(Minecraft::getSingleplayerServer));
 		server.runCommand("time set noon");

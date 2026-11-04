@@ -43,6 +43,7 @@ final class InventorySuite {
 		arrows(server, c);
 		totem(ctx, server, c);
 		ender(ctx, server, c);
+		shulker(ctx, server, c);
 		sorting(server, c);
 		hotbars(server, c);
 		stacks(ctx, server, c);
@@ -202,6 +203,79 @@ final class InventorySuite {
 		action(ctx, "ender_open", 0, 0);
 		c.check("with no ender chest in the slot nothing opens", !server.computeOnServer(s -> s.getPlayerList().getPlayers().get(0).containerMenu instanceof ChestMenu));
 		server.runOnServer(s -> s.getPlayerList().getPlayers().get(0).closeContainer());
+	}
+
+	private static void shulker(ClientGameTestContext ctx, TestServerContext server, Checks c) {
+		c.section("Shulker box opened from the inventory");
+		// Hotbar slot 0 is menu slot 36.
+		boolean[] r = new boolean[10];
+		server.runOnServer(s -> {
+			ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			p.closeContainer();
+			p.getInventory().clearContent();
+			p.getInventory().setItem(0, stack("minecraft:red_shulker_box", 1));
+			dev.vestiges.inventory.ShulkerSession.open(p, 36);
+			r[0] = p.containerMenu instanceof net.minecraft.world.inventory.ShulkerBoxMenu;
+			if (r[0]) {
+				net.minecraft.world.inventory.ShulkerBoxMenu menu = (net.minecraft.world.inventory.ShulkerBoxMenu) p.containerMenu;
+				// The box's own slot in the menu (inventory slot 0) must be locked.
+				for (Slot sl : menu.slots) {
+					if (sl.container == p.getInventory() && sl.getContainerSlot() == 0) {
+						r[1] = !sl.mayPickup(p) && !sl.mayPlace(new ItemStack(Items.DIRT));
+					}
+				}
+				menu.getSlot(0).set(new ItemStack(Items.DIAMOND, 5));
+				menu.getSlot(0).setChanged();
+				dev.vestiges.inventory.ShulkerSession.rename(p, "Tools");
+				ItemStack box = p.getInventory().getItem(0);
+				r[2] = box.getOrDefault(net.minecraft.core.component.DataComponents.CONTAINER, net.minecraft.world.item.component.ItemContainerContents.EMPTY)
+					.nonEmptyItemCopyStream().anyMatch(i -> i.is(Items.DIAMOND) && i.getCount() == 5);
+				r[3] = box.has(net.minecraft.core.component.DataComponents.CUSTOM_NAME) && box.getHoverName().getString().equals("Tools");
+				// Shift-clicking the locked box slot must not move the box.
+				menu.quickMoveStack(p, menu.slots.indexOf(menu.slots.stream().filter(x -> x.container == p.getInventory() && x.getContainerSlot() == 0).findFirst().get()));
+				r[4] = p.getInventory().getItem(0).getItem() == stack("minecraft:red_shulker_box", 1).getItem();
+				p.closeContainer();
+			}
+			// A stack of two boxes does not open.
+			p.getInventory().setItem(0, stack("minecraft:red_shulker_box", 2));
+			dev.vestiges.inventory.ShulkerSession.open(p, 36);
+			r[5] = !(p.containerMenu instanceof net.minecraft.world.inventory.ShulkerBoxMenu);
+			p.closeContainer();
+			// Reopen: the contents are still there.
+			p.getInventory().setItem(0, box(p));
+			dev.vestiges.inventory.ShulkerSession.open(p, 36);
+			r[6] = p.containerMenu instanceof net.minecraft.world.inventory.ShulkerBoxMenu m && m.getSlot(0).getItem().is(Items.DIAMOND) && m.getSlot(0).getItem().getCount() == 5;
+			// Taking the box out of its slot while open closes the menu's validity.
+			if (r[6]) {
+				p.getInventory().setItem(0, ItemStack.EMPTY);
+				r[7] = !p.containerMenu.stillValid(p);
+			}
+			p.closeContainer();
+			// Non-box items do not open.
+			p.getInventory().setItem(0, new ItemStack(Items.CHEST));
+			dev.vestiges.inventory.ShulkerSession.open(p, 36);
+			r[8] = !(p.containerMenu instanceof net.minecraft.world.inventory.ShulkerBoxMenu);
+			p.closeContainer();
+			p.getInventory().clearContent();
+		});
+		c.check("right-clicking a shulker box in the inventory opens it", r[0]);
+		c.check("the open box's own inventory slot is locked", r[1]);
+		c.check("items put in are written straight into the box item", r[2]);
+		c.check("renaming from the open box names the item", r[3]);
+		c.check("shift-clicking the locked slot does not move the box", r[4]);
+		c.check("a stack of two boxes does not open", r[5]);
+		c.check("reopening shows the saved contents", r[6]);
+		c.check("removing the box while open invalidates the menu (no duplication)", r[7]);
+		c.check("a non-shulker item does not open", r[8]);
+		c.note("not covered: the right-click path on the client, the rename box and the colour tint (screen look)");
+	}
+
+	private static ItemStack box(ServerPlayer p) {
+		ItemStack box = stack("minecraft:red_shulker_box", 1);
+		net.minecraft.core.NonNullList<ItemStack> items = net.minecraft.core.NonNullList.withSize(27, ItemStack.EMPTY);
+		items.set(0, new ItemStack(Items.DIAMOND, 5));
+		box.set(net.minecraft.core.component.DataComponents.CONTAINER, net.minecraft.world.item.component.ItemContainerContents.fromItems(items));
+		return box;
 	}
 
 	private static Map<String, Integer> totals(Inventory inv) {
