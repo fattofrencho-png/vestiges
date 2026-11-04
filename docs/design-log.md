@@ -171,7 +171,8 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
   - **VI (Relic level) is found only** (dragons, dungeons, rare elites).
 - **Relic ★:** each enchant raised to VI adds one star.
 - **Anvil "Too Expensive!" cap:** stays, but tree nodes raise it and slow the growth of the repair penalty.
-- **Mending stays vanilla.** **Crafting can match found gear** with enough tree investment and materials.
+- **Mending reworked (2026-11-03, user; replaces "stays vanilla"; in MVP):** no longer repairs from XP. One-time safety net: when a Mending item would break, it stays at 1 durability in a **broken state** (tools can't mine or attack, armor gives 0), and the Mending tag is removed. Repair needs the item's material **+ 1 emerald**; the result is a normal item. **Lategame item** (not an early find). **Can be re-applied** with a new Mending book. **Warning** (message/sound) before it triggers. Build on the elytra "broken at 1 durability" precedent (mixin + broken flag). Armor is the hardest part. **Built 2026-11-03, untested:** `gear/BrokenGear`, hooks in `ItemStackMixin` (catch at break, repaired clears, broken tools mine at hand speed, no stats, no use), `ExperienceOrbMixin` (orbs no longer repair), anvil and grindstone refuse merging a broken item, red tooltip line, warning at the last tenth of durability (min 3 points). Gated by the Gear system. The anvil's emerald cost is the "+ emerald". Open: exact lategame source (Mending is still the vanilla treasure enchant), whether to add an extra flat emerald fee, new use for XP orbs (backlog).
+- **Crafting can match found gear** with enough tree investment and materials.
 - **Armor trims give stats:** the material sets the stat, the pattern's rarity sets its strength.
 - **Gear above your level** can be equipped, but with a penalty.
 
@@ -466,7 +467,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
       - **Lure:** −4 s → −15 s, −17 s, −19 s. Never zero.
       - **Depth Strider:** 25 → 100% of vanilla, then +10% and +20% swim speed.
       - **Multishot:** 2 arrows (I–II), 3 arrows (III–IV), +10% damage (V), 3 arrows that pierce 1 (VI).
-      - **Mending:** 25 → 100% of vanilla repair, then 125% and 150%.
+      - **Mending:** no levels any more (max I); reworked 2026-11-03 into the one-time safety net (see Gear).
       - **Infinity:** 25 → 100% chance to save the arrow; V also saves spectral arrows, VI also tipped arrows.
       - **Silk Touch:** I glass and leaves · II + grass and mycelium · III + ores · IV everything vanilla · V +10% mining speed · VI +20% and half durability use.
       - **Aqua Affinity:** 25 → 100% of vanilla, then +10% and +20% mining underwater.
