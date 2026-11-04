@@ -2,6 +2,10 @@
 
 Design only. No code. Written by the Dragons and End idea chat; the main chat reads it and builds only what the user approved.
 
+**Status (2026-11-04, later): the Vestige hall and ending spec is APPROVED (section "The Vestige hall and the ending"), for after the MVP. The alliance dimension is designed separately in the Alliances chat (`docs/ideas/alliances.md`). Open for others: the lore chat names the dragon-24 title; the main chat updates `cyclebreaker.json` and the design log wording.**
+
+**Status (2026-11-04): the End dungeon theme and elytra spec is also APPROVED (section "End dungeons and elytra"). It puts the End theme in the MVP, drops the dragon 3 elytra, and needs the dungeons chat's spec widened by one theme.**
+
 **Status (2026-11-03): the first-dragons spec (dragons 1 to 6) is APPROVED by the user and ready for the main chat.** All numbers in it stay drafts for the balance pass. Dragons 7 to 24, the End dungeons, the Vestige hall and the ending are not designed yet (next talks, after the MVP).
 Never edits `docs/design-log.md` or `docs/lore/`. Lore used here comes from `docs/lore/lore-log.md` (read 2026-11-03).
 
@@ -91,7 +95,7 @@ Each dragon keeps vanilla's perching and breath, adds one new signature move, an
 - **XP and emeralds:** dragons 1–5 give XP and emeralds. Scales with the gate level (user, 2026-11-03): XP about one level's worth at the gate level, emeralds about 32 × N; exact numbers at the balance pass.
 - **One Level VI enchanted book roll** from the normal pool (dragons 1–5). *Confirm: the user said "Level VI book roll" and "emeralds and XP only for dragons 1–5"; I read it as both together.*
 - **Dragon 6 (act boss):** the same, plus a guaranteed Relic★ and the extra Waystone feat reward.
-- **Extras:** dragon 1 title Dragonslayer · dragon 3 one-off elytra · dragon 6 feat `dragon_6`. Feat files for 6, 12, 18 already exist; they need a kill counter hooked in.
+- **Extras:** dragon 1 title Dragonslayer · dragon 3 one-off elytra *(superseded 2026-11-04: the End dungeon theme is now in the MVP and gives the elytra, so this reward is dropped; see "End dungeons" below)* · dragon 6 feat `dragon_6`. Feat files for 6, 12, 18 already exist; they need a kill counter hooked in.
 - **Lore chapter:** the dragon's chapter unlocks as a Codex entry (text from `docs/lore/`, the lore chat owns it; chapters 1–6 are Tulva, Belaz, Morst, Dhars, Ilvig, Durhos). The Vestige island waits until after the MVP.
 
 ### Build notes for the main chat
@@ -100,6 +104,96 @@ Each dragon keeps vanilla's perching and breath, adds one new signature move, an
 - The `dragons` switch already exists in `VestigesSystem`; off must leave vanilla behaviour.
 - Untested at design time: all numbers, the 8% hit cap, and how the invisible dragon looks in 26.3.
 
+## Act II, dragons 7 to 12 (The Breaking): APPROVED by the user (2026-11-04), after the MVP
+
+Same rules as the first-dragons spec (gate 4×N, summoner only, 4 crystals, health ×(1 + 0.4×(N−1)) and +50% per extra player, damage ×(1 + 0.2×(N−1)), 8% hit cap, rewards to everyone who hit it). Numbers are drafts for the balance pass. After MVP.
+
+| # | Lore name and title | Gate | Health alone | Damage | New move (user picks, 2026-11-04) | Earlier moves (my draft) |
+|---|---|---|---|---|---|---|
+| 7 | Mortre, the Quake | Lv 28 | 680 | ×2.2 | **Ground shakes and flings you up**, no falling: cracks and dust for 1.5 s on the outer ring, then everyone on it is thrown up and landed softly (short Slow Falling), so there is no void death | 2 ring of fire, 3 shove |
+| 8 | Graciel, the Frost | Lv 32 | 760 | ×2.4 | **Breath turns the floor to ice so you slide**: frosted ice that melts after about 10 s; a movement hazard, not damage | 3 shove, 7 quake |
+| 9 | Nitox, the Venom | Lv 36 | 840 | ×2.6 | **One cloud type at a time, alternating each perch**: green poison (milk cures it) or black wither (regeneration or a golden apple helps). Clouds last about 10 s and drift slowly | 5 phantoms, 2 ring of fire |
+| 10 | Dunther, the Stormcaller | Lv 40 | 920 | ×2.8 | **Lightning with a glowing mark 1.5 s before each strike; a lightning rod placed within about 8 blocks of the mark draws the strike** | 3 shove, 8 ice |
+| 11 | Megia, the Mirror | Lv 44 | 1000 | ×3.0 | **At half health it splits in two, one real, one fake.** The fake pops in one hit and re-forms after about 20 s; the real one has a faint glint; hitting the fake gives the attacker a short Slowness | 6 flicker, 7 quake |
+| 12 ⭐ | Hergun, the Devourer (act boss) | Lv 48 | 1080 | ×3.2 | **Flies to a pillar crystal, eats it (3 s bite) and heals 8% of its maximum health.** Destroy crystals first, or hit it mid-bite to stop it. No crystals left = no healing | 9 clouds, 10 lightning |
+
+- **Rewards (user, 2026-11-04):** as Act I: +1 ender chest page each (pages 8 to 13), XP and emeralds scaled to the gate, a Level VI book roll (dragons 7 to 11), the Codex chapter (Mortre, Graciel, Nitox, Dunther, Megia, Hergun). **Dragon 12 adds a guaranteed Relic★ and the Respec Tome** (the `dragon_12` feat already exists).
+- **Build notes:** new moves are small server behaviours like Act I's. Ice and cloud effects must restore the arena and leave no block behind. The lightning-rod redirect is our own rule (vanilla rods do not redirect scripted strikes), so test it.
+- **Not decided here:** the exact health of the fake Mirror, the Devourer's behaviour if players keep every crystal alive for too long, and balance numbers.
+
+## End dungeons and elytra (talk started 2026-11-04)
+
+**Already in the design log (reused):** End theme = purpur, end stone bricks, end rods, void edges · endermen, shulkers, endermites, phantoms · caches purpur, end stone, end rods, chorus flowers, shulker shells, elytra (rare) · bosses: Lieutenant The Shellguard (levitation volleys), Boss The Void Stalker (teleports behind you, floor blocks vanish briefly), Overlord The Void Colossus (phase 2 splits into 3) · modifier End Void Pull · unlocks after dragon 1 · lore diary of 8 pages of the Ascended (dragon 13, Scande) found across rooms, a full diary gives XP and its story in the Codex.
+
+**Decisions (user, 2026-11-04):**
+- **End theme is in the MVP, with the normal first-person camera.** The isometric (Minecraft Dungeons style) camera is dropped for now ("forget it for now"). The dungeons chat's approved MVP (Overgrown and Trial) therefore grows by one theme; the main chat must tell that chat or fold it into the dungeon build.
+- **Parked camera ideas, in case the camera comes back:** WASD moves relative to the screen, the character faces the mouse cursor, click attacks that way; keep the player visible both by building rooms with no ceiling and low near walls, and by fading blocks that block the view. Overlaps with the map chat's isometric view idea.
+- **Elytra:** once per player, guaranteed, from the first End Boss clear at tier 4 or higher (tier to confirm, see below). After that elytra stays a rare cache find, so a lost one can be found again. This replaces the one-off dragon 3 elytra.
+- **Shulker shells:** come from End dungeon caches, as the log says. With the End theme in the MVP, no dragon stopgap is needed (so shulker boxes and A2's shulker-box feature stay reachable).
+- **Void:** falling into the void in an End dungeon costs a life and puts you back in the start room, same as dying.
+- **Look:** ruined purpur halls of the Ascended with open void gaps, plus floating islands joined by bridges; the boss room reuses the dragon arena look; the 8-page Ascended diary is found across the rooms (follows whatever diary rule the dungeon MVP uses; diaries are not in its spec yet).
+
+**Final picks (user, 2026-11-04) — End dungeon MVP spec APPROVED, ready for the main chat:**
+- **Elytra tier: 3** (inside the tested range 1 to 3). Once per player, guaranteed, on the first End Boss clear at tier 3 or higher; later elytra only as a rare cache find.
+- **Bosses are plain strong named mobs, like the other themes:** Lieutenant **The Shellguard** = a pack of 3 strong shulkers; Boss **The Void Stalker** = an enderman with big health. Signature moves (levitation volleys, teleport behind you, floor blocks vanishing) and the Overlord come after the MVP.
+- Build it with the dungeon MVP slices (room markers, key with theme and tier, 13-room run); End unlocks after dragon 1.
+
+**Draft details (mine, to confirm at build time):** void gaps cover at most a quarter of a room's floor and bridges are 3 blocks wide, so a miss is a mistake and not a trap. The End modifier Void Pull (levitation near the void) waits with the other modifiers.
+
+## The Vestige hall and the ending (talk started 2026-11-04; after the MVP)
+
+**Already designed (lore log, Batch 5):** a very big island far out and very low in the End, reached through the end gateway (every gateway leads there; a return gateway goes back to the arena); no mob spawns there. First build = the Entrance + a waystone; the rest shows as ghost and that space can't be built in. Layout: Entrance, 4 wings (one per act) × 6 alcoves (one per dragon), a sealed centre. Each kill: alcove N rebuilds over a few seconds with a lectern (chapter as a book, also in the Codex), a mural painting and the dragon's head on a pedestal; act bosses 6, 12, 18 open the next wing. After dragon 24 the centre holds an altar for the choice: Unmake (hall fades grey and ghostly; title Cyclebreaker; world keeps running as a fading echo; Echo dragons = its last memories) or Reign (centre becomes a throne room; title Sovereign; master powers at your Capital's Bell: set time, set weather, change the next dungeon theme; Echo dragons = the makers trying to take the world back). Building is free on and around the island outside the hall's protected space; markers are banned in the End except the Vestige waystone (trips cost 1 emerald). Art: 24 murals (pixel art; the user's Screenshot-to-paintings project can help).
+
+**Decisions (user, 2026-11-04):**
+- **How it is made:** "fully generated by our asset creator" = Asset Studio (the Assets chat's tool: Request, AI questions, build with checks, 3D preview, save, export to `.nbt` structure files). Code pastes the exported files. *Dependency to check:* Asset Studio does trees and plants first; houses and large structures are "later", so a hall this size needs that step first. Assets stay vanilla blocks only.
+- **Ghost look:** a faint particle outline drawn on the client, plus an invisible no-build zone kept on the server. No new blocks.
+- **Who chooses:** each participant chooses for themselves at the altar; their own title and their own Reign powers or grey fade.
+- **Not final:** a player can switch between Unmake and Reign later at the altar (the earned title stays; how the switch works is open).
+
+**More decisions (user, 2026-11-04):**
+- **Reign and Unmake are to be rethought together** as a pair (the earlier Reign powers at the Bell and Unmake's fading echo are drafts until then).
+- **Titles:** you can choose a title as soon as the Hall is unlocked and built. It is chosen at a designated spot in the hall, and you can change your title there at any time.
+- **The poem:** a different version of the same poem appears after each kill. Put together in some way, the versions form another text that tells who the author is and why they love Minecraft (a personal message; the user writes it, I design only how it is hidden and revealed).
+- **Lore reveal:** at 24 kills (the ending moment is not at the first kill, so the end poem is the combined text, not a one-off).
+- **Switching between Unmake and Reign:** costs special points earned in dungeons, or emeralds, or is free; a server setting, **emeralds by default**. *Open: what "special points from dungeons" are (the Gate tree's points, or a new count).*
+
+- **Poem trick:** each of the 24 versions has one highlighted line; the 24 lines in order form the hidden text. A Codex page gathers the lines you have found.
+- **Title spot:** a title lectern in the Entrance (available as soon as the hall is built).
+- **Switch cost:** emeralds only for now (the "dungeon points" option is parked until we know what they are).
+
+**Reign and Unmake become two alliances (user, 2026-11-04).** This replaces the earlier "master powers at the Bell" draft.
+- **No world-wide powers:** neither path can control time or weather, and neither has any effect on the Echoes (Echo dragons and Echo mode are the same for everyone; the lore lines about Echo dragons stay flavour only).
+- **Each path has its own benefits** (not yet chosen).
+- **They cannot coexist:** a member of one alliance cannot claim areas (Bells, Banners and so on) inside an area claimed by the other.
+- **Multiplayer idea:** parts of the world are contested, and control shifts with alliance numbers.
+- The earlier parked idea (affiliation, clans, regions fought over) is now part of this.
+
+**The Alliance dimension (user, 2026-11-04) — to be designed in its own chat:**
+- **Benefits (chosen):** Reign = **the Settled** (home and villagers), Unmake = **the Unbound** (adventure and travel). Mild, equal in value, no world-wide effect. Details in the Alliances chat.
+- **Joining (chosen):** as soon as the hall is built, at the title lectern (not at dragon 24). *Lore note:* the story says the Unmake or Reign choice comes with the truth at dragon 24, so the main chat and the lore chat should check how the two fit (for example the alliance is joined early and the full ending scene stays at 24).
+- **A separate dimension, per world:** generated with its own randomness, as one massive continent with different biomes. Two bays, one on each side. Each alliance starts with a small safe area (about 10% each).
+- **Base building is shared:** an alliance builds its base together. Once a base reaches a certain level, that part can never be taken over. The bigger the base, the more control the alliance gets over the rest of the continent, up to a maximum share per alliance.
+- **The clash:** at some point the two bases hold so much control that they clash, so they must keep investing (improving the base, a massive city or "Alliance Castle").
+- **Ownership:** inside controlled territory, members of the alliance can build and do whatever they want, but the **alliance owns it, not any player**. If the other alliance takes the territory, it takes whatever was built there.
+- **Events:** players of both sides can connect for PvP events, with various PvP arenas in that dimension. Large-scale PvP happens only there; the rest of the world is normal.
+- **Replaces** my earlier question about flipping settlements in the main world (the main world is untouched).
+
+**Decisions on the ending and the gate (user, 2026-11-04):**
+- **Dragon 24 triggers:** the lore reveal with the full combined poem text · Echo mode starts (endless Echo dragons and endless dungeon tiers, the same for both alliances) · a final title for everyone · the mob Lore texts unlock in the Codex. The world is never reset.
+- **Final title name is open:** "Cyclebreaker" is now the Unmake alliance's title (below), so the title everyone gets at 24 needs a different name (lore chat to propose; the feat file `cyclebreaker.json` and the design log's "24 title Cyclebreaker" need updating by the main chat).
+- **Hall centre:** the final lectern with the full poem and the lore, plus a monument to every dragon. It opens at 24. No choice happens there any more.
+- **Alliance titles:** **Sovereign** = the Reign alliance, **Cyclebreaker** = the Unmake alliance, given on joining at the title lectern.
+- **Getting there:** a waystone takes you from your home to the hall. In the hall, the portal to the Alliance dimension **changes colour with your alliance and takes you to your own side** of that dimension (a different part for each alliance). Built with no new blocks (the colour is a display effect on the vanilla frame).
+- **Everything about the Alliance dimension goes to the Alliances chat** (brief in the shared notes folder, `alliances-brief.md`).
+
+**Last hall details (user, 2026-11-04):**
+- **Wing doors:** when act boss 6, 12 or 18 dies, that wing's ghost doorway rebuilds as a plain open archway, the same rebuild effect as the alcoves. No keys or items.
+- **Protection:** hall blocks are unbreakable for everyone except operators; no mobs spawn; explosions do not harm it. Operators can repair it with `/vestiges` commands.
+- **Murals:** 24 pixel-art paintings made with the user's Screenshot-to-paintings project, one per cycle. A placeholder painting stands in until each is ready.
+- **Final title at dragon 24:** its name is open. Default: the lore chat proposes it (the user did not pick one). Until then it is called "the 24-kill title" in the data.
+
 ## Parked (outside my scope)
 
-*(none yet)*
+- Clans as a wider late-game affiliation beyond the two alliances (user, 2026-11-04). Fits the social chat.
+
+- Isometric camera for dungeons (user parked it 2026-11-04): see above. Also listed in the log as "Isometric-camera dungeons" under M8 Dungeons.
