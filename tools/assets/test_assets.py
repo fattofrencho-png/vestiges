@@ -33,6 +33,7 @@ import organise
 import thumbs
 import pipeline
 import plan_tools
+import presets
 import projects
 import providers
 import validate
@@ -1252,6 +1253,62 @@ class Explore(unittest.TestCase):
         self.assertNotIn("tok1", studio._explored)
         self.assertFalse(path.exists())
         self.assertLessEqual(len(studio._explored), 4)
+
+
+class Presets(unittest.TestCase):
+    def test_every_preset_makes_a_valid_vanilla_tree(self):
+        for key in presets.PRESETS:
+            blocks = presets.generate(presets.make_spec(key))
+            check = pipeline.inspect({"blocks": blocks}, lenient=True)
+            self.assertEqual(check["errors"], [], key)
+            self.assertTrue(100 < check["stats"]["blocks"] < 3000, key)
+            self.assertTrue(any(b[3].split("[")[0].endswith(("_log", "stone", "cobblestone")) for b in blocks), key)
+
+    def test_the_same_settings_and_seed_make_the_same_tree(self):
+        one = presets.generate(presets.make_spec("cherry", {"seed": 11}))
+        self.assertEqual(one, presets.generate(presets.make_spec("cherry", {"seed": 11})))
+        self.assertNotEqual(one, presets.generate(presets.make_spec("cherry", {"seed": 12})))
+        self.assertNotEqual(one, presets.generate(presets.make_spec("cherry", {"seed": 11, "height": 20})))
+
+    def test_sliders_cannot_make_a_tree_too_big_or_broken(self):
+        spec = presets.make_spec("oak", {"height": 9999, "canopy": {"radius": 500, "density": 5}, "branches": {"count": -3}})
+        self.assertEqual((spec["height"], spec["canopy"]["radius"], spec["canopy"]["density"], spec["branches"]["count"]), (60, 12, 1, 0))
+        with self.assertRaises(presets.PresetProblem):
+            presets.make_spec("oak", {"height": "tall"})
+        with self.assertRaises(presets.PresetProblem):
+            presets.make_spec("oak", {"canopy": {"shape": "cube"}})
+        with self.assertRaises(presets.PresetProblem):
+            presets.make_spec("nope")
+        self.assertLess(len(presets.generate(spec)), 60000)
+
+    def test_leaves_get_a_real_distance_and_logs_an_axis(self):
+        blocks = presets.generate(presets.make_spec("oak"))
+        leaf_states = [b[3] for b in blocks if "_leaves" in b[3]]
+        self.assertTrue(leaf_states)
+        self.assertTrue(all("distance=" in s and "persistent=" in s for s in leaf_states))
+        self.assertTrue(all("[axis=" in b[3] for b in blocks if b[3].endswith("_log[axis=x]") or "oak_log" in b[3]))
+
+    def test_preview_and_create_work_through_the_tool(self):
+        import studio
+        shown = studio.preview_preset({"preset": "spruce", "changes": {"height": 20}})
+        self.assertEqual(shown["spec"]["height"], 20)
+        self.assertTrue(base64_png(shown["image"]))
+        made = studio.create_presets({"preset": "birch", "changes": {"seed": 4000}, "count": 3})
+        self.assertEqual(len(made["ids"]) + made["skipped"], 3)
+        self.assertTrue(made["batch"])
+        project = projects.load(made["ids"][0])
+        self.assertIn("seed 4000", project["title"])
+        self.assertIn("preset", project["tags"])
+        self.assertEqual(project["category"], "tree")
+        self.assertEqual(licences.assess(project.get("credit"), True)["status"], "own")
+        again = studio.create_presets({"preset": "birch", "changes": {"seed": 4000}, "count": 1})
+        self.assertEqual((again["ids"], again["skipped"]), ([], 1))
+        self.assertLessEqual(len(studio.create_presets({"preset": "oak", "changes": {"seed": 6000}, "count": 999})["ids"]), 24)
+
+
+def base64_png(text):
+    import base64
+    return base64.b64decode(text)[1:4] == b"PNG"
 
 
 if __name__ == "__main__":

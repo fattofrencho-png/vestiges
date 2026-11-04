@@ -1,4 +1,5 @@
 """Asset Studio. Double-click "Asset Studio.bat", then use the page it opens. Only this computer can reach it."""
+import base64
 import io
 import json
 import mimetypes
@@ -6,6 +7,7 @@ import os
 import shutil
 import sys
 import threading
+import time
 import urllib.request
 import uuid
 import zipfile
@@ -26,6 +28,7 @@ import naming
 import online
 import organise
 import pipeline
+import presets
 import projects
 import providers
 import thumbs
@@ -294,6 +297,8 @@ class Handler(BaseHTTPRequestHandler):
                 data = explore.read(path, wanted)
                 kind = "image/png" if wanted.lower().endswith(".png") else "audio/ogg" if wanted.lower().endswith(".ogg") else "application/octet-stream"
                 return self.send(data, kind)
+            if url.path == "/api/presets":
+                return self.send_json({"presets": presets.listing(), "shapes": list(presets.SHAPES)})
             if url.path == "/api/backups":
                 return self.send_json({"backups": backup.list_backups()})
             if url.path == "/api/find/search":
@@ -360,7 +365,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_json({"error": str(problem.args[0]) if problem.args else "not found"}, 404)
         except providers.ProviderError as problem:
             return self.send_json({"error": str(problem)}, 400)
-        except (import_formats.ImportProblem, edits.EditProblem, backup.BackupProblem, online.OnlineProblem, licences.LicenceProblem, explore.ExploreProblem) as problem:
+        except (import_formats.ImportProblem, edits.EditProblem, backup.BackupProblem, online.OnlineProblem, licences.LicenceProblem, explore.ExploreProblem, presets.PresetProblem) as problem:
             return self.send_json({"error": str(problem)}, 400)
         except ValueError as problem:
             return self.send_json({"error": f"Bad request: {problem}"}, 400)
@@ -471,6 +476,10 @@ class Handler(BaseHTTPRequestHandler):
                 raise
             _uploads[token] = (name, copy)
             return {"token": token, "items": items, "name": name}
+        elif path == "/api/presets/preview":
+            return preview_preset(data)
+        elif path == "/api/presets/create":
+            return create_presets(data)
         elif path == "/api/find/open":
             online.check_url(data.get("url"), online.PAGE_HOSTS)
             webbrowser.open(str(data["url"]))
@@ -486,6 +495,40 @@ class Handler(BaseHTTPRequestHandler):
         else:
             raise KeyError("not found")
         return {"ok": True}
+
+
+def preview_preset(data):
+    """A picture and the numbers of the tree these settings make, without saving anything."""
+    spec = presets.make_spec(str(data.get("preset", "oak")), data.get("changes") or {})
+    blocks = presets.generate(spec)
+    check = pipeline.inspect({"blocks": blocks}, lenient=True)
+    stats = check["stats"]
+    png = thumbs.draw(blocks, pipeline.jar(), 360)
+    return {"image": base64.b64encode(png).decode("ascii"), "spec": spec, "blocks": stats["blocks"], "size": f"{stats['width_x']} x {stats['height']} x {stats['width_z']}",
+            "errors": check["errors"][:3], "warnings": check["warnings"][:3]}
+
+
+def create_presets(data):
+    """Saves one tree, or several variations with the seed counting up, to the Library."""
+    preset = str(data.get("preset", "oak"))
+    count = min(max(int(data.get("count", 1)), 1), 24)
+    first = presets.make_spec(preset, data.get("changes") or {})
+    batch = "b" + time.strftime("%Y%m%d_%H%M%S") if count > 1 else None
+    ids, skipped = [], 0
+    for number in range(count):
+        spec = presets.make_spec(preset, {**(data.get("changes") or {}), "seed": first["seed"] + number})
+        made = batches.add_build({"blocks": presets.generate(spec), "dropped": {}, "notes": []},
+                                 {"type": "preset", "name": f"{preset}-seed-{spec['seed']}"}, {"kind": "tree"}, batch, spec["name"])
+        if made is None:
+            skipped += 1
+            continue
+        project = projects.load(made)
+        project["title"] = f"{spec['name']} (seed {spec['seed']})"
+        project["tags"] = sorted(set(project.get("tags", [])) | {"preset", naming.slug(preset)})[:20]
+        projects.save(project)
+        ids.append(made)
+    library.flush()
+    return {"ids": ids, "skipped": skipped, "batch": batch}
 
 
 def open_explored(token, name, path):

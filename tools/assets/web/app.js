@@ -39,7 +39,7 @@ function spent(p) {
 }
 
 function steps() {
-  if (screen === "library" || screen === "settings" || screen === "find" || screen === "explore") { $("steps").replaceChildren(); return; }
+  if (screen === "library" || screen === "settings" || screen === "find" || screen === "explore" || screen === "presets") { $("steps").replaceChildren(); return; }
   if (screen === "home" || screen === "import" || project?.mode === "import") {
     let step = 0;
     if (screen === "project" && project) step = project.stage === "saved" ? 3 : project.versions.length > 1 ? 2 : 1;
@@ -74,6 +74,7 @@ function drawHome() {
     el("h1", { textContent: "What do you want to do?" }),
     el("div", { className: "home" },
       el("button", { className: "first", on: { click: () => drawImport() } }, el("b", { textContent: "Import builds" }), "Load files, folders, mods, datapacks or a world box into your library. No AI or key needed."),
+      el("button", { on: { click: () => drawPresets().catch((problem) => showFailure(problem)) } }, el("b", { textContent: "Make a tree" }), "Pick a preset (oak, spruce, willow, cherry...) and move the sliders. No AI, no cost, and the same seed always gives the same tree."),
       el("button", { on: { click: () => drawRequest().catch((problem) => showFailure(problem)) } }, el("b", { textContent: "Make with AI" }), "Describe a tree or plant, and an AI builds it. Needs an API key.")),
   );
 }
@@ -819,6 +820,98 @@ async function drawLibrary(start) {
   );
   $("page").classList.add("wide");
   showScope();
+}
+
+// ---- make a tree from a preset ----
+let presetState = { preset: "oak", changes: {} };
+
+// The sliders: [path in the spec, label, low, high, step]
+const PRESET_SLIDERS = [
+  [["height"], "Height", 4, 60, 1],
+  [["trunk", "base_radius"], "Trunk thickness", 0.4, 4, 0.1],
+  [["trunk", "lean"], "Trunk lean", 0, 0.8, 0.05],
+  [["branches", "count"], "Branches", 0, 12, 1],
+  [["branches", "length"], "Branch length", 1, 14, 1],
+  [["canopy", "radius"], "Leaf width", 1.5, 12, 0.5],
+  [["canopy", "thickness"], "Leaf thickness", 1, 10, 1],
+  [["canopy", "density"], "Leaf density", 0.2, 1, 0.05],
+  [["canopy", "droop_length"], "Hanging leaves (willow)", 1, 12, 1],
+  [["roots", "count"], "Roots", 0, 8, 1],
+];
+
+async function drawPresets() {
+  screen = "presets";
+  stopPolling();
+  project = null;
+  steps();
+  const info = await get("/api/presets");
+  const status = el("div", { className: "dim", role: "status" });
+  const picture = el("img", { alt: "Preview of the tree", style: "width:100%;max-width:360px;aspect-ratio:1;object-fit:contain;background:rgba(127,127,127,.12);border-radius:8px" });
+  const numbers = el("div", { className: "dim" });
+  const dig = (spec, path) => path.reduce((o, k) => o?.[k], spec);
+  const setIn = (target, path, value) => { path.slice(0, -1).reduce((o, k) => (o[k] ??= {}), target)[path[path.length - 1]] = value; };
+  let current = null, timer = null, waiting = 0;
+  const controls = {};
+
+  const refresh = async () => {
+    const ticket = ++waiting;
+    status.replaceChildren(el("span", { className: "spin" }), "Drawing…");
+    try {
+      const shown = await post("/api/presets/preview", { preset: presetState.preset, changes: presetState.changes });
+      if (ticket !== waiting) return;
+      current = shown.spec;
+      picture.src = "data:image/png;base64," + shown.image;
+      numbers.textContent = `${shown.blocks.toLocaleString("en")} blocks · ${shown.size}` + (shown.errors.length ? " · " + shown.errors[0] : "");
+      for (const [path, , , , , input, out] of controls.list) {
+        const value = dig(current, path);
+        input.value = value;
+        out.textContent = String(value);
+      }
+      controls.seed.value = current.seed;
+      controls.shape.value = current.canopy.shape;
+      status.textContent = "";
+    } catch (problem) { status.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); }
+  };
+  const later = () => { clearTimeout(timer); timer = setTimeout(refresh, 200); };
+  const change = (path, value) => { setIn(presetState.changes, path, value); later(); };
+
+  const picker = el("select", { "aria-label": "Preset", on: { change: (e) => { presetState = { preset: e.target.value, changes: {} }; refresh(); } } },
+    info.presets.map((p) => el("option", { value: p.id, textContent: p.name })));
+  picker.value = presetState.preset;
+  controls.list = PRESET_SLIDERS.map(([path, label, low, high, step]) => {
+    const out = el("span", { className: "dim", style: "min-width:36px;text-align:right" });
+    const input = el("input", { type: "range", min: low, max: high, step, "aria-label": label, style: "flex:1", on: { input: (e) => { out.textContent = e.target.value; change(path, Number(e.target.value)); } } });
+    return [path, label, low, high, step, input, out];
+  });
+  controls.shape = el("select", { "aria-label": "Leaf shape", on: { change: (e) => change(["canopy", "shape"], e.target.value) } },
+    [["round", "Round"], ["cone", "Cone (spruce)"], ["flat", "Flat (acacia)"], ["droop", "Hanging (willow)"]].map(([v, t]) => el("option", { value: v, textContent: t })));
+  controls.seed = el("input", { type: "number", min: 0, max: 9999999, "aria-label": "Seed", style: "width:110px", on: { change: (e) => change(["seed"], Number(e.target.value)) } });
+  const count = el("input", { type: "number", min: 1, max: 24, value: 1, "aria-label": "How many variations", style: "width:60px" });
+  const make = el("button", { className: "main", textContent: "Add to Library", on: { click: async () => {
+    make.disabled = true;
+    status.replaceChildren(el("span", { className: "spin" }), "Saving…");
+    try {
+      const made = await post("/api/presets/create", { preset: presetState.preset, changes: presetState.changes, count: Number(count.value) || 1 });
+      if (!made.ids.length) { status.textContent = "Already in the Library: the same tree was made before."; make.disabled = false; return; }
+      if (made.ids.length === 1) await openProject(made.ids[0]);
+      else await drawLibrary({ batch: made.batch });
+    } catch (problem) { status.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); make.disabled = false; }
+  } } });
+
+  page(el("h1", { textContent: "Make a tree" }),
+    el("p", { className: "dim", textContent: "Pick a preset and move the sliders. No AI and no cost. The same settings and seed always make the same tree; a new seed makes a sibling." }),
+    el("div", { className: "preset-grid" },
+      el("div", {}, picture, numbers, status),
+      el("div", {},
+        el("label", { className: "field" }, "Preset", picker),
+        controls.list.map(([, label, , , , input, out]) => el("div", { className: "tool" }, el("span", { style: "min-width:150px", textContent: label }), input, out)),
+        el("div", { className: "tool" }, el("span", { style: "min-width:150px", textContent: "Leaf shape" }), controls.shape),
+        el("div", { className: "tool" }, el("span", { style: "min-width:150px", textContent: "Seed" }), controls.seed,
+          el("button", { textContent: "New seed", on: { click: () => { const seed = Math.floor(Math.random() * 99999); controls.seed.value = seed; change(["seed"], seed); } } })),
+        el("div", { className: "tool" }, el("span", { textContent: "Make" }), count, el("span", { className: "dim", textContent: "variations (seed counts up)" })),
+        el("div", { className: "row" }, make, el("button", { textContent: "Reset", on: { click: () => { presetState.changes = {}; refresh(); } } })))));
+  $("page").classList.add("wide");
+  refresh();
 }
 
 // ---- look inside an archive ----

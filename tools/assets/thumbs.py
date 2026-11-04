@@ -95,16 +95,16 @@ def _shade(colour, factor):
     return tuple(min(255, int(c * factor)) for c in colour)
 
 
-def draw(blocks, jar):
+def draw(blocks, jar, size=SIZE):
     """A PNG (bytes) of the blocks, seen from a corner. Empty assets give a small blank picture."""
     seen = []
     for x, y, z, state in blocks[:MAX_BLOCKS]:
         found = look(jar, state)
         if found:
             seen.append((x, y, z, found))
-    canvas = SIZE * SUPER
+    canvas = size * SUPER
     if not seen:
-        return _png(Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0)))
+        return _png(Image.new("RGBA", (size, size), (0, 0, 0, 0)))
     # Projection: screen x = (x - z) * 0.866, screen y = (x + z) * 0.5 - y. Larger x and z are nearer the viewer.
     seen.sort(key=lambda b: (b[0] + b[1] + b[2], b[1]))
 
@@ -127,7 +127,7 @@ def draw(blocks, jar):
         pen.polygon([at(x0, y1, z0), at(x1, y1, z0), at(x1, y1, z1), at(x0, y1, z1)], fill=_shade(top_colour, SHADE["top"]))
         pen.polygon([at(x0, y1, z1), at(x1, y1, z1), at(x1, y0, z1), at(x0, y0, z1)], fill=_shade(side_colour, SHADE["left"]))
         pen.polygon([at(x1, y1, z1), at(x1, y1, z0), at(x1, y0, z0), at(x1, y0, z1)], fill=_shade(side_colour, SHADE["right"]))
-    return _png(image.resize((SIZE, SIZE), Image.LANCZOS))
+    return _png(image.resize((size, size), Image.LANCZOS))
 
 
 def _png(image):

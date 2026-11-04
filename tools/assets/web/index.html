@@ -65,6 +65,9 @@
   .card img { width:100%; max-width:160px; height:auto; aspect-ratio:1; object-fit:contain; }
   .cardbar { display:flex; align-items:center; gap:6px; margin:6px 0 2px; }
   .cardname { display:block; color:inherit; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .preset-grid { display:grid; grid-template-columns:minmax(240px,360px) 1fr; gap:20px; align-items:start; }
+  .preset-grid input[type=range] { padding:0; }
+  @media (max-width:860px) { .preset-grid { grid-template-columns:1fr; } }
   details summary { cursor:pointer; color:var(--dim); font-size:14px; font-weight:600; margin-top:14px; }
   .tabs { display:flex; gap:6px; margin:14px 0 4px; }
   .tabs button.on { background:var(--accent); border-color:var(--accent); color:#17181c; font-weight:600; }
