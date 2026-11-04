@@ -4,6 +4,7 @@
   "order": 2,
   "name": "The Other Wheel",
   "giver": "Guide",
+  "intro": "The Craft wheel is for the builder, miner and farmer in you. It earns points more slowly, so choose with care.",
   "steps": [
     {
       "type": "craft_points",

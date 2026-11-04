@@ -4,6 +4,7 @@
   "order": 3,
   "name": "Read the Colours",
   "giver": "Guide",
+  "intro": "Gear comes in tiers, and the colour of its name tells you which. Learn to read them before you trust an item with your life.",
   "steps": [
     {
       "type": "rarity",

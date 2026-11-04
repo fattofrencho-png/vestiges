@@ -4,6 +4,7 @@
   "order": 3,
   "name": "Know Your Enemy",
   "giver": "Guide",
+  "intro": "The more you fight one kind of mob, the better you know it. Ten kills earn you a bonus against it.",
   "steps": [
     {
       "type": "bestiary",

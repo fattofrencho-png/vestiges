@@ -4,6 +4,7 @@
   "order": 1,
   "name": "Filling the Pages",
   "giver": "Guide",
+  "intro": "A fuller Codex means more you know about the world. Twenty-five entries is a good start.",
   "steps": [
     {
       "type": "codex",

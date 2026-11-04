@@ -4,6 +4,7 @@
   "order": 1,
   "name": "Two Quick Slots",
   "giver": "Guide",
+  "intro": "The Tool and Weapon slots are always at hand. Hold one and your mouse wheel reaches past slot 9.",
   "steps": [
     {
       "type": "hold_tool",

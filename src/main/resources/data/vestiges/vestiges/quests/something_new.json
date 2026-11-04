@@ -4,10 +4,11 @@
   "order": 0,
   "name": "Something New",
   "giver": "Guide",
+  "intro": "The Codex is your record of the world: blocks, mobs, places and items you have met. Press H and open the Codex tab to read it. Everything you discover adds an entry.",
   "steps": [
     {
       "type": "codex",
-      "text": "Discover 5 Codex entries.",
+      "text": "Discover 5 Codex entries. Open it with H, then the Codex tab.",
       "amount": 5
     }
   ],

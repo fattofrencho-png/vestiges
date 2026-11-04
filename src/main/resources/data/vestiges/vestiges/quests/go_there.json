@@ -4,6 +4,7 @@
   "order": 5,
   "name": "Go There",
   "giver": "Guide",
+  "intro": "Once a place is marked, the Locator Bar leads you back to it.",
   "steps": [
     {
       "type": "go_there",

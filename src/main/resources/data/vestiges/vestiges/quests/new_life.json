@@ -4,6 +4,7 @@
   "order": 6,
   "name": "New Life",
   "giver": "Guide",
+  "intro": "Breeding animals feeds a settlement. Look at them to see how long until the next one.",
   "steps": [
     {
       "type": "breed",
