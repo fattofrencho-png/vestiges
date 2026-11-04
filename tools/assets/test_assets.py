@@ -21,6 +21,7 @@ os.environ["VESTIGES_FAKE_AI"] = "1"
 import edits
 import backup
 import batches
+import explore
 import export
 import import_formats
 import library
@@ -1172,6 +1173,85 @@ class Thumbs(unittest.TestCase):
             self.assertEqual(list(thumbs.folder().glob(f"{made}_v*.png")), [])
         finally:
             thumbs._jar_source = None
+
+
+class Explore(unittest.TestCase):
+    def archive(self):
+        structure = export.to_structure({"blocks": [[0, 0, 0, LOG], [0, 1, 0, LOG]]}, 5023)[0]
+        raw = io.BytesIO()
+        with zipfile.ZipFile(raw, "w") as z:
+            z.writestr("pack.mcmeta", '{"pack": {"pack_format": 99}}')
+            z.writestr("data/demo/structure/stump.nbt", export.write_nbt(structure))
+            z.writestr("data/demo/loot_table/chests/box.json", '{"pools": []}')
+            z.writestr("data/demo/recipe/thing.json", "{}")
+            z.writestr("data/demo/tags/block/x.json", "{}")
+            z.writestr("data/demo/worldgen/configured_feature/t.json", "{}")
+            z.writestr("assets/demo/textures/block/rock.png", b"PNG fake")
+            z.writestr("assets/demo/models/block/rock.json", "{}")
+            z.writestr("assets/demo/sounds/boom.ogg", b"OggS")
+            z.writestr("assets/demo/lang/en_us.json", "{}")
+            z.writestr("dev/Thing.class", b"class")
+            z.writestr("notes/odd.bin", b"1")
+            z.writestr("../evil.txt", b"x")
+        return raw.getvalue()
+
+    def test_every_file_lands_in_the_right_type(self):
+        for path, kind in [("data/a/structures/x.nbt", "structure"), ("data/a/loot_tables/x.json", "loot"), ("data/a/recipes/x.json", "recipe"),
+                           ("data/a/advancement/x.json", "advancement"), ("data/a/function/x.mcfunction", "function"), ("data/a/odd/x.json", "data"),
+                           ("assets/a/textures/item/x.png", "texture"), ("assets/a/blockstates/x.json", "model"), ("assets/a/sounds.json", "sound"),
+                           ("fabric.mod.json", "info"), ("com/x/Y.class", "code"), ("random/file.bin", "other")]:
+            self.assertEqual(explore.classify(path), kind, path)
+
+    def test_listing_counts_types_and_skips_unsafe_names(self):
+        found = explore.listing(self.archive())
+        counts = {t["type"]: t["count"] for t in found["types"]}
+        self.assertEqual(counts["structure"], 1)
+        self.assertEqual(counts["texture"], 1)
+        self.assertEqual(counts["code"], 1)
+        self.assertNotIn("../evil.txt", [e["path"] for e in found["entries"]])
+        self.assertEqual(found["namespaces"], ["demo"])
+        self.assertEqual(found["types"][0]["type"], "structure")  # fixed order: builds first
+        with self.assertRaises(explore.ExploreProblem):
+            explore.listing(b"not an archive")
+
+    def test_previews_by_kind(self):
+        data = self.archive()
+        self.assertEqual(explore.preview(data, "assets/demo/textures/block/rock.png")["kind"], "image")
+        self.assertEqual(explore.preview(data, "assets/demo/sounds/boom.ogg")["kind"], "sound")
+        self.assertEqual(explore.preview(data, "pack.mcmeta")["kind"], "text")
+        self.assertIn("pack_format", explore.preview(data, "pack.mcmeta")["text"])
+        self.assertEqual(explore.preview(data, "data/demo/structure/stump.nbt")["kind"], "none")
+        with self.assertRaises(explore.ExploreProblem):
+            explore.read(data, "data/demo/missing.json")
+
+    def test_export_keeps_paths_or_flattens_and_refuses_unsafe_ones(self):
+        data = self.archive()
+        picked = ["data/demo/loot_table/chests/box.json", "assets/demo/models/block/rock.json", "data/demo/recipe/thing.json"]
+        names = zipfile.ZipFile(io.BytesIO(explore.export(data, picked))).namelist()
+        self.assertEqual(sorted(names), sorted(picked))
+        flat = zipfile.ZipFile(io.BytesIO(explore.export(data, picked + ["data/demo/tags/block/x.json", "assets/demo/lang/en_us.json"], keep_folders=False))).namelist()
+        self.assertEqual(len(flat), len(set(flat)))
+        self.assertIn("box.json", flat)
+        for bad in (["../evil.txt"], ["/etc/passwd"], ["C:/x.txt"], ["data/demo/nothing.json"]):
+            with self.assertRaises(explore.ExploreProblem):
+                explore.export(data, bad)
+
+    def test_the_screen_keeps_the_file_and_can_hand_its_builds_to_import(self):
+        import studio
+        path = Path(TEMP) / "explore_test.zip"
+        path.write_bytes(self.archive())
+        opened = studio.open_explored("tok1", "demo.zip", path)
+        self.assertEqual(opened["name"], "demo.zip")
+        self.assertEqual(studio.explored("tok1")[0], "demo.zip")
+        with self.assertRaises(explore.ExploreProblem):
+            studio.explored("nope")
+        for number in range(5):  # only the last few files are kept
+            extra = Path(TEMP) / f"explore_extra_{number}.zip"
+            extra.write_bytes(self.archive())
+            studio.open_explored(f"more{number}", "x.zip", extra)
+        self.assertNotIn("tok1", studio._explored)
+        self.assertFalse(path.exists())
+        self.assertLessEqual(len(studio._explored), 4)
 
 
 if __name__ == "__main__":

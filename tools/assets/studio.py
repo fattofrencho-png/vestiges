@@ -17,6 +17,7 @@ from urllib.parse import parse_qs, urlparse
 import backup
 import batches
 import edits
+import explore
 import export
 import licences
 import import_formats
@@ -48,6 +49,7 @@ SUGGESTIONS = [
     {"label": "Forest undergrowth", "text": "A low patch of forest undergrowth with bushes, ferns and moss, to scatter between trees."},
 ]
 _baked = {}
+_explored = {}  # token -> (file name, temporary file) for the Look inside screen
 _uploads = {}  # token -> (file name, temporary file) until a batch uses them
 
 
@@ -283,6 +285,15 @@ class Handler(BaseHTTPRequestHandler):
                                                         query.get("no_credit") == "1", query.get("not_vanilla") == "1", int(query.get("page", 0)), query.get("licence", ""), query.get("tag", ""), query.get("collection", ""), query.get("favorite") == "1"), **library.facets()})
             if url.path == "/api/thumb":
                 return self.send(thumbs.get(query.get("id", "")), "image/png")
+            if url.path == "/api/explore/preview":
+                name, path = explored(query.get("token"))
+                return self.send_json(explore.preview(path, query.get("path", "")))
+            if url.path == "/api/explore/file":
+                name, path = explored(query.get("token"))
+                wanted = query.get("path", "")
+                data = explore.read(path, wanted)
+                kind = "image/png" if wanted.lower().endswith(".png") else "audio/ogg" if wanted.lower().endswith(".ogg") else "application/octet-stream"
+                return self.send(data, kind)
             if url.path == "/api/backups":
                 return self.send_json({"backups": backup.list_backups()})
             if url.path == "/api/find/search":
@@ -320,7 +331,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.send(path.read_bytes(), kind)
         except KeyError as problem:
             return self.send_json({"error": str(problem.args[0]) if problem.args else "not found"}, 404)
-        except online.OnlineProblem as problem:
+        except (online.OnlineProblem, explore.ExploreProblem) as problem:
             return self.send_json({"error": str(problem)}, 400)
         except Exception as problem:
             return self.send_json({"error": str(problem)}, 500)
@@ -329,30 +340,34 @@ class Handler(BaseHTTPRequestHandler):
         # These can spend money, so they only accept the tool's own page.
         origin = self.headers.get("Origin", "")
         url = urlparse(self.path)
-        upload = url.path == "/api/import/upload"
+        upload = url.path in ("/api/import/upload", "/api/explore/upload")
         wanted = "application/octet-stream" if upload else "application/json"
         if (self.headers.get("Host") not in ALLOWED_HOSTS or self.headers.get("Content-Type") != wanted
                 or origin.replace("http://", "") not in ALLOWED_HOSTS):
             return self.send_json({"error": "not allowed"}, 403)
         try:
             if upload:
-                return self.receive_upload(parse_qs(url.query).get("name", ["build"])[0])
+                return self.receive_upload(parse_qs(url.query).get("name", ["build"])[0], explore_only=url.path == "/api/explore/upload")
             data = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
             if url.path == "/api/library/zip":
                 return self.send(zip_of(data.get("ids") or [], data.get("format")), "application/zip", name="asset-library.zip")
+            if url.path == "/api/explore/export":
+                name, path = explored(data.get("token"))
+                zipped = explore.export(path, [str(p) for p in data.get("paths") or []], data.get("keep_folders", True) is not False)
+                return self.send(zipped, "application/zip", name=Path(name).stem + "-picked.zip")
             return self.send_json(self.action(url.path, data))
         except KeyError as problem:
             return self.send_json({"error": str(problem.args[0]) if problem.args else "not found"}, 404)
         except providers.ProviderError as problem:
             return self.send_json({"error": str(problem)}, 400)
-        except (import_formats.ImportProblem, edits.EditProblem, backup.BackupProblem, online.OnlineProblem, licences.LicenceProblem) as problem:
+        except (import_formats.ImportProblem, edits.EditProblem, backup.BackupProblem, online.OnlineProblem, licences.LicenceProblem, explore.ExploreProblem) as problem:
             return self.send_json({"error": str(problem)}, 400)
         except ValueError as problem:
             return self.send_json({"error": f"Bad request: {problem}"}, 400)
         except Exception as problem:
             return self.send_json({"error": str(problem)}, 500)
 
-    def receive_upload(self, name):
+    def receive_upload(self, name, explore_only=False):
         size = int(self.headers.get("Content-Length", 0))
         if size > import_formats.MAX_FILE:
             self.close_connection = True
@@ -369,6 +384,8 @@ class Handler(BaseHTTPRequestHandler):
                     break
                 out.write(chunk)
                 left -= len(chunk)
+        if explore_only:
+            return self.send_json(open_explored(token, name, path))
         try:
             items = import_formats.scan(name, path)
         except import_formats.ImportProblem:
@@ -441,7 +458,19 @@ class Handler(BaseHTTPRequestHandler):
                 if name in (data.get("keys") or {}):
                     providers.set_key(name, str(data["keys"][name]))
         elif path == "/api/find/fetch":
-            return fetch_online(str(data.get("project", "")))
+            return fetch_online(str(data.get("project", "")), bool(data.get("look_inside")))
+        elif path == "/api/explore/to-import":
+            name, held = explored(data.get("token"))
+            token = uuid.uuid4().hex
+            copy = providers.HOME / "uploads" / token
+            shutil.copyfile(held, copy)
+            try:
+                items = import_formats.scan(name, copy)
+            except import_formats.ImportProblem:
+                copy.unlink(missing_ok=True)
+                raise
+            _uploads[token] = (name, copy)
+            return {"token": token, "items": items, "name": name}
         elif path == "/api/find/open":
             online.check_url(data.get("url"), online.PAGE_HOSTS)
             webbrowser.open(str(data["url"]))
@@ -459,7 +488,28 @@ class Handler(BaseHTTPRequestHandler):
         return {"ok": True}
 
 
-def fetch_online(project_id):
+def open_explored(token, name, path):
+    """Lists what is inside an archive that is already saved at path, and keeps it for previews and exports."""
+    try:
+        found = explore.listing(path)
+    except explore.ExploreProblem:
+        path.unlink(missing_ok=True)
+        raise
+    _explored[token] = (name, path)
+    while len(_explored) > 4:  # keep the last few; older files are deleted
+        oldest = next(iter(_explored))
+        _explored.pop(oldest)[1].unlink(missing_ok=True)
+    return {"token": token, "name": name, **found}
+
+
+def explored(token):
+    held = _explored.get(str(token))
+    if held is None:
+        raise explore.ExploreProblem("Open the file again: the tool has restarted since.")
+    return held
+
+
+def fetch_online(project_id, look_inside=False):
     """Downloads one project's newest file into the same holding folder as an uploaded file, and reads the builds in it."""
     file = online.find_file(project_id)
     folder = providers.HOME / "uploads"
@@ -468,6 +518,8 @@ def fetch_online(project_id):
     path = folder / token
     online.download(file, path)
     name = online.safe_name(file["filename"])
+    if look_inside:
+        return {**open_explored(token, name, path), "version": file["version"]}
     try:
         items = import_formats.scan(name, path)
     except import_formats.ImportProblem:

@@ -39,7 +39,7 @@ function spent(p) {
 }
 
 function steps() {
-  if (screen === "library" || screen === "settings" || screen === "find") { $("steps").replaceChildren(); return; }
+  if (screen === "library" || screen === "settings" || screen === "find" || screen === "explore") { $("steps").replaceChildren(); return; }
   if (screen === "home" || screen === "import" || project?.mode === "import") {
     let step = 0;
     if (screen === "project" && project) step = project.stage === "saved" ? 3 : project.versions.length > 1 ? 2 : 1;
@@ -821,6 +821,112 @@ async function drawLibrary(start) {
   showScope();
 }
 
+// ---- look inside an archive ----
+const EXPLORE_SHOWN = 400;
+let exploreState = { type: "", text: "" };
+
+async function drawExplore(listing = null, meta = {}) {
+  screen = "explore";
+  stopPolling();
+  project = null;
+  steps();
+  const status = el("div", { className: "dim", role: "status" });
+  const ticked = new Set();
+  const dropzone = () => {
+    const picker = el("input", { type: "file", accept: ".zip,.jar", "aria-label": "Choose an archive", style: "display:none", on: { change: () => open(picker.files[0]) } });
+    const open = async (file) => {
+      if (!file) return;
+      status.replaceChildren(el("span", { className: "spin" }), `Reading ${file.name}…`);
+      try {
+        const reply = await fetch("/api/explore/upload?name=" + encodeURIComponent(file.name), { method: "POST", headers: { "Content-Type": "application/octet-stream" }, body: file });
+        const body = await reply.json();
+        if (!reply.ok) throw new Error(body.error);
+        exploreState = { type: "", text: "" };
+        drawExplore(body, {});
+      } catch (problem) { status.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); }
+    };
+    const drop = el("div", { className: "drop", on: {
+      dragover: (e) => { e.preventDefault(); drop.classList.add("over"); },
+      dragleave: () => drop.classList.remove("over"),
+      drop: (e) => { e.preventDefault(); drop.classList.remove("over"); open(e.dataTransfer.files[0]); } } },
+      el("p", { textContent: "Drop a datapack, resource pack, mod or any .zip / .jar here" }),
+      el("div", { className: "tool", style: "justify-content:center" }, el("button", { textContent: "Choose a file", on: { click: () => picker.click() } })),
+      el("p", { className: "dim", textContent: "You will see everything inside, by type, and can pick files to keep. Nothing is unpacked or run." }), picker);
+    return drop;
+  };
+  if (!listing) {
+    page(el("h1", { textContent: "Look inside" }), dropzone(), status);
+    return;
+  }
+  const fill = (node, ...kids) => node.replaceChildren(...kids.flat().filter((k) => k !== null && k !== undefined));
+  const count = (n) => n.toLocaleString("en");
+  const size = (bytes) => (bytes > 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : bytes > 1024 ? `${Math.round(bytes / 1024)} KB` : `${bytes} B`);
+  const list = el("div", { className: "ticks" });
+  const chips = el("div", { className: "tool" });
+  const preview = el("div");
+  const actions = el("div", { className: "tool" });
+  const filter = el("input", { type: "text", placeholder: "Filter by name", "aria-label": "Filter", value: exploreState.text, style: "flex:1" });
+  const keep = el("input", { type: "checkbox", checked: true });
+  const shown = () => {
+    const words = filter.value.toLowerCase().split(/\s+/).filter(Boolean);
+    return listing.entries.filter((e) => (!exploreState.type || e.type === exploreState.type) && words.every((w) => e.path.toLowerCase().includes(w)));
+  };
+  const drawChips = () => chips.replaceChildren(
+    el("button", { textContent: `All (${count(listing.entries.length)})`, className: exploreState.type === "" ? "main" : "", on: { click: () => { exploreState.type = ""; draw(); } } }),
+    ...listing.types.map((t) => el("button", { textContent: `${t.label} (${count(t.count)})`, className: exploreState.type === t.type ? "main" : "", on: { click: () => { exploreState.type = t.type; draw(); } } })));
+  const showPreview = async (entry) => {
+    preview.replaceChildren(el("div", { className: "dim", textContent: `Opening ${entry.path}…` }));
+    const link = `/api/explore/file?token=${listing.token}&path=${encodeURIComponent(entry.path)}`;
+    try {
+      const info = await get(`/api/explore/preview?token=${listing.token}&path=${encodeURIComponent(entry.path)}`);
+      const head = el("div", { className: "name", style: "word-break:break-all", textContent: `${entry.path} · ${size(entry.size)}` });
+      let body;
+      if (info.kind === "image") body = el("img", { src: link, alt: entry.path, style: "image-rendering:pixelated;max-width:100%;max-height:300px;min-width:64px;background:rgba(127,127,127,.2)" });
+      else if (info.kind === "sound") body = el("audio", { src: link, controls: true });
+      else if (info.kind === "text") body = el("pre", { style: "max-height:300px;overflow:auto;font-size:12px;margin:6px 0;white-space:pre-wrap;word-break:break-all", textContent: info.text + (info.cut ? "\n… (cut)" : "") });
+      else body = el("p", { className: "dim", textContent: "No preview for this kind of file. You can still tick it and download it." });
+      preview.replaceChildren(el("div", { className: "q" }, head, body));
+    } catch (problem) { preview.replaceChildren(el("div", { className: "bad-t", textContent: problem.message })); }
+  };
+  const draw = () => {
+    exploreState.text = filter.value;
+    drawChips();
+    const rows = shown();
+    fill(list, rows.slice(0, EXPLORE_SHOWN).map((e) => el("label", {},
+      el("input", { type: "checkbox", checked: ticked.has(e.path), on: { change: (x) => { if (x.target.checked) ticked.add(e.path); else ticked.delete(e.path); drawActions(); } } }), " ",
+      el("a", { href: "#", style: "color:inherit", textContent: e.path, on: { click: (x) => { x.preventDefault(); showPreview(e); } } }), el("span", { className: "dim", textContent: ` · ${size(e.size)}` }))),
+      rows.length > EXPLORE_SHOWN ? el("div", { className: "dim", textContent: `Showing ${count(EXPLORE_SHOWN)} of ${count(rows.length)}. Filter to see the rest. Tick all shown covers all of them.` }) : null,
+      rows.length ? null : el("div", { className: "dim", textContent: "Nothing matches." }));
+    drawActions();
+  };
+  const drawActions = () => {
+    const structures = listing.types.find((t) => t.type === "structure");
+    fill(actions,
+      el("button", { textContent: "Tick all shown", on: { click: () => { shown().forEach((e) => ticked.add(e.path)); draw(); } } }),
+      el("button", { textContent: "Untick all", on: { click: () => { ticked.clear(); draw(); } } }),
+      el("label", { className: "opt" }, keep, " Keep folders"),
+      el("button", { className: "main", textContent: ticked.size ? `Download ${count(ticked.size)} as zip` : "Download as zip", disabled: !ticked.size, on: { click: async () => {
+        const reply = await fetch("/api/explore/export", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: listing.token, paths: [...ticked], keep_folders: keep.checked }) });
+        if (!reply.ok) return showFailure(new Error((await reply.json()).error));
+        const link = el("a", { href: URL.createObjectURL(await reply.blob()), download: listing.name.replace(/\.[^.]+$/, "") + "-picked.zip" });
+        link.click();
+      } } }),
+      structures ? el("button", { textContent: `Import the ${count(structures.count)} structures`, title: "Opens the normal Import screen with this archive's builds", on: { click: async () => {
+        try {
+          const got = await post("/api/explore/to-import", { token: listing.token });
+          drawImport({ source: { token: got.token, name: got.name, items: got.items }, details: meta.details || {}, notice: meta.notice || "" });
+        } catch (problem) { showFailure(problem); }
+      } } }) : null);
+  };
+  filter.addEventListener("input", draw);
+  page(el("h1", { textContent: listing.name }),
+    el("p", { className: "dim", textContent: `${count(listing.total)} files${listing.namespaces.length ? " · " + listing.namespaces.slice(0, 6).join(", ") + (listing.namespaces.length > 6 ? "…" : "") : ""}${listing.truncated ? ". Only the first " + count(listing.entries.length) + " are listed." : ""}` }),
+    chips, el("div", { className: "tool" }, filter), actions, preview, list,
+    el("div", { className: "row" }, el("button", { textContent: "Open another file", on: { click: () => { exploreState = { type: "", text: "" }; drawExplore(); } } })), status);
+  $("page").classList.add("wide");
+  draw();
+}
+
 // ---- find online ----
 let findState = { q: "", type: "datapack", builds: true, page: 0 };
 
@@ -867,6 +973,13 @@ async function drawFind() {
       el("p", { textContent: hit.description }),
       el("p", { className: hit.warning ? "bad-t" : "dim", textContent: `Licence: ${hit.licence || "not given"}${hit.warning ? ". " + hit.warning : ""}` }),
       el("div", { className: "row" }, button,
+        el("button", { textContent: "Look inside", title: "Download it and see everything in it, not only the builds", on: { click: async () => {
+          note.replaceChildren(el("span", { className: "spin" }), "Downloading…");
+          try {
+            const got = await post("/api/find/fetch", { project: hit.id, look_inside: true });
+            drawExplore(got, { details: { creator: hit.author, link: hit.url, licence: hit.licence }, notice: hit.warning ? `${hit.title}: ${hit.warning} Check the terms before using it in the mod.` : "" });
+          } catch (problem) { note.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); }
+        } } }),
         el("button", { textContent: "Open on Modrinth", on: { click: () => post("/api/find/open", { url: hit.url }).catch((problem) => { note.textContent = problem.message; }) } })),
       note);
   };
@@ -979,6 +1092,7 @@ async function drawSettings() {
 
 $("newBtn").onclick = drawHome;
 $("findBtn").onclick = drawFind;
+$("exploreBtn").onclick = () => drawExplore();
 $("libraryBtn").onclick = () => drawLibrary({ batch: "" }).catch((problem) => showFailure(problem));
 $("settingsBtn").onclick = drawSettings;
 get("/api/state").then((state) => { app = state; }).catch(() => {});
