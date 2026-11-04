@@ -20,15 +20,15 @@ PAGE = 12
 MAX_DOWNLOAD = 100 * 1024 * 1024
 FILE_HOSTS = ("cdn.modrinth.com",)
 PAGE_HOSTS = ("modrinth.com", "www.modrinth.com", "github.com", "www.curseforge.com", "curseforge.com", "duckduckgo.com")
-TYPES = {"datapack": "Datapacks", "mod": "Mods"}
+TYPES = {"datapack": "Datapacks", "mod": "Mods", "resourcepack": "Resource packs"}
 GITHUB_API = "https://api.github.com"
 GITHUB_HOSTS = ("api.github.com", "codeload.github.com")
 CURSEFORGE_API = "https://api.curseforge.com/v1"
 CURSEFORGE_HOSTS = ("edge.forgecdn.net", "mediafilez.forgecdn.net", "media.forgecdn.net")
 CURSEFORGE_CLASSES = {"datapack": 6945, "world": 17, "mod": 6, "resourcepack": 12}
 SOURCES = {
-    "modrinth": {"label": "Modrinth", "types": [["datapack", "Datapacks"], ["mod", "Mods"]], "key": None,
-                 "note": "Datapacks and mods. The licence comes with every result."},
+    "modrinth": {"label": "Modrinth", "types": [["datapack", "Datapacks"], ["mod", "Mods"], ["resourcepack", "Resource packs"]], "key": None,
+                 "note": "Datapacks, mods and resource packs. The licence comes with every result. Resource packs are big: use Look inside, filter the textures you want, and save only those."},
     "github": {"label": "GitHub", "types": [["repo", "Repositories"]], "key": None,
                "note": "Repositories of schematics and datapacks. Most results are mods and tools, and many repositories state no licence."},
     "curseforge": {"label": "CurseForge", "types": [["datapack", "Datapacks"], ["world", "Worlds"], ["mod", "Mods"], ["resourcepack", "Resource packs"]], "key": "curseforge",
@@ -84,6 +84,8 @@ def licence_warning(licence):
         return "No derivatives: you may not change it."
     if re.search(r"-NC-", text, re.I):
         return "Non-commercial only."
+    if text.lower().startswith("licenseref-"):
+        return "A custom licence: read its terms on the project page."
     return ""
 
 
@@ -100,9 +102,9 @@ def _hit(source, id_, title, description, author, licence, downloads, kind, cate
 # ---------------------------------------------------------------- Modrinth
 def search_url(query, kind="datapack", builds=True, page=0):
     if kind not in TYPES:
-        raise OnlineProblem("Choose Datapacks or Mods.")
+        raise OnlineProblem("Choose Datapacks, Mods or Resource packs.")
     facets = [[f"project_type:{kind}"]]
-    if builds:
+    if builds and kind != "resourcepack":
         facets.append([f"categories:{c}" for c in BUILD_CATEGORIES])
     params = {"query": str(query)[:100], "limit": PAGE, "offset": max(int(page), 0) * PAGE, "index": "relevance" if query else "downloads", "facets": json.dumps(facets)}
     return f"{API}/search?" + urllib.parse.urlencode(params)

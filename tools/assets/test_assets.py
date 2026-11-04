@@ -1650,5 +1650,61 @@ class FileViewers(unittest.TestCase):
             files.model_preview(broken, self.JAR)
 
 
+class ResourcePacks(unittest.TestCase):
+    def test_modrinth_resource_packs_are_searched_without_the_builds_filter(self):
+        url = online.search_url("faithful", "resourcepack", True, 0)
+        self.assertIn("project_type%3Aresourcepack", url)
+        self.assertNotIn("worldgen", url)
+        self.assertIn("worldgen", online.search_url("faithful", "datapack", True, 0))
+        self.assertEqual(online.SOURCES["modrinth"]["types"][2], ["resourcepack", "Resource packs"])
+
+    def test_a_custom_licence_is_pointed_out(self):
+        hit = online.clean_hit({"project_id": "AbCd1234", "slug": "faithful-32x", "title": "Faithful 32x", "author": "F", "license": "LicenseRef-Faithful-License",
+                                "downloads": 5, "project_type": "resourcepack"})
+        self.assertEqual(hit["kind"], "resourcepack")
+        self.assertIn("custom licence", hit["warning"])
+        self.assertEqual(online.licence_warning("MIT"), "")
+        self.assertIn("All rights reserved", online.licence_warning("LicenseRef-All-Rights-Reserved"))
+        self.assertIn("No licence", online.licence_warning("LicenseRef-Unknown"))
+
+    def test_many_textures_are_saved_from_one_opened_archive(self):
+        from PIL import Image
+        raw = io.BytesIO()
+        with zipfile.ZipFile(raw, "w") as z:
+            for number in range(60):
+                png = io.BytesIO()
+                Image.new("RGBA", (16, 16), (number * 4 % 256, 70, 20 + number, 255)).save(png, "PNG")
+                z.writestr(f"assets/minecraft/textures/block/pack_tile_{number:02d}.png", png.getvalue())
+            z.writestr("pack.mcmeta", "{}")
+        data = raw.getvalue()
+        opened = []
+        real = explore.open_archive
+        explore.open_archive = lambda source: (opened.append(1) if not isinstance(source, zipfile.ZipFile) else None) or real(source)
+        try:
+            picks = [f"assets/minecraft/textures/block/pack_tile_{n:02d}.png" for n in range(60)]
+            done = files.save_from_archive(data, "Fancy Pack 16x.zip", picks, {"creator": "Pack Author", "licence": "LicenseRef-Faithful-License", "link": "https://example.test/pack"})
+        finally:
+            explore.open_archive = real
+        self.assertEqual((len(done["ids"]), done["duplicates"], done["skipped"]), (60, 0, []))
+        self.assertEqual(len(opened), 1)  # not once per file
+        sample = projects.load(done["ids"][0])
+        self.assertEqual(sample["credit"]["creator"], "Pack Author")
+        self.assertEqual(licences.of_project(sample)["status"], "unknown")  # a custom licence still needs a look
+        self.assertEqual(sample["source"]["name"], "Fancy Pack 16x.zip")
+        self.assertTrue(done["batch"])
+        self.assertTrue(set(done["ids"]) <= {r["id"] for r in library.search(batch=done["batch"])["rows"]})
+
+    def test_reading_from_an_already_open_archive_works(self):
+        data = zipfile.ZipFile(io.BytesIO(self.simple()))
+        self.assertEqual(explore.read(data, "assets/minecraft/textures/block/a.png"), b"PNG a")
+        self.assertEqual(explore.listing(data)["types"][0]["type"], "texture")
+
+    def simple(self):
+        raw = io.BytesIO()
+        with zipfile.ZipFile(raw, "w") as z:
+            z.writestr("assets/minecraft/textures/block/a.png", b"PNG a")
+        return raw.getvalue()
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=0)

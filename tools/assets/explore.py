@@ -60,6 +60,8 @@ def _safe(path):
 
 
 def open_archive(source):
+    if isinstance(source, zipfile.ZipFile):
+        return source
     try:
         return zipfile.ZipFile(source if isinstance(source, Path) else io.BytesIO(source))
     except (zipfile.BadZipFile, OSError) as problem:

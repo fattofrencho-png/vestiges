@@ -1273,10 +1273,11 @@ async function drawFind() {
     type.replaceChildren(...current.types.map(([v, t]) => el("option", { value: v, textContent: t })));
     type.value = current.types.some(([v]) => v === findState.type) ? findState.type : current.types[0][0];
     type.style.display = current.types.length > 1 ? "" : "none";
-    buildsLabel.style.display = current.id === "curseforge" ? "none" : "";
+    buildsLabel.style.display = current.id === "curseforge" || type.value === "resourcepack" ? "none" : "";
     note.textContent = current.note + (current.needs_key && !current.has_key ? " No key is saved yet: add it in Settings." : "");
     note.className = current.needs_key && !current.has_key ? "bad-t" : "dim";
   };
+  type.addEventListener("change", () => { findState.type = type.value; fillTypes(); });
   source.addEventListener("change", () => { findState.source = source.value; fillTypes(); list.replaceChildren(); status.textContent = ""; });
   fillTypes();
 
@@ -1295,7 +1296,8 @@ async function drawFind() {
   const card = (hit) => {
     const result = el("div", { className: "dim", role: "status" });
     const meta = { details: { creator: hit.author, link: hit.url, licence: hit.licence }, notice: hit.warning ? `${hit.title}: ${hit.warning} Check the terms before using it in the mod.` : "" };
-    const button = el("button", { className: "main", textContent: "Import", on: { click: async () => {
+    const isPack = hit.kind === "resourcepack";  // a resource pack has textures, not builds
+    const button = el("button", { className: "main", textContent: "Import", style: isPack ? "display:none" : "", on: { click: async () => {
       button.disabled = true;
       result.replaceChildren(el("span", { className: "spin" }), "Downloading and reading it…");
       try {
@@ -1309,7 +1311,7 @@ async function drawFind() {
       el("p", { textContent: hit.description }),
       el("p", { className: hit.warning ? "bad-t" : "dim", textContent: `Licence: ${hit.licence || "not given"}${hit.warning ? ". " + hit.warning : ""}` }),
       el("div", { className: "row" }, button,
-        el("button", { textContent: "Look inside", title: "Download it and see everything in it, not only the builds", on: { click: async () => {
+        el("button", { textContent: "Look inside", className: isPack ? "main" : "", title: isPack ? "Download it, filter the textures you want, and save them to the Library" : "Download it and see everything in it, not only the builds", on: { click: async () => {
           result.replaceChildren(el("span", { className: "spin" }), "Downloading…");
           try {
             const got = await post("/api/find/fetch", { project: hit.id, source: hit.source, look_inside: true });

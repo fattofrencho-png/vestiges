@@ -17,6 +17,7 @@ import naming
 import projects
 
 MAX_BYTES = 32 * 1024 * 1024
+MAX_SAVE = 5000  # files saved from one archive in one go
 # explore type -> (Library kind, short label). Structures go through Import builds; code, shaders and other files are not kept.
 KINDS = {
     "texture": ("texture", "PNG"), "model": ("model", "MODEL"), "sound": ("sound", "OGG"),
@@ -77,7 +78,8 @@ def create(name, data, archive_name, path, details, batch=None, ftype=None):
 
 def save_from_archive(source, archive_name, paths, details):
     """Saves picked files out of an archive. Returns {"ids", "duplicates", "skipped": [{path, reason}], "batch"}."""
-    picked = list(dict.fromkeys(str(p) for p in paths))[:2000]
+    picked = list(dict.fromkeys(str(p) for p in paths))[:MAX_SAVE]
+    source = explore.open_archive(source)  # opened once: a resource pack can hold thousands of files
     batch = "b" + time.strftime("%Y%m%d_%H%M%S") if len(picked) > 1 else None
     ids, duplicates, skipped = [], 0, []
     for path in picked:
