@@ -1559,5 +1559,96 @@ class OwnFiles(unittest.TestCase):
         self.assertEqual(projects.file_path(made).parent, projects._path(made) / "file")
 
 
+class FileViewers(unittest.TestCase):
+    JAR = mc_assets.Jar()
+
+    def own(self, name, data, path=""):
+        made = files.create_own(name, data, {}, path=path)
+        self.assertIsNotNone(made)
+        return projects.load(made)
+
+    def png(self, width, height, shade):
+        from PIL import Image
+        out = io.BytesIO()
+        Image.new("RGBA", (width, height), (shade, 60, 90, 255)).save(out, "PNG")
+        return out.getvalue()
+
+    def test_json_is_laid_out_and_checked_for_its_type(self):
+        good = files.json_check('{"pools":[{"rolls":1,"entries":[]}]}', "loot", self.JAR.known_ids())
+        self.assertTrue(good["ok"])
+        self.assertIn('\n  "pools"', good["pretty"])
+        self.assertEqual(good["notes"], [])
+        broken = files.json_check('{"pools": [ }', "loot")
+        self.assertFalse(broken["ok"])
+        self.assertIn("line 1", broken["error"])
+        self.assertIsNone(broken["pretty"])
+        self.assertIn('"rolls"', " ".join(files.json_check('{"pools":[{"entries":[]}]}', "loot")["notes"]))
+        self.assertIn('"type"', " ".join(files.json_check("{}", "recipe")["notes"]))
+        typo = files.json_check('{"pools":[{"rolls":1,"entries":[{"type":"minecraft:item","name":"minecraft:applee"},{"type":"minecraft:item","name":"minecraft:apple"}]}]}', "loot", self.JAR.known_ids())
+        self.assertIn("minecraft:applee", " ".join(typo["notes"]))
+        self.assertNotIn("minecraft:apple,", " ".join(typo["notes"]) + ",")
+        other = files.json_check('{"pools":[{"rolls":1,"entries":[{"type":"minecraft:loot_table","name":"minecraft:chests/x"}]}]}', "loot", self.JAR.known_ids())
+        self.assertEqual(other["notes"], [])  # a loot table reference is not an item name
+
+    def test_texture_facts_notes_and_animation_frames(self):
+        flat = files.texture_info(self.png(16, 16, 20))
+        self.assertEqual((flat["width"], flat["frames"], flat["colours"], flat["notes"]), (16, 1, 1, []))
+        strip = files.texture_info(self.png(16, 64, 21))
+        self.assertEqual((strip["frames"], strip["frame_size"], strip["notes"]), (4, 16, []))
+        odd = files.texture_info(self.png(12, 12, 22))
+        self.assertIn("power of two", " ".join(odd["notes"]))
+        wide = files.texture_info(self.png(16, 24, 23))
+        self.assertIn("Not square", " ".join(wide["notes"]))
+
+    def test_sound_facts(self):
+        import struct
+        head = b"OggS" + bytes(22) + bytes([1]) + b"vorbis" + struct.pack("<I", 0) + bytes([2]) + struct.pack("<I", 44100)
+        data = head + b"OggS" + bytes([0, 4]) + struct.pack("<q", 88200) + bytes(40000)
+        found = files.ogg_info(data)
+        self.assertEqual((found["seconds"], found["rate"], found["channels"]), (2.0, 44100, 2))
+        self.assertGreater(found["kbps"], 100)
+        project = self.own("viewer_boom.ogg", data)
+        self.assertEqual(files.info(project, self.JAR)["kind"], "sound")
+
+    def test_info_by_kind(self):
+        project = self.own("viewer_tex.png", self.png(16, 16, 30))
+        self.assertEqual((files.info(project)["kind"], files.info(project)["width"]), ("texture", 16))
+        broken = self.own("viewer_bad.json", b'{"pools": [', path="data/demo/loot_table/viewer_bad.json")
+        self.assertFalse(files.info(broken, self.JAR)["ok"])
+        fine = self.own("viewer_ok.json", b'{"type": "minecraft:crafting_shapeless", "ingredients": [], "result": {"id": "minecraft:applee"}}', path="data/demo/recipe/viewer_ok.json")
+        result = files.info(fine, self.JAR)
+        self.assertTrue(result["ok"])
+        self.assertIn("minecraft:applee", " ".join(result["notes"]))
+        text = self.own("viewer_note.txt", b"hello")
+        self.assertEqual(files.info(text)["kind"], "other")
+
+    def test_a_model_file_is_baked_for_the_3d_view(self):
+        model = {"parent": "block/cube_all", "textures": {"all": "minecraft:block/stone"}}
+        project = self.own("viewer_cube.json", json.dumps(model).encode(), path="assets/demo/models/block/viewer_cube.json")
+        shown = files.model_preview(project, self.JAR)
+        self.assertEqual(shown["missing"], [])
+        self.assertEqual(shown["note"], "")
+        self.assertEqual(len(shown["data"]["states"]["preview"]["quads"]), 6)
+        self.assertEqual(shown["data"]["blocks"], [[0, 0, 0, "preview"]])
+        own_texture = {"parent": "block/cube_all", "textures": {"all": "demo:block/not_in_game"}}
+        pink = files.model_preview(self.own("viewer_pink.json", json.dumps(own_texture).encode(), path="assets/demo/models/block/viewer_pink.json"), self.JAR)
+        self.assertEqual(pink["missing"], ["demo:block/not_in_game"])
+        self.assertIn("shown pink", pink["note"])
+        self.assertTrue(all(q["tex"] == "block/magenta_concrete" for q in pink["data"]["states"]["preview"]["quads"]))
+        shape = {"textures": {"t": "block/oak_log"}, "elements": [{"from": [0, 0, 0], "to": [8, 8, 8], "faces": {"up": {"texture": "#t"}, "north": {"texture": "#t"}}}]}
+        custom = files.model_preview(self.own("viewer_shape.json", json.dumps(shape).encode(), path="assets/demo/models/block/viewer_shape.json"), self.JAR)
+        self.assertEqual(len(custom["data"]["states"]["preview"]["quads"]), 2)
+        stateful = {"variants": {"": {"model": "minecraft:block/stone"}}}
+        self.assertEqual(len(files.model_preview(self.own("viewer_state.json", json.dumps(stateful).encode(), path="assets/demo/blockstates/viewer_state.json"), self.JAR)["data"]["states"]["preview"]["quads"]), 6)
+
+    def test_a_model_with_an_unknown_parent_or_broken_json_says_so(self):
+        orphan = self.own("viewer_orphan.json", b'{"parent": "demo:block/base"}', path="assets/demo/models/block/viewer_orphan.json")
+        with self.assertRaisesRegex(files.FileProblem, "demo:block/base. isn't in the game"):
+            files.model_preview(orphan, self.JAR)
+        broken = self.own("viewer_broken.json", b'{"parent": ', path="assets/demo/models/block/viewer_broken.json")
+        with self.assertRaisesRegex(files.FileProblem, "Not valid JSON"):
+            files.model_preview(broken, self.JAR)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=0)

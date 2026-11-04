@@ -295,6 +295,10 @@ class Handler(BaseHTTPRequestHandler):
                                                         query.get("no_credit") == "1", query.get("not_vanilla") == "1", int(query.get("page", 0)), query.get("licence", ""), query.get("tag", ""), query.get("collection", ""), query.get("favorite") == "1"), **library.facets()})
             if url.path == "/api/thumb":
                 return self.send(thumbs.get(query.get("id", "")), "image/png")
+            if url.path == "/api/file-info":
+                return self.send_json(files.info(projects.load(query.get("id", "")), pipeline.jar()))
+            if url.path == "/api/model-preview":
+                return self.send_json(files.model_preview(projects.load(query.get("id", "")), pipeline.jar()))
             if url.path == "/api/propose-file":
                 project = projects.load(query.get("id", ""))
                 if project.get("mode") != "file":

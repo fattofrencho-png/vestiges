@@ -177,6 +177,46 @@ class Jar:
             walk(part.get("when", {}))
         return names
 
+    def known_ids(self):
+        """Every block and item name the game has, without the namespace."""
+        if getattr(self, "_known", None) is None:
+            self._known = set()
+            for name in self.names:
+                for prefix in ("assets/minecraft/blockstates/", "assets/minecraft/items/"):
+                    if name.startswith(prefix) and name.endswith(".json"):
+                        self._known.add(name[len(prefix):-5])
+        return self._known
+
+    def bake_model(self, data):
+        """Quads for a model file's content. Its parent and textures may come from the game. Returns (baked, missing textures).
+
+        A blockstate file (variants or multipart) is shown through its first model. Textures the game doesn't have are
+        swapped for a plain placeholder and listed, so the shape can still be judged.
+        """
+        if "variants" in data or "multipart" in data:
+            entry = next(iter(data["variants"].values())) if "variants" in data else data["multipart"][0]["apply"]
+            entry = entry[0] if isinstance(entry, list) else entry
+            data = {"parent": entry["model"]}
+        merged = {"textures": {}, "elements": None}
+        if data.get("parent"):
+            parent = self.model(str(data["parent"]))
+            merged = {"textures": dict(parent["textures"]), "elements": parent["elements"]}
+        merged["textures"].update(data.get("textures", {}))
+        if data.get("elements"):
+            merged["elements"] = data["elements"]
+        quads = []
+        for element in merged["elements"] or []:
+            quads.extend(self._bake_element(element, merged["textures"], 0, 0))
+        missing = []
+        for quad in quads:
+            if quad["tex"].startswith("#") or self.texture(quad["tex"]) is None:
+                if quad["tex"] not in missing:
+                    missing.append(quad["tex"])
+                quad["tex"] = "block/magenta_concrete"
+        if not quads:
+            return {"quads": [], "kind": "invisible", "tint": None, "marker": "code"}, missing
+        return {"quads": quads, "kind": "other", "tint": None}, missing
+
     def bake(self, state):
         block, props = parse_state(state)
         if ":" in block or f"assets/minecraft/blockstates/{block}.json" not in self.names:

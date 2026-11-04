@@ -898,6 +898,53 @@ async function drawAddFiles() {
 // ---- a saved file (texture, sound, JSON data, model) ----
 const FILE_KIND_WORDS = { texture: "Texture", sound: "Sound", model: "Model", data: "Data" };
 
+// Texture viewer: zoom, pixel grid, background, 3x3 tiling (to check seams), and playback for animation strips.
+function textureViewer(src, info) {
+  const frames = info.frames || 1, frameSize = info.frame_size || info.width;
+  const canvas = el("canvas", { "aria-label": "Texture", style: "max-width:100%;border:1px solid var(--line);image-rendering:pixelated" });
+  const zoom = el("input", { type: "range", min: 1, max: 32, value: Math.max(1, Math.min(32, Math.floor(256 / Math.max(info.width, frameSize)))), "aria-label": "Zoom", style: "width:140px" });
+  const zoomText = el("span", { className: "dim" });
+  const grid = el("input", { type: "checkbox" });
+  const tile = el("input", { type: "checkbox" });
+  const background = el("select", { "aria-label": "Background" }, [["checker", "Checkerboard"], ["black", "Black"], ["white", "White"], ["grass", "Grass green"], ["stone", "Grey"]].map(([v, t]) => el("option", { value: v, textContent: t })));
+  const frame = el("input", { type: "range", min: 0, max: Math.max(frames - 1, 0), value: 0, "aria-label": "Frame", style: "width:140px" });
+  const play = el("button", { textContent: "Play" });
+  const image = new Image();
+  let playing = null;
+  const colour = { black: "#000", white: "#fff", grass: "#5a8f3a", stone: "#8a8a8a" };
+  const draw = () => {
+    const scale = Number(zoom.value), side = frameSize * scale, n = tile.checked ? 3 : 1;
+    zoomText.textContent = `${scale}x`;
+    canvas.width = canvas.height = side * n;
+    const g = canvas.getContext("2d");
+    g.imageSmoothingEnabled = false;
+    if (background.value === "checker") {
+      const cell = Math.max(8, scale * 2);
+      for (let y = 0; y < canvas.height; y += cell) for (let x = 0; x < canvas.width; x += cell) { g.fillStyle = ((x + y) / cell) % 2 ? "#6a6a6a" : "#8a8a8a"; g.fillRect(x, y, cell, cell); }
+    } else { g.fillStyle = colour[background.value]; g.fillRect(0, 0, canvas.width, canvas.height); }
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) g.drawImage(image, 0, Number(frame.value) * frameSize, frameSize, frameSize, i * side, j * side, side, side);
+    if (grid.checked && scale >= 4) {
+      g.strokeStyle = "rgba(0,0,0,.35)";
+      g.lineWidth = 1;
+      for (let k = 0; k <= frameSize * n; k++) {
+        g.beginPath(); g.moveTo(k * scale + 0.5, 0); g.lineTo(k * scale + 0.5, canvas.height); g.stroke();
+        g.beginPath(); g.moveTo(0, k * scale + 0.5); g.lineTo(canvas.width, k * scale + 0.5); g.stroke();
+      }
+    }
+  };
+  [zoom, grid, tile, background, frame].forEach((c) => c.addEventListener("input", draw));
+  play.onclick = () => {
+    if (playing) { clearInterval(playing); playing = null; play.textContent = "Play"; return; }
+    play.textContent = "Stop";
+    playing = setInterval(() => { frame.value = (Number(frame.value) + 1) % frames; draw(); }, 100);
+  };
+  image.onload = draw;
+  image.src = src;
+  return el("div", {}, canvas,
+    el("div", { className: "tool" }, "Zoom", zoom, zoomText, el("label", { className: "opt" }, grid, " Pixel grid"), el("label", { className: "opt" }, tile, " Tile 3x3 (check seams)"), background),
+    frames > 1 ? el("div", { className: "tool" }, `Animation: ${frames} frames`, frame, play) : null);
+}
+
 async function drawFile() {
   const file = project.file || {};
   const link = (download) => `/api/file?id=${project.id}${download ? "&download=1" : ""}`;
@@ -905,18 +952,41 @@ async function drawFile() {
   const needsCheck = licenceCheck.status === "limited" || licenceCheck.status === "unknown";
   const size = (bytes) => (bytes > 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : bytes > 1024 ? `${Math.round(bytes / 1024)} KB` : `${bytes} B`);
   const view = el("div");
+  let preview3d = null;
+  // What the file is, and checks: from the server, by kind.
+  let info = null;
+  try { info = await get(`/api/file-info?id=${project.id}`); } catch (problem) { info = { kind: "error", error: problem.message }; }
+  const facts = (...lines) => el("div", { className: "dim" }, lines.filter(Boolean).map((l) => el("div", { textContent: l })));
+  const notes = (list) => (list || []).map((n) => el("div", { className: "warn-t", textContent: "! " + n }));
   if (file.ext === ".png") {
-    view.append(el("img", { src: link(false), alt: project.title, style: "image-rendering:pixelated;max-width:100%;max-height:340px;min-width:96px;background:repeating-conic-gradient(rgba(127,127,127,.25) 0 25%,transparent 0 50%) 50%/16px 16px" }));
+    if (info.error) view.append(el("p", { className: "bad-t", textContent: info.error }));
+    else view.append(textureViewer(link(false), info), facts(`${info.width}x${info.height} px · ${info.colours} colours · ${info.clear_percent}% see-through${info.frames > 1 ? " · " + info.frames + " animation frames" : ""}`), ...notes(info.notes));
   } else if (file.ext === ".ogg") {
-    view.append(el("audio", { src: link(false), controls: true }));
-  } else if (file.bytes <= 400 * 1024 && [".json", ".mcmeta", ".mcfunction", ".txt"].includes(file.ext)) {
-    try {
-      const reply = await fetch(link(false));
-      view.append(el("pre", { style: "max-height:420px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-all", textContent: await reply.text() }));
-    } catch (problem) { view.append(el("p", { className: "bad-t", textContent: problem.message })); }
+    const loop = el("input", { type: "checkbox" });
+    const audio = el("audio", { src: link(false), controls: true, style: "width:100%" });
+    loop.addEventListener("change", () => { audio.loop = loop.checked; });
+    view.append(audio, el("label", { className: "opt" }, loop, " Loop"),
+      facts(info.seconds ? `${info.seconds} seconds` : "Length unknown", info.rate ? `${info.rate} Hz · ${info.channels === 1 ? "mono" : info.channels === 2 ? "stereo" : info.channels + " channels"}${info.kbps ? " · about " + info.kbps + " kbps" : ""}` : "", info.channels === 2 ? "Minecraft plays stereo sounds without distance, so sounds that should come from a place are normally mono." : ""));
+  } else if (info.kind === "json") {
+    if (!info.ok) {
+      view.append(el("div", { className: "bad-t", role: "alert", textContent: info.error }));
+      try { view.append(el("pre", { style: "max-height:360px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-all", textContent: await (await fetch(link(false))).text() })); } catch (problem) { /* no preview */ }
+    } else {
+      view.append(el("div", { className: "good-t", textContent: "✓ Valid JSON" }), ...notes(info.notes));
+      if (info.pretty) view.append(el("pre", { style: "max-height:460px;overflow:auto;font-size:12px;margin:6px 0", textContent: info.pretty }));
+    }
+  } else if ([".mcfunction", ".txt", ".lang"].includes(file.ext) && (file.bytes || 0) <= 400 * 1024) {
+    try { view.append(el("pre", { style: "max-height:420px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-all", textContent: await (await fetch(link(false))).text() })); } catch (problem) { view.append(el("p", { className: "bad-t", textContent: problem.message })); }
   } else {
     view.append(el("p", { className: "dim", textContent: "No preview for this file." }));
   }
+  if (project.category === "model") {
+    try {
+      preview3d = await get(`/api/model-preview?id=${project.id}`);
+      if (preview3d.note) view.prepend(el("div", { className: "warn-t", textContent: "! " + preview3d.note }));
+    } catch (problem) { view.prepend(el("div", { className: "warn-t", textContent: "! No 3D view: " + problem.message })); }
+  }
+
   const title = el("input", { type: "text", value: project.title, maxLength: 60 });
   const creator = el("input", { type: "text", value: project.credit?.creator || "" });
   const permission = el("input", { type: "text", value: project.credit?.permission || "" });
@@ -938,7 +1008,7 @@ async function drawFile() {
     } catch (problem) { styleNote.textContent = problem.message; }
   } } });
   const field = (label, input) => el("label", { className: "field" }, label, input);
-  page(
+  const content = [
     queueBar(),
     el("h1", { textContent: project.title }),
     el("p", { className: "dim", textContent: `${FILE_KIND_WORDS[project.category] || project.category}${file.type && file.type !== project.category ? " · " + file.type : ""} · ${file.width ? `${file.width}x${file.height} px · ` : ""}${size(file.bytes || 0)}` }),
@@ -956,7 +1026,17 @@ async function drawFile() {
     field("Tags, with commas", tags), field("Collections, with commas", collections), el("label", { className: "opt" }, favorite, " ★ Favorite"),
     el("div", { className: "tool" }, el("button", { textContent: "Save details", on: { click: () => act(() => post("/api/details", { id: project.id, title: title.value, rename_file: renameFile ? title.value : "", creator: creator.value, permission: permission.value, licence: licence.value, link: where.value, tags: tags.value, collections: collections.value, favorite: favorite.checked })) } })),
     note,
-  );
+  ].filter((n) => n !== null);
+  if (preview3d) {
+    // A model gets the 3D view beside its details, like a build.
+    $("page").style.display = "none";
+    $("stage").classList.add("on");
+    $("side").replaceChildren(...content);
+    shown = "file:" + project.id;
+    await viewer.show([preview3d.data]);
+  } else {
+    page(...content);
+  }
 }
 
 // ---- make a tree from a preset ----

@@ -223,3 +223,120 @@ def rename_file(project_id, new_name):
     project["file"] = file
     projects.save(project)
     return final
+
+
+# ---- what a file screen shows besides the file ----
+def ogg_info(data):
+    """Facts about an Ogg Vorbis sound: seconds, sample rate, channels, kilobits per second. Any may be None."""
+    start = data.find(b"\x01vorbis")
+    info = {"seconds": ogg_seconds(data), "rate": None, "channels": None, "kbps": None}
+    if start >= 0 and start + 16 <= len(data):
+        info["channels"] = data[start + 11]
+        info["rate"] = struct.unpack("<I", data[start + 12:start + 16])[0]
+    if info["seconds"]:
+        info["kbps"] = round(len(data) * 8 / info["seconds"] / 1000)
+    return info
+
+
+def texture_info(data):
+    """Facts about a PNG: size, colours, how much is see-through, and how many animation frames a tall strip holds."""
+    from PIL import Image
+    import io
+    image = Image.open(io.BytesIO(data)).convert("RGBA")
+    pixels = list(image.getdata())
+    clear = sum(1 for p in pixels if p[3] == 0)
+    frames = image.height // image.width if image.width and image.height % image.width == 0 and image.height > image.width else 1
+    notes = []
+    if image.width != image.height and frames == 1:
+        notes.append("Not square: block and item textures are normally square.")
+    if image.width & (image.width - 1) or image.height & (image.height - 1):
+        if frames == 1:
+            notes.append("The size is not a power of two (16, 32, 64...).")
+    return {"width": image.width, "height": image.height, "colours": len(set(pixels)), "clear_percent": round(100 * clear / max(len(pixels), 1)),
+            "frames": frames, "frame_size": image.width if frames > 1 else None, "notes": notes}
+
+
+def _locations(value, found, key=""):
+    """Names like minecraft:apple that sit under keys which hold an item or block."""
+    if isinstance(value, dict):
+        kind = str(value.get("type", ""))
+        for k, v in value.items():
+            if k in ("name", "item", "id", "block") and isinstance(v, str) and v.startswith("minecraft:") and not v.startswith("#") and ("item" in kind or "block" in kind or not kind or k != "name"):
+                found.append(v)
+            else:
+                _locations(v, found, k)
+    elif isinstance(value, list):
+        for item in value:
+            _locations(item, found, key)
+
+
+def json_check(text, ftype, known=None):
+    """Is this JSON valid, laid out readably, and does it look right for its type? Returns {ok, error, pretty, notes}."""
+    try:
+        content = json.loads(text.lstrip("\ufeff"))
+    except ValueError as problem:
+        return {"ok": False, "error": f"Not valid JSON: {problem}", "pretty": None, "notes": []}
+    notes = []
+    if isinstance(content, dict):
+        required = {"loot": ("pools",), "recipe": ("type",), "advancement": ("criteria",), "tag": ("values",)}.get(ftype, ())
+        for key in required:
+            if key not in content:
+                notes.append(f'A {ftype} file normally has "{key}", and this one doesn\'t.')
+        if ftype == "loot" and isinstance(content.get("pools"), list):
+            for number, pool in enumerate(content["pools"], 1):
+                if not isinstance(pool, dict) or "rolls" not in pool or "entries" not in pool:
+                    notes.append(f'Pool {number} needs "rolls" and "entries".')
+        if ftype == "model" and not any(k in content for k in ("parent", "elements", "variants", "multipart")):
+            notes.append('A model normally has "parent" or "elements".')
+        if known:
+            names = []
+            _locations(content, names)
+            unknown = sorted({n for n in names if n[len("minecraft:"):] not in known})
+            if unknown:
+                notes.append("Not found as a block or item in this game version (a typo?): " + ", ".join(unknown[:8]))
+    return {"ok": True, "error": None, "pretty": json.dumps(content, indent=2, ensure_ascii=False), "notes": notes}
+
+
+def info(project, jar=None):
+    """The facts and checks for a file asset's screen, by kind."""
+    path = projects.file_path(project["id"])
+    file = project.get("file") or {}
+    if not path:
+        raise FileProblem("That asset has no file.")
+    data = path.read_bytes()
+    if file.get("ext") == ".ogg":
+        return {"kind": "sound", **ogg_info(data)}
+    if file.get("ext") == ".png":
+        try:
+            return {"kind": "texture", **texture_info(data)}
+        except Exception as problem:
+            return {"kind": "texture", "error": f"This PNG can't be read: {problem}"}
+    if file.get("ext") in (".json", ".mcmeta"):
+        known = jar.known_ids() if jar else None
+        if len(data) > 1024 * 1024:
+            return {"kind": "json", "ok": True, "error": None, "pretty": None, "notes": ["Too big to lay out here."]}
+        return {"kind": "json", **json_check(data.decode("utf-8", errors="replace"), file.get("type", ""), known)}
+    return {"kind": "other"}
+
+
+def model_preview(project, jar):
+    """A block list the 3D viewer can draw for a model file: {data: {blocks, states}, missing, note}."""
+    path = projects.file_path(project["id"])
+    if not path:
+        raise FileProblem("That asset has no file.")
+    try:
+        content = json.loads(path.read_text(encoding="utf-8-sig"))
+    except ValueError as problem:
+        raise FileProblem(f"Not valid JSON, so there is nothing to draw: {problem}") from problem
+    if not isinstance(content, dict):
+        raise FileProblem("A model file is a JSON object.")
+    try:
+        baked, missing = jar.bake_model(content)
+    except (KeyError, OSError) as problem:
+        raise FileProblem(f"The model's parent \"{content.get('parent')}\" isn't in the game, so it can't be drawn here.") from problem
+    note = ""
+    if baked["kind"] == "invisible":
+        note = "This model has no shapes to draw."
+    elif missing:
+        note = "Textures not in the game (shown pink): " + ", ".join(missing[:6])
+    return {"data": {"blocks": [[0, 0, 0, "preview"]], "states": {"preview": baked}}, "missing": missing, "note": note}
