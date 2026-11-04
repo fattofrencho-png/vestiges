@@ -87,7 +87,8 @@ def state():
     if not any(p["id"] == chosen and p["ready"] for p in listed):
         chosen = next((p["id"] for p in listed if p["ready"]), chosen)
     return {"providers": listed, "provider": chosen, "send_images": settings["send_images"], "budget": settings["budget"],
-            "safety_fallback": settings["safety_fallback"], "suggestions": SUGGESTIONS, "categories": CATEGORIES}
+            "safety_fallback": settings["safety_fallback"], "suggestions": SUGGESTIONS, "categories": CATEGORIES,
+            "curseforge_key": providers.has_key("curseforge")}
 
 
 def saved_version(project_id, number=None):
@@ -302,7 +303,9 @@ class Handler(BaseHTTPRequestHandler):
             if url.path == "/api/backups":
                 return self.send_json({"backups": backup.list_backups()})
             if url.path == "/api/find/search":
-                return self.send_json(online.search(query.get("q", ""), query.get("type", "datapack"), query.get("builds", "1") == "1", int(query.get("page", 0))))
+                return self.send_json(online.search(query.get("q", ""), query.get("type", "datapack"), query.get("builds", "1") == "1", int(query.get("page", 0)), query.get("source", "modrinth")))
+            if url.path == "/api/find/sources":
+                return self.send_json({"sources": online.sources(), "sites": [label for label, _ in online.BROWSE_SITES]})
             if url.path == "/api/batch":
                 return self.send_json(batches.load(query.get("id", "")))
             if url.path == "/api/propose":
@@ -459,11 +462,11 @@ class Handler(BaseHTTPRequestHandler):
             projects.delete(project_id)
         elif path == "/api/settings":
             providers.save_settings(data.get("settings") or {})
-            for name in ("claude", "gemini"):
+            for name in ("claude", "gemini", "curseforge"):
                 if name in (data.get("keys") or {}):
                     providers.set_key(name, str(data["keys"][name]))
         elif path == "/api/find/fetch":
-            return fetch_online(str(data.get("project", "")), bool(data.get("look_inside")))
+            return fetch_online(str(data.get("project", "")), bool(data.get("look_inside")), str(data.get("source", "modrinth")))
         elif path == "/api/explore/to-import":
             name, held = explored(data.get("token"))
             token = uuid.uuid4().hex
@@ -480,6 +483,8 @@ class Handler(BaseHTTPRequestHandler):
             return preview_preset(data)
         elif path == "/api/presets/create":
             return create_presets(data)
+        elif path == "/api/find/browse":
+            webbrowser.open(online.browse_url(str(data.get("site", "")), str(data.get("q", ""))))
         elif path == "/api/find/open":
             online.check_url(data.get("url"), online.PAGE_HOSTS)
             webbrowser.open(str(data["url"]))
@@ -552,9 +557,9 @@ def explored(token):
     return held
 
 
-def fetch_online(project_id, look_inside=False):
+def fetch_online(project_id, look_inside=False, source="modrinth"):
     """Downloads one project's newest file into the same holding folder as an uploaded file, and reads the builds in it."""
-    file = online.find_file(project_id)
+    file = online.find_file(project_id, source)
     folder = providers.HOME / "uploads"
     folder.mkdir(parents=True, exist_ok=True)
     token = uuid.uuid4().hex

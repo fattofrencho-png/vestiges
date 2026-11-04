@@ -1021,26 +1021,43 @@ async function drawExplore(listing = null, meta = {}) {
 }
 
 // ---- find online ----
-let findState = { q: "", type: "datapack", builds: true, page: 0 };
+let findState = { source: "modrinth", q: "", type: "datapack", builds: true, page: 0 };
 
 async function drawFind() {
   screen = "find";
   stopPolling();
   project = null;
   steps();
-  const query = el("input", { type: "search", size: 40, placeholder: "What are you looking for? For example: oak tree, castle, village house", "aria-label": "Search Modrinth", value: findState.q });
-  const type = el("select", { "aria-label": "Type" }, [["datapack", "Datapacks"], ["mod", "Mods"]].map(([v, t]) => el("option", { value: v, textContent: t })));
-  type.value = findState.type;
+  const info = await get("/api/find/sources");
+  const sourceOf = (id) => info.sources.find((s) => s.id === id) || info.sources[0];
+  const query = el("input", { type: "search", size: 40, placeholder: "What are you looking for? For example: oak tree, castle, village house", "aria-label": "Search", value: findState.q });
+  const source = el("select", { "aria-label": "Where to search" }, info.sources.map((s) => el("option", { value: s.id, textContent: s.label })));
+  source.value = findState.source;
+  const type = el("select", { "aria-label": "Type" });
   const builds = el("input", { type: "checkbox", checked: findState.builds });
+  const buildsLabel = el("label", { className: "opt" }, builds, " Only likely builds. Untick to search everything.");
+  const note = el("p", { className: "dim" });
   const status = el("div", { className: "dim", role: "status" });
   const list = el("div");
   const count = (n) => n.toLocaleString("en");
+  const fillTypes = () => {
+    const current = sourceOf(source.value);
+    type.replaceChildren(...current.types.map(([v, t]) => el("option", { value: v, textContent: t })));
+    type.value = current.types.some(([v]) => v === findState.type) ? findState.type : current.types[0][0];
+    type.style.display = current.types.length > 1 ? "" : "none";
+    buildsLabel.style.display = current.id === "curseforge" ? "none" : "";
+    note.textContent = current.note + (current.needs_key && !current.has_key ? " No key is saved yet: add it in Settings." : "");
+    note.className = current.needs_key && !current.has_key ? "bad-t" : "dim";
+  };
+  source.addEventListener("change", () => { findState.source = source.value; fillTypes(); list.replaceChildren(); status.textContent = ""; });
+  fillTypes();
+
   const search = async (page = 0) => {
-    findState = { q: query.value.trim(), type: type.value, builds: builds.checked, page };
-    status.replaceChildren(el("span", { className: "spin" }), "Searching Modrinth…");
+    findState = { source: source.value, q: query.value.trim(), type: type.value, builds: builds.checked, page };
+    status.replaceChildren(el("span", { className: "spin" }), `Searching ${sourceOf(source.value).label}…`);
     list.replaceChildren();
     try {
-      const found = await get(`/api/find/search?q=${encodeURIComponent(findState.q)}&type=${findState.type}&builds=${findState.builds ? 1 : 0}&page=${page}`);
+      const found = await get(`/api/find/search?source=${findState.source}&q=${encodeURIComponent(findState.q)}&type=${findState.type}&builds=${findState.builds ? 1 : 0}&page=${page}`);
       status.textContent = found.total ? `${count(found.total)} found. Showing ${count(page * found.per_page + 1)} to ${count(page * found.per_page + found.hits.length)}.` : "Nothing found. Try other words, or untick the builds filter.";
       list.replaceChildren(...found.hits.map(card), el("div", { className: "row" },
         el("button", { textContent: "Previous", disabled: page === 0, on: { click: () => search(page - 1) } }),
@@ -1048,39 +1065,39 @@ async function drawFind() {
     } catch (problem) { status.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); }
   };
   const card = (hit) => {
-    const note = el("div", { className: "dim", role: "status" });
+    const result = el("div", { className: "dim", role: "status" });
+    const meta = { details: { creator: hit.author, link: hit.url, licence: hit.licence }, notice: hit.warning ? `${hit.title}: ${hit.warning} Check the terms before using it in the mod.` : "" };
     const button = el("button", { className: "main", textContent: "Import", on: { click: async () => {
       button.disabled = true;
-      note.replaceChildren(el("span", { className: "spin" }), "Downloading and reading it…");
+      result.replaceChildren(el("span", { className: "spin" }), "Downloading and reading it…");
       try {
-        const got = await post("/api/find/fetch", { project: hit.id });
-        drawImport({
-          source: { token: got.token, name: got.name, items: got.items },
-          details: { creator: hit.author, link: hit.url, licence: hit.licence },
-          notice: hit.warning ? `${hit.title}: ${hit.warning} Check the terms before using it in the mod.` : "",
-        });
-      } catch (problem) { note.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); button.disabled = false; }
+        const got = await post("/api/find/fetch", { project: hit.id, source: hit.source });
+        drawImport({ source: { token: got.token, name: got.name, items: got.items }, ...meta });
+      } catch (problem) { result.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); button.disabled = false; }
     } } });
+    const label = sourceOf(hit.source).label;
     return el("div", { className: "q" },
-      el("b", { textContent: hit.title }), el("span", { className: "dim", textContent: ` by ${hit.author} · ${count(hit.downloads)} downloads · ${hit.categories.join(", ")}` }),
+      el("b", { textContent: hit.title }), el("span", { className: "dim", textContent: ` by ${hit.author} · ${count(hit.downloads)} ${hit.source === "github" ? "stars" : "downloads"}${hit.categories.length ? " · " + hit.categories.join(", ") : ""}` }),
       el("p", { textContent: hit.description }),
       el("p", { className: hit.warning ? "bad-t" : "dim", textContent: `Licence: ${hit.licence || "not given"}${hit.warning ? ". " + hit.warning : ""}` }),
       el("div", { className: "row" }, button,
         el("button", { textContent: "Look inside", title: "Download it and see everything in it, not only the builds", on: { click: async () => {
-          note.replaceChildren(el("span", { className: "spin" }), "Downloading…");
+          result.replaceChildren(el("span", { className: "spin" }), "Downloading…");
           try {
-            const got = await post("/api/find/fetch", { project: hit.id, look_inside: true });
-            drawExplore(got, { details: { creator: hit.author, link: hit.url, licence: hit.licence }, notice: hit.warning ? `${hit.title}: ${hit.warning} Check the terms before using it in the mod.` : "" });
-          } catch (problem) { note.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); }
+            const got = await post("/api/find/fetch", { project: hit.id, source: hit.source, look_inside: true });
+            drawExplore(got, meta);
+          } catch (problem) { result.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); }
         } } }),
-        el("button", { textContent: "Open on Modrinth", on: { click: () => post("/api/find/open", { url: hit.url }).catch((problem) => { note.textContent = problem.message; }) } })),
-      note);
+        el("button", { textContent: `Open on ${label}`, on: { click: () => post("/api/find/open", { url: hit.url }).catch((problem) => { result.textContent = problem.message; }) } })),
+      result);
   };
   query.addEventListener("keydown", (e) => { if (e.key === "Enter") search(0); });
   page(el("h1", { textContent: "Find online" }),
-    el("p", { className: "dim", textContent: "Searches Modrinth, a site where creators share datapacks and mods. Nothing is downloaded until you press Import on a result. Files are only read, never run." }),
-    el("div", { className: "row" }, query, type, el("button", { className: "main", textContent: "Search", on: { click: () => search(0) } })),
-    el("label", { className: "opt" }, builds, " Only likely builds (world generation and decoration). Untick to search everything."),
+    el("p", { className: "dim", textContent: "Nothing is downloaded until you press Import or Look inside on a result. Files are only read, never run." }),
+    el("div", { className: "row" }, query, source, type, el("button", { className: "main", textContent: "Search", on: { click: () => search(0) } })),
+    buildsLabel, note,
+    el("div", { className: "tool" }, el("span", { className: "dim", textContent: "Sites with no search interface for apps (opens your browser; download there, then drop the file into Look inside):" }),
+      ...info.sites.map((site) => el("button", { textContent: site, on: { click: () => post("/api/find/browse", { site, q: query.value }).catch((problem) => { status.textContent = problem.message; }) } }))),
     status, list);
   if (findState.q) search(findState.page);
 }
@@ -1136,13 +1153,15 @@ async function drawSettings() {
   const budget = el("input", { type: "number", min: 0.1, step: 0.5, value: app.budget, "aria-label": "Limit per asset in dollars" });
   const images = el("input", { type: "checkbox", checked: app.send_images });
   const fallback = el("input", { type: "checkbox", checked: app.safety_fallback });
+  const curseKey = el("input", { type: "password", autocomplete: "off", size: 40, placeholder: app.curseforge_key ? "Saved. Paste a new one to replace it." : "Paste your key", "aria-label": "CurseForge API key" });
   const claudeStatus = el("div"), geminiStatus = el("div"), saveStatus = el("div");
   const save = async () => {
     const keys = {};
     if (claudeKey.value.trim()) keys.claude = claudeKey.value.trim();
     if (geminiKey.value.trim()) keys.gemini = geminiKey.value.trim();
+    if (curseKey.value.trim()) keys.curseforge = curseKey.value.trim();
     await post("/api/settings", { keys, settings: { budget: Math.max(Number(budget.value) || 1, 0.1), send_images: images.checked, safety_fallback: fallback.checked, models: { claude: claudeModel.value, gemini: geminiModel.value } } });
-    claudeKey.value = geminiKey.value = "";
+    claudeKey.value = geminiKey.value = curseKey.value = "";
   };
   const test = (name, status) => async () => {
     status.replaceChildren(el("span", { className: "dim", textContent: "Testing…" }));
@@ -1170,6 +1189,9 @@ async function drawSettings() {
           } catch (problem) { geminiStatus.replaceChildren(note(problem.message, false)); }
         } } }),
         el("button", { textContent: "Test", on: { click: test("gemini", geminiStatus) } })), geminiStatus),
+    el("div", { className: "q" }, el("b", { textContent: "CurseForge (for Find online)" }),
+      el("p", { className: "dim", textContent: "A free key from console.curseforge.com lets Find online search CurseForge. It is kept only on this computer." }),
+      el("div", { className: "row" }, curseKey)),
     el("div", { className: "q" }, el("b", { textContent: "Spending and privacy" }),
       el("div", { className: "row" }, el("label", {}, "Limit per asset, in dollars: ", budget)),
       el("p", { className: "dim", textContent: "The work stops at this limit and asks before spending more. For Gemini, whose prices aren't known here, it counts tokens instead: 300,000 per dollar." }),

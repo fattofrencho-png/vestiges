@@ -942,7 +942,7 @@ class Online(unittest.TestCase):
         folder = Path(TEMP) / "dl"
         folder.mkdir(exist_ok=True)
         data = b"hello" * 100
-        online._open = lambda url, timeout=30: FakeReply(data)
+        online._open = lambda url, timeout=30, **kw: FakeReply(data)
         target = folder / "good"
         self.assertEqual(online.download(self.file_for(data), target), len(data))
         self.assertEqual(target.read_bytes(), data)
@@ -954,9 +954,9 @@ class Online(unittest.TestCase):
         with self.assertRaisesRegex(online.OnlineProblem, "limit"):
             online.download(self.file_for(data), big, max_bytes=50)
         self.assertFalse(big.exists())
-        online._open = lambda url, timeout=30: FakeReply(data, url="https://evil.example/a.zip")
+        online._open = lambda url, timeout=30, **kw: FakeReply(data, url="https://evil.example/a.zip")
         moved = folder / "moved"
-        with self.assertRaisesRegex(online.OnlineProblem, "not on Modrinth"):
+        with self.assertRaisesRegex(online.OnlineProblem, "not on the source"):
             online.download(self.file_for(data), moved)
         self.assertFalse(moved.exists())
 
@@ -964,8 +964,8 @@ class Online(unittest.TestCase):
         import studio
         data = self.pack()
         real_find = online.find_file
-        online.find_file = lambda project_id: self.file_for(data)
-        online._open = lambda url, timeout=30: FakeReply(data)
+        online.find_file = lambda project_id, source="modrinth": self.file_for(data)
+        online._open = lambda url, timeout=30, **kw: FakeReply(data)
         try:
             got = studio.fetch_online("AbCd1234")
         finally:
@@ -1309,6 +1309,115 @@ class Presets(unittest.TestCase):
 def base64_png(text):
     import base64
     return base64.b64decode(text)[1:4] == b"PNG"
+
+
+class MoreSources(unittest.TestCase):
+    def setUp(self):
+        self.real_open, self.real_json = online._open, online._get_json
+
+    def tearDown(self):
+        online._open, online._get_json = self.real_open, self.real_json
+
+    def test_github_search_asks_for_builds_and_tidies_results(self):
+        self.assertIn("schematic OR litematic", online.github_query("oak tree"))
+        self.assertNotIn("litematic", online.github_query("oak tree", builds=False))
+        self.assertIn("fork%3Afalse", online.github_url("tree", True, 2))
+        self.assertIn("page=3", online.github_url("tree", True, 2))
+        hit = online.clean_github({"full_name": "ann/trees", "name": "trees", "description": "Tree schematics", "owner": {"login": "ann"}, "license": {"spdx_id": "NOASSERTION"},
+                                   "stargazers_count": 7, "size": 300, "topics": ["minecraft"], "html_url": "https://github.com/ann/trees"})
+        self.assertEqual((hit["source"], hit["id"], hit["author"], hit["licence"]), ("github", "ann/trees", "ann", ""))
+        self.assertIn("No licence", hit["warning"])
+        online._get_json = lambda url, headers=None, name="": {"items": [{"full_name": "a/b", "name": "b", "owner": {"login": "a"}, "license": {"spdx_id": "MIT"}}], "total_count": 5000}
+        found = online.search("x", source="github")
+        self.assertEqual((found["total"], found["hits"][0]["warning"]), (1000, ""))  # GitHub only lists the first 1,000
+
+    def test_github_downloads_are_checked_and_size_capped(self):
+        online._get_json = lambda url, headers=None, name="": {"name": "trees", "size": 900, "default_branch": "main"}
+        file = online.find_file("ann/trees", "github")
+        self.assertEqual((file["filename"], file["version"]), ("trees.zip", "main"))
+        self.assertTrue(file["url"].startswith("https://api.github.com/repos/ann/trees/zipball"))
+        online._get_json = lambda url, headers=None, name="": {"name": "big", "size": 300000}
+        with self.assertRaisesRegex(online.OnlineProblem, "100 MB"):
+            online.find_file("ann/big", "github")
+        for bad in ("../x", "a/b/c", "nope", ""):
+            with self.assertRaises(online.OnlineProblem):
+                online.find_file(bad, "github")
+        data = b"zipdata" * 50
+        folder = Path(TEMP) / "dl2"
+        folder.mkdir(exist_ok=True)
+        online._open = lambda url, timeout=30, headers=None, name="": FakeReply(data, url="https://codeload.github.com/ann/trees/legacy.zip/main")
+        self.assertEqual(online.download({**file, "hashes": {}}, folder / "gh.zip"), len(data))
+        online._open = lambda url, timeout=30, headers=None, name="": FakeReply(data, url="https://evil.example/x.zip")
+        with self.assertRaises(online.OnlineProblem):
+            online.download({**file, "hashes": {}}, folder / "gh2.zip")
+        self.assertFalse((folder / "gh2.zip").exists())
+
+    def test_curseforge_needs_a_key_and_respects_creators_who_block_downloads(self):
+        import providers
+        providers.set_key("curseforge", "")
+        with self.assertRaisesRegex(online.OnlineProblem, "CurseForge API key"):
+            online.search("tree", "datapack", source="curseforge")
+        url = online.curseforge_url("oak tree", "world", 1)
+        self.assertIn("classId=17", url)
+        self.assertIn("index=12", url)
+        self.assertIn("gameId=432", url)
+        with self.assertRaises(online.OnlineProblem):
+            online.curseforge_url("x", "plugin")
+        hit = online.clean_curseforge({"id": 123, "name": "Big Castle", "summary": "A castle", "authors": [{"name": "Bo"}], "downloadCount": 9, "allowModDistribution": False,
+                                       "links": {"websiteUrl": "https://www.curseforge.com/minecraft/worlds/big-castle"}, "categories": [{"name": "Adventure"}]}, "world")
+        self.assertEqual((hit["source"], hit["id"], hit["author"]), ("curseforge", "123", "Bo"))
+        self.assertIn("only allows downloads on CurseForge", hit["warning"])
+        files = [{"fileName": "a.zip", "downloadUrl": None}, {"fileName": "notes.txt", "downloadUrl": "https://edge.forgecdn.net/x.txt"},
+                 {"fileName": "b.zip", "downloadUrl": "https://edge.forgecdn.net/files/b.zip", "hashes": [{"value": "ABC", "algo": 1}], "displayName": "b v2", "fileLength": 10}]
+        picked = online.pick_curseforge_file(files)
+        self.assertEqual((picked["filename"], picked["hashes"]), ("b.zip", {"sha1": "abc"}))
+        self.assertIsNone(online.pick_curseforge_file(files[:2]))
+        providers.set_key("curseforge", "test-key")
+        try:
+            online._get_json = lambda url, headers=None, name="": {"data": files[:2]}
+            with self.assertRaisesRegex(online.OnlineProblem, "only allows downloads on CurseForge"):
+                online.find_file("123", "curseforge")
+            online._get_json = lambda url, headers=None, name="": {"data": [files[2]], "pagination": {"totalCount": 1}}
+            self.assertEqual(online.find_file("123", "curseforge")["hosts"], online.CURSEFORGE_HOSTS)
+            with self.assertRaises(online.OnlineProblem):
+                online.find_file("../1", "curseforge")
+            self.assertTrue(online.sources()[2]["has_key"])
+        finally:
+            providers.set_key("curseforge", "")
+        self.assertFalse(online.sources()[2]["has_key"])
+        self.assertNotIn("test-key", json.dumps(online.sources()))
+
+    def test_download_checks_a_sha1(self):
+        import hashlib
+        data = b"curse" * 40
+        folder = Path(TEMP) / "dl3"
+        folder.mkdir(exist_ok=True)
+        online._open = lambda url, timeout=30, headers=None, name="": FakeReply(data, url="https://edge.forgecdn.net/files/b.zip")
+        file = {"url": "https://edge.forgecdn.net/files/b.zip", "hosts": online.CURSEFORGE_HOSTS, "hashes": {"sha1": hashlib.sha1(data).hexdigest()}}
+        self.assertEqual(online.download(file, folder / "ok.zip"), len(data))
+        with self.assertRaisesRegex(online.OnlineProblem, "checksum"):
+            online.download({**file, "hashes": {"sha1": "0" * 40}}, folder / "bad.zip")
+        self.assertFalse((folder / "bad.zip").exists())
+        with self.assertRaises(online.OnlineProblem):  # a Modrinth-only host list refuses a CurseForge file
+            online.download({**file, "hosts": online.FILE_HOSTS}, folder / "x.zip")
+
+    def test_sites_without_an_api_only_open_a_web_search(self):
+        from urllib.parse import urlparse
+        url = online.browse_url("Planet Minecraft", "oak tree")
+        self.assertTrue(url.startswith("https://duckduckgo.com/?q="))
+        self.assertIn("site%3Aplanetminecraft.com+oak+tree", url)
+        self.assertEqual(urlparse(url).hostname, "duckduckgo.com")
+        with self.assertRaises(online.OnlineProblem):
+            online.browse_url("evil.example", "x")
+        online.check_url("https://github.com/ann/trees", online.PAGE_HOSTS)
+        with self.assertRaises(online.OnlineProblem):
+            online.search("x", source="nowhere")
+
+    def test_a_repository_download_is_read_through_its_wrapping_folder(self):
+        self.assertEqual(explore.classify("trees-abc123/data/demo/structure/oak.nbt"), "structure")
+        self.assertEqual(explore.classify("trees-abc123/assets/demo/textures/block/x.png"), "texture")
+        self.assertEqual(explore.classify("trees-abc123/README.md"), "info")
+        self.assertEqual(explore.classify("trees-abc123/random.bin"), "other")
 
 
 if __name__ == "__main__":

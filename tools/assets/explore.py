@@ -40,10 +40,16 @@ class ExploreProblem(Exception):
     pass
 
 
+WRAPPED = re.compile(r"^[^/]+/((?:data|assets)/.+|pack\.mcmeta|fabric\.mod\.json|readme.*|licen[cs]e.*|credits.*)$", re.I)
+
+
 def classify(path):
-    for key, _, pattern in _COMPILED:
-        if pattern.match(path):
-            return key
+    """The type of a file. A repository download wraps everything in one folder (repo-abc123/data/...), which is looked through."""
+    inner = WRAPPED.match(path)
+    for target in ([inner.group(1)] if inner else []) + [path]:
+        for key, _, pattern in _COMPILED:
+            if pattern.match(target):
+                return key
     return "other"
 
 
