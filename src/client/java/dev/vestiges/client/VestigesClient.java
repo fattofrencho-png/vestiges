@@ -46,6 +46,8 @@ public class VestigesClient implements ClientModInitializer {
 		dev.vestiges.client.farming.ClientMeals.register();
 		dev.vestiges.client.settlement.ClientSettlements.register();
 		MapScanner.register();
+		dev.vestiges.client.camera.IsoCamera.load();
+		dev.vestiges.client.camera.CameraCommand.register();
 		KeyMapping.Category category = KeyMapping.Category.register(Vestiges.id("main"));
 		hubKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.hub", InputConstants.KEY_H, category));
 		mapKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.map", InputConstants.KEY_M, category));

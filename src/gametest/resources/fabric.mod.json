@@ -8,7 +8,8 @@
 		"fabric-client-gametest": [
 			"dev.vestiges.gametest.ScreenshotTour",
 				"dev.vestiges.gametest.AutoCheck",
-				"dev.vestiges.gametest.GroupShots"
+				"dev.vestiges.gametest.GroupShots",
+				"dev.vestiges.gametest.CameraShots"
 		]
 	}
 }
