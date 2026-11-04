@@ -2,6 +2,8 @@
 
 Design only. No code. Written by the Dragons and End idea chat; the main chat reads it and builds only what the user approved.
 
+**Status (2026-11-04, final): everything in this file is APPROVED: first dragons 1 to 6 (MVP), Acts II to IV (dragons 7 to 24), the End dungeon theme and elytra (MVP), the Vestige hall and ending, and the Echo dragons. Only the first-dragons spec and the End dungeon theme are for the MVP; the rest is after it. Open for others: the lore chat names the dragon-24 title and the Echo titles; the main chat updates `cyclebreaker.json` and the design log; the Alliances chat holds the Alliance dimension.**
+
 **Status (2026-11-04, later): the Vestige hall and ending spec is APPROVED (section "The Vestige hall and the ending"), for after the MVP. The alliance dimension is designed separately in the Alliances chat (`docs/ideas/alliances.md`). Open for others: the lore chat names the dragon-24 title; the main chat updates `cyclebreaker.json` and the design log wording.**
 
 **Status (2026-11-04): the End dungeon theme and elytra spec is also APPROVED (section "End dungeons and elytra"). It puts the End theme in the MVP, drops the dragon 3 elytra, and needs the dungeons chat's spec widened by one theme.**
@@ -120,6 +122,71 @@ Same rules as the first-dragons spec (gate 4×N, summoner only, 4 crystals, heal
 - **Rewards (user, 2026-11-04):** as Act I: +1 ender chest page each (pages 8 to 13), XP and emeralds scaled to the gate, a Level VI book roll (dragons 7 to 11), the Codex chapter (Mortre, Graciel, Nitox, Dunther, Megia, Hergun). **Dragon 12 adds a guaranteed Relic★ and the Respec Tome** (the `dragon_12` feat already exists).
 - **Build notes:** new moves are small server behaviours like Act I's. Ice and cloud effects must restore the arena and leave no block behind. The lightning-rod redirect is our own rule (vanilla rods do not redirect scripted strikes), so test it.
 - **Not decided here:** the exact health of the fake Mirror, the Devourer's behaviour if players keep every crystal alive for too long, and balance numbers.
+
+## Act III, dragons 13 to 18 (The Remembering): APPROVED by the user (2026-11-04), after the MVP
+
+Same rules as before (gate 4×N, summoner only, health ×(1 + 0.4×(N−1)) and +50% per extra player, damage ×(1 + 0.2×(N−1)), 8% hit cap). Numbers are drafts. After MVP.
+
+| # | Lore name and title | Gate | Health alone | Damage | New move (user picks, 2026-11-04) | Earlier moves (my draft) |
+|---|---|---|---|---|---|---|
+| 13 | Scande, the Shepherd | Lv 52 | 1160 | ×3.4 | **Shulkers guard the end crystals and drop shells**: 1 shulker per crystal (up to 10), each drops 1 shell to whoever kills it | 3 shove, 10 lightning |
+| 14 | Dreen, the Hollow | Lv 56 | 1240 | ×3.6 | **A warned roar (sound and screen shake) makes every enderman in the arena hostile for 15 s.** A carved pumpkin on your head (vanilla rule) or looking down prevents it | 7 quake, 13 shulkers |
+| 15 | Nemad, the Void Tide | Lv 60 | 1320 | ×3.8 | **While it flies, the outer ring turns to void in 2 s steps; it stops and the ring returns when the dragon lands to perch.** Falling sends you to the world top with Slow Falling | 8 ice, 3 shove |
+| 16 | Basylas, the Undertow | Lv 64 | 1400 | ×4.0 | **A constant gentle pull toward the edge** all fight (a movement test; no special counter) | 3 shove, 9 clouds |
+| 17 | Rethen, the Ash Memory | Lv 68 | 1480 | ×4.2 | **Only blazes at first; the wither skeletons come at half health.** They rise from the portal on perches (draft: 3 wither skeletons and 2 blazes, up to 10 alive) and burn away when it takes off | 2 ring of fire, 9 clouds |
+| 18 ⭐ | Selince, the Ancient (act boss) | Lv 72 | 1560 | ×4.4 | **A glowing line points at one player for 2 s with a rising hum, then a sonic boom goes in a straight line through blocks; sidestep it.** Darkness pulses every 20 s | 6 flicker, 10 lightning |
+
+- **Rewards (user, 2026-11-04):** as before: +1 ender chest page each (pages 14 to 19), XP and emeralds scaled to the gate, a Level VI book roll (dragons 13 to 17), the Codex chapter (Scande, Dreen, Nemad, Basylas, Rethen, Selince). **Dragon 18 adds a guaranteed Relic★ and the 3rd Gold Block** (the `dragon_18` feat exists). The Legend **Ohce** appears after dragon 18 (lore).
+- **Shells:** the 13 shells are limited because the kill happens once per world; the End dungeon theme remains the steady source.
+- **Build notes:** the void ring (15) and pull (16) reuse the void-fall rule (world top, Slow Falling). The enderman anger (14) uses vanilla's pumpkin rule. The boom line (18) must ignore blocks but not break them. Untested: all.
+
+## Act IV, dragons 19 to 24 (The Ending): APPROVED by the user (2026-11-04), after the MVP
+
+Same rules as before (gate 4×N, summoner only, health ×(1 + 0.4×(N−1)) and +50% per extra player, damage ×(1 + 0.2×(N−1)), 8% hit cap). Numbers are drafts. After MVP.
+
+| # | Lore name and title | Gate | Health alone | Damage | New move (user picks, 2026-11-04) | Earlier moves (my draft) |
+|---|---|---|---|---|---|---|
+| 19 | Kadre, the Thousand Wings | Lv 76 | 2 dragons, each 60% of 1640 (about 980) | ×4.6 | **Two smaller dragons**; when one dies, the other gains speed and its breath | 3 shove, 5 phantoms |
+| 20 | Voltre, the Unmaker | Lv 80 | 1720 | ×4.8 | **Topples pillars, rage when the last falls**: every 45 s one pillar is marked (red glow, a dashed line on the floor), 2 s later it falls across the island as a strip; only the crystal is lost and a low stump remains; after the 10th the dragon rages (+50% speed and damage) | 7 quake, 10 lightning |
+| 21 | Mutine, the Timekeeper | Lv 84 | 1800 | ×5.0 | **Rewinds 10 s of its health once per phase unless stunned.** A glow builds for 3 s; an ender pearl, a bow shot to the head or a crossbow bolt stuns it for 4 s and cancels the rewind | 12 devour, 18 boom |
+| 22 ⭐? | Larvi, the Twin Flame | Lv 88 | 2 dragons, each 70% of 1880 (about 1316) | ×5.2 | **Two different dragons, the Two Crowns:** Varrow (river, water) and Telmont (high country, stone and gale); killing one enrages the other | Varrow: 8 ice, 9 clouds · Telmont: 7 quake, 3 shove |
+| 23 | Tenrys, the Last Guard | Lv 92 | 1960 | ×5.4 | **Crystals move in circles with no cages** and heal the dragon; **minions from every act appear randomly** (caps apply) | 13 shulkers, 15 void ring |
+| 24 ⭐ | Iginor, the Cycle (final boss) | Lv 96 | 2040 | ×5.6 | **Three phases of the best moves:** phase 1 uses Act I and II moves, phase 2 adds Act III, phase 3 adds Act IV, then the ending scene | all earlier signatures |
+
+(Dragon 22 is not a listed act boss; the ⭐ in the table is a reminder only that 24 is. Act bosses are 6, 12, 18, 24.)
+
+- **Dragon 20's fall (user asked how, 2026-11-04):** Minecraft has no gravity for obsidian, so the pillar is swapped for one big obsidian block display entity that rotates down over about 2 s; the real blocks are removed first, a low stump stays, and anyone inside the strip takes the hit. Shown to the user as an animated side view; confirmation pending. Fallbacks: shatter with particles and a shockwave, or collapse with falling-block entities.
+- **Rewards:** as before (+1 ender chest page each, pages 20 to 25; XP and emeralds scaled to the gate; a Level VI book roll for 19 to 23; the Codex chapter: Kadre, Voltre, Mutine, Larvi, Tenrys, Iginor). Dragon 24 adds a guaranteed Relic★ and the ending effects (lore reveal and the full poem, Echo mode, the 24-kill title, mob Lore texts in the Codex). Legends **Wyn Embersky** appears after 19 and **Trevol** after 20 (lore).
+- **Dragon 20 fall: confirmed by the user (2026-11-04)**, the display-entity topple with a stump.
+- **Kill-count badge (user, 2026-11-04):** a small two-layer badge lets other players see how much of the real lore you have deciphered. It shows **next to the player's name in the tab list and chat**, and **on the look-at HUD when someone looks at you**. It is **toggleable** (a server switch and a personal setting).
+  - **The number** is the player's own dragon kills, 0 to 24.
+  - **The background colour** is the supporter pack level, from leather to shiny netherite (my reading of the order: leather, chainmail, iron, gold, diamond, netherite, then the top look).
+  - **Level 25:** the number is normally stuck at 24. A player who has spent 1,000 dollars or more on the server gets level 25: a shiny netherite background imbued with diamonds, and the number 25. It is **cosmetic only**.
+  - **Safeguards I added:** the mod never takes payments. The server owner grants supporter levels (an operator command or a server file). Nothing about a supporter level makes a player stronger, so the "nothing that makes you stronger is paid" rule holds.
+  - **Open:** the exact supporter tier names and prices belong to the server owner, not the mod. Idea parked in `~/.claude/ideas-backlog.md` for a later talk.
+
+## Echo dragons (after dragon 24): APPROVED by the user (2026-11-04), after the MVP
+
+An Echo is an endless dragon fought after dragon 24. Same arena, same 4-crystal summoning, same everyone-in-the-arena rewards. It is **the same for everyone**: no alliance changes it (user). Lore flavour only: an Echo is a memory of a cycle breaking apart.
+
+**User picks (2026-11-04):** the gate is **level 100, flat**, for every Echo · the difficulty grows **slowly** · the user likes a bit of **randomness and messiness** in the moves · rewards focus on **Relic chances, cosmetics and titles**.
+
+**Proposal for the moves (messy but fair):**
+- **Three random moves** from a pool of the single-target signature moves of dragons 2 to 23 (ring of fire, shove, crystal regrow, phantoms, flicker and Darkness, quake, ice, clouds, lightning, crystal eating, shulker guards, enderman roar, void ring, pull to the edge, blazes and wither skeletons, sonic boom, pillar topple, health rewind). The special setups (two dragons, splitting, phases) stay out of the pool.
+- **A few banned pairs** that would be unfair together (void ring with edge pull, ice with edge pull, Darkness with flicker), so the mess stays fightable.
+- **One random "twist"** per Echo, such as: crowded (minions from two acts), stormy (extra lightning marks), hungry (eats crystals too), shattered (the void ring also starts early), faint (flickers), or shaky (the ground shakes between perches).
+- **At half health, a 4th random move joins**, so every Echo gets messier in its second half.
+- **Seeded by the world seed and the Echo number**, so the same world always gets the same Echo 7. The summoning crystals' tooltip (or a sign on the portal) previews the three moves and the twist, so players can prepare.
+
+**Scaling, slowly:** starts at dragon 24's numbers (about 2040 HP alone, damage ×5.6) and grows **+10% health and +5% damage per Echo**, linear and uncapped (Echo 20 is about 6100 HP alone, damage ×11). The Echo's displayed level is 100 + 4 per Echo, but the gate stays 100. Balance numbers at the balance pass.
+
+**Rewards proposal:**
+- XP and emeralds scaled to the Echo number, and a **dragon loot roll** from the high-tier pool.
+- **Relic★ chance** on that roll: 5% at Echo 1, +1% per Echo, up to 50%; **every 10th Echo guarantees a Relic★**.
+- **Titles** at Echo 1, 5, 10, 25, 50 and 100 (names proposed by the lore chat).
+- **Cosmetics** that make nobody stronger: name colours, banner patterns, dragon-head trophies and Echo paintings, handed out at the same milestones. Mob-kill cosmetics follow the same rule as quests: nothing that makes you stronger is cosmetic-only.
+- No more ender chest pages. The badge number stays at 24 (25 for supporters).
+- Each Echo number pays each player once per world; every summoning still costs 4 end crystals.
 
 ## End dungeons and elytra (talk started 2026-11-04)
 
