@@ -9,7 +9,9 @@ import shutil
 import threading
 from pathlib import Path
 
+import licences
 import naming
+import organise
 import projects
 
 PAGE = 100
@@ -33,10 +35,11 @@ def latest_stats(project):
 def row_of(project):
     latest = project["versions"][-1] if project.get("versions") else None
     credit = project.get("credit") or {}
+    licence = licences.assess(credit, project.get("mode", "ai") == "import")
     return {
         "id": project["id"], "title": project.get("title", ""), "kind": project.get("category", "tree"), "mode": project.get("mode", "ai"),
         "status": project.get("status", "review"), "stage": project.get("stage"), "saved": project.get("saved", []), "versions": len(project.get("versions", [])),
-        "creator": credit.get("creator", ""), "batch": project.get("batch"), "tags": project.get("tags", []),
+        "creator": credit.get("creator", ""), "licence": credit.get("licence", ""), "favorite": bool(project.get("favorite")), "collections": project.get("collections", []), "licence_status": licence["status"], "can_modify": licence["can_modify"], "batch": project.get("batch"), "tags": project.get("tags", []),
         "source": (project.get("source") or {}).get("name", ""), "not_vanilla": bool(latest and latest["check"]["errors"]),
         "blocks": latest["check"]["stats"]["blocks"] if latest else 0,
         "size": f"{latest['check']['stats']['width_x']}x{latest['check']['stats']['height']}x{latest['check']['stats']['width_z']}" if latest else "",
@@ -65,7 +68,7 @@ def _load():
                 project_file = folder / "project.json"
                 if project_file.exists():
                     found.add(folder.name)
-                    if folder.name not in rows or project_file.stat().st_mtime > stamp:
+                    if folder.name not in rows or project_file.stat().st_mtime > stamp or "collections" not in rows[folder.name]:
                         rows[folder.name] = row_of(projects.load(folder.name))
         _rows = {k: v for k, v in rows.items() if k in found}
         return _rows
@@ -124,19 +127,29 @@ def used_names():
     return {s["name"] for r in _load().values() for s in r.get("saved", [])}
 
 
-def search(words="", kind="", status="", batch="", no_credit=False, not_vanilla=False, page=0):
+def search(words="", kind="", status="", batch="", no_credit=False, not_vanilla=False, page=0, licence="", tag="", collection="", favorite=False):
     rows = _load().values()
     terms = str(words).lower().split()
     out = []
     for row in rows:
         if kind and row["kind"] != kind or status and row["status"] != status or batch and row.get("batch") != batch:
             continue
+        if licence == "check" and row["licence_status"] not in ("limited", "unknown"):
+            continue
+        if licence and licence != "check" and row["licence_status"] != licence:
+            continue
+        if favorite and not row["favorite"]:
+            continue
+        if tag and tag not in row["tags"]:
+            continue
+        if collection and not any(c.casefold() == collection.casefold() for c in row["collections"]):
+            continue
         if no_credit and (row["creator"] or row["mode"] != "import"):
             continue
         if not_vanilla and not row["not_vanilla"]:
             continue
         if terms:
-            text = " ".join([row["title"], row["kind"], row["source"], row["creator"], " ".join(row["tags"]), " ".join(s["name"] for s in row["saved"])]).lower()
+            text = " ".join([row["title"], row["kind"], row["source"], row["creator"], " ".join(row["tags"]), " ".join(row["collections"]), row["licence"], " ".join(s["name"] for s in row["saved"])]).lower()
             if not all(t in text for t in terms):
                 continue
         out.append(row)
@@ -147,7 +160,19 @@ def search(words="", kind="", status="", batch="", no_credit=False, not_vanilla=
 
 def facets():
     rows = _load().values()
-    return {"kinds": sorted({r["kind"] for r in rows}), "batches": sorted({r["batch"] for r in rows if r.get("batch")}, reverse=True)}
+    tags, groups = {}, {}
+    for r in rows:
+        for t in r["tags"]:
+            tags[t] = tags.get(t, 0) + 1
+        for c in r["collections"]:
+            groups[c] = groups.get(c, 0) + 1
+    common = sorted(tags.items(), key=lambda kv: (-kv[1], kv[0]))[:60]
+    return {"kinds": sorted({r["kind"] for r in rows}), "batches": sorted({r["batch"] for r in rows if r.get("batch")}, reverse=True),
+            "tags": [{"name": t, "count": n} for t, n in sorted(common)], "collections": [{"name": c, "count": n} for c, n in sorted(groups.items(), key=lambda kv: kv[0].casefold())]}
+
+
+def collection_ids(name):
+    return [r["id"] for r in _load().values() if any(c.casefold() == str(name).casefold() for c in r["collections"])]
 
 
 def propose(project, number=None):
@@ -161,6 +186,15 @@ def propose(project, number=None):
     subject = project.get("subject") or naming.subject_from(project.get("source"), project.get("title", ""))
     base = naming.base_name(project.get("category", "tree"), subject, version["check"]["stats"], project.get("source"), project.get("credit"))
     return naming.next_free(base, used_names())
+
+
+def propose_styled(project, number, style):
+    """A new descriptive name for a version (see naming.STYLES). Free of every saved name except the version's own."""
+    version = next(v for v in project["versions"] if v["number"] == number)
+    own = next((s["name"] for s in project.get("saved", []) if s["version"] == number), None)
+    subject = project.get("subject") or naming.subject_from(project.get("source"), project.get("title", ""))
+    name = naming.styled_name(style, project.get("category", "tree"), subject, version["check"]["stats"], project.get("source"), project.get("credit"), number)
+    return naming.unique(name, used_names() - ({own} if own else set()))
 
 
 def save_variant(project_id, number, name=None):

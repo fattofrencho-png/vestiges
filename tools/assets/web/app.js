@@ -39,7 +39,7 @@ function spent(p) {
 }
 
 function steps() {
-  if (screen === "library" || screen === "settings") { $("steps").replaceChildren(); return; }
+  if (screen === "library" || screen === "settings" || screen === "find") { $("steps").replaceChildren(); return; }
   if (screen === "home" || screen === "import" || project?.mode === "import") {
     let step = 0;
     if (screen === "project" && project) step = project.stage === "saved" ? 3 : project.versions.length > 1 ? 2 : 1;
@@ -58,7 +58,7 @@ function page(...children) {
   shown = null;
   $("stage").classList.remove("on");
   $("page").style.display = "";
-  $("page").replaceChildren(...children.flat());
+  $("page").replaceChildren(...children.flat().filter((c) => c !== null && c !== undefined && c !== false));
 }
 function showFailure(problem, where) {
   (where || $("page")).prepend(el("div", { className: "notice bad", role: "alert", textContent: problem.message }));
@@ -82,16 +82,21 @@ function drawHome() {
 const BUILD_FILES = /\.(schem|litematic|nbt|jar|zip)$/i;
 let importTab = "file", queue = null;
 
-function detailFields() {
+function detailFields(defaults = {}) {
   const kind = el("select", {}, el("option", { value: "", textContent: "Guess from the build" }), CATEGORIES().map((c) => el("option", { value: c, textContent: c[0].toUpperCase() + c.slice(1) })));
   const creator = el("input", { type: "text", maxLength: 200, placeholder: "Leave empty for your own builds" });
   const permission = el("input", { type: "text", maxLength: 500, placeholder: "A link, or where they said yes" });
   const licence = el("input", { type: "text", maxLength: 200 });
+  const link = el("input", { type: "text", maxLength: 500, placeholder: "Where it was found" });
+  link.value = defaults.link || "";
+  creator.value = defaults.creator || "";
+  permission.value = defaults.permission || "";
+  licence.value = defaults.licence || "";
   return {
     node: [el("h2", { textContent: "Details for everything here (all optional)" }),
       el("label", { className: "field" }, "Kind", kind), el("label", { className: "field" }, "Creator", creator),
-      el("label", { className: "field" }, "Permission", permission), el("label", { className: "field" }, "Licence", licence)],
-    read: () => ({ kind: kind.value, creator: creator.value, permission: permission.value, licence: licence.value }),
+      el("label", { className: "field" }, "Permission", permission), el("label", { className: "field" }, "Licence", licence), el("label", { className: "field" }, "Link", link)],
+    read: () => ({ kind: kind.value, creator: creator.value, permission: permission.value, licence: licence.value, link: link.value }),
   };
 }
 
@@ -108,7 +113,7 @@ async function readEntries(entry, out) {
   }
 }
 
-async function drawImport() {
+async function drawImport(prefill = null) {
   screen = "import";
   stopPolling();
   project = null;
@@ -122,7 +127,7 @@ async function drawImport() {
   const listBox = el("div");
   const filter = el("input", { type: "text", placeholder: "Filter the list", "aria-label": "Filter", style: "flex:1" });
   const go = el("button", { className: "main", textContent: "Import", disabled: true });
-  const details = detailFields();
+  const details = detailFields(prefill?.details);
   const refresh = () => {
     go.textContent = ticked.size ? `Import ${ticked.size}` : "Import";
     go.disabled = !ticked.size;
@@ -195,7 +200,15 @@ async function drawImport() {
       drawBatch(id);
     } catch (problem) { showFailure(problem); refresh(); }
   };
-  const fileTab = el("div", {}, drop, status, listBox);
+  const fileTab = el("div", {}, prefill?.notice ? el("p", { className: "bad-t", role: "status", textContent: prefill.notice }) : null, drop, status, listBox);
+  if (prefill) {
+    importTab = "file";
+    sources.push(prefill.source);
+    prefill.source.items.forEach((item) => ticked.add(key(prefill.source, item)));
+    status.textContent = `${prefill.source.items.length.toLocaleString("en")} builds found in ${prefill.source.name}.`;
+    drawList();
+    refresh();
+  }
 
   // A box from a saved world.
   const worldTitle = el("input", { type: "text", maxLength: 60, placeholder: "Optional" });
@@ -266,6 +279,33 @@ async function openQueue(ids, index) {
   queue = { ids, index };
   await openProject(ids[index]);
 }
+// The side panel is a stack of sections. Each heading becomes a drop-down, so a section can be closed to reach the ones below faster.
+// Which are open is remembered while the app runs.
+const sectionOpen = new Map();
+function sectionize(nodes) {
+  const out = [];
+  let current = null;
+  const all = (open) => () => { document.querySelectorAll("#side details.sec").forEach((d) => { d.open = open; }); };
+  for (const node of nodes) {
+    if (node.tagName === "H2") {
+      const title = node.textContent;
+      const name = title.replace(/\s*\(.*\)$/, "");
+      const section = el("details", { className: "sec" }, el("summary", { textContent: title }));
+      section.open = sectionOpen.get(name) !== false;
+      section.addEventListener("toggle", () => sectionOpen.set(name, section.open));
+      out.push(section);
+      current = section;
+    } else if (current && !(node.dataset && node.dataset.top)) {
+      current.append(node);
+    } else {
+      out.push(node);
+    }
+  }
+  const first = out.findIndex((n) => n.className === "sec");
+  if (first >= 0) out.splice(first, 0, el("div", { className: "tool" }, el("button", { textContent: "Close all", on: { click: all(false) } }), el("button", { textContent: "Open all", on: { click: all(true) } })));
+  return out;
+}
+
 function queueBar() {
   if (!queue || queue.ids[queue.index] !== project.id) return null;
   const go = (step) => openQueue(queue.ids, queue.index + step);
@@ -280,6 +320,16 @@ function queueBar() {
 }
 
 // ---- adapt ----
+// A build with a limited or unknown licence is only added to the mod after the author confirms.
+async function addToMod(project, body) {
+  const check = project.licence_check;
+  const needsCheck = check && (check.status === "limited" || check.status === "unknown");
+  if (needsCheck && !confirm(`${check.words}. Do you have the right to use this build in the mod?`)) throw new Error("Not added.");
+  return post("/api/export/mod", { ...body, confirm_licence: Boolean(needsCheck) });
+}
+
+let nameStyle = -1;
+
 async function drawAdapt() {
   const numbers = project.versions.map((v) => v.number);
   if (!numbers.includes(base)) base = project.saved_version ?? numbers[numbers.length - 1];
@@ -294,7 +344,12 @@ async function drawAdapt() {
   const detailCreator = el("input", { type: "text", value: project.credit?.creator || "" });
   const detailPermission = el("input", { type: "text", value: project.credit?.permission || "" });
   const detailLicence = el("input", { type: "text", value: project.credit?.licence || "" });
+  const detailLink = el("input", { type: "text", value: project.credit?.link || "" });
+  const licenceCheck = project.licence_check || { status: "own", words: "", can_modify: true };
+  const needsCheck = licenceCheck.status === "limited" || licenceCheck.status === "unknown";
   const detailTags = el("input", { type: "text", value: (project.tags || []).join(", ") });
+  const detailCollections = el("input", { type: "text", value: (project.collections || []).join(", "), placeholder: "For example: Forest set, Village", list: "collectionList" });
+  const detailFavorite = el("input", { type: "checkbox", checked: Boolean(project.favorite) });
   const s = version.check.stats;
   const used = Object.keys(s.block_counts);
   if (!blockNames) blockNames = await get("/api/blocks");
@@ -357,15 +412,25 @@ async function drawAdapt() {
       el("input", { type: "checkbox", checked: compare.has(v.number), "aria-label": `Compare version ${v.number}`, on: { change: (e) => { if (e.target.checked) compare.add(v.number); else compare.delete(v.number); shown = null; render(); } } }),
       el("button", { textContent: `Version ${v.number}`, className: v.number === base ? "main" : "", title: v.edits.join(", ") || "The original", on: { click: () => { base = v.number; compare.clear(); shown = null; render(); } } }),
       el("span", { className: "dim", textContent: v.edits[v.edits.length - 1] || "Original" }))),
-    el("details", {}, el("summary", { textContent: "Details and credit (optional)" }),
+    licenceCheck.words ? el("p", { className: needsCheck ? "bad-t" : "dim", role: "status", textContent: `Licence: ${licenceCheck.words}${licenceCheck.can_modify === false ? ". You may not change it." : licenceCheck.can_modify === null ? ". Whether you may change it: to confirm." : ""}` }) : null,
+    el("h2", { textContent: "Details and credit (optional)" }),
       el("label", { className: "field" }, "Name", detailTitle), el("label", { className: "field" }, "Kind", detailKind),
       el("label", { className: "field" }, "Creator", detailCreator), el("label", { className: "field" }, "Permission", detailPermission),
-      el("label", { className: "field" }, "Licence", detailLicence), el("label", { className: "field" }, "Tags, with commas", detailTags),
-      el("div", { className: "tool" }, el("button", { textContent: "Save details", on: { click: () => act(() => post("/api/details", { id: project.id, title: detailTitle.value, kind: detailKind.value, creator: detailCreator.value, permission: detailPermission.value, licence: detailLicence.value, tags: detailTags.value })) } }))),
+      el("label", { className: "field" }, "Licence", detailLicence), el("label", { className: "field" }, "Link", detailLink), el("label", { className: "field" }, "Tags, with commas", detailTags),
+      el("label", { className: "field" }, "Collections, with commas", detailCollections), el("label", { className: "opt" }, detailFavorite, " ★ Favorite"),
+      el("div", { className: "tool" }, el("button", { textContent: "Save details", on: { click: () => act(() => post("/api/details", { id: project.id, title: detailTitle.value, kind: detailKind.value, creator: detailCreator.value, permission: detailPermission.value, licence: detailLicence.value, link: detailLink.value, tags: detailTags.value, collections: detailCollections.value, favorite: detailFavorite.checked })) } })),
     el("h2", { textContent: thisSaved ? "Saved name" : "Save this version" }),
     el("input", { type: "text", className: "name-box", value: proposed.name, "aria-label": "File name", id: "saveName" }),
+    el("div", { className: "tool" }, el("button", { textContent: "New proposed name", title: "Another name with the size, block count and version in it. Press again for the next style.", on: { click: async () => {
+      nameStyle = (nameStyle + 1) % 3;
+      try {
+        const next = await get(`/api/propose?id=${project.id}&v=${base}&style=${nameStyle}`);
+        $("saveName").value = next.name;
+        $("nameStyle").textContent = next.label;
+      } catch (problem) { $("nameStyle").textContent = problem.message; }
+    } } }), el("span", { className: "dim", id: "nameStyle", role: "status", textContent: "" })),
     el("div", { className: "tool" }, el("button", { className: "good", textContent: thisSaved ? "Rename" : `Save version ${base}`, on: { click: () => act(() => post("/api/save", { id: project.id, version: base, name: $("saveName").value })) } })),
-    el("p", { className: "dim", textContent: "kind_subject_materials_detail_size_source_variant. Save edited versions as more variants." }),
+    el("p", { className: "dim", textContent: "Default: kind_subject_materials_detail_size_source_variant. w = width, d = depth, h = height. Save edited versions as more variants." }),
     project.saved.length ? el("h2", { textContent: `Saved variants (${project.saved.length})` }) : null,
     project.saved.map((entry) => el("div", { style: "margin-top:8px" },
       el("div", { className: "name", style: "word-break:break-all;font-size:12px", textContent: `v${entry.version}: ${entry.name}` }),
@@ -374,15 +439,16 @@ async function drawAdapt() {
         el("a", { href: `/api/export?id=${project.id}&v=${entry.version}&format=schem`, download: "" }, el("button", { textContent: ".schem" })),
         el("button", { textContent: "Add to mod", disabled: blocked, title: blocked ? "The mod only uses vanilla blocks" : "", on: { click: async () => {
           try {
-            const done = await post("/api/export/mod", { id: project.id, version: entry.version });
+            const done = await addToMod(project, { id: project.id, version: entry.version });
             result.textContent = `Added. In game: /place template ${done.name}`;
           } catch (problem) { result.textContent = problem.message; }
         } } })))),
     result,
   ];
+  result.dataset.top = "1";
   $("page").style.display = "none";
   $("stage").classList.add("on");
-  $("side").replaceChildren(...side.flat().filter(Boolean));
+  $("side").replaceChildren(...sectionize(side.flat().filter(Boolean)));
   const key = project.id + ":" + show.join(",");
   if (shown !== key) {
     const sameBuild = shown?.startsWith(project.id + ":");
@@ -564,7 +630,7 @@ async function drawPreview() {
         el("a", { href: `/api/export?id=${project.id}&format=schem`, download: "" }, el("button", { textContent: "Download .schem" }))),
       el("div", { className: "row" }, el("button", { className: "main", textContent: "Add to mod", on: { click: async () => {
         try {
-          const done = await post("/api/export/mod", { id: project.id });
+          const done = await addToMod(project, { id: project.id });
           result.textContent = `Added. In game: /place template ${done.name} (roots go ${done.ground_y} blocks below where the tree stands).`;
         } catch (problem) { result.textContent = problem.message; }
       } } })),
@@ -580,7 +646,7 @@ async function drawPreview() {
 
   $("page").style.display = "none";
   $("stage").classList.add("on");
-  $("side").replaceChildren(...side.flat().filter(Boolean));
+  $("side").replaceChildren(...sectionize(side.flat().filter(Boolean)));
   const key = project.id + ":" + show.join(",");
   if (shown !== key) {
     shown = key;
@@ -646,17 +712,20 @@ function render() {
 
 // ---- library ----
 const STATUS_WORDS = { review: "To review", saved: "Saved", skipped: "Skipped" };
-let libraryQuery = { q: "", kind: "", status: "", batch: "", no_credit: false, not_vanilla: false, page: 0 };
+let libraryQuery = { q: "", kind: "", status: "", batch: "", licence: "", tag: "", collection: "", favorite: false, no_credit: false, not_vanilla: false, page: 0 };
+let libraryView = "list";
+try { libraryView = localStorage.getItem("libraryView") === "grid" ? "grid" : "list"; } catch (problem) { /* no saved choice */ }
+const LICENCE_WORDS = { own: "Your own", open: "Open", permission: "Permission noted", limited: "Limited", unknown: "Unknown" };
 async function drawLibrary(start) {
   screen = "library";
   stopPolling();
   project = null;
   queue = null;
-  if (start) libraryQuery = { ...libraryQuery, q: "", kind: "", status: "", no_credit: false, not_vanilla: false, ...start, page: 0 };
+  if (start) libraryQuery = { ...libraryQuery, q: "", kind: "", status: "", licence: "", tag: "", collection: "", favorite: false, no_credit: false, not_vanilla: false, ...start, page: 0 };
   if (!app) app = await get("/api/state");
   steps();
   const q = libraryQuery;
-  const params = new URLSearchParams({ q: q.q, kind: q.kind, status: q.status, batch: q.batch, no_credit: q.no_credit ? 1 : 0, not_vanilla: q.not_vanilla ? 1 : 0, page: q.page });
+  const params = new URLSearchParams({ q: q.q, kind: q.kind, status: q.status, batch: q.batch, licence: q.licence, tag: q.tag, collection: q.collection, favorite: q.favorite ? 1 : 0, no_credit: q.no_credit ? 1 : 0, not_vanilla: q.not_vanilla ? 1 : 0, page: q.page });
   const data = await get("/api/library?" + params);
   const ticked = new Set();
   const set = (change) => { libraryQuery = { ...libraryQuery, ...change, page: change.page ?? 0 }; drawLibrary(); };
@@ -670,27 +739,61 @@ async function drawLibrary(start) {
   };
   const chosen = () => (ticked.size ? [...ticked] : data.ids);
   const bulkKind = el("select", { "aria-label": "Set kind" }, el("option", { value: "", textContent: "Keep kind" }), CATEGORIES().map((c) => el("option", { value: c, textContent: c })));
+  const tagBox = el("input", { type: "text", placeholder: "Tag", "aria-label": "Tag", size: 12, list: "tagList" });
+  const collectionBox = el("input", { type: "text", placeholder: "Collection", "aria-label": "Collection", size: 16, list: "collectionList" });
   const bulkCreator = el("input", { type: "text", placeholder: "Creator", "aria-label": "Set creator" });
   const zipKind = el("select", { "aria-label": "Zip format" }, el("option", { value: "nbt", textContent: ".nbt" }), el("option", { value: "schem", textContent: ".schem" }));
   const scope = el("b");
   const showScope = () => { scope.textContent = ticked.size ? `${ticked.size} ticked` : `All ${data.total.toLocaleString("en")} shown`; };
   const bulkDo = (body) => post("/api/library/bulk", { ids: chosen(), ...body }).then(() => drawLibrary()).catch((problem) => showFailure(problem));
   const rows = data.rows.map((r) => el("tr", {},
-    el("td", {}, el("input", { type: "checkbox", "aria-label": "Tick " + r.title, on: { change: (e) => { if (e.target.checked) ticked.add(r.id); else ticked.delete(r.id); showScope(); } } })),
+    el("td", {}, el("button", { className: "star", textContent: r.favorite ? "★" : "☆", title: r.favorite ? "Favorite (click to remove)" : "Make a favorite", "aria-pressed": String(r.favorite), "aria-label": "Favorite " + r.title,
+      style: "border:0;background:none;cursor:pointer;font-size:16px;padding:0 4px;" + (r.favorite ? "color:gold" : ""), on: { click: () => post("/api/library/bulk", { ids: [r.id], action: "favorite", value: !r.favorite }).then(() => drawLibrary()).catch((problem) => showFailure(problem)) } }),
+      el("input", { type: "checkbox", "aria-label": "Tick " + r.title, on: { change: (e) => { if (e.target.checked) ticked.add(r.id); else ticked.delete(r.id); showScope(); } } })),
     el("td", { className: "name" }, el("a", { href: "#", style: "color:inherit", textContent: r.saved.length ? r.saved[r.saved.length - 1].name : r.title, on: { click: (e) => { e.preventDefault(); openQueue(data.ids, data.ids.indexOf(r.id)).catch((problem) => showFailure(problem)); } } }),
-      r.saved.length > 1 ? el("span", { className: "dim", textContent: ` +${r.saved.length - 1} variants` }) : null),
+      r.saved.length > 1 ? el("span", { className: "dim", textContent: ` +${r.saved.length - 1} variants` }) : null,
+      r.collections.length ? el("span", { className: "dim", textContent: ` · ${r.collections.join(", ")}` }) : null),
     el("td", { textContent: r.kind }), el("td", { textContent: r.size }), el("td", { textContent: r.blocks.toLocaleString("en") }),
     el("td", { textContent: r.creator || (r.mode === "import" ? "No credit" : "AI") }),
+    el("td", { className: r.licence_status === "limited" || r.licence_status === "unknown" ? "bad-t" : "", textContent: LICENCE_WORDS[r.licence_status] || "", title: (r.licence || "No licence given") + (r.can_modify === false ? ". You may not change it." : r.can_modify === null ? ". Changes: to confirm." : "") }),
     el("td", { textContent: (STATUS_WORDS[r.status] || r.status) + (r.not_vanilla ? " · not vanilla" : "") })));
+  const cards = data.rows.map((r) => {
+    const name = r.saved.length ? r.saved[r.saved.length - 1].name : r.title;
+    const open = (e) => { e.preventDefault(); openQueue(data.ids, data.ids.indexOf(r.id)).catch((problem) => showFailure(problem)); };
+    return el("div", { className: "card" },
+      el("a", { href: "#", className: "thumb", "aria-label": "Open " + name, on: { click: open } },
+        el("img", { src: `/api/thumb?id=${r.id}&v=${r.versions}`, alt: "", loading: "lazy", width: 160, height: 160 })),
+      el("div", { className: "cardbar" },
+        el("input", { type: "checkbox", "aria-label": "Tick " + r.title, checked: ticked.has(r.id), on: { change: (e) => { if (e.target.checked) ticked.add(r.id); else ticked.delete(r.id); showScope(); } } }),
+        el("button", { className: "star", textContent: r.favorite ? "★" : "☆", title: r.favorite ? "Favorite (click to remove)" : "Make a favorite", "aria-pressed": String(r.favorite), "aria-label": "Favorite " + r.title,
+          style: "border:0;background:none;cursor:pointer;font-size:16px;padding:0 4px;" + (r.favorite ? "color:gold" : ""), on: { click: () => post("/api/library/bulk", { ids: [r.id], action: "favorite", value: !r.favorite }).then(() => drawLibrary()).catch((problem) => showFailure(problem)) } }),
+        el("span", { className: r.licence_status === "limited" || r.licence_status === "unknown" ? "bad-t" : "dim", textContent: LICENCE_WORDS[r.licence_status] || "" })),
+      el("a", { href: "#", className: "cardname", textContent: name, title: name, on: { click: open } }),
+      el("div", { className: "dim", textContent: `${r.kind} · ${r.size} · ${r.blocks.toLocaleString("en")} blocks` }));
+  });
   const last = Math.max(Math.ceil(data.total / data.page_size) - 1, 0);
   page(
     el("h1", { textContent: `Library (${data.total.toLocaleString("en")})` }),
+    el("datalist", { id: "tagList" }, data.tags.map((t) => el("option", { value: t.name }))),
+    el("datalist", { id: "collectionList" }, data.collections.map((c) => el("option", { value: c.name }))),
     el("div", { className: "tool" }, search,
       pick(q.kind, "Any kind", data.kinds.map((k) => [k, k]), (v) => ({ kind: v })),
       pick(q.status, "Any status", Object.entries(STATUS_WORDS), (v) => ({ status: v })),
+      el("label", {}, el("input", { type: "checkbox", checked: q.favorite, on: { change: (e) => set({ favorite: e.target.checked }) } }), " ★ Favorites"),
+      pick(q.collection, "Any collection", data.collections.map((c) => [c.name, `${c.name} (${c.count})`]), (v) => ({ collection: v })),
+      pick(q.tag, "Any tag", data.tags.map((t) => [t.name, `${t.name} (${t.count})`]), (v) => ({ tag: v })),
+      pick(q.licence, "Any licence", [["check", "Needs checking"], ...Object.entries(LICENCE_WORDS)], (v) => ({ licence: v })),
       pick(q.batch, "Any batch", data.batches.map((b) => [b, b.slice(1, 9) + " " + b.slice(10, 12) + ":" + b.slice(12, 14)]), (v) => ({ batch: v })),
       el("label", {}, el("input", { type: "checkbox", checked: q.no_credit, on: { change: (e) => set({ no_credit: e.target.checked }) } }), " No credit"),
       el("label", {}, el("input", { type: "checkbox", checked: q.not_vanilla, on: { change: (e) => set({ not_vanilla: e.target.checked }) } }), " Not vanilla")),
+    el("div", { className: "queue" }, el("span", { className: "dim", textContent: "For the assets above:" }),
+      tagBox, el("button", { textContent: "Add tag", on: { click: () => tagBox.value.trim() && bulkDo({ action: "tag_add", tag: tagBox.value }) } }), el("button", { textContent: "Remove tag", on: { click: () => tagBox.value.trim() && bulkDo({ action: "tag_remove", tag: tagBox.value }) } }),
+      collectionBox, el("button", { textContent: "Add to collection", on: { click: () => collectionBox.value.trim() && bulkDo({ action: "collection_add", name: collectionBox.value }) } }), el("button", { textContent: "Remove from collection", on: { click: () => collectionBox.value.trim() && bulkDo({ action: "collection_remove", name: collectionBox.value }) } }),
+      el("button", { textContent: "★ Make favorite", on: { click: () => bulkDo({ action: "favorite", value: true }) } }), el("button", { textContent: "Remove favorite", on: { click: () => bulkDo({ action: "favorite", value: false }) } })),
+    data.collections.length ? el("details", {}, el("summary", { textContent: `Manage collections (${data.collections.length})` }),
+      data.collections.map((c) => el("div", { className: "tool" }, el("span", { textContent: `${c.name} · ${c.count}` }),
+        el("button", { textContent: "Rename", on: { click: () => { const to = prompt(`New name for "${c.name}"`, c.name); if (to && to.trim()) post("/api/library/bulk", { action: "collection_rename", name: c.name, to }).then(() => drawLibrary()).catch((problem) => showFailure(problem)); } } }),
+        el("button", { className: "danger", textContent: "Delete collection", title: "The assets stay in the Library", on: { click: () => { if (confirm(`Delete the collection "${c.name}"? Its ${c.count} assets stay in the Library.`)) post("/api/library/bulk", { action: "collection_delete", name: c.name }).then(() => drawLibrary()).catch((problem) => showFailure(problem)); } } })))) : null,
     el("div", { className: "queue" }, scope,
       el("button", { className: "main", textContent: "Review one by one", disabled: !data.total, on: { click: () => openQueue(chosen(), 0).catch((problem) => showFailure(problem)) } }),
       el("button", { textContent: "Save with proposed names", on: { click: () => bulkDo({ action: "save" }) } }),
@@ -705,12 +808,108 @@ async function drawLibrary(start) {
         window.__zipDone = true;
       } } }),
       el("button", { className: "danger", textContent: "Delete", on: { click: () => { if (confirm(`Delete ${chosen().length} assets? This can't be undone.`)) bulkDo({ action: "delete" }); } } })),
-    data.total ? el("table", { className: "lib" }, el("tr", {}, ["", "Name", "Kind", "Size", "Blocks", "Creator", "Status"].map((h) => el("th", { textContent: h }))), rows)
-      : el("p", { className: "dim", textContent: "Nothing here yet. Press New to import builds." }),
+    el("div", { className: "tool" }, el("span", { className: "dim", textContent: "View:" }),
+      ...[["list", "List"], ["grid", "Icons"]].map(([v, t]) => el("button", { textContent: t, className: libraryView === v ? "main" : "", "aria-pressed": String(libraryView === v),
+        on: { click: () => { libraryView = v; try { localStorage.setItem("libraryView", v); } catch (problem) { /* not saved */ } drawLibrary(); } } }))),
+    data.total && libraryView === "grid" ? el("div", { className: "grid" }, cards) : null,
+    data.total && libraryView === "list" ? el("table", { className: "lib" }, el("tr", {}, ["★ ☐", "Name", "Kind", "Size", "Blocks", "Creator", "Licence", "Status"].map((h) => el("th", { textContent: h }))), rows)
+      : null,
+    data.total ? null : el("p", { className: "dim", textContent: "Nothing here yet. Press New to import builds." }),
     last ? el("div", { className: "row" }, el("button", { textContent: "Previous page", disabled: q.page === 0, on: { click: () => set({ page: q.page - 1 }) } }), el("span", { className: "dim", textContent: `Page ${q.page + 1} of ${last + 1}` }), el("button", { textContent: "Next page", disabled: q.page >= last, on: { click: () => set({ page: q.page + 1 }) } })) : null,
   );
   $("page").classList.add("wide");
   showScope();
+}
+
+// ---- find online ----
+let findState = { q: "", type: "datapack", builds: true, page: 0 };
+
+async function drawFind() {
+  screen = "find";
+  stopPolling();
+  project = null;
+  steps();
+  const query = el("input", { type: "search", size: 40, placeholder: "What are you looking for? For example: oak tree, castle, village house", "aria-label": "Search Modrinth", value: findState.q });
+  const type = el("select", { "aria-label": "Type" }, [["datapack", "Datapacks"], ["mod", "Mods"]].map(([v, t]) => el("option", { value: v, textContent: t })));
+  type.value = findState.type;
+  const builds = el("input", { type: "checkbox", checked: findState.builds });
+  const status = el("div", { className: "dim", role: "status" });
+  const list = el("div");
+  const count = (n) => n.toLocaleString("en");
+  const search = async (page = 0) => {
+    findState = { q: query.value.trim(), type: type.value, builds: builds.checked, page };
+    status.replaceChildren(el("span", { className: "spin" }), "Searching Modrinth…");
+    list.replaceChildren();
+    try {
+      const found = await get(`/api/find/search?q=${encodeURIComponent(findState.q)}&type=${findState.type}&builds=${findState.builds ? 1 : 0}&page=${page}`);
+      status.textContent = found.total ? `${count(found.total)} found. Showing ${count(page * found.per_page + 1)} to ${count(page * found.per_page + found.hits.length)}.` : "Nothing found. Try other words, or untick the builds filter.";
+      list.replaceChildren(...found.hits.map(card), el("div", { className: "row" },
+        el("button", { textContent: "Previous", disabled: page === 0, on: { click: () => search(page - 1) } }),
+        el("button", { textContent: "Next", disabled: (page + 1) * found.per_page >= found.total, on: { click: () => search(page + 1) } })));
+    } catch (problem) { status.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); }
+  };
+  const card = (hit) => {
+    const note = el("div", { className: "dim", role: "status" });
+    const button = el("button", { className: "main", textContent: "Import", on: { click: async () => {
+      button.disabled = true;
+      note.replaceChildren(el("span", { className: "spin" }), "Downloading and reading it…");
+      try {
+        const got = await post("/api/find/fetch", { project: hit.id });
+        drawImport({
+          source: { token: got.token, name: got.name, items: got.items },
+          details: { creator: hit.author, link: hit.url, licence: hit.licence },
+          notice: hit.warning ? `${hit.title}: ${hit.warning} Check the terms before using it in the mod.` : "",
+        });
+      } catch (problem) { note.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); button.disabled = false; }
+    } } });
+    return el("div", { className: "q" },
+      el("b", { textContent: hit.title }), el("span", { className: "dim", textContent: ` by ${hit.author} · ${count(hit.downloads)} downloads · ${hit.categories.join(", ")}` }),
+      el("p", { textContent: hit.description }),
+      el("p", { className: hit.warning ? "bad-t" : "dim", textContent: `Licence: ${hit.licence || "not given"}${hit.warning ? ". " + hit.warning : ""}` }),
+      el("div", { className: "row" }, button,
+        el("button", { textContent: "Open on Modrinth", on: { click: () => post("/api/find/open", { url: hit.url }).catch((problem) => { note.textContent = problem.message; }) } })),
+      note);
+  };
+  query.addEventListener("keydown", (e) => { if (e.key === "Enter") search(0); });
+  page(el("h1", { textContent: "Find online" }),
+    el("p", { className: "dim", textContent: "Searches Modrinth, a site where creators share datapacks and mods. Nothing is downloaded until you press Import on a result. Files are only read, never run." }),
+    el("div", { className: "row" }, query, type, el("button", { className: "main", textContent: "Search", on: { click: () => search(0) } })),
+    el("label", { className: "opt" }, builds, " Only likely builds (world generation and decoration). Untick to search everything."),
+    status, list);
+  if (findState.q) search(findState.page);
+}
+
+// ---- backups ----
+function backupSection() {
+  const list = el("div"), status = el("div");
+  const note = (text, good) => el("div", { className: good ? "good-t" : "bad-t", role: "status", textContent: text });
+  const size = (bytes) => (bytes > 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`);
+  const label = { auto: "automatic", manual: "manual", "before-restore": "before a restore" };
+  const draw = (backups) => {
+    list.replaceChildren(...(backups.length ? backups.map((b) => el("div", { className: "row" },
+      el("span", { textContent: `${new Date(b.time * 1000).toLocaleString()} · ${b.assets} assets · ${size(b.bytes)} · ${label[b.reason]}` }),
+      el("span", { className: "grow" }),
+      el("button", { textContent: "Restore", on: { click: async () => {
+        if (!confirm(`Replace the whole library with this backup from ${new Date(b.time * 1000).toLocaleString()}? The current library is backed up first.`)) return;
+        try {
+          const done = await post("/api/backups/restore", { name: b.name });
+          draw(done.backups);
+          status.replaceChildren(note(`Restored: ${done.assets} assets.`, true));
+        } catch (problem) { status.replaceChildren(note(problem.message, false)); }
+      } } }))) : [el("p", { className: "dim", textContent: "No backups yet." })]));
+  };
+  get("/api/backups").then((r) => draw(r.backups)).catch((problem) => status.replaceChildren(note(problem.message, false)));
+  return el("div", { className: "q" }, el("b", { textContent: "Library backup" }),
+    el("p", { className: "dim", textContent: "A backup is made when the app starts if the library changed since the last one. The newest 10 are kept, in .vestiges-assets/backups. API keys are never included." }),
+    list,
+    el("div", { className: "row" }, el("button", { textContent: "Back up now", on: { click: async () => {
+      status.replaceChildren(el("span", { className: "dim", textContent: "Backing up…" }));
+      try {
+        const done = await post("/api/backups/create");
+        draw(done.backups);
+        status.replaceChildren(note(done.backup ? "Backup made." : "Nothing to back up yet.", true));
+      } catch (problem) { status.replaceChildren(note(problem.message, false)); }
+    } } }), status));
 }
 
 // ---- settings ----
@@ -770,6 +969,7 @@ async function drawSettings() {
       el("p", { className: "dim", textContent: "The work stops at this limit and asks before spending more. For Gemini, whose prices aren't known here, it counts tokens instead: 300,000 per dollar." }),
       el("label", { className: "opt" }, images, " Send pictures of the asset to the AI for review. They contain game textures. Without them, it judges from measurements only."),
       el("label", { className: "opt" }, fallback, " If Claude's safety filter wrongly declines a request, let another Claude model try it.")),
+    backupSection(),
     el("div", { className: "row" }, saveStatus, el("span", { className: "grow" }),
       el("button", { className: "main", textContent: "Save", on: { click: async () => {
         try { await save(); saveStatus.replaceChildren(note("Saved.", true)); } catch (problem) { saveStatus.replaceChildren(note(problem.message, false)); }
@@ -778,6 +978,7 @@ async function drawSettings() {
 }
 
 $("newBtn").onclick = drawHome;
+$("findBtn").onclick = drawFind;
 $("libraryBtn").onclick = () => drawLibrary({ batch: "" }).catch((problem) => showFailure(problem));
 $("settingsBtn").onclick = drawSettings;
 get("/api/state").then((state) => { app = state; }).catch(() => {});

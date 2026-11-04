@@ -19,12 +19,17 @@ os.environ["VESTIGES_ASSETS_HOME"] = TEMP
 os.environ["VESTIGES_FAKE_AI"] = "1"
 
 import edits
+import backup
 import batches
 import export
 import import_formats
 import library
+import licences
 import mc_assets
 import naming
+import online
+import organise
+import thumbs
 import pipeline
 import plan_tools
 import projects
@@ -794,6 +799,379 @@ class Keys(unittest.TestCase):
         providers.set_key("claude", "")
         with self.assertRaisesRegex(providers.ProviderError, "API key"):
             providers.Claude("claude-opus-5-5").complete("brief", "s", "t", {})
+
+
+class Backups(unittest.TestCase):
+    def setUp(self):
+        self.saved_root = projects.ROOT
+        projects.ROOT = Path(TEMP) / "backup_library"
+        shutil.rmtree(projects.ROOT, ignore_errors=True)
+        shutil.rmtree(backup.folder(), ignore_errors=True)
+        library.reset()
+
+    def tearDown(self):
+        projects.ROOT = self.saved_root
+        library.reset()
+
+    def make(self, name, text="x"):
+        folder = projects.ROOT / name
+        folder.mkdir(parents=True, exist_ok=True)
+        (folder / "project.json").write_text(json.dumps({"id": name, "title": text}), encoding="utf-8")
+
+    def test_nothing_to_back_up_when_empty(self):
+        self.assertIsNone(backup.create("manual"))
+        self.assertEqual(backup.list_backups(), [])
+
+    def test_backup_then_restore_brings_back_deleted_assets(self):
+        self.make("a1"), self.make("a2")
+        row = backup.create("manual")
+        self.assertEqual(row["assets"], 2)
+        shutil.rmtree(projects.ROOT / "a1")
+        (projects.ROOT / "a2" / "project.json").write_text("{}", encoding="utf-8")
+        done = backup.restore(row["name"])
+        self.assertEqual(done["assets"], 2)
+        self.assertEqual(json.loads((projects.ROOT / "a2" / "project.json").read_text(encoding="utf-8"))["title"], "x")
+        self.assertTrue((projects.ROOT / "a1" / "project.json").exists())
+        self.assertFalse(Path(str(projects.ROOT) + ".replaced").exists())
+        self.assertIn("before-restore", [r["reason"] for r in backup.list_backups()])
+
+    def test_start_up_backup_only_when_changed_and_old_enough(self):
+        self.make("a1")
+        self.assertIsNotNone(backup.auto_if_due())
+        self.assertIsNone(backup.auto_if_due())  # too soon
+        row = backup.list_backups()[0]
+        old = time.time() - 30 * 3600
+        os.utime(backup.folder() / row["name"], (old, old))
+        for path in projects.ROOT.rglob("*"):
+            os.utime(path, (old - 3600, old - 3600))
+        self.assertIsNone(backup.auto_if_due())  # old backup but nothing changed
+        self.make("a2")
+        self.assertIsNotNone(backup.auto_if_due())
+
+    def test_only_the_newest_are_kept(self):
+        self.make("a1")
+        backup.folder().mkdir(parents=True, exist_ok=True)
+        for day in range(1, 15):
+            (backup.folder() / f"library_202601{day:02d}_000000_auto.zip").write_bytes(b"")
+        backup._prune()
+        names = [r["name"] for r in backup.list_backups()]
+        self.assertEqual(len(names), backup.MAX_KEPT)
+        self.assertEqual(names[0], "library_20260114_000000_auto.zip")
+
+    def test_damaged_or_unsafe_backup_changes_nothing(self):
+        self.make("a1")
+        backup.folder().mkdir(parents=True, exist_ok=True)
+        (backup.folder() / "library_20260101_000000_manual.zip").write_bytes(b"not a zip")
+        with self.assertRaises(backup.BackupProblem):
+            backup.restore("library_20260101_000000_manual.zip")
+        evil = backup.folder() / "library_20260102_000000_manual.zip"
+        with zipfile.ZipFile(evil, "w") as archive:
+            archive.writestr("../escaped.txt", "x")
+        with self.assertRaises(backup.BackupProblem):
+            backup.restore(evil.name)
+        self.assertFalse((projects.ROOT.parent / "escaped.txt").exists())
+        self.assertTrue((projects.ROOT / "a1" / "project.json").exists())
+        for bad in ("../x.zip", "library_1.zip", ""):
+            with self.assertRaises(KeyError):
+                backup.restore(bad)
+
+
+class FakeReply(io.BytesIO):
+    def __init__(self, data, url="https://cdn.modrinth.com/data/x/versions/y/pack.zip", length=None):
+        super().__init__(data)
+        self.headers = {"Content-Length": str(len(data) if length is None else length)}
+        self.final = url
+
+    def geturl(self):
+        return self.final
+
+
+class Online(unittest.TestCase):
+    def setUp(self):
+        self.real_open = online._open
+
+    def tearDown(self):
+        online._open = self.real_open
+
+    def pack(self):
+        structure = export.to_structure({"blocks": [[0, 0, 0, LOG], [0, 1, 0, LOG]]}, 5023)[0]
+        raw = io.BytesIO()
+        with zipfile.ZipFile(raw, "w") as archive:
+            archive.writestr("data/demo/structure/stump.nbt", export.write_nbt(structure))
+        return raw.getvalue()
+
+    def file_for(self, data, **extra):
+        import hashlib
+        return {"url": "https://cdn.modrinth.com/data/x/versions/y/pack.zip", "filename": "pack.zip", "version": "1.0",
+                "hashes": {"sha512": hashlib.sha512(data).hexdigest()}, **extra}
+
+    def test_search_asks_for_builds_in_the_chosen_type(self):
+        url = online.search_url("oak tree", "datapack", True, 2)
+        self.assertIn("project_type%3Adatapack", url)
+        self.assertIn("categories%3Aworldgen", url)
+        self.assertIn("offset=24", url)
+        self.assertNotIn("categories", online.search_url("x", "mod", False))
+        with self.assertRaises(online.OnlineProblem):
+            online.search_url("x", "plugin")
+
+    def test_results_are_tidied_and_licences_warned_about(self):
+        hit = online.clean_hit({"project_id": "AbCd1234", "slug": "castle", "title": "Castle", "author": "me", "license": "LicenseRef-All-Rights-Reserved", "downloads": 5, "project_type": "datapack"})
+        self.assertEqual(hit["url"], "https://modrinth.com/datapack/castle")
+        self.assertIn("All rights reserved", hit["warning"])
+        self.assertEqual(online.licence_warning("MIT"), "")
+        self.assertIn("Non-commercial", online.licence_warning("CC-BY-NC-SA-4.0"))
+        self.assertIn("derivatives", online.licence_warning("CC-BY-NC-ND-4.0"))
+        self.assertTrue(online.licence_warning(""))
+
+    def test_picks_the_main_zip_or_jar_of_the_newest_version(self):
+        versions = [{"version_number": "2", "files": [{"filename": "notes.txt"}]},
+                    {"version_number": "1", "files": [{"filename": "a.zip"}, {"filename": "b.jar", "primary": True}]}]
+        self.assertEqual(online.pick_file(versions)["filename"], "b.jar")
+        self.assertIsNone(online.pick_file([{"files": [{"filename": "x.txt"}]}]))
+
+    def test_only_modrinth_hosts_are_trusted(self):
+        for bad in ("http://cdn.modrinth.com/a.zip", "https://evil.example/a.zip", "https://cdn.modrinth.com.evil.example/a.zip", "file:///c:/x"):
+            with self.assertRaises(online.OnlineProblem):
+                online.check_url(bad)
+        online.check_url("https://cdn.modrinth.com/a.zip")
+        online.check_url("https://modrinth.com/mod/x", online.PAGE_HOSTS)
+
+    def test_download_checks_hash_size_and_redirects(self):
+        folder = Path(TEMP) / "dl"
+        folder.mkdir(exist_ok=True)
+        data = b"hello" * 100
+        online._open = lambda url, timeout=30: FakeReply(data)
+        target = folder / "good"
+        self.assertEqual(online.download(self.file_for(data), target), len(data))
+        self.assertEqual(target.read_bytes(), data)
+        bad = folder / "bad"
+        with self.assertRaisesRegex(online.OnlineProblem, "checksum"):
+            online.download(self.file_for(b"other"), bad)
+        self.assertFalse(bad.exists())
+        big = folder / "big"
+        with self.assertRaisesRegex(online.OnlineProblem, "limit"):
+            online.download(self.file_for(data), big, max_bytes=50)
+        self.assertFalse(big.exists())
+        online._open = lambda url, timeout=30: FakeReply(data, url="https://evil.example/a.zip")
+        moved = folder / "moved"
+        with self.assertRaisesRegex(online.OnlineProblem, "not on Modrinth"):
+            online.download(self.file_for(data), moved)
+        self.assertFalse(moved.exists())
+
+    def test_a_found_datapack_goes_through_the_normal_import_reader(self):
+        import studio
+        data = self.pack()
+        real_find = online.find_file
+        online.find_file = lambda project_id: self.file_for(data)
+        online._open = lambda url, timeout=30: FakeReply(data)
+        try:
+            got = studio.fetch_online("AbCd1234")
+        finally:
+            online.find_file = real_find
+        self.assertEqual(len(got["items"]), 1)
+        self.assertIn(got["token"], studio._uploads)
+        self.assertTrue(studio._uploads[got["token"]][1].exists())
+
+    def test_a_bad_project_id_is_refused_before_any_request(self):
+        online._open = lambda *a, **k: self.fail("should not call the network")
+        with self.assertRaises(online.OnlineProblem):
+            online.find_file("../etc")
+
+
+class Licences(unittest.TestCase):
+    def test_each_kind_of_licence_gets_the_right_answer(self):
+        cases = [
+            ({}, False, "own", True),
+            ({}, True, "own", True),
+            ({"creator": "Ann", "licence": "MIT"}, True, "open", True),
+            ({"creator": "Ann", "licence": "CC-BY-4.0"}, True, "open", True),
+            ({"creator": "Ann", "licence": "CC-BY-SA-4.0"}, True, "open", True),
+            ({"creator": "Ann", "licence": "GPL-3.0-only"}, True, "open", True),
+            ({"creator": "Ann", "licence": "CC-BY-NC-4.0"}, True, "limited", False),
+            ({"creator": "Ann", "licence": "CC-BY-ND-4.0"}, True, "limited", False),
+            ({"creator": "Ann", "licence": "LicenseRef-All-Rights-Reserved"}, True, "limited", False),
+            ({"creator": "Ann", "licence": "All Rights Reserved", "permission": "DM on Discord, 2026-10-30"}, True, "permission", True),
+            ({"creator": "Ann"}, True, "unknown", None),
+            ({"creator": "Ann", "licence": "Custom terms"}, True, "unknown", None),
+            ({"link": "https://modrinth.com/datapack/x"}, True, "unknown", None),
+        ]
+        for credit, imported, status, modify in cases:
+            got = licences.assess(credit, imported)
+            self.assertEqual((got["status"], got["can_modify"]), (status, modify), credit)
+
+    def test_library_rows_filter_and_search_by_licence(self):
+        def add(name, credit, _count=[0]):
+            _count[0] += 1
+            return batches.add_build({"blocks": [[0, 0, 0, "minecraft:lapis_block"], [_count[0], 0, 0, "minecraft:lapis_block"]], "dropped": {}, "notes": []}, {"type": "file", "name": name}, credit, "blic")
+        mine = add("lic_mine.nbt", {})
+        free = add("lic_free.nbt", {"creator": "Ann", "licence": "MIT"})
+        tight = add("lic_tight.nbt", {"creator": "Bo", "licence": "LicenseRef-All-Rights-Reserved"})
+        vague = add("lic_vague.nbt", {"creator": "Cy"})
+        status = {r["id"]: r["licence_status"] for r in library.search(batch="blic")["rows"]}
+        self.assertEqual(status, {mine: "own", free: "open", tight: "limited", vague: "unknown"})
+        check = {r["id"] for r in library.search(batch="blic", licence="check")["rows"]}
+        self.assertEqual(check, {tight, vague})
+        self.assertEqual([r["id"] for r in library.search(batch="blic", licence="open")["rows"]], [free])
+        self.assertEqual([r["id"] for r in library.search(words="mit", batch="blic")["rows"]], [free])
+
+    def test_credits_file_says_what_to_check(self):
+        import studio
+        real = studio.CREDITS
+        studio.CREDITS = Path(TEMP) / "credits.md"
+        try:
+            studio.write_credits({
+                "a": {"title": "Oak", "category": "tree", "credit": {"creator": "Ann", "licence": "MIT", "link": "https://modrinth.com/datapack/oak"}},
+                "b": {"title": "Keep", "category": "ruin", "credit": {"creator": "Bo", "licence": "All Rights Reserved"}},
+                "c": {"title": "Mine", "category": "tree", "credit": {}},
+            })
+            text = studio.CREDITS.read_text(encoding="utf-8")
+        finally:
+            studio.CREDITS = real
+        self.assertIn("Source: https://modrinth.com/datapack/oak", text)
+        self.assertIn("Status: Open licence", text)
+        self.assertIn("get permission before releasing", text)
+        self.assertNotIn("Mine", text)
+
+    def test_adding_to_the_mod_needs_a_yes_for_limited_builds(self):
+        import studio
+        made = batches.add_build({"blocks": [[0, 0, 0, LOG]], "dropped": {}, "notes": []}, {"type": "file", "name": "lic_gate.nbt"}, {"creator": "Bo", "licence": "All Rights Reserved"}, "bgate")
+        library.save_variant(made, 1)
+        with self.assertRaises(licences.LicenceProblem):
+            studio.add_to_mod(made)
+
+
+class Organise(unittest.TestCase):
+    def add(self, n):
+        return batches.add_build({"blocks": [[0, 0, 0, "minecraft:lapis_block"], [n + 500, 0, 0, "minecraft:lapis_block"]], "dropped": {}, "notes": []}, {"type": "file", "name": f"org{n}.nbt"}, {}, "borg")
+
+    def test_tags_and_collections_ignore_capitals_and_repeats(self):
+        project = {"tags": ["oak"]}
+        organise.add_tag(project, "Big Oak"), organise.add_tag(project, "big-oak"), organise.add_tag(project, "oak")
+        self.assertEqual(project["tags"], ["oak", "big-oak"])
+        organise.remove_tag(project, "OAK")
+        self.assertEqual(project["tags"], ["big-oak"])
+        organise.add_to_collection(project, "  Forest   Set "), organise.add_to_collection(project, "forest set")
+        self.assertEqual(project["collections"], ["Forest Set"])
+        organise.rename_collection(project, "FOREST SET", "Woods")
+        self.assertEqual(project["collections"], ["Woods"])
+        organise.remove_from_collection(project, "woods")
+        self.assertEqual(project["collections"], [])
+        with self.assertRaises(ValueError):
+            organise.apply(project, "nope", {})
+
+    def test_bulk_actions_reach_the_library_and_its_filters(self):
+        import studio
+        a, b, c = self.add(1), self.add(2), self.add(3)
+        studio.bulk({"ids": [a, b], "action": "collection_add", "name": "Forest set"})
+        studio.bulk({"ids": [a], "action": "favorite", "value": True})
+        studio.bulk({"ids": [a, c], "action": "tag_add", "tag": "mossy"})
+        found = lambda **kw: {r["id"] for r in library.search(batch="borg", **kw)["rows"]} & {a, b, c}
+        self.assertEqual(found(collection="forest SET"), {a, b})
+        self.assertEqual(found(favorite=True), {a})
+        self.assertEqual(found(tag="mossy"), {a, c})
+        self.assertEqual(found(words="forest"), {a, b})
+        facets = library.facets()
+        self.assertIn({"name": "Forest set", "count": 2}, facets["collections"])
+        self.assertIn("mossy", [t["name"] for t in facets["tags"]])
+        # rename and delete reach every member, even when nothing is ticked
+        studio.bulk({"ids": [], "action": "collection_rename", "name": "forest set", "to": "Woods"})
+        self.assertEqual(found(collection="woods"), {a, b})
+        self.assertEqual(found(collection="forest set"), set())
+        studio.bulk({"ids": [], "action": "collection_delete", "name": "Woods"})
+        self.assertEqual(found(collection="woods"), set())
+        self.assertTrue(projects.load(a)["favorite"])  # deleting a collection keeps the assets
+        studio.bulk({"ids": [a], "action": "favorite", "value": False})
+        self.assertEqual(found(favorite=True), set())
+
+    def test_asset_screen_saves_favorite_and_collections(self):
+        import studio
+        a = self.add(4)
+        studio.set_details(a, {"favorite": True, "collections": "Village, village, Ruins", "tags": "Stone Well, old"})
+        project = projects.load(a)
+        self.assertEqual((project["favorite"], project["collections"], project["tags"]), (True, ["Village", "Ruins"], ["stone-well", "old"]))
+
+
+class Names(unittest.TestCase):
+    stats = {"width_x": 21, "height": 34, "width_z": 19, "blocks": 1832, "block_counts": {"spruce_log": 300, "spruce_leaves": 1400, "moss_block": 132}}
+
+    def test_each_style_carries_size_blocks_and_version(self):
+        full, compact, sorted_ = (naming.styled_name(i, "tree", "spruce-tree", self.stats, None, {}, 3) for i in range(3))
+        self.assertEqual(full, "large_spruce-tree_moss_mossy_w21_d19_h34_1832blocks_v3")
+        self.assertEqual(compact, "spruce-tree_21x34x19_1832b_v3")
+        self.assertEqual(sorted_, "h034_w021_spruce-tree_1832blocks_v3")
+        self.assertEqual(naming.styled_name(3, "tree", "spruce-tree", self.stats, None, {}, 3), full)
+
+    def test_the_kind_is_added_when_the_subject_does_not_say_it(self):
+        self.assertEqual(naming.thing_word("tree", "oak"), "oak-tree")
+        self.assertEqual(naming.thing_word("tree", "oak-tree"), "oak-tree")
+        self.assertEqual(naming.thing_word("other", "unnamed"), "asset")
+        self.assertEqual(naming.size_class({"width_x": 5, "height": 8, "width_z": 5}), "small")
+        self.assertEqual(naming.size_class({"width_x": 5, "height": 45, "width_z": 5}), "huge")
+
+    def test_creator_is_named_and_a_taken_name_gets_a_variant_number(self):
+        name = naming.styled_name(0, "tree", "oak", self.stats, None, {"creator": "Ann"}, 1)
+        self.assertIn("_by-ann_v1", name)
+        self.assertEqual(naming.unique(name, {name}), naming.next_free(name, {name}))
+
+    def test_a_version_can_be_given_a_new_proposed_name(self):
+        made = batches.add_build({"blocks": [[0, y, 0, LOG] for y in range(7)] + [[1, 6, 0, leaf(1)]], "dropped": {}, "notes": []}, {"type": "file", "name": "plains_spruce_test.nbt"}, {}, "bname")
+        project = projects.load(made)
+        names = [library.propose_styled(project, 1, i) for i in range(3)]
+        self.assertEqual(len(set(names)), 3)
+        for name in names:
+            self.assertRegex(name, r"v1")
+            self.assertEqual(naming.clean(name), name)
+
+
+class FakeJar:
+    """Two blocks: a green top-and-side cube and nothing for air."""
+    def __init__(self):
+        from PIL import Image
+        out = io.BytesIO()
+        Image.new("RGBA", (16, 16), (200, 40, 40, 255)).save(out, "PNG")
+        self.png = out.getvalue()
+
+    def texture(self, path):
+        return self.png
+
+    def bake(self, state):
+        if "air" in state:
+            return {"quads": [], "kind": "invisible", "tint": None}
+        corners = lambda *c: [v for point in c for v in point]
+        top = {"v": corners((0, 1, 0), (1, 1, 0), (1, 1, 1), (0, 1, 1)), "n": [0, 1, 0], "tex": "block/x", "tinted": False}
+        side = {"v": corners((0, 1, 1), (1, 1, 1), (1, 0, 1), (0, 0, 1)), "n": [0, 0, 1], "tex": "block/x", "tinted": False}
+        return {"quads": [top, side], "kind": "solid", "tint": None}
+
+
+class Thumbs(unittest.TestCase):
+    def test_a_picture_is_drawn_from_the_blocks(self):
+        from PIL import Image
+        png = thumbs.draw([[0, 0, 0, "minecraft:stone"], [1, 0, 0, "minecraft:stone"], [0, 1, 0, "minecraft:stone"], [5, 5, 5, "minecraft:air"]], FakeJar())
+        image = Image.open(io.BytesIO(png))
+        self.assertEqual(image.size, (thumbs.SIZE, thumbs.SIZE))
+        opaque = [p for p in image.convert("RGBA").getdata() if p[3] > 200]
+        self.assertGreater(len(opaque), 500)
+        self.assertTrue(all(p[0] > p[1] for p in opaque))  # reddish, from the texture
+        self.assertEqual(Image.open(io.BytesIO(thumbs.draw([[0, 0, 0, "minecraft:air"]], FakeJar()))).getbbox(), None)
+
+    def test_pictures_are_kept_and_redrawn_for_a_new_version(self):
+        thumbs._jar_source = FakeJar
+        try:
+            made = batches.add_build({"blocks": [[0, 0, 0, "minecraft:stone"], [0, 1, 0, "minecraft:stone"], [3, 0, 0, "minecraft:stone"]], "dropped": {}, "notes": []}, {"type": "file", "name": "thumb_one.nbt"}, {}, "bthumb")
+            first = thumbs.get(made)
+            files = list(thumbs.folder().glob(f"{made}_v*.png"))
+            self.assertEqual(len(files), 1)
+            self.assertEqual(thumbs.get(made), first)
+            projects.save_version(made, 2, None, {"blocks": [[0, 0, 0, "minecraft:stone"]], "dropped": {}, "notes": []})
+            project = projects.load(made)
+            project["versions"].append({**project["versions"][-1], "number": 2})
+            projects.save(project)
+            self.assertNotEqual(thumbs.get(made), first)
+            self.assertEqual(len(list(thumbs.folder().glob(f"{made}_v*.png"))), 1)
+            projects.delete(made)
+            self.assertEqual(list(thumbs.folder().glob(f"{made}_v*.png")), [])
+        finally:
+            thumbs._jar_source = None
 
 
 if __name__ == "__main__":

@@ -118,6 +118,45 @@ def base_name(kind, subject, stats, source, credit):
     return "_".join(p for p in parts if p)
 
 
+# Other ways to name an asset, for "New proposed name". Each puts the facts in the name: size, block count, version.
+# w = width (east-west), d = depth (north-south), h = height.
+STYLES = (
+    ("detailed", "Detailed: size class, what it is, materials, w, d, h, blocks, version"),
+    ("compact", "Compact: what it is, size, blocks, version"),
+    ("sorted", "Sorts by size: height and width first, so a file list orders itself"),
+)
+
+
+def size_class(stats):
+    biggest = max(stats["width_x"], stats["height"], stats["width_z"])
+    return "small" if biggest < 10 else "medium" if biggest < 20 else "large" if biggest < 40 else "huge"
+
+
+def thing_word(kind, subject):
+    """What the asset is: the subject, plus the kind when the subject doesn't already say it (oak -> oak-tree)."""
+    words = [w for w in (subject or "").split("-") if w and w != "unnamed"]
+    kind = slug(kind)
+    if kind and kind != "other" and kind not in words and kind.removesuffix("s") not in words:
+        words.append(kind)
+    return "-".join(words) or "asset"
+
+
+def styled_name(style, kind, subject, stats, source, credit, version):
+    """A descriptive name in one of STYLES (0, 1, 2). Returns the name; the caller makes it unique."""
+    thing = thing_word(kind, subject)
+    x, y, z, blocks = stats["width_x"], stats["height"], stats["width_z"], stats["blocks"]
+    taken = set(thing.split("-"))
+    mats = "-".join(w for w in materials(stats["block_counts"]).split("-") if w and w not in taken and w != "mixed")
+    by = source_word(source, credit)[:14].strip("-")
+    if style % len(STYLES) == 1:
+        parts = [thing, f"{x}x{y}x{z}", f"{blocks}b", f"v{version}"]
+    elif style % len(STYLES) == 2:
+        parts = [f"h{y:03d}", f"w{x:03d}", thing, f"{blocks}blocks", f"v{version}"]
+    else:
+        parts = [size_class(stats), thing, mats, detail(stats["block_counts"]), f"w{x}", f"d{z}", f"h{y}", f"{blocks}blocks", "" if by == "own" else f"by-{by}", f"v{version}"]
+    return clean("_".join(p for p in parts if p))
+
+
 def next_free(base, used):
     number = 1
     while f"{base}_var{number:02d}" in used:

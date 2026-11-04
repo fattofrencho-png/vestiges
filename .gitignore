@@ -42,3 +42,6 @@ logs/
 
 # python
 __pycache__/
+
+# app build
+*.exe

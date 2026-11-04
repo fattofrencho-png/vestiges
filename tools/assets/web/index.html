@@ -56,6 +56,15 @@
   .lib .name { word-break:break-all; }
   .queue { display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:8px; margin-bottom:10px; background:var(--raised); border-radius:6px; }
   .name-box { width:100%; font-size:12px !important; }
+  #side details.sec { border-top:1px solid var(--line); margin-top:10px; padding-top:2px; }
+  #side details.sec > summary { font-size:14px; font-weight:600; color:var(--dim); margin:8px 0 6px; }
+  #side details.sec[open] > summary { margin-bottom:6px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(176px,1fr)); gap:12px; margin-top:12px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:8px; font-size:12px; min-width:0; }
+  .card .thumb { display:flex; justify-content:center; background:rgba(127,127,127,.12); border-radius:6px; }
+  .card img { width:100%; max-width:160px; height:auto; aspect-ratio:1; object-fit:contain; }
+  .cardbar { display:flex; align-items:center; gap:6px; margin:6px 0 2px; }
+  .cardname { display:block; color:inherit; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   details summary { cursor:pointer; color:var(--dim); font-size:14px; font-weight:600; margin-top:14px; }
   .tabs { display:flex; gap:6px; margin:14px 0 4px; }
   .tabs button.on { background:var(--accent); border-color:var(--accent); color:#17181c; font-weight:600; }
@@ -94,6 +103,7 @@
   <b>Asset Studio</b>
   <div id="steps" aria-label="Steps"></div>
   <button id="newBtn">New</button>
+  <button id="findBtn">Find online</button>
   <button id="libraryBtn">Library</button>
   <button id="settingsBtn">Settings</button>
 </header>

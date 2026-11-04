@@ -52,7 +52,7 @@ def add_build(result, source, details, batch_id=None, title=""):
     path = naming.source_path(source)
     kind = details.get("kind") or naming.guess_kind(path, counts)
     subject = naming.subject_from(source, title)
-    credit = {k: str(details.get(k, "")).strip()[:500] for k in ("creator", "permission", "licence")}
+    credit = {k: str(details.get(k, "")).strip()[:500] for k in ("creator", "permission", "licence", "link")}
     tags = sorted({w for w in naming.slug(path).split("-") if len(w) > 2 and w not in naming.FILLER} | set(naming.materials(counts).split("-")))[:12]
     project = projects.new_import(title or title_from(subject), source, credit, kind)
     project.update(hash=value, subject=subject, tags=tags, batch=batch_id)
