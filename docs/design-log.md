@@ -8,7 +8,7 @@ A full loop: level up, build a home, recruit villagers, run dungeons, fight drag
 1. **A2, plain:** crafting table slot and 3×3 grid, Bank move, shulker boxes. The inventory's look goes to the UI chat. Ctrl+Alt shapes and the small features wait.
 2. **RPG world:** the world chat fixes mountain spawns; merge `world` on the user's word; connect place names, with fallbacks for vanilla worlds.
 3. **Villagers, simple (own chat recommended):** names, trust, recruiting, the new trade screen; quest givers move to it.
-4. **Dungeons, small (own chat recommended):** portal, keys, 1 or 2 themes, a boss, rewards.
+4. **Dungeons, small (own chat recommended):** portal, keys, 1 or 2 themes, a boss, rewards. **Update 2026-11-04: three themes, Overgrown, Trial and End (normal camera); spec in `docs/ideas/dungeons.md` and `docs/ideas/dragons.md`.**
 5. **First dragons:** summoning, the first few fights and their rewards; the ending waits.
 6. **Finish:** waystone price cap decision, quest list review, balance pass, one combined test guide, a release build without `vestiges-wiki-author.html`.
 **After the MVP:** workers, blueprints, A3, batches B to E, the other dragons and the ending, custom biomes and models.
@@ -18,6 +18,24 @@ Switches that need each other are grouped as parent and child on the welcome pag
 - **Rule:** a parent off turns its children off (greyed under it); a child on turns its parent on; **a parent turned back on gives its children back exactly as they were** (the server remembers each child's last state).
 - **Groups:** Character (Levels and XP > Passive trees; Gear rarity) · **Loot and enchants** (Enchant levels I-VI > Banded loot > Per-player chests; the last placement is my reading, to confirm) · Mobs (Mob levels > Elites) · World (Feats > Settlements > Workers, Feats > Waystones, Villagers > Trade system; Workers also shows "needs Villagers"; Quests, Codex, Dungeons, Events, Nether pockets, Dragons, Blueprints stand alone) · Comfort (Inventory helpers: Sorting, Bigger stacks, Shapes, Open shulker boxes, Peek · Farming help · Server rules: Sleep, No mob griefing · Freecam).
 - **Also:** the arrows slot holds 64 at the default stack size and 99 only with the 99 option (fine, user, 2026-11-03).
+
+### Approved idea notes (user, 2026-11-03 to 2026-11-04)
+Ten idea chats held design talks. Their approved notes live in `docs/ideas/` (one file each) and hold the detail; this section keeps the decisions and what they change. All numbers stay drafts for the balance pass. Nothing here is built unless the log says so.
+- **MVP specs, ready to build:**
+  - **Villagers, simple** (`villagers.md`): names and backgrounds created when a villager spawns, the library (met villagers), our own villager screen (Overview, Trades, About, Quests), quest givers moved into it. Villagers only sell, for emeralds, by your level bands (1-9, 10-24, 25-49, 50-74, 75-100 = price tiers 1-5); no Wealth, purse, buying or Banker yet. The Wandering Trader uses the same screen with rotating stock. Trust, recruiting, Post, Orders and Work come right after the MVP; the manager screen and name-tag commands wait; village takeover is parked. Risk: emeralds only come from drops, loot and quests, so check it in the combined test.
+  - **Dungeons, small** (`dungeons.md`): themes Overgrown and Trial, plus **End** (see Dragons); locking rooms of 32 x 32 with 6 to 10 mobs (Lieutenant 40 x 40, Boss 48 x 48), markers as vanilla blocks (gold = spawn, chest = cache, lodestone = boss, iron door = door), plain strong named bosses, key plus portal frame from the First Key feat, one dungeon dimension with one plot per run. The author can hand in structure files (.nbt, Litematica) as room assets.
+  - **Dragons 1 to 6** (`dragons.md`): Act I, summoner level about 4 x N (the summoner only), a failed fight consumes the 4 crystals, dragon 1 has no gate, 8% max-health hit cap, much tougher than vanilla, lore chapter as a Codex entry, Level VI book roll plus emeralds and XP for dragons 1 to 5, a Relic for dragon 6. **End dungeon theme in the MVP** (normal camera, unlocks after dragon 1): Lieutenant The Shellguard (3 strong shulkers), Boss The Void Stalker (a strong enderman). Elytra once per player, guaranteed, on the first End Boss clear at tier 3 or higher (this replaces the dragon 3 elytra); shulker shells from End caches; falling into the void costs a life.
+  - **Grave MVP** (`social.md`): the pick-up gravestone, switchable by the server, with a timer setting that is also switchable (timer off = it stays). Everything else in batch C comes later.
+  - **Quest text** (`quests.md`, branch merged): intros on all guide quests, text fixes, MVP teaching-quest notes. The turn-in rule needs code from the main chat; the quest list review continues in small batches.
+- **After the MVP:**
+  - **Dragons 7 to 12** (Act II, approved) and the **Vestige hall and the ending** (`dragons.md`). Dragons 13 to 24 and the Echo dragons are not designed yet.
+  - **Alliances** (`alliances.md`, approved, slice 1 first): Reign (the Settled) and Unmake (the Unbound), joined at the Vestige hall; mild equal benefits (about +10 to 15%, local); a separate Alliance dimension with a core (up to 10% of the continent per alliance), influence, and a wild PvP zone; base score and the 7 settlement levels, ranks, scheduled PvP events; singleplayer modes (Free build first).
+  - **City layer** (`city.md`, approved): optional help, built with M7 Workers and M10 Blueprints. **The Architect becomes 4 grades open at every level** (Builder L10, Master Builder L30, Architect L50, Chief Architect L70, each faster, as many as worker slots allow); only they build city ghosts. The ghost preview shows and charges the emerald fee, materials from nearby chests, workers and the renown gate. A building is a blueprint with a type tag, counted once per different blueprint and place, standing, with a villager living or working in it. Unlock chains are a second route to worker roles, never the only one. The Town Hall (Town renown) holds the ledger and collects capped daily income. A finished district gives +25 renown once. Litematica and vanilla .nbt import and export, a material-list HUD from nearby chests, build layers. The camera is not part of the city layer. A 12-building starter catalogue with draft fees and income is in the file.
+  - **Batch B, view and map** (`view-map.md`): first the map extras (mobs with toggles, flat or isometric world map, a time-of-day control for relief shadows, free-shape claims), info tools (spawn sphere, mod spheres, light levels, each with its own key), freecam and peek; heads in chat and on the Locator Bar and cave detection stay in; dynamic lights, falling leaves, ambient sound, riding and boat view and sign writing are later. Cave rule: natural overhead and well below the surface.
+  - **Batch C, records and social** (`social.md`): one mutual friend list; a graveyard page with past deaths kept as grey map markers; after-death choices; the Tomb; tracking; the armor stand editor; the album with photo key and sharing; paintings from photos; rankings; the cemetery; the Echo (a copy of the player). Open: Echo rules, pet call limits, painting size, season length.
+  - **Batch D, mobs and pets** (`mobs.md`): animal size variety, riding more mobs and ride-and-stay, the mob bucket (earned by a Bestiary milestone), Codex cards (gifted cards only fill the collection page), mob heads, miniblocks and statues (display entities, no new blocks).
+  - **Progression and comfort** (`progression.md`): the A3 character sheet (Who you are, Stats, Records, Achievements) and food info; Batch E screens (enchanting, brewing, banner, archaeology); the 13-tier core shown on the sheet and the 5-act campaign as one guide-quest chain; no starter kit (a welcome message and a first guide quest instead); no client polish built, but stay compatible with the popular mods that do it; the Nether Seal is dropped for a 1-to-1 Nether. Open: the 13 tier names and the act list.
+- **Changes to earlier decisions** are marked where they sit: the Architect (Workers, Blueprints, Settlements), gear above your level, the A3 meal-buff tooltip, the isometric dungeon camera, and the MVP dungeons scope.
 
 ### Context
 You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one mod, so you don't need to find and update other mods. Once it's published, other players can switch off what they don't want. **Core version that can't be switched off: the new inventory and the map.** Everything else gets a switch, chosen on a welcome page when a world is created.
@@ -122,7 +140,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
 
 **A3. Character sheet and food info**
 - **Book-style sheet** replaces the Character tab, with the passive trees button kept. The server sends the stats through `HubNet`.
-- **AppleSkin-style food info:** saturation on the hunger bar, a preview of what food will restore, and food tooltips that also show meal buffs.
+- **AppleSkin-style food info:** saturation on the hunger bar, a preview of what food will restore, and food tooltips that also show meal buffs. **Changed 2026-11-03: the meal-buff tooltip line is dropped; saturation on the bar and the restore preview stay.**
 
 ### Later batches: each gets its own questions and drafts first
 | When | Ideas |
@@ -132,7 +150,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
 | **C, after M7** | Graveyard page, cemetery, tracking friends and pets · after-death choices · screenshot album and paintings · rankings page · armor stand editor |
 | **D** | Mob bucket · ride more mobs · mob heads · Codex cards, duplicates, trading · miniblocks · statues |
 | **E** | Better enchanting, brewing and banner screens · better archaeology |
-| **M8 Dungeons** | Isometric-camera dungeons in the style of Minecraft Dungeons |
+| **M8 Dungeons** | Isometric-camera dungeons in the style of Minecraft Dungeons | **Update 2026-11-04: the isometric camera is dropped for now (parked ideas in `docs/ideas/dragons.md`); dungeons use the normal camera.**
 | **M9 World** | Optional world preset with continents and bigger biomes (vanilla terrain stays the default) |
 | **M10 Blueprints** | Schematics page in H · material list HUD · Litematica files · build layers |
 | **Not priority** | Explosion and other effects · happy ghast speed · more mobs · skin and model variety · windmills and moving parts (needs its own talk first) |
@@ -220,7 +238,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
 - **Anvil "Too Expensive!" cap:** stays, but tree nodes raise it and slow the growth of the repair penalty.
 - **Mending stays vanilla.** **Crafting can match found gear** with enough tree investment and materials.
 - **Armor trims give stats:** the material sets the stat, the pattern's rarity sets its strength.
-- **Gear above your level** can be equipped, but with a penalty.
+- **Gear above your level** can be equipped, but with a penalty. **Changed 2026-11-03: above-level gear keeps full stats but slows you by how far above your level it is (replaces the built half-power rule; code change needed).**
 
 ## Inventory ✅
 - **Dedicated slots:** Elytra (alongside a chestplate), Arrow/quiver, a Tool belt (compass, clock, map, spyglass… working passively), and Ender Chest (right-click the slot to open it).
@@ -240,7 +258,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
   - 1 Basic, gatherers (Farmer, Forester, Herder, **Miner**; L10–20) needs Level, Build and Sustain. *(Full list in Batch 4.)*
   - 2 Skilled, makers (Mason, Smith, Cook, Fisher; L25–35) adds Discover.
   - 3 Specialist (Aquarist, Gardener, Beekeeper, Glassblower/Dyer, **Spelunker**; L40–60) needs all 5.
-  - 4 Unique (Gem Cutter, Runesmith, Enchanter, Architect; L70+) is one per world or region.
+  - 4 Unique (Gem Cutter, Runesmith, Enchanter, Architect; L70+) is one per world or region. **Architect changed 2026-11-04: it is now a line of 4 grades open at every level, see "Approved idea notes" > City layer.**
 - **Recruit:** rescue, quests and reputation, settlement attraction, unique specialists.
 - **Station:** a single vanilla-style block plus a radius check. **Each producing job needs specific things around its station** (e.g. an Aquarist needs water, coral and light nearby). Inputs and output go in a **vanilla chest next to the station**.
 - **Rejected:** "preserving" blocks by waxing them (too unvanilla). No new blocks.
@@ -326,7 +344,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
 - **Save any build** you stand in (yours, villages, structures) from the Codex UI.
   - Only the **block layout** is saved, never blocks or items.
   - Maximum size grows with feats.
-- **Ghost placement** (see-through outlines you fill in) works **only inside your own areas**. The Architect worker can build a ghost from chest materials (confirmed in Batch 4).
+- **Ghost placement** (see-through outlines you fill in) works **only inside your own areas**. The Architect worker can build a ghost from chest materials (confirmed in Batch 4). **(Architect line of 4 grades since 2026-11-04.)**
 - **Sources:** your own saves, a built-in starter catalog, and blueprint pages found in the world.
 - **Dungeon rooms are always built-in.** Player builds never become rooms.
 
@@ -649,7 +667,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
         - **Enchanter** (Lectern, 15 bookshelves around it): copies the sample book (one enchant, up to IV); each copy = 1 book + 1 lapis per level; 1 action per level. Never past IV, no treasure enchants (Mending, Frost Walker, Soul Speed, Swift Sneak, Wind Burst).
         - **Runesmith** (Anvil): 1 enchanted item + 1 book → the item's highest enchant moves onto the book, the item is destroyed. A VI enchant becomes V on the book.
         - **Gem Cutter** (Stonecutter; a rare-block sample picks this job over the Mason): gilded blackstone (1 blackstone + 1 gold ingot), budding amethyst (4 amethyst blocks + 1 diamond), sponge (1 dried kelp block + 4 prismarine shards). All three approved.
-        - ✅ **Architect** (decided in the Blueprints topic): Cartography Table, 5 ghost blocks per action, bottom-up; its blocks count as yours for renown.
+        - ✅ **Architect** (decided in the Blueprints topic): Cartography Table, 5 ghost blocks per action, bottom-up; its blocks count as yours for renown. **Superseded 2026-11-04: Architect is a 4-grade line (Builder, Master Builder, Architect, Chief Architect).**
       - Correction noted: in Work mode workers work by day and sleep at night, so a Novice does about 60 actions per Minecraft day (a full quarry ≈ 3 h at Novice, ≈ 1 h at Master).
       - ✅ **Ranks:** 1 work XP per action. Apprentice 200 XP + 1 Book (≈3 days) · Journeyman 800 + 1 Gold Block (≈11) · Expert 2,000 + 1 Blaze Rod + 1 Diamond (≈24) · Master 4,000 + 1 Echo Shard (≈41 Minecraft days of loaded work, ≈14 h). Ready = green sparkles + HUD "Ready: bring…"; right-click the worker with the item.
       - ✅ **Traits:** rolled at recruit, 1 / 2 / 3 traits at 50 / 35 / 15%, each 1 in 4 bad; never change; retraining keeps them; rescued specialists get at least 1 good, Heroes and Legends 3 good. Good: Diligent +10% speed · Careful tool wears 25% slower · Light Eater half food · Fast Learner +25% work XP · Tough +50% health · Thrifty 5 emeralds = 6 days · Night Owl also works at night at half speed. Bad: Lazy −10% · Clumsy +25% wear · Big Eater double food · Slow Learner −25% XP · Frail −25% health · Greedy 5 emeralds = 4 days. No trait adds output.
@@ -800,7 +818,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
     - ✅ **Saving:** Codex → Blueprints → Save build → right-click two corners with an empty hand (box outline) → name it. Sizes 16³ at start, 32³ with Charted, 64³ with Surveyor. **Allow bigger sizes later.** Saves block types and facing only (no contents, mobs or villagers).
     - ✅ **Ghost placement:** see-through preview, confirm with right-click, claimed areas only. Helpers: right block turns solid, wrong block red outline, pick-block on ghosts, layer view, materials list with have/missing and progress %. Cancel any time; built blocks stay.
     - ✅ **Move controls** (rebindable): nudge 1 block in 6 directions (arrows + Page Up/Down) · rotate 90° flat (R) · tilt on its side or upside down · mirror left-right or front-back · anchor (corner, centre, bottom centre) · snap to ground · move a placed ghost again (built blocks stay) · lock. Directional blocks turn with the ghost; blocks that can't tilt show yellow.
-    - ✅ **Architect is back (B):** Tier 4, one per settlement, Cartography Table, places 5 ghost blocks per action from its copper chest, bottom-up (≈300/day Novice, ≈750/day Master); stops and lists missing blocks; its blocks count as yours for renown.
+    - ✅ **Architect is back (B):** Tier 4, one per settlement, Cartography Table, places 5 ghost blocks per action from its copper chest, bottom-up (≈300/day Novice, ≈750/day Master); stops and lists missing blocks; its blocks count as yours for renown. **Superseded 2026-11-04: 4 grades open at every level; only the Chief Architect (L70) is unique per settlement. Players no longer fill ghosts in themselves: the Architect line builds.**
     - ✅ **Sources:** your saves · starter catalog (a few houses + **one setup per worker job**, also used as the Jobs page work-area picture) · blueprint pages from chests, caravans and bounties.
     - ✅ **Sharing and files:** send to a friend (Add/Decline like waypoints). Files are **Sponge schematic (.schem)** in a `blueprints` folder; **Litematica (.litematic) imports** too. Imports follow the size limits; building still needs real blocks.
     - Never: no instant pasting, no item copying.
