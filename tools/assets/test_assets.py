@@ -23,6 +23,7 @@ import backup
 import batches
 import explore
 import export
+import files
 import import_formats
 import library
 import licences
@@ -1418,6 +1419,75 @@ class MoreSources(unittest.TestCase):
         self.assertEqual(explore.classify("trees-abc123/assets/demo/textures/block/x.png"), "texture")
         self.assertEqual(explore.classify("trees-abc123/README.md"), "info")
         self.assertEqual(explore.classify("trees-abc123/random.bin"), "other")
+
+
+class FileAssets(unittest.TestCase):
+    def pack(self, tag=0):
+        """tag makes the content unique, because the Library keeps identical files only once."""
+        from PIL import Image
+        png = io.BytesIO()
+        Image.new("RGBA", (16, 16), (30, 160, 60 + tag, 255)).save(png, "PNG")
+        structure = export.to_structure({"blocks": [[0, 0, 0, LOG]]}, 5023)[0]
+        raw = io.BytesIO()
+        with zipfile.ZipFile(raw, "w") as z:
+            z.writestr("assets/demo/textures/block/mossy_rock.png", png.getvalue())
+            z.writestr("assets/demo/sounds/boom.ogg", b"OggS-fake-sound%d" % tag)
+            z.writestr("data/demo/loot_table/chests/box.json", '{"pools": [], "tag": %d}' % tag)
+            z.writestr("assets/demo/models/block/mossy_rock.json", '{"parent": "block/cube_all", "tag": %d}' % tag)
+            z.writestr("data/demo/structure/stump.nbt", export.write_nbt(structure))
+            z.writestr("dev/Thing.class", b"class")
+        return raw.getvalue()
+
+    def test_picked_files_become_library_assets_with_credit_and_a_source(self):
+        picks = ["assets/demo/textures/block/mossy_rock.png", "assets/demo/sounds/boom.ogg", "data/demo/loot_table/chests/box.json", "assets/demo/models/block/mossy_rock.json"]
+        done = files.save_from_archive(self.pack(1), "rocks.zip", picks, {"creator": "Ann", "licence": "MIT", "link": "https://example.test/rocks"})
+        self.assertEqual((len(done["ids"]), done["duplicates"], done["skipped"]), (4, 0, []))
+        self.assertTrue(done["batch"])
+        by_kind = {projects.load(i)["category"]: projects.load(i) for i in done["ids"]}
+        self.assertEqual(set(by_kind), {"texture", "sound", "data", "model"})
+        texture = by_kind["texture"]
+        self.assertEqual((texture["mode"], texture["title"], texture["file"]["width"], texture["file"]["height"]), ("file", "mossy rock", 16, 16))
+        self.assertEqual(texture["source"], {"type": "archive", "name": "rocks.zip", "item": "assets/demo/textures/block/mossy_rock.png"})
+        self.assertIn("texture", texture["tags"])
+        self.assertEqual(projects.file_path(texture["id"]).read_bytes()[:4], bytes([137, 80, 78, 71]))
+        self.assertEqual(licences.of_project(texture)["status"], "open")
+        row = [r for r in library.search(batch=done["batch"])["rows"] if r["id"] == texture["id"]][0]
+        self.assertEqual((row["kind"], row["size"], row["mode"], row["ftype"]), ("texture", "16x16 px", "file", "texture"))
+
+    def test_the_same_content_is_kept_once_and_unsupported_files_are_reported(self):
+        picks = ["assets/demo/textures/block/mossy_rock.png", "data/demo/structure/stump.nbt", "dev/Thing.class"]
+        first = files.save_from_archive(self.pack(2), "rocks2.zip", picks[:1], {})
+        again = files.save_from_archive(self.pack(2), "rocks2.zip", picks, {})
+        self.assertEqual((len(first["ids"]), len(again["ids"]), again["duplicates"]), (1, 0, 1))
+        self.assertEqual(len(again["skipped"]), 2)
+        self.assertIn("Import builds", again["skipped"][0]["reason"])
+
+    def test_a_file_from_an_archive_with_no_licence_is_unknown_not_your_own(self):
+        done = files.save_from_archive(self.pack(3), "mystery.zip", ["assets/demo/sounds/boom.ogg"], {})
+        project = projects.load(done["ids"][0])
+        self.assertEqual(licences.of_project(project)["status"], "unknown")
+        self.assertIn(done["ids"][0], {r["id"] for r in library.search(licence="check")["rows"]})
+
+    def test_thumbnails_show_a_texture_as_itself_and_other_files_as_a_card(self):
+        from PIL import Image
+        done = files.save_from_archive(self.pack(4), "thumbs.zip", ["assets/demo/textures/block/mossy_rock.png", "data/demo/loot_table/chests/box.json"], {})
+        pictures = [Image.open(io.BytesIO(thumbs.get(i))).convert("RGBA") for i in done["ids"]] if done["ids"] else []
+        self.assertTrue(pictures)
+        for picture in pictures:
+            self.assertEqual(picture.size, (thumbs.SIZE, thumbs.SIZE))
+            self.assertIsNotNone(picture.getbbox())
+        texture = [p for p in pictures if p.getpixel((thumbs.SIZE // 2, thumbs.SIZE // 2)) == (30, 160, 64, 255)]
+        self.assertEqual(len(texture), 1 if len(pictures) else 0)
+
+    def test_files_are_in_the_zip_download_and_deleting_removes_the_folder(self):
+        import studio
+        done = files.save_from_archive(self.pack(5), "zipme.zip", ["data/demo/loot_table/chests/box.json"], {"creator": "Bo", "licence": "MIT"})
+        names = zipfile.ZipFile(io.BytesIO(studio.zip_of(done["ids"], "nbt"))).namelist()
+        self.assertEqual(names, ["data/box.json"])
+        folder = projects._path(done["ids"][0])
+        projects.delete(done["ids"][0])
+        self.assertFalse(folder.exists())
+        self.assertEqual(thumbs.forget(done["ids"][0]), None)
 
 
 if __name__ == "__main__":

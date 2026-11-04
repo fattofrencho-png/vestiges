@@ -39,7 +39,7 @@ function spent(p) {
 }
 
 function steps() {
-  if (screen === "library" || screen === "settings" || screen === "find" || screen === "explore" || screen === "presets") { $("steps").replaceChildren(); return; }
+  if (screen === "library" || screen === "settings" || screen === "find" || screen === "explore" || screen === "presets" || project?.mode === "file") { $("steps").replaceChildren(); return; }
   if (screen === "home" || screen === "import" || project?.mode === "import") {
     let step = 0;
     if (screen === "project" && project) step = project.stage === "saved" ? 3 : project.versions.length > 1 ? 2 : 1;
@@ -702,6 +702,7 @@ async function refreshProject() {
 }
 function render() {
   steps();
+  if (project.mode === "file") return drawFile();
   if (project.mode === "import") return drawAdapt();
   if (project.error && !project.busy) return drawError();
   if (project.busy) return drawWorking();
@@ -754,8 +755,8 @@ async function drawLibrary(start) {
     el("td", { className: "name" }, el("a", { href: "#", style: "color:inherit", textContent: r.saved.length ? r.saved[r.saved.length - 1].name : r.title, on: { click: (e) => { e.preventDefault(); openQueue(data.ids, data.ids.indexOf(r.id)).catch((problem) => showFailure(problem)); } } }),
       r.saved.length > 1 ? el("span", { className: "dim", textContent: ` +${r.saved.length - 1} variants` }) : null,
       r.collections.length ? el("span", { className: "dim", textContent: ` · ${r.collections.join(", ")}` }) : null),
-    el("td", { textContent: r.kind }), el("td", { textContent: r.size }), el("td", { textContent: r.blocks.toLocaleString("en") }),
-    el("td", { textContent: r.creator || (r.mode === "import" ? "No credit" : "AI") }),
+    el("td", { textContent: r.kind }), el("td", { textContent: r.size }), el("td", { textContent: r.mode === "file" ? "-" : r.blocks.toLocaleString("en") }),
+    el("td", { textContent: r.creator || (r.mode === "import" || r.mode === "file" ? "No credit" : "AI") }),
     el("td", { className: r.licence_status === "limited" || r.licence_status === "unknown" ? "bad-t" : "", textContent: LICENCE_WORDS[r.licence_status] || "", title: (r.licence || "No licence given") + (r.can_modify === false ? ". You may not change it." : r.can_modify === null ? ". Changes: to confirm." : "") }),
     el("td", { textContent: (STATUS_WORDS[r.status] || r.status) + (r.not_vanilla ? " · not vanilla" : "") })));
   const cards = data.rows.map((r) => {
@@ -770,7 +771,7 @@ async function drawLibrary(start) {
           style: "border:0;background:none;cursor:pointer;font-size:16px;padding:0 4px;" + (r.favorite ? "color:gold" : ""), on: { click: () => post("/api/library/bulk", { ids: [r.id], action: "favorite", value: !r.favorite }).then(() => drawLibrary()).catch((problem) => showFailure(problem)) } }),
         el("span", { className: r.licence_status === "limited" || r.licence_status === "unknown" ? "bad-t" : "dim", textContent: LICENCE_WORDS[r.licence_status] || "" })),
       el("a", { href: "#", className: "cardname", textContent: name, title: name, on: { click: open } }),
-      el("div", { className: "dim", textContent: `${r.kind} · ${r.size} · ${r.blocks.toLocaleString("en")} blocks` }));
+      el("div", { className: "dim", textContent: r.mode === "file" ? `${r.kind}${r.ftype && r.ftype !== r.kind ? " (" + r.ftype + ")" : ""} · ${r.size}` : `${r.kind} · ${r.size} · ${r.blocks.toLocaleString("en")} blocks` }));
   });
   const last = Math.max(Math.ceil(data.total / data.page_size) - 1, 0);
   page(
@@ -820,6 +821,59 @@ async function drawLibrary(start) {
   );
   $("page").classList.add("wide");
   showScope();
+}
+
+// ---- a saved file (texture, sound, JSON data, model) ----
+const FILE_KIND_WORDS = { texture: "Texture", sound: "Sound", model: "Model", data: "Data" };
+
+async function drawFile() {
+  const file = project.file || {};
+  const link = (download) => `/api/file?id=${project.id}${download ? "&download=1" : ""}`;
+  const licenceCheck = project.licence_check || { status: "own", words: "" };
+  const needsCheck = licenceCheck.status === "limited" || licenceCheck.status === "unknown";
+  const size = (bytes) => (bytes > 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : bytes > 1024 ? `${Math.round(bytes / 1024)} KB` : `${bytes} B`);
+  const view = el("div");
+  if (file.ext === ".png") {
+    view.append(el("img", { src: link(false), alt: project.title, style: "image-rendering:pixelated;max-width:100%;max-height:340px;min-width:96px;background:repeating-conic-gradient(rgba(127,127,127,.25) 0 25%,transparent 0 50%) 50%/16px 16px" }));
+  } else if (file.ext === ".ogg") {
+    view.append(el("audio", { src: link(false), controls: true }));
+  } else if (file.bytes <= 400 * 1024 && [".json", ".mcmeta", ".mcfunction", ".txt"].includes(file.ext)) {
+    try {
+      const reply = await fetch(link(false));
+      view.append(el("pre", { style: "max-height:420px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-all", textContent: await reply.text() }));
+    } catch (problem) { view.append(el("p", { className: "bad-t", textContent: problem.message })); }
+  } else {
+    view.append(el("p", { className: "dim", textContent: "No preview for this file." }));
+  }
+  const title = el("input", { type: "text", value: project.title, maxLength: 60 });
+  const creator = el("input", { type: "text", value: project.credit?.creator || "" });
+  const permission = el("input", { type: "text", value: project.credit?.permission || "" });
+  const licence = el("input", { type: "text", value: project.credit?.licence || "" });
+  const where = el("input", { type: "text", value: project.credit?.link || "" });
+  const tags = el("input", { type: "text", value: (project.tags || []).join(", ") });
+  const collections = el("input", { type: "text", value: (project.collections || []).join(", "), placeholder: "For example: Forest set, Village" });
+  const favorite = el("input", { type: "checkbox", checked: Boolean(project.favorite) });
+  const note = el("div", { className: "dim", role: "status" });
+  const field = (label, input) => el("label", { className: "field" }, label, input);
+  page(
+    queueBar(),
+    el("h1", { textContent: project.title }),
+    el("p", { className: "dim", textContent: `${FILE_KIND_WORDS[project.category] || project.category}${file.type && file.type !== project.category ? " · " + file.type : ""} · ${file.width ? `${file.width}x${file.height} px · ` : ""}${size(file.bytes || 0)}` }),
+    view,
+    el("p", { className: "dim", style: "word-break:break-all", textContent: `From ${project.source?.name || "?"}: ${file.path || file.name}` }),
+    licenceCheck.words ? el("p", { className: needsCheck ? "bad-t" : "dim", role: "status", textContent: `Licence: ${licenceCheck.words}${licenceCheck.can_modify === false ? ". You may not change it." : licenceCheck.can_modify === null ? ". Whether you may change it: to confirm." : ""}` }) : null,
+    el("div", { className: "tool" },
+      el("a", { href: link(true), download: file.name }, el("button", { className: "main", textContent: "Download" })),
+      el("button", { className: "danger", textContent: "Delete", on: { click: async () => {
+        if (!confirm(`Delete "${project.title}" from the Library? This can't be undone (a backup may still hold it).`)) return;
+        try { await post("/api/delete", { id: project.id }); drawLibrary(); } catch (problem) { showFailure(problem); }
+      } } })),
+    el("h2", { textContent: "Details and credit" }),
+    field("Name", title), field("Creator", creator), field("Permission", permission), field("Licence", licence), field("Link", where),
+    field("Tags, with commas", tags), field("Collections, with commas", collections), el("label", { className: "opt" }, favorite, " ★ Favorite"),
+    el("div", { className: "tool" }, el("button", { textContent: "Save details", on: { click: () => act(() => post("/api/details", { id: project.id, title: title.value, creator: creator.value, permission: permission.value, licence: licence.value, link: where.value, tags: tags.value, collections: collections.value, favorite: favorite.checked })) } })),
+    note,
+  );
 }
 
 // ---- make a tree from a preset ----
@@ -1003,6 +1057,17 @@ async function drawExplore(listing = null, meta = {}) {
         if (!reply.ok) return showFailure(new Error((await reply.json()).error));
         const link = el("a", { href: URL.createObjectURL(await reply.blob()), download: listing.name.replace(/\.[^.]+$/, "") + "-picked.zip" });
         link.click();
+      } } }),
+      el("button", { textContent: ticked.size ? `Save ${count(ticked.size)} to Library` : "Save to Library", disabled: !ticked.size, title: "Keeps textures, sounds, JSON data and models in the Library. Builds go through Import.", on: { click: async () => {
+        status.replaceChildren(el("span", { className: "spin" }), "Saving…");
+        try {
+          const done = await post("/api/explore/save", { token: listing.token, paths: [...ticked], ...(meta.details || {}) });
+          const parts = [`${count(done.ids.length)} saved`];
+          if (done.duplicates) parts.push(`${count(done.duplicates)} already in the Library`);
+          if (done.skipped.length) parts.push(`${count(done.skipped.length)} not kept (${done.skipped[0].reason})`);
+          status.replaceChildren(el("span", { className: done.ids.length ? "good-t" : "dim", textContent: parts.join(" · ") + ". " }),
+            done.ids.length ? el("a", { href: "#", textContent: "Open in Library", style: "color:inherit", on: { click: (e) => { e.preventDefault(); done.batch ? drawLibrary({ batch: done.batch }) : openProject(done.ids[0]); } } }) : null);
+        } catch (problem) { status.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); }
       } } }),
       structures ? el("button", { textContent: `Import the ${count(structures.count)} structures`, title: "Opens the normal Import screen with this archive's builds", on: { click: async () => {
         try {

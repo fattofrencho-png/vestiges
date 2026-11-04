@@ -32,17 +32,28 @@ def latest_stats(project):
     return project["versions"][-1]["check"]["stats"] if project.get("versions") else None
 
 
+def _file_size(project):
+    file = project.get("file")
+    if not file:
+        return ""
+    if file.get("width"):
+        return f"{file['width']}x{file['height']} px"
+    size = file.get("bytes", 0)
+    return f"{size / 1048576:.1f} MB" if size > 1048576 else f"{max(1, round(size / 1024))} KB"
+
+
 def row_of(project):
     latest = project["versions"][-1] if project.get("versions") else None
     credit = project.get("credit") or {}
-    licence = licences.assess(credit, project.get("mode", "ai") == "import")
+    licence = licences.of_project(project)
     return {
         "id": project["id"], "title": project.get("title", ""), "kind": project.get("category", "tree"), "mode": project.get("mode", "ai"),
         "status": project.get("status", "review"), "stage": project.get("stage"), "saved": project.get("saved", []), "versions": len(project.get("versions", [])),
         "creator": credit.get("creator", ""), "licence": credit.get("licence", ""), "favorite": bool(project.get("favorite")), "collections": project.get("collections", []), "licence_status": licence["status"], "can_modify": licence["can_modify"], "batch": project.get("batch"), "tags": project.get("tags", []),
+        "ftype": (project.get("file") or {}).get("type", ""), "bytes": (project.get("file") or {}).get("bytes", 0),
         "source": (project.get("source") or {}).get("name", ""), "not_vanilla": bool(latest and latest["check"]["errors"]),
         "blocks": latest["check"]["stats"]["blocks"] if latest else 0,
-        "size": f"{latest['check']['stats']['width_x']}x{latest['check']['stats']['height']}x{latest['check']['stats']['width_z']}" if latest else "",
+        "size": f"{latest['check']['stats']['width_x']}x{latest['check']['stats']['height']}x{latest['check']['stats']['width_z']}" if latest else _file_size(project),
         "hash": project.get("hash"), "created": project.get("created", 0), "busy": project.get("busy", False),
     }
 
@@ -144,7 +155,7 @@ def search(words="", kind="", status="", batch="", no_credit=False, not_vanilla=
             continue
         if collection and not any(c.casefold() == collection.casefold() for c in row["collections"]):
             continue
-        if no_credit and (row["creator"] or row["mode"] != "import"):
+        if no_credit and (row["creator"] or row["mode"] not in ("import", "file")):
             continue
         if not_vanilla and not row["not_vanilla"]:
             continue

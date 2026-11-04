@@ -20,6 +20,7 @@ import backup
 import batches
 import edits
 import explore
+import files
 import export
 import licences
 import import_formats
@@ -195,6 +196,11 @@ def zip_of(ids, kind):
     with zipfile.ZipFile(store, "w", zipfile.ZIP_STORED) as archive:
         for project_id in [str(i) for i in ids][:5000]:
             project = projects.load(project_id)
+            if project.get("mode") == "file":
+                path = projects.file_path(project_id)
+                if path:
+                    archive.writestr(f"{project['category']}/{path.name}", path.read_bytes())
+                continue
             wanted = project["saved"] or ([{"version": project["versions"][-1]["number"], "name": library.propose(project)}] if project["versions"] else [])
             for entry in wanted:
                 version = projects.load_version(project_id, entry["version"])
@@ -232,7 +238,7 @@ def write_credits(index):
 
 def add_to_mod(project_id, number=None, confirmed=False):
     project, version, name = saved_version(project_id, number)
-    check = licences.assess(project.get("credit"), project.get("mode") == "import")
+    check = licences.of_project(project)
     if check["status"] in ("limited", "unknown") and not confirmed:
         raise licences.LicenceProblem(f"{check['words']}. Confirm that you may use it before adding it to the mod.")
     errors = pipeline.inspect(version, lenient=True)["errors"]
@@ -280,7 +286,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send_json(state())
             if url.path == "/api/project":
                 loaded = projects.load(query.get("id", ""))
-                return self.send_json({**loaded, "licence_check": licences.assess(loaded.get("credit"), loaded.get("mode") == "import")})
+                return self.send_json({**loaded, "licence_check": licences.of_project(loaded)})
             if url.path == "/api/version":
                 version = projects.load_version(query.get("id", ""), int(query.get("v", -1)))
                 return self.send_json({"blocks": version["blocks"], "states": bake_states(version)})
@@ -289,6 +295,12 @@ class Handler(BaseHTTPRequestHandler):
                                                         query.get("no_credit") == "1", query.get("not_vanilla") == "1", int(query.get("page", 0)), query.get("licence", ""), query.get("tag", ""), query.get("collection", ""), query.get("favorite") == "1"), **library.facets()})
             if url.path == "/api/thumb":
                 return self.send(thumbs.get(query.get("id", "")), "image/png")
+            if url.path == "/api/file":
+                path = projects.file_path(query.get("id", ""))
+                if path is None:
+                    raise KeyError("That asset has no file")
+                project = projects.load(query.get("id", ""))
+                return self.send(path.read_bytes(), files.content_type(project), name=path.name if query.get("download") == "1" else None)
             if url.path == "/api/explore/preview":
                 name, path = explored(query.get("token"))
                 return self.send_json(explore.preview(path, query.get("path", "")))
@@ -368,7 +380,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_json({"error": str(problem.args[0]) if problem.args else "not found"}, 404)
         except providers.ProviderError as problem:
             return self.send_json({"error": str(problem)}, 400)
-        except (import_formats.ImportProblem, edits.EditProblem, backup.BackupProblem, online.OnlineProblem, licences.LicenceProblem, explore.ExploreProblem, presets.PresetProblem) as problem:
+        except (import_formats.ImportProblem, edits.EditProblem, backup.BackupProblem, online.OnlineProblem, licences.LicenceProblem, explore.ExploreProblem, presets.PresetProblem, files.FileProblem) as problem:
             return self.send_json({"error": str(problem)}, 400)
         except ValueError as problem:
             return self.send_json({"error": f"Bad request: {problem}"}, 400)
@@ -467,6 +479,10 @@ class Handler(BaseHTTPRequestHandler):
                     providers.set_key(name, str(data["keys"][name]))
         elif path == "/api/find/fetch":
             return fetch_online(str(data.get("project", "")), bool(data.get("look_inside")), str(data.get("source", "modrinth")))
+        elif path == "/api/explore/save":
+            name, held = explored(data.get("token"))
+            details = {k: str(data.get(k, "")) for k in ("creator", "permission", "licence", "link")}
+            return files.save_from_archive(held, name, data.get("paths") or [], details)
         elif path == "/api/explore/to-import":
             name, held = explored(data.get("token"))
             token = uuid.uuid4().hex

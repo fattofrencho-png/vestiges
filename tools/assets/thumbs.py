@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw
 
 import projects
 
-REVISION = 2          # change when the drawing changes, so old pictures are redrawn
+REVISION = 3          # change when the drawing changes, so old pictures are redrawn
 SIZE = 192            # finished picture, in pixels
 SUPER = 3             # drawn this many times larger, then shrunk, for smooth edges
 MAX_BLOCKS = 60000
@@ -136,9 +136,53 @@ def _png(image):
     return out.getvalue()
 
 
+CARD = (44, 48, 58)
+
+
+def _file_picture(project, size=SIZE):
+    """A texture drawn as itself (pixels kept sharp); any other file as a card with its type and name."""
+    file = project.get("file") or {}
+    path = projects.file_path(project["id"])
+    if file.get("ext") == ".png" and path:
+        try:
+            image = Image.open(path).convert("RGBA")
+            if image.height > image.width:  # animated textures are a tall strip: the first frame
+                image = image.crop((0, 0, image.width, image.width))
+            scale = max(1, (size - 16) // max(image.width, image.height, 1))
+            fitted = image.resize((image.width * scale, image.height * scale), Image.NEAREST)
+            if fitted.width > size - 8 or fitted.height > size - 8:
+                fitted.thumbnail((size - 8, size - 8), Image.LANCZOS)
+            canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+            canvas.alpha_composite(fitted, ((size - fitted.width) // 2, (size - fitted.height) // 2))
+            return _png(canvas)
+        except Exception:
+            pass
+    from PIL import ImageFont
+    label = {"sound": "SOUND", "model": "MODEL"}.get(project.get("category")) or (file.get("type") or "file").upper()
+    card = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    pen = ImageDraw.Draw(card)
+    pen.rounded_rectangle((8, 8, size - 8, size - 8), radius=14, fill=CARD)
+    big, small = ImageFont.load_default(size=size // 5), ImageFont.load_default(size=size // 12)
+    pen.text((size // 2, size // 2 - 6), label[:8], fill=(222, 226, 236), font=big, anchor="mm")
+    name = str(file.get("name", ""))
+    name = name if len(name) <= 22 else name[:19] + "..."
+    pen.text((size // 2, size // 2 + size // 6), name, fill=(150, 156, 170), font=small, anchor="mm")
+    return _png(card)
+
+
 def get(project_id):
     """The picture of an asset's latest version, drawn now if there isn't a current one."""
     project = projects.load(project_id)
+    if project.get("mode") == "file":
+        path = folder() / f"{project_id}_v0_r{REVISION}.png"
+        if path.exists():
+            return path.read_bytes()
+        data = _file_picture(project)
+        folder().mkdir(parents=True, exist_ok=True)
+        temp = path.with_suffix(".tmp")
+        temp.write_bytes(data)
+        temp.replace(path)
+        return data
     if not project.get("versions"):
         return _png(Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0)))
     number = project["versions"][-1]["number"]

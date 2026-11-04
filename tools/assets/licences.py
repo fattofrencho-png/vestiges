@@ -28,14 +28,20 @@ class LicenceProblem(Exception):
     pass
 
 
-def assess(credit, imported=True):
+def of_project(project):
+    """The answer for a saved asset. Files taken from an archive count as someone else's work even when nothing is noted."""
+    foreign = (project.get("source") or {}).get("type") == "archive"
+    return assess(project.get("credit"), project.get("mode") in ("import", "file"), foreign)
+
+
+def assess(credit, imported=True, foreign=False):
     """credit: {creator, permission, licence, link}. Returns {status, can_modify, words}."""
     credit = credit or {}
     licence = str(credit.get("licence", "")).strip()
     permission = str(credit.get("permission", "")).strip()
     creator = str(credit.get("creator", "")).strip()
     link = str(credit.get("link", "")).strip()
-    if not imported or not (creator or licence or permission or link):
+    if not imported or not (creator or licence or permission or link or foreign):
         status, modify = "own", True
     elif licence and OPEN.match(licence) and not RESTRICTED.search(licence):
         status, modify = "open", True

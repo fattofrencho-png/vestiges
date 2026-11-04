@@ -73,6 +73,34 @@ def new_import(title, source, credit, category):
         return project
 
 
+def new_file(title, source, credit, category, file, data):
+    """A saved single file (a texture, sound, JSON...). The file sits in the asset's own folder under file/."""
+    with _lock:
+        ROOT.mkdir(parents=True, exist_ok=True)
+        stamp = time.strftime("%Y%m%d_%H%M%S")
+        project_id, count = stamp, 1
+        while (ROOT / project_id).exists():
+            count += 1
+            project_id = f"{stamp}_{count}"
+        project = {
+            "id": project_id, "mode": "file", "title": title, "request": "", "source": source, "credit": credit, "category": category, "file": file,
+            "stage": "file", "busy": False, "versions": [], "saved": [], "status": "review", "tags": [], "batch": None, "hash": None, "subject": "",
+            "created": time.time(),
+        }
+        (ROOT / project_id / "file").mkdir(parents=True)
+        (ROOT / project_id / "file" / file["name"]).write_bytes(data)
+        save(project)
+        return project
+
+
+def file_path(project_id):
+    """Where a file asset's file is kept, or None."""
+    project = load(project_id)
+    name = (project.get("file") or {}).get("name")
+    path = _path(project_id) / "file" / str(name)
+    return path if name and path.is_file() else None
+
+
 def save(project):
     with _lock:
         folder = _path(project["id"])
