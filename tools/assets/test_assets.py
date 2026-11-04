@@ -36,6 +36,7 @@ import pipeline
 import plan_tools
 import presets
 import projects
+import send
 import providers
 import validate
 
@@ -1704,6 +1705,135 @@ class ResourcePacks(unittest.TestCase):
         with zipfile.ZipFile(raw, "w") as z:
             z.writestr("assets/minecraft/textures/block/a.png", b"PNG a")
         return raw.getvalue()
+
+
+class SendToMod(unittest.TestCase):
+    def setUp(self):
+        self.mod = Path(TEMP) / f"mod_{self.id().split('.')[-1]}"
+        shutil.rmtree(self.mod, ignore_errors=True)
+        (self.mod / "src/main/resources").mkdir(parents=True)
+        self.index = self.mod / "exports.json"
+        self.credits_seen = []
+
+    def own(self, name, data, path="", creator=""):
+        made = files.create_own(name, data, {"creator": creator, "licence": "MIT"} if creator else {}, path=path)
+        self.assertIsNotNone(made)
+        return made
+
+    def png(self, shade):
+        from PIL import Image
+        out = io.BytesIO()
+        Image.new("RGBA", (4, 4), (shade, 5, 9, 255)).save(out, "PNG")
+        return out.getvalue()
+
+    def rows(self, ids, edits=None):
+        return {r["id"]: r for r in send.plan(ids, self.mod, edits)}
+
+    def test_destinations_follow_the_original_path_or_the_kind(self):
+        a = self.own("send_a.png", self.png(101))
+        b = self.own("Send B.png", self.png(102), "assets/minecraft/textures/item/Send B.png")
+        c = self.own("send_c.ogg", b"OggS-c")
+        d = self.own("send_d.json", b'{"parent": "block/cube_all"}', "pack-abc123/assets/minecraft/models/block/send_d.json")
+        e = self.own("send_e.json", b'{"type": "minecraft:crafting_shapeless", "ingredients": [], "result": {"id": "minecraft:stick"}}')
+        f = self.own("send_f.json", b'{"values": ["minecraft:stone"]}', "data/minecraft/tags/block/send_f.json")
+        rows = self.rows([a, b, c, d, e, f])
+        self.assertEqual(rows[a]["to"], "assets/vestiges/textures/block/send_a.png")
+        self.assertEqual(rows[b]["to"], "assets/vestiges/textures/item/send_b.png")
+        self.assertEqual(rows[c]["to"], "assets/vestiges/sounds/send_c.ogg")
+        self.assertEqual(rows[d]["to"], "assets/vestiges/models/block/send_d.json")
+        self.assertEqual(rows[e]["to"], "data/vestiges/recipe/send_e.json")  # no path: the folder comes from what the file is
+        self.assertEqual(rows[f]["to"], "data/vestiges/tags/block/send_f.json")
+        self.assertTrue(all(r["action"] == "new" for r in rows.values()), [r["note"] for r in rows.values()])
+
+    def test_generated_folders_and_unsafe_paths_are_refused(self):
+        loot = self.own("send_loot.json", b'{"pools": []}', "data/minecraft/loot_table/chests/send_loot.json")
+        rows = self.rows([loot])
+        self.assertEqual(rows[loot]["action"], "blocked")
+        self.assertIn("generated", rows[loot]["note"])
+        tex = self.own("send_t.png", self.png(103))
+        for bad in ("../outside.png", "assets/vestiges/../../x.png", "assets/other/textures/x.png", "assets/vestiges/Textures/X.png", "/etc/x.png", "assets/vestiges/textures/noext",
+                    "data/vestiges/loot_table/mine.json", "data/vestiges/vestiges/codex/x.json"):
+            self.assertEqual(self.rows([tex], {tex: bad})[tex]["action"], "blocked", bad)
+        good = self.rows([tex], {tex: "assets/vestiges/textures/gui/send_t.png"})[tex]
+        self.assertEqual((good["action"], good["to"]), ("new", "assets/vestiges/textures/gui/send_t.png"))
+
+    def test_nothing_is_replaced_without_a_yes_and_identical_files_are_left_alone(self):
+        tex = self.own("send_o.png", self.png(104), creator="Ann")
+        item = {"id": tex, "overwrite": False}
+        first = send.apply([item], self.mod, False, self.index, self.credits_seen.append)
+        self.assertEqual(first[0]["result"], "created")
+        target = self.mod / "src/main/resources/assets/vestiges/textures/block/send_o.png"
+        self.assertEqual(target.read_bytes(), self.png(104))
+        self.assertEqual(send.apply([item], self.mod, False, self.index, None)[0]["result"], "unchanged")
+        target.write_bytes(b"different")
+        kept = send.apply([item], self.mod, False, self.index, None)
+        self.assertEqual((kept[0]["result"], target.read_bytes()), ("kept", b"different"))
+        replaced = send.apply([{"id": tex, "overwrite": True}], self.mod, False, self.index, None)
+        self.assertEqual((replaced[0]["result"], target.read_bytes()), ("replaced", self.png(104)))
+
+    def test_limited_or_unknown_licences_need_a_yes_and_the_credits_are_rewritten(self):
+        mystery = files.save_from_archive(zipfile_with("assets/demo/textures/block/send_mystery.png", self.png(105)), "mystery.zip", ["assets/demo/textures/block/send_mystery.png"], {})["ids"][0]
+        refused = send.apply([{"id": mystery}], self.mod, False, self.index, self.credits_seen.append)
+        self.assertEqual(refused[0]["result"], "refused")
+        self.assertFalse((self.mod / "src/main/resources/assets/vestiges/textures/block/send_mystery.png").exists())
+        self.assertEqual(self.credits_seen, [])
+        sent = send.apply([{"id": mystery}], self.mod, True, self.index, self.credits_seen.append)
+        self.assertEqual(sent[0]["result"], "created")
+        entry = json.loads(self.index.read_text(encoding="utf-8"))["file:assets/vestiges/textures/block/send_mystery.png"]
+        self.assertEqual((entry["from"], entry["to"]), (mystery, "assets/vestiges/textures/block/send_mystery.png"))
+        self.assertEqual(len(self.credits_seen), 1)
+
+    def test_every_send_is_logged_and_two_assets_cannot_share_a_path(self):
+        one = self.own("send_l1.png", self.png(106))
+        two = self.own("send_l2.png", self.png(107))
+        rows = self.rows([one, two], {one: "assets/vestiges/textures/block/same.png", two: "assets/vestiges/textures/block/same.png"})
+        self.assertEqual((rows[one]["action"], rows[two]["action"]), ("blocked", "blocked"))
+        self.assertIn("same path", rows[one]["note"])
+        send.apply([{"id": one}, {"id": two}], self.mod, False, self.index, None)
+        log = (self.mod / "docs/assets/send-log.md").read_text(encoding="utf-8")
+        self.assertIn("created: `assets/vestiges/textures/block/send_l1.png`", log)
+        self.assertIn("created: `assets/vestiges/textures/block/send_l2.png`", log)
+
+    def test_builds_go_to_the_structure_folder_by_their_saved_name(self):
+        made = batches.add_build({"blocks": [[0, y, 0, LOG] for y in range(5)] + [[1, 4, 0, "minecraft:oak_planks"]], "dropped": {}, "notes": []}, {"type": "file", "name": "send_build.nbt"}, {"kind": "tree"}, "bsend")
+        unsaved = self.rows([made])[made]
+        self.assertEqual(unsaved["action"], "blocked")
+        self.assertIn("save a variant", unsaved["note"])
+        library.save_variant(made, 1)
+        row = self.rows([made])[made]
+        name = projects.load(made)["saved"][-1]["name"]
+        self.assertEqual((row["action"], row["to"]), ("new", f"data/vestiges/structure/tree/{name}.nbt"))
+        done = send.apply([{"id": made}], self.mod, False, self.index, self.credits_seen.append)
+        self.assertEqual(done[0]["result"], "created")
+        written = (self.mod / "src/main/resources" / row["to"]).read_bytes()
+        self.assertEqual(export.read_nbt(written)["size"], [2, 5, 1])
+        self.assertIn(name, json.loads(self.index.read_text(encoding="utf-8")))
+
+    def test_nothing_is_written_outside_the_mod_folder(self):
+        tex = self.own("send_safe.png", self.png(108))
+        done = send.apply([{"id": tex, "to": "../../escape.png"}], self.mod, False, self.index, None)
+        self.assertEqual(done[0]["result"], "refused")
+        self.assertFalse((self.mod.parent / "escape.png").exists())
+        self.assertFalse(any(p.name == "escape.png" for p in self.mod.rglob("*")))
+
+
+def zipfile_with(path, data):
+    raw = io.BytesIO()
+    with zipfile.ZipFile(raw, "w") as z:
+        z.writestr(path, data)
+    return raw.getvalue()
+
+
+class PortSafety(unittest.TestCase):
+    def test_a_port_that_is_taken_is_reported_taken(self):
+        import studio
+        first = studio.Server(("127.0.0.1", 0), studio.Handler)
+        try:
+            port = first.server_address[1]
+            with self.assertRaises(OSError):
+                studio.Server(("127.0.0.1", port), studio.Handler)
+        finally:
+            first.server_close()
 
 
 if __name__ == "__main__":

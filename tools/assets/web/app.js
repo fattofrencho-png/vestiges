@@ -39,7 +39,7 @@ function spent(p) {
 }
 
 function steps() {
-  if (screen === "library" || screen === "settings" || screen === "find" || screen === "explore" || screen === "presets" || screen === "addfiles" || project?.mode === "file") { $("steps").replaceChildren(); return; }
+  if (screen === "library" || screen === "settings" || screen === "find" || screen === "explore" || screen === "presets" || screen === "addfiles" || screen === "send" || project?.mode === "file") { $("steps").replaceChildren(); return; }
   if (screen === "home" || screen === "import" || project?.mode === "import") {
     let step = 0;
     if (screen === "project" && project) step = project.stage === "saved" ? 3 : project.versions.length > 1 ? 2 : 1;
@@ -802,6 +802,7 @@ async function drawLibrary(start) {
       bulkKind, bulkCreator,
       el("button", { textContent: "Apply", on: { click: () => bulkDo({ action: "details", kind: bulkKind.value, creator: bulkCreator.value.trim() }) } }),
       zipKind,
+      el("button", { textContent: "Send to mod…", title: "See where each asset would go in the mod, then confirm", on: { click: () => drawSend(chosen(), () => drawLibrary()).catch((problem) => showFailure(problem)) } }),
       el("button", { textContent: "Download as zip", on: { click: async () => {
         const reply = await fetch("/api/library/zip", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ids: chosen(), format: zipKind.value }) });
         if (!reply.ok) return showFailure(new Error("The zip couldn't be made."));
@@ -821,6 +822,80 @@ async function drawLibrary(start) {
   );
   $("page").classList.add("wide");
   showScope();
+}
+
+// ---- send assets to the mod ----
+const SEND_WORDS = { new: "New", same: "Already there", overwrite: "Replaces a different file", blocked: "Refused" };
+
+async function drawSend(ids, back) {
+  screen = "send";
+  stopPolling();
+  project = null;
+  steps();
+  const edits = {};
+  const status = el("div", { role: "status" });
+  const body = el("div");
+  const confirmBox = el("input", { type: "checkbox" });
+  const confirmLine = el("label", { className: "opt" }, confirmBox, " I have the right to use the assets marked in red in the mod");
+  const overwrite = new Set();
+  const send = el("button", { className: "main", textContent: "Send", disabled: true });
+  let rows = [];
+  const count = (n) => n.toLocaleString("en");
+
+  const refresh = async () => {
+    status.replaceChildren(el("span", { className: "spin" }), "Checking where each one would go…");
+    try {
+      const planned = await post("/api/send/plan", { ids, edits });
+      rows = planned.rows;
+      draw(planned.folder);
+      status.textContent = "";
+    } catch (problem) { status.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); }
+  };
+  const sendable = () => rows.filter((r) => r.action === "new" || (r.action === "overwrite" && overwrite.has(r.id)));
+  const draw = (folder) => {
+    const need = rows.some((r) => r.needs_confirm && r.action !== "blocked" && r.action !== "same");
+    confirmLine.style.display = need ? "" : "none";
+    const table = el("table", { className: "lib" },
+      el("tr", {}, ["Asset", "Goes to (inside " + folder + ")", "What happens", "Replace?"].map((h) => el("th", { textContent: h }))),
+      ...rows.map((r) => {
+        const input = el("input", { type: "text", value: r.to, "aria-label": "Destination of " + r.title, style: "width:100%;min-width:260px", on: { change: (e) => { edits[r.id] = e.target.value.trim(); refresh(); } } });
+        return el("tr", {},
+          el("td", {}, el("div", { textContent: r.title }), el("div", { className: r.needs_confirm ? "bad-t" : "dim", textContent: `${r.kind} · ${r.licence_words}` })),
+          el("td", {}, input),
+          el("td", { className: r.action === "blocked" ? "bad-t" : r.action === "overwrite" ? "warn-t" : "dim", textContent: `${SEND_WORDS[r.action]}: ${r.note}` }),
+          el("td", {}, r.action === "overwrite" ? el("input", { type: "checkbox", checked: overwrite.has(r.id), "aria-label": "Replace " + r.to, on: { change: (e) => { if (e.target.checked) overwrite.add(r.id); else overwrite.delete(r.id); update(); } } }) : null));
+      }));
+    body.replaceChildren(rows.length ? table : el("p", { className: "dim", textContent: "Nothing to send." }));
+    update();
+  };
+  const update = () => {
+    const n = sendable().length;
+    send.textContent = n ? `Send ${count(n)} to the mod` : "Nothing to send";
+    send.disabled = !n;
+  };
+  send.onclick = async () => {
+    send.disabled = true;
+    status.replaceChildren(el("span", { className: "spin" }), "Writing…");
+    try {
+      const done = await post("/api/send/apply", { items: rows.filter((r) => r.action !== "blocked").map((r) => ({ id: r.id, to: edits[r.id] || r.to, overwrite: overwrite.has(r.id) })), confirm_licence: confirmBox.checked });
+      const tally = {};
+      done.results.forEach((r) => { tally[r.result] = (tally[r.result] || 0) + 1; });
+      const words = { created: "created", replaced: "replaced", unchanged: "unchanged", kept: "kept as they were", refused: "refused" };
+      body.replaceChildren(el("h2", { textContent: "Result" }), el("p", { className: tally.created || tally.replaced ? "good-t" : "dim", textContent: Object.entries(tally).map(([k, v]) => `${count(v)} ${words[k] || k}`).join(" · ") + "." }),
+        el("table", { className: "lib" }, done.results.map((r) => el("tr", {}, el("td", { className: r.result === "created" || r.result === "replaced" ? "good-t" : r.result === "refused" ? "bad-t" : "dim", textContent: r.result }), el("td", { textContent: r.to }), el("td", { className: "dim", textContent: `${r.title}: ${r.note}` })))),
+        el("p", { className: "dim", textContent: "Every send is listed in docs/assets/send-log.md, and credits.md is updated for assets made by others. Nothing is committed: do that from the project." }));
+      send.style.display = "none";
+      confirmLine.style.display = "none";
+      status.textContent = "";
+    } catch (problem) { status.replaceChildren(el("span", { className: "bad-t", textContent: problem.message })); update(); }
+  };
+  page(el("h1", { textContent: "Send to mod" }),
+    el("p", { className: "dim", textContent: "Nothing is written until you press Send. Files go inside the mod's own resources (assets/vestiges and data/vestiges), in the same folders as their originals. Loot tables and the Codex are generated by the mod's tools, so those are refused. Nothing is ever deleted." }),
+    body, confirmLine, status,
+    el("div", { className: "row" }, el("button", { textContent: "Back", on: { click: () => (back ? back() : drawLibrary()) } }), el("span", { className: "grow" }), send));
+  $("page").classList.add("wide");
+  confirmLine.style.display = "none";
+  refresh();
 }
 
 // ---- add my own files ----
@@ -1017,6 +1092,7 @@ async function drawFile() {
     licenceCheck.words ? el("p", { className: needsCheck ? "bad-t" : "dim", role: "status", textContent: `Licence: ${licenceCheck.words}${licenceCheck.can_modify === false ? ". You may not change it." : licenceCheck.can_modify === null ? ". Whether you may change it: to confirm." : ""}` }) : null,
     el("div", { className: "tool" },
       el("a", { href: link(true), download: file.name }, el("button", { className: "main", textContent: "Download" })),
+      el("button", { textContent: "Send to mod…", on: { click: () => drawSend([project.id], () => openProject(project.id)).catch((problem) => showFailure(problem)) } }),
       el("button", { className: "danger", textContent: "Delete", on: { click: async () => {
         if (!confirm(`Delete "${project.title}" from the Library? This can't be undone (a backup may still hold it).`)) return;
         try { await post("/api/delete", { id: project.id }); drawLibrary(); } catch (problem) { showFailure(problem); }

@@ -30,17 +30,18 @@ import online
 import organise
 import pipeline
 import presets
+import send
 import projects
 import providers
 import thumbs
 import tree_gen
 
-HOST, PORT = "127.0.0.1", 8765
+HOST, PORT = "127.0.0.1", int(os.environ.get("VESTIGES_PORT") or 8765)
 ALLOWED_HOSTS = {f"127.0.0.1:{PORT}", f"localhost:{PORT}"}
 WEB = Path(__file__).resolve().parent / "web"
 # As an .exe the code runs from a temporary folder, so the project is where the .exe sits (the Assets folder).
 FROZEN = getattr(sys, "frozen", False)
-ROOT = Path(sys.executable).resolve().parent if FROZEN else Path(__file__).resolve().parents[2]
+ROOT = Path(os.environ["VESTIGES_MOD_ROOT"]) if os.environ.get("VESTIGES_MOD_ROOT") else Path(sys.executable).resolve().parent if FROZEN else Path(__file__).resolve().parents[2]
 MOD_STRUCTURES = ROOT / "src/main/resources/data/vestiges/structure"
 CREDITS = ROOT / "docs/assets/credits.md"
 CATEGORIES = ("tree", "plant", "house", "ruin", "structure", "other")
@@ -228,11 +229,12 @@ def write_credits(index):
         credit = entry.get("credit")
         if credit and any(credit.get(k) for k in ("creator", "licence", "permission", "link")):
             check = licences.assess(credit)
-            lines.append(f"- **{entry['title']}** (`{entry['category']}/{stem}`): by {credit.get('creator') or 'unknown'}."
+            lines.append(f"- **{entry['title']}** (`{entry.get('to') or entry['category'] + '/' + stem}`): by {credit.get('creator') or 'unknown'}."
                          + (f" Licence: {credit['licence']}." if credit.get("licence") else "")
                          + (f" Permission: {credit['permission']}." if credit.get("permission") else "")
                          + (f" Source: {credit['link']}." if credit.get("link") else "")
                          + f" Status: {check['words']}." + (f" {licences.note(credit)}" if licences.note(credit) else ""))
+    CREDITS.parent.mkdir(parents=True, exist_ok=True)
     CREDITS.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -392,7 +394,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.send_json({"error": str(problem.args[0]) if problem.args else "not found"}, 404)
         except providers.ProviderError as problem:
             return self.send_json({"error": str(problem)}, 400)
-        except (import_formats.ImportProblem, edits.EditProblem, backup.BackupProblem, online.OnlineProblem, licences.LicenceProblem, explore.ExploreProblem, presets.PresetProblem, files.FileProblem) as problem:
+        except (import_formats.ImportProblem, edits.EditProblem, backup.BackupProblem, online.OnlineProblem, licences.LicenceProblem, explore.ExploreProblem, presets.PresetProblem, files.FileProblem, send.SendProblem) as problem:
             return self.send_json({"error": str(problem)}, 400)
         except ValueError as problem:
             return self.send_json({"error": f"Bad request: {problem}"}, 400)
@@ -505,6 +507,11 @@ class Handler(BaseHTTPRequestHandler):
                     providers.set_key(name, str(data["keys"][name]))
         elif path == "/api/find/fetch":
             return fetch_online(str(data.get("project", "")), bool(data.get("look_inside")), str(data.get("source", "modrinth")))
+        elif path == "/api/send/plan":
+            edits = {str(k): str(v) for k, v in (data.get("edits") or {}).items()}
+            return {"rows": send.plan([str(i) for i in data.get("ids") or []], ROOT, edits), "folder": send.RESOURCES}
+        elif path == "/api/send/apply":
+            return {"results": send.apply(data.get("items") or [], ROOT, bool(data.get("confirm_licence")), EXPORT_INDEX, write_credits)}
         elif path == "/api/explore/save":
             name, held = explored(data.get("token"))
             details = {k: str(data.get(k, "")) for k in ("creator", "permission", "licence", "link")}
@@ -599,6 +606,12 @@ def explored(token):
     return held
 
 
+class Server(ThreadingHTTPServer):
+    # On Windows, address reuse lets a second program share a port that is already in use, so another program's
+    # server could swallow this tool's requests. Without it, a taken port is reported as taken.
+    allow_reuse_address = False
+
+
 def fetch_online(project_id, look_inside=False, source="modrinth"):
     """Downloads one project's newest file into the same holding folder as an uploaded file, and reads the builds in it."""
     file = online.find_file(project_id, source)
@@ -628,17 +641,28 @@ def already_running():
 
 
 def main():
-    address = f"http://{HOST}:{PORT}"
+    """Starts the server on the first free port from PORT up (another program may hold 8765)."""
+    global PORT
     show = "--no-browser" not in sys.argv
-    if already_running():
-        print(f"Asset Studio is already running: {address}")
-        if show:
-            webbrowser.open(address)
-        return
-    try:
-        server = ThreadingHTTPServer((HOST, PORT), Handler)
-    except OSError:
-        print(f"Port {PORT} is being used by another program, so Asset Studio can't start.")
+    server = None
+    first = PORT
+    for port in range(first, first + 10):
+        PORT = port
+        ALLOWED_HOSTS.clear()
+        ALLOWED_HOSTS.update({f"127.0.0.1:{port}", f"localhost:{port}"})
+        address = f"http://{HOST}:{PORT}"
+        if already_running():
+            print(f"Asset Studio is already running: {address}")
+            if show:
+                webbrowser.open(address)
+            return
+        try:
+            server = Server((HOST, PORT), Handler)
+            break
+        except OSError:
+            continue
+    if server is None:
+        print(f"Ports {first} to {first + 9} are all in use by other programs, so Asset Studio can't start.")
         sys.exit(1)
     moved = 0 if os.environ.get("VESTIGES_PROJECTS") else library.move_old_folder(projects.OLD_ROOT)
     if moved:
