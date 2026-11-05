@@ -21,6 +21,22 @@ public final class LookAtProviders {
 				out.add(Component.literal("Health " + Math.round(living.getHealth()) + " / " + Math.round(living.getMaxHealth())).withStyle(ChatFormatting.RED));
 			}
 		}));
+		register(simple("villager", "Villager story", (t, out) -> {
+			if (t.entity() != null) {
+				dev.vestiges.villager.VillagerProfile profile = t.entity().getAttached(dev.vestiges.villager.VillagerService.PROFILE);
+				if (profile != null) {
+					if (!t.entity().hasCustomName()) {
+						out.add(Component.literal(profile.name()).withStyle(ChatFormatting.GOLD));
+					}
+					for (String line : profile.overview()) {
+						out.add(Component.literal(line).withStyle(ChatFormatting.GRAY));
+					}
+					if (!profile.hook().isEmpty()) {
+						out.add(Component.literal(profile.hook()).withStyle(ChatFormatting.DARK_PURPLE, ChatFormatting.ITALIC));
+					}
+				}
+			}
+		}));
 		register(simple("mob_powers", "Elite powers", (t, out) -> {
 			dev.vestiges.mobs.MobData d = dev.vestiges.client.mobs.ClientMobs.data(t.entity());
 			if (d != null && d.elite()) {

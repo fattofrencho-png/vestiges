@@ -30,6 +30,7 @@ public class Vestiges implements ModInitializer {
 		dev.vestiges.codex.PlacedBlocks.init();
 		dev.vestiges.loot.LootTypes.register();
 		VestigesData.register();
+		dev.vestiges.villager.VillagerService.register();
 		VestigesPayloads.register();
 		HubNet.register();
 		PlayerProfiles.register();

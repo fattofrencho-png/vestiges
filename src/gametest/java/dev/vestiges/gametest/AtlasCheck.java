@@ -111,6 +111,33 @@ public final class AtlasCheck implements FabricClientGameTest {
 				c.check("a vanilla world saves no continent for places", found.isEmpty(), found.toString());
 			}
 
+			c.section("Villagers");
+			server.runCommand("summon villager ~3 ~ ~");
+			server.runCommand("summon villager ~-3 ~ ~");
+			ctx.waitTicks(40);
+			var profiles = server.computeOnServer(s -> {
+				var list = new java.util.ArrayList<dev.vestiges.villager.VillagerProfile>();
+				for (var e : s.overworld().getAllEntities()) {
+					if (e instanceof net.minecraft.world.entity.npc.villager.Villager v) {
+						list.add(v.getAttached(dev.vestiges.villager.VillagerService.PROFILE));
+					}
+				}
+				return list;
+			});
+			c.check("summoned villagers each get a profile", profiles.size() >= 2 && profiles.stream().noneMatch(java.util.Objects::isNull), profiles.size() + " villagers");
+			c.check("their names are filled in", profiles.stream().allMatch(p -> p != null && !p.name().isBlank()));
+			c.note("sample villager: " + (profiles.isEmpty() || profiles.getFirst() == null ? "none" : profiles.getFirst().name() + " - " + profiles.getFirst().overview()));
+			var shown = ctx.computeOnClient(mc -> {
+				int n = 0;
+				for (var e : mc.level.entitiesForRendering()) {
+					if (e instanceof net.minecraft.world.entity.npc.villager.Villager v && v.getAttached(dev.vestiges.villager.VillagerService.PROFILE) != null) {
+						n++;
+					}
+				}
+				return n;
+			});
+			c.check("the player's game receives the villagers' profiles", shown >= 2, shown + " with a profile on the client");
+
 			c.section("The map screen");
 			if (vestiges && lands > 0) {
 				var trenec = ClientFeatures.lands().getFirst();
