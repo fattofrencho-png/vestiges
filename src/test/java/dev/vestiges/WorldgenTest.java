@@ -153,4 +153,61 @@ class WorldgenTest {
 		lines.add(passed + " of " + count + " seeds passed");
 		Files.write(out.resolve("report.txt"), lines);
 	}
+
+	/** Over many seeds: does each continent exist, does the plan centre (where the map label goes) stand on it, and how much do size and shape vary? */
+	@Test
+	void continentsKeepTheirNamesAcrossSeeds() throws IOException {
+		var lands = WorldPlans.current().lands();
+		List<String> lines = new ArrayList<>();
+		int centreOff = 0;
+		int total = 0;
+		for (long seed = 1; seed <= 20; seed++) {
+			GlobeMap map = GlobeMap.forSeed(seed * 31);
+			long[] cells = new long[lands.size()];
+			double[] sx = new double[lands.size()];
+			double[] sz = new double[lands.size()];
+			int[] minX = new int[lands.size()];
+			int[] maxX = new int[lands.size()];
+			int[] minZ = new int[lands.size()];
+			int[] maxZ = new int[lands.size()];
+			java.util.Arrays.fill(minX, Integer.MAX_VALUE);
+			java.util.Arrays.fill(minZ, Integer.MAX_VALUE);
+			java.util.Arrays.fill(maxX, Integer.MIN_VALUE);
+			java.util.Arrays.fill(maxZ, Integer.MIN_VALUE);
+			for (int x = GlobeMap.X_MIN; x < GlobeMap.X_MAX; x += GlobeMap.CELL * 4) {
+				for (int z = GlobeMap.Z_MIN; z < GlobeMap.Z_MAX; z += GlobeMap.CELL * 4) {
+					int o = map.ownerAt(x, z);
+					if (o >= 0 && o < lands.size()) {
+						cells[o]++;
+						sx[o] += x;
+						sz[o] += z;
+						minX[o] = Math.min(minX[o], x);
+						maxX[o] = Math.max(maxX[o], x);
+						minZ[o] = Math.min(minZ[o], z);
+						maxZ[o] = Math.max(maxZ[o], z);
+					}
+				}
+			}
+			StringBuilder row = new StringBuilder("seed " + seed * 31 + ":");
+			for (int i = 0; i < lands.size(); i++) {
+				var land = lands.get(i);
+				assertTrue(cells[i] > 0, "seed " + seed * 31 + " has no " + land.name());
+				boolean centreOn = map.ownerAt(land.x(), land.z()) == i;
+				int cx = (int) (sx[i] / cells[i]);
+				int cz = (int) (sz[i] / cells[i]);
+				boolean meanOn = map.ownerAt(cx, cz) == i;
+				total++;
+				if (!centreOn) {
+					centreOff++;
+				}
+				row.append(String.format(" | %s area %d km2, %dx%d km, plan centre %s, mean centre %s", land.name(), cells[i] * 16L * GlobeMap.CELL * GlobeMap.CELL / 1_000_000L,
+					(maxX[i] - minX[i]) / 1000, (maxZ[i] - minZ[i]) / 1000, centreOn ? "on land" : "IN SEA/OTHER", meanOn ? "on land" : "IN SEA/OTHER"));
+			}
+			lines.add(row.toString());
+		}
+		lines.add("plan centre off its continent: " + centreOff + " of " + total);
+		Path out = Path.of("build", "world");
+		Files.createDirectories(out);
+		Files.write(out.resolve("labels.txt"), lines);
+	}
 }
