@@ -23,6 +23,18 @@ public final class DungeonPlots {
 		return (plot / COLUMNS) * SPACING;
 	}
 
+	/** The chunk columns of a plot's strip between two x coordinates (inclusive), west to east, as {chunkX, chunkZ}: 4 rows cover every room and corridor. */
+	public static java.util.List<int[]> stripChunks(int plot, int fromX, int toX) {
+		java.util.List<int[]> out = new java.util.ArrayList<>();
+		int z = originZ(plot);
+		for (int cx = Math.floorDiv(fromX, 16); cx <= Math.floorDiv(toX, 16); cx++) {
+			for (int cz = Math.floorDiv(z - 26, 16); cz <= Math.floorDiv(z + 26, 16); cz++) {
+				out.add(new int[] {cx, cz});
+			}
+		}
+		return out;
+	}
+
 	/** The plot a position belongs to, or -1 when it lies outside the plot grid. */
 	public static int plotAt(int x, int z) {
 		int col = Math.floorDiv(x, SPACING);

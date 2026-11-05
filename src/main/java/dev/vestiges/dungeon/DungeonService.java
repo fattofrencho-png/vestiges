@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.UUID;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.ChatFormatting;
@@ -67,6 +69,15 @@ public final class DungeonService {
 			if (server.getTickCount() % 5 == 0) {
 				tick(server);
 			}
+			PlotCleaner.tick(server);
+		});
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> PlotCleaner.reset());
+		// The walls are unbreakable: in the dungeon world only blocks that a player placed can be broken (operators in creative mode may edit).
+		PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
+			if (world.isClientSide() || !world.dimension().equals(DUNGEON) || player.isCreative() && dev.vestiges.server.Permissions.isOperator((ServerPlayer) player)) {
+				return true;
+			}
+			return dev.vestiges.codex.PlacedBlocks.isPlaced((ServerLevel) world, pos);
 		});
 		// Anyone who logs in inside the dungeon world without a run (it ended while they were away) is sent home.
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
@@ -160,7 +171,13 @@ public final class DungeonService {
 			warn(p, "You are already in a dungeon.");
 			return true;
 		}
-		start(server, level, frame, p, key, held);
+		DungeonRuns all = runs(server);
+		List<DungeonRuns.Room> rooms = DungeonRunner.plan(key.theme(), all.peekPlot(), all.nextRun() * 31L + server.overworld().getGameTime());
+		if (rooms == null) {
+			warn(p, "The " + theme.name() + " dungeons have no rooms yet.");
+			return true;
+		}
+		start(server, level, frame, p, key, held, rooms);
 		return true;
 	}
 
@@ -187,11 +204,12 @@ public final class DungeonService {
 		return out;
 	}
 
-	private static void start(MinecraftServer server, ServerLevel from, PortalFrame.Shape frame, ServerPlayer leader, DungeonKeys.Data key, ItemStack held) {
+	private static void start(MinecraftServer server, ServerLevel from, PortalFrame.Shape frame, ServerPlayer leader, DungeonKeys.Data key, ItemStack held,
+							  List<DungeonRuns.Room> rooms) {
 		DungeonRuns all = runs(server);
 		ServerLevel dungeon = dungeonLevel(server);
 		int plot = all.peekPlot();
-		DungeonBuilder.buildStart(dungeon, plot);
+		long began = System.nanoTime();
 		BlockPos back = BlockPos.containing(frame.centerX(), frame.y(), frame.centerZ());
 		String fromDim = from.dimension().identifier().toString();
 		List<DungeonRuns.Member> members = new ArrayList<>();
@@ -199,16 +217,19 @@ public final class DungeonService {
 		for (ServerPlayer m : party) {
 			members.add(new DungeonRuns.Member(m.getUUID(), m.getGameProfile().name(), DungeonRules.startingLives(key.tier()), false, fromDim, back));
 		}
-		DungeonRuns.Run run = new DungeonRuns.Run(all.nextRun(), plot, key.theme(), key.tier(), server.overworld().getGameTime(), List.copyOf(members));
+		DungeonRuns.Run run = new DungeonRuns.Run(all.nextRun(), plot, key.theme(), key.tier(), server.overworld().getGameTime(), List.copyOf(members), rooms);
+		run = DungeonRunner.ensureBuilt(dungeon, run, DungeonRunner.AHEAD);
 		save(server, all.with(run));
 		held.shrink(1);
 		String title = DungeonKeys.themeName(key.theme()) + " dungeon, tier " + key.tier();
-		Vec3 spawn = DungeonBuilder.startSpawn(plot);
+		DungeonRuns.Room start = run.rooms().get(0);
+		Vec3 spawn = new Vec3(start.x() + 8.5, DungeonPlots.FLOOR_Y + 1, start.centerZ() + 0.5);
 		for (ServerPlayer m : party) {
 			m.teleport(new TeleportTransition(dungeon, spawn, Vec3.ZERO, -90f, 0f, TeleportTransition.DO_NOTHING));
 			m.sendSystemMessage(Component.literal(title + ". Step into the frame on the west wall to leave for good.").withStyle(ChatFormatting.GOLD));
 		}
-		Vestiges.LOGGER.info("Vestiges: dungeon run {} started on plot {} ({}, tier {}, {} players)", run.id(), plot, key.theme(), key.tier(), party.size());
+		Vestiges.LOGGER.info("Vestiges: dungeon run {} started on plot {} ({}, tier {}, {} players, {} rooms planned, first built in {} ms)", run.id(), plot,
+			key.theme(), key.tier(), party.size(), run.rooms().size(), (System.nanoTime() - began) / 1_000_000);
 	}
 
 	// ---- leaving and ending ------------------------------------------------------------------------------------------
@@ -218,7 +239,9 @@ public final class DungeonService {
 		if (all.runs().isEmpty()) {
 			return;
 		}
+		ServerLevel dungeon = dungeonLevel(server);
 		for (DungeonRuns.Run run : all.runs()) {
+			List<net.minecraft.world.phys.AABB> exits = DungeonBuilder.exitZones(run);
 			for (DungeonRuns.Member m : run.party()) {
 				if (m.out()) {
 					continue;
@@ -230,9 +253,19 @@ public final class DungeonService {
 				if (!p.level().dimension().equals(DUNGEON)) {
 					// They left some other way (a command, a respawn): they are out.
 					markOut(server, run.id(), m.id());
-				} else if (p.getBoundingBox().intersects(DungeonBuilder.exitZone(run.plot()))) {
+				} else if (exits.stream().anyMatch(z -> p.getBoundingBox().intersects(z))) {
 					leave(server, p);
 				}
+			}
+		}
+		if (dungeon == null) {
+			return;
+		}
+		// Rooms: entering, fighting, clearing. Read the runs again, the loop above may have ended some.
+		for (DungeonRuns.Run run : runs(server).runs()) {
+			DungeonRuns.Run next = DungeonRunner.progress(server, dungeon, run);
+			if (next != run) {
+				save(server, runs(server).replace(next));
 			}
 		}
 	}
@@ -283,19 +316,17 @@ public final class DungeonService {
 		}
 	}
 
-	/** Frees the plot: the run is over. */
+	/** The run is over: it is forgotten, and its plot is cleared before anyone gets it again. */
 	private static void finish(MinecraftServer server, int runId) {
 		DungeonRuns all = runs(server);
 		DungeonRuns.Run run = all.byId(runId);
 		if (run == null) {
 			return;
 		}
-		save(server, all.end(runId));
-		ServerLevel dungeon = dungeonLevel(server);
-		if (dungeon != null) {
-			DungeonBuilder.clearStart(dungeon, run.plot());
-		}
-		Vestiges.LOGGER.info("Vestiges: dungeon run {} ended, plot {} is free", runId, run.plot());
+		DungeonRuns after = all.end(runId);
+		save(server, after);
+		after.clearing().stream().filter(d -> d.plot() == run.plot()).findFirst().ifPresent(PlotCleaner::enqueue);
+		Vestiges.LOGGER.info("Vestiges: dungeon run {} ended, plot {} is being cleared", runId, run.plot());
 	}
 
 	/** Teleports a player to where their portal stood (the world's spawn when that place is gone). */

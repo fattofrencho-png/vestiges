@@ -9,6 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import dev.vestiges.dungeon.DungeonPlots;
+import dev.vestiges.dungeon.DungeonRoom;
+import dev.vestiges.dungeon.RoomBuilder;
+import dev.vestiges.dungeon.RoomLayout;
 import dev.vestiges.dungeon.DungeonRules;
 import dev.vestiges.dungeon.DungeonRuns;
 import dev.vestiges.dungeon.DungeonTheme;
@@ -23,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
@@ -167,11 +171,11 @@ class DungeonTest {
 		for (UUID u : players) {
 			party.add(new DungeonRuns.Member(u, "p", 3, false, "minecraft:overworld", new BlockPos(1, 2, 3)));
 		}
-		return new DungeonRuns.Run(id, plot, "overgrown", 1, 100L, party);
+		return new DungeonRuns.Run(id, plot, "overgrown", 1, 100L, party, List.of());
 	}
 
 	@Test
-	void plotsAreHandedOutLowestFirstAndReused() {
+	void plotsAreHandedOutLowestFirstAndOnlyWhenCleared() {
 		UUID a = UUID.randomUUID();
 		UUID b = UUID.randomUUID();
 		DungeonRuns r = DungeonRuns.EMPTY;
@@ -183,13 +187,32 @@ class DungeonTest {
 		assertEquals(2, r.runs().size());
 		assertEquals(1, r.byPlayer(b).plot());
 		r = r.end(1);
-		assertEquals(List.of(0), r.freePlots());
-		assertEquals(0, r.peekPlot(), "the freed plot comes back before a new one");
+		assertEquals(1, r.clearing().size());
+		assertEquals(0, r.clearing().get(0).plot());
+		assertTrue(r.isClearing(0));
+		assertEquals(List.of(), r.freePlots(), "a plot that is still being cleared is not free");
+		assertEquals(2, r.peekPlot(), "so the next run takes a new one");
 		assertNull(r.byPlayer(a));
+		r = r.cleared(0);
+		assertEquals(List.of(0), r.freePlots());
+		assertFalse(r.isClearing(0));
+		assertEquals(0, r.peekPlot(), "the cleared plot comes back before a new one");
 		r = r.with(run(r.nextRun(), r.peekPlot(), a));
 		assertEquals(List.of(), r.freePlots());
 		assertEquals(2, r.nextPlot());
 		assertEquals(3, r.runs().get(1).id(), "run numbers keep counting");
+	}
+
+	@Test
+	void theClearedStretchFollowsTheBuiltRooms() {
+		List<DungeonRuns.Room> rooms = RoomLayout.plan(3, pool(), new Random(1));
+		DungeonRuns.Run run = new DungeonRuns.Run(1, 3, "overgrown", 1, 0L, List.of(),
+			List.of(rooms.get(0).withMarkers(List.of(), List.of(), List.of()), rooms.get(1)));
+		DungeonRuns.Dirty d = DungeonRuns.EMPTY.with(run).end(1).clearing().get(0);
+		assertEquals(3, d.plot());
+		assertEquals(rooms.get(0).x() - 2, d.fromX());
+		assertEquals(rooms.get(0).x() + rooms.get(0).size() + 2, d.toX(), "only the built room");
+		assertEquals(4 * (Math.floorDiv(d.toX(), 16) - Math.floorDiv(d.fromX(), 16) + 1), DungeonPlots.stripChunks(3, d.fromX(), d.toX()).size());
 	}
 
 	@Test
@@ -210,11 +233,198 @@ class DungeonTest {
 	@Test
 	void runsSurviveSaving() {
 		UUID a = UUID.randomUUID();
-		DungeonRuns r = DungeonRuns.EMPTY.with(run(1, 0, a)).with(run(2, 1, UUID.randomUUID())).end(1);
+		List<DungeonRuns.Room> rooms = RoomLayout.plan(1, pool(), new Random(9));
+		DungeonRuns.Run withRooms = new DungeonRuns.Run(2, 1, "overgrown", 4, 7L, run(2, 1, UUID.randomUUID()).party(),
+			List.of(rooms.get(0).withMarkers(List.of(new BlockPos(1, 2, 3)), List.of(new BlockPos(4, 5, 6)), List.of()),
+				rooms.get(1).withState(DungeonRuns.Room.ACTIVE)));
+		DungeonRuns r = DungeonRuns.EMPTY.with(run(1, 0, a)).with(withRooms).end(1);
 		var json = DungeonRuns.CODEC.encodeStart(JsonOps.INSTANCE, r).getOrThrow();
 		DungeonRuns back = DungeonRuns.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
 		assertEquals(r, back);
 		assertEquals(DungeonRuns.EMPTY, DungeonRuns.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString("{}")).getOrThrow());
+		assertTrue(back.runs().get(0).rooms().get(0).built());
+		assertFalse(back.runs().get(0).rooms().get(1).built());
+		assertEquals(DungeonRuns.Room.ACTIVE, back.runs().get(0).rooms().get(1).state());
+	}
+
+	/** A pool like Overgrown's: four fighting shapes and one room for every other role. */
+	private static java.util.function.Function<String, List<RoomLayout.Template>> pool() {
+		return role -> switch (role) {
+			case "combat" -> List.of(new RoomLayout.Template("a", "combat", "arena", 32), new RoomLayout.Template("b", "combat", "pillars", 32),
+				new RoomLayout.Template("c", "combat", "pit", 32), new RoomLayout.Template("d", "combat", "split", 32));
+			case "lieutenant" -> List.of(new RoomLayout.Template("l", "lieutenant", "arena", 40));
+			case "boss" -> List.of(new RoomLayout.Template("x", "boss", "arena", 48));
+			default -> List.of(new RoomLayout.Template(role, role, "hall", 32));
+		};
+	}
+
+	@Test
+	void aRunHasThirteenRoomsInTheAgreedOrder() {
+		List<DungeonRuns.Room> rooms = RoomLayout.plan(0, pool(), new Random(4));
+		assertEquals(13, rooms.size());
+		assertEquals(RoomLayout.ORDER, rooms.stream().map(DungeonRuns.Room::role).toList());
+		assertEquals(List.of("start", "combat", "combat", "combat", "combat", "combat", "combat", "lieutenant", "combat", "combat", "combat", "boss", "reward"),
+			RoomLayout.ORDER);
+		assertEquals(32, rooms.get(0).size());
+		assertEquals(40, rooms.get(7).size());
+		assertEquals(48, rooms.get(11).size());
+	}
+
+	@Test
+	void roomsStandInALineWithCorridorsAndNeverOverlap() {
+		for (int plot : new int[] {0, 1, 17, 50}) {
+			for (long seed = 0; seed < 200; seed++) {
+				List<DungeonRuns.Room> rooms = RoomLayout.plan(plot, pool(), new Random(seed));
+				assertEquals(DungeonPlots.originX(plot) + 1, rooms.get(0).x());
+				String lastCombat = "";
+				for (int i = 0; i < rooms.size(); i++) {
+					DungeonRuns.Room room = rooms.get(i);
+					assertEquals(DungeonPlots.originZ(plot), room.centerZ(), "doors are on the middle line");
+					assertEquals(DungeonRuns.Room.IDLE, room.state());
+					assertFalse(room.built());
+					if (i + 1 < rooms.size()) {
+						DungeonRuns.Room next = rooms.get(i + 1);
+						assertTrue(room.corridorAfter() >= RoomLayout.MIN_CORRIDOR && room.corridorAfter() <= RoomLayout.MAX_CORRIDOR, "corridor " + room.corridorAfter());
+						assertEquals(room.eastWallX() + room.corridorAfter() + 1, next.westWallX(), "the corridor runs wall to wall");
+					} else {
+						assertEquals(0, room.corridorAfter());
+					}
+					if (room.role().equals("combat")) {
+						assertFalse(room.template().equals(lastCombat), "no fighting room twice in a row");
+						lastCombat = room.template();
+					}
+				}
+				assertTrue(RoomLayout.endX(rooms) < DungeonPlots.originX(plot) + DungeonPlots.SPACING, "the run fits in its plot");
+			}
+		}
+	}
+
+	@Test
+	void aThemeWithoutRoomsForARoleCannotBePlanned() {
+		assertNull(RoomLayout.plan(0, role -> role.equals("boss") ? List.of() : pool().apply(role), new Random(1)));
+	}
+
+	@Test
+	void everyRoomShapeCanBeWalkedFromDoorToDoor() {
+		for (String shape : DungeonRoom.SHAPES) {
+			for (int size : new int[] {32, 40, 48}) {
+				int[][] g = RoomBuilder.floorMap(shape, size);
+				int c = size / 2;
+				for (int dz = c - 2; dz <= c + 2; dz++) {
+					assertEquals(0, g[0][dz], shape + ": the west door opens onto the floor");
+					assertEquals(0, g[size - 1][dz], shape + ": the east door opens onto the floor");
+				}
+				// Walk: a step may go up or down by one block (a jump).
+				boolean[][] seen = new boolean[size][size];
+				java.util.ArrayDeque<int[]> queue = new java.util.ArrayDeque<>();
+				queue.add(new int[] {0, c});
+				seen[0][c] = true;
+				while (!queue.isEmpty()) {
+					int[] cell = queue.poll();
+					for (int[] d : new int[][] {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
+						int nx = cell[0] + d[0];
+						int nz = cell[1] + d[1];
+						if (nx >= 0 && nz >= 0 && nx < size && nz < size && !seen[nx][nz] && g[nx][nz] != RoomBuilder.BLOCKED
+							&& Math.abs(g[nx][nz] - g[cell[0]][cell[1]]) <= 1) {
+							seen[nx][nz] = true;
+							queue.add(new int[] {nx, nz});
+						}
+					}
+				}
+				assertTrue(seen[size - 1][c], shape + " " + size + ": the east door can be reached from the west door");
+				long free = 0;
+				long reached = 0;
+				for (int x = 0; x < size; x++) {
+					for (int z = 0; z < size; z++) {
+						if (g[x][z] != RoomBuilder.BLOCKED) {
+							free++;
+							if (seen[x][z]) {
+								reached++;
+							}
+						}
+					}
+				}
+				assertEquals(free, reached, shape + " " + size + ": every free cell can be reached");
+			}
+		}
+	}
+
+	@Test
+	void pitsAreShallowAndPillarsAreTwoByTwo() {
+		int[][] pit = RoomBuilder.floorMap("pit", 32);
+		int low = 0;
+		for (int[] col : pit) {
+			for (int h : col) {
+				low = Math.min(low, h);
+			}
+		}
+		assertEquals(-3, low);
+		int blocked = 0;
+		for (int[] col : RoomBuilder.floorMap("arena", 32)) {
+			for (int h : col) {
+				blocked += h == RoomBuilder.BLOCKED ? 1 : 0;
+			}
+		}
+		assertEquals(16, blocked, "four 2 x 2 pillars");
+		blocked = 0;
+		for (int[] col : RoomBuilder.floorMap("pillars", 32)) {
+			for (int h : col) {
+				blocked += h == RoomBuilder.BLOCKED ? 1 : 0;
+			}
+		}
+		assertEquals(36, blocked, "nine 2 x 2 pillars");
+	}
+
+	@Test
+	void roomGeometry() {
+		List<DungeonRuns.Room> rooms = RoomLayout.plan(0, pool(), new Random(2));
+		DungeonRuns.Room room = rooms.get(1);
+		assertTrue(room.inside(room.x() + 5, DungeonPlots.FLOOR_Y + 1, room.centerZ(), 2.0));
+		assertFalse(room.inside(room.x() + 1, DungeonPlots.FLOOR_Y + 1, room.centerZ(), 2.0), "the doorway is not inside yet");
+		assertFalse(room.inside(room.x() - 3, DungeonPlots.FLOOR_Y + 1, room.centerZ(), 0.0));
+		assertTrue(room.fighting());
+		assertFalse(rooms.get(0).fighting());
+		assertFalse(rooms.get(12).fighting());
+		assertEquals(room.x() - 1, room.westWallX());
+		assertEquals(room.x() + room.size(), room.eastWallX());
+		assertEquals(14, RoomLayout.heightOf("boss"));
+		assertEquals(10, RoomLayout.heightOf("combat"));
+	}
+
+	@Test
+	void bundledRoomsDecodeAndEveryThemeHasAFullSet() throws IOException {
+		Path rooms = Path.of("src/main/resources/data/vestiges/vestiges/dungeon_rooms");
+		Path themes = Path.of("src/main/resources/data/vestiges/vestiges/dungeon_themes");
+		Map<String, List<DungeonRoom>> byTheme = new HashMap<>();
+		try (var files = Files.list(rooms)) {
+			for (Path f : files.filter(p -> p.toString().endsWith(".json")).toList()) {
+				DungeonRoom room = DungeonRoom.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(Files.readString(f, StandardCharsets.UTF_8)))
+					.getOrThrow(msg -> new IllegalStateException(f + ": " + msg));
+				assertTrue(DungeonRoom.ROLES.contains(room.role()), f + " role " + room.role());
+				assertTrue(DungeonRoom.SHAPES.contains(room.shape()), f + " shape " + room.shape());
+				int expected = switch (room.role()) {
+					case "lieutenant" -> 40;
+					case "boss" -> 48;
+					default -> 32;
+				};
+				assertEquals(expected, room.size(), f + " size");
+				byTheme.computeIfAbsent(room.theme(), k -> new ArrayList<>()).add(room);
+			}
+		}
+		try (var files = Files.list(themes)) {
+			for (Path f : files.filter(p -> p.toString().endsWith(".json")).toList()) {
+				String theme = f.getFileName().toString().replace(".json", "");
+				List<DungeonRoom> list = byTheme.getOrDefault(theme, List.of());
+				for (String role : DungeonRoom.ROLES) {
+					assertTrue(list.stream().anyMatch(r -> r.role().equals(role)), theme + " has a " + role + " room");
+				}
+				assertTrue(list.stream().filter(r -> r.role().equals("combat")).map(DungeonRoom::shape).distinct().count() >= 4,
+					theme + " has at least 4 fighting shapes");
+				DungeonTheme t = DungeonTheme.CODEC.parse(JsonOps.INSTANCE, JsonParser.parseString(Files.readString(f, StandardCharsets.UTF_8))).getOrThrow();
+				assertFalse(t.mobs().isEmpty(), theme + " has monsters");
+				assertFalse(t.palette().floor().isEmpty(), theme + " has a floor");
+			}
+		}
 	}
 
 	@Test

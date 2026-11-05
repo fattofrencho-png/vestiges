@@ -19,7 +19,9 @@ public final class VestigesData {
 	public static final DataType<VillagerLoreDef> VILLAGER_LORE = new DataType<>("villager_lore", VillagerLoreDef.CODEC);
 	public static final DataType<VillagerTradesDef> VILLAGER_TRADES = new DataType<>("villager_trades", VillagerTradesDef.CODEC);
 	public static final DataType<dev.vestiges.dungeon.DungeonTheme> DUNGEON_THEMES = new DataType<>("dungeon_themes", dev.vestiges.dungeon.DungeonTheme.CODEC);
-	public static final List<DataType<?>> ALL = List.of(FEATS, TREES, ASCENDANCIES, LOOT_RULES, CODEX, MEALS, QUESTS, VILLAGER_LORE, VILLAGER_TRADES, DUNGEON_THEMES);
+	public static final DataType<dev.vestiges.dungeon.DungeonRoom> DUNGEON_ROOMS = new DataType<>("dungeon_rooms", dev.vestiges.dungeon.DungeonRoom.CODEC);
+	public static final List<DataType<?>> ALL = List.of(FEATS, TREES, ASCENDANCIES, LOOT_RULES, CODEX, MEALS, QUESTS, VILLAGER_LORE, VILLAGER_TRADES, DUNGEON_THEMES,
+		DUNGEON_ROOMS);
 
 	private VestigesData() {
 	}
