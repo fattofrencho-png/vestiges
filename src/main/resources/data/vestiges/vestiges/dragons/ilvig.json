@@ -1,0 +1,22 @@
+{
+  "number": 5,
+  "name": "Ilvig",
+  "title": "the Swarm Mother",
+  "level": 20,
+  "gate": 20,
+  "health": 2.6,
+  "damage": 1.8,
+  "moves": [
+    "phantoms",
+    "fire_ring",
+    "wing_shove"
+  ],
+  "rewards": {
+    "xp_levels": 1.0,
+    "emeralds": 160,
+    "book": true,
+    "relic": false,
+    "feats": [],
+    "chapter": "lore/ilvig"
+  }
+}

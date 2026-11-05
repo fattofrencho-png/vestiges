@@ -1,0 +1,21 @@
+{
+  "number": 4,
+  "name": "Dhars",
+  "title": "the Crystal Keeper",
+  "level": 16,
+  "gate": 16,
+  "health": 2.2,
+  "damage": 1.6,
+  "moves": [
+    "crystal_regrow",
+    "wing_shove"
+  ],
+  "rewards": {
+    "xp_levels": 1.0,
+    "emeralds": 128,
+    "book": true,
+    "relic": false,
+    "feats": [],
+    "chapter": "lore/dhars"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "number": 3,
+  "name": "Morst",
+  "title": "the Gale",
+  "level": 12,
+  "gate": 12,
+  "health": 1.8,
+  "damage": 1.4,
+  "moves": [
+    "wing_shove",
+    "fire_ring"
+  ],
+  "rewards": {
+    "xp_levels": 1.0,
+    "emeralds": 96,
+    "book": true,
+    "relic": false,
+    "feats": [],
+    "chapter": "lore/morst"
+  }
+}

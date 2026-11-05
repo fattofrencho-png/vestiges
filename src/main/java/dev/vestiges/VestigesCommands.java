@@ -169,6 +169,7 @@ public final class VestigesCommands {
 			.then(dev.vestiges.world.WorldCommands.tree())
 			.then(dev.vestiges.dungeon.DungeonCommands.give())
 			.then(dev.vestiges.dungeon.DungeonCommands.dungeon())
+			.then(dev.vestiges.dragon.DragonCommands.dragon())
 			.then(Commands.literal("config")
 				.then(Commands.literal("list").executes(ctx -> list(ctx.getSource())))
 				.then(Commands.literal("reload").executes(ctx -> reload(ctx.getSource())))

@@ -167,9 +167,9 @@ public final class InventoryService {
 		}
 	}
 
-	/** Ender chest pages you can use: 1 now, one more per dragon (dragons arrive in M9). */
+	/** Ender chest pages you can use: 1 to start, one more for every dragon you were rewarded for (the dragons switch off: just the first). */
 	public static int unlockedPages(ServerPlayer player) {
-		return 1;
+		return dev.vestiges.dragon.DragonService.enabled() ? dev.vestiges.dragon.DragonService.pages(player, PAGES) : 1;
 	}
 
 	// ---- sync ------------------------------------------------------------------------------------------------------
