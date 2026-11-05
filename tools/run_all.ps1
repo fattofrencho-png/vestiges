@@ -24,6 +24,7 @@ $batches = [ordered]@{
 	"gameplay"   = @("inventory", "map", "levels", "mobs", "loot")
 	"structures" = @("structures", "structures2")
 	"villagers"  = @("villagers", "grave")
+	"gear"       = @("mending")
 	"dungeons"   = @("dungeons")
 	"themes"     = @("dungeons2")
 	"dragons"    = @("dragons")
