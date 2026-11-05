@@ -1,6 +1,6 @@
 # Vestiges: dungeons test guide (about 20 minutes)
 
-Written 2026-11-05 for the dungeon MVP (branch `dungeons`). The automatic checks have already run: the `dungeons` and `dungeons2` suites walk every room of an Overgrown, a Trial and an End run, and the unit tests cover the rules. This guide is only what a machine can't judge: **feel, difficulty, looks, and a second player**.
+Written 2026-11-05 for the dungeon MVP (branch `claude/dungeons-559493`). The automatic checks have already run: the `dungeons` and `dungeons2` suites walk every room of an Overgrown, a Trial and an End run, and the unit tests cover the rules. This guide is only what a machine can't judge: **feel, difficulty, looks, and a second player**.
 
 Start: `dev deploy`, open the `modtesting` instance (or `dev runClient`), make a new **Creative** world with the Vestiges world type, then paste the kit.
 
@@ -60,4 +60,4 @@ Start: `dev deploy`, open the `modtesting` instance (or `dev runClient`), make a
 
 ## Not tested by machines
 
-A **second player** (party of 2 with +50% monster health, a second copy of each chest), real `.nbt` rooms from you (the loader is not written yet, see the close report), restarting the game in the middle of a run, and how it feels at tier 4 and up.
+A **second player** (party of 2 with +50% monster health, a second copy of each chest), real `.nbt` rooms from you (the loader exists and passed a hand-made test file; the convention is in `docs/ideas/dungeons.md`, section 7), restarting the game in the middle of a run, and how it feels at tier 4 and up.

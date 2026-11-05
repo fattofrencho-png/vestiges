@@ -1,0 +1,54 @@
+{
+  "name": "Trial",
+  "color": "gold",
+  "unlock": "",
+  "palette": {
+    "floor": [
+      "minecraft:tuff_bricks",
+      "minecraft:polished_tuff",
+      "minecraft:tuff_bricks",
+      "minecraft:cut_copper"
+    ],
+    "wall": [
+      "minecraft:tuff_bricks",
+      "minecraft:tuff_bricks",
+      "minecraft:polished_tuff",
+      "minecraft:cut_copper"
+    ],
+    "ceiling": [
+      "minecraft:tuff_bricks",
+      "minecraft:polished_tuff"
+    ],
+    "pillar": [
+      "minecraft:chiseled_tuff",
+      "minecraft:polished_tuff",
+      "minecraft:chiseled_copper"
+    ],
+    "light": [
+      "minecraft:ochre_froglight"
+    ],
+    "gate": [
+      "minecraft:copper_bars"
+    ]
+  },
+  "mobs": [
+    "minecraft:breeze",
+    "minecraft:bogged",
+    "minecraft:breeze",
+    "minecraft:bogged",
+    "minecraft:skeleton",
+    "minecraft:zombie",
+    "minecraft:cave_spider",
+    "minecraft:silverfish"
+  ],
+  "lieutenant": {
+    "name": "Gale",
+    "mob": "minecraft:breeze",
+    "count": 1
+  },
+  "boss": {
+    "name": "The Vault Keeper",
+    "mob": "minecraft:bogged",
+    "count": 1
+  }
+}

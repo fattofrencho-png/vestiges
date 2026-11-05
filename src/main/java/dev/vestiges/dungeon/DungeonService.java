@@ -43,10 +43,22 @@ public final class DungeonService {
 	public static final ResourceKey<Level> DUNGEON = ResourceKey.create(Registries.DIMENSION, Vestiges.id("dungeon"));
 	public static final AttachmentType<DungeonRuns> RUNS = AttachmentRegistry.create(Vestiges.id("dungeon_runs"),
 		builder -> builder.persistent(DungeonRuns.CODEC));
+	/** What a player has earned from dungeons so far (the elytra of the End theme). Kept on death. */
+	public static final AttachmentType<PlayerDungeon> PLAYER = AttachmentRegistry.create(Vestiges.id("dungeon_player"),
+		builder -> builder.persistent(PlayerDungeon.CODEC).copyOnDeath());
 	/** Everyone this close to the portal goes in together. */
 	public static final double PARTY_RADIUS = 8.0;
 
 	private DungeonService() {
+	}
+
+	public static PlayerDungeon state(ServerPlayer p) {
+		PlayerDungeon s = p.getAttached(PLAYER);
+		return s == null ? PlayerDungeon.EMPTY : s;
+	}
+
+	static void setState(ServerPlayer p, PlayerDungeon state) {
+		p.setAttached(PLAYER, state);
 	}
 
 	public static boolean enabled() {

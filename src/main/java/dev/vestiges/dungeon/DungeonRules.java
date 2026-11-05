@@ -40,6 +40,11 @@ public final class DungeonRules {
 		return others.get(Math.min(others.size() - 1, (int) (pickRoll * others.size())));
 	}
 
+	/** Elytra come with the first Boss clear of a theme at or above its tier, once for each player. */
+	public static boolean elytraDue(int tier, int themeElytraTier, boolean alreadyGiven) {
+		return themeElytraTier > 0 && tier >= themeElytraTier && !alreadyGiven;
+	}
+
 	/** Fighting rooms hold 6 to 10 monsters. */
 	public static final int MIN_MONSTERS = 6;
 	public static final int MAX_MONSTERS = 10;

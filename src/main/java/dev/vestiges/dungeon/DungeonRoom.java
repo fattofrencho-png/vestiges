@@ -7,12 +7,12 @@ import java.util.List;
 /**
  * One room template, loaded from {@code data/<namespace>/vestiges/dungeon_rooms/<id>.json}. {@code role} says where it can stand in a run (start,
  * combat, lieutenant, boss, reward), {@code size} is the side of its square floor, and {@code shape} names the code-built layout (hall, arena,
- * pillars, pit, split). A {@code structure} (a vanilla structure file the author hands in) replaces the built layout and uses the marker blocks:
- * gold block = mob spawn, chest = cache, lodestone = boss spot, iron door = door slot.
+ * pillars, pit, split, and the End's gaps and islands with void between). A {@code structure} (a vanilla structure file the author hands in) replaces the built layout and uses the marker blocks:
+ * gold block = mob spawn, chest = cache, lodestone = boss spot, iron door = door slot (see {@link RoomAssets} for the full convention).
  */
 public record DungeonRoom(String theme, String role, String shape, int size, String structure) {
 	public static final List<String> ROLES = List.of("start", "combat", "lieutenant", "boss", "reward");
-	public static final List<String> SHAPES = List.of("hall", "arena", "pillars", "pit", "split");
+	public static final List<String> SHAPES = List.of("hall", "arena", "pillars", "pit", "split", "gaps", "islands");
 
 	public static final Codec<DungeonRoom> CODEC = RecordCodecBuilder.create(i -> i.group(
 		Codec.STRING.fieldOf("theme").forGetter(DungeonRoom::theme),

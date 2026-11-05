@@ -410,7 +410,7 @@ class DungeonTest {
 					for (int[] d : new int[][] {{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
 						int nx = cell[0] + d[0];
 						int nz = cell[1] + d[1];
-						if (nx >= 0 && nz >= 0 && nx < size && nz < size && !seen[nx][nz] && g[nx][nz] != RoomBuilder.BLOCKED
+						if (nx >= 0 && nz >= 0 && nx < size && nz < size && !seen[nx][nz] && RoomBuilder.solid(g[nx][nz])
 							&& Math.abs(g[nx][nz] - g[cell[0]][cell[1]]) <= 1) {
 							seen[nx][nz] = true;
 							queue.add(new int[] {nx, nz});
@@ -422,7 +422,7 @@ class DungeonTest {
 				long reached = 0;
 				for (int x = 0; x < size; x++) {
 					for (int z = 0; z < size; z++) {
-						if (g[x][z] != RoomBuilder.BLOCKED) {
+						if (RoomBuilder.solid(g[x][z])) {
 							free++;
 							if (seen[x][z]) {
 								reached++;
@@ -433,6 +433,39 @@ class DungeonTest {
 				assertEquals(free, reached, shape + " " + size + ": every free cell can be reached");
 			}
 		}
+	}
+
+	@Test
+	void voidIsAtMostAQuarterAndBridgesAreThreeBlocksWide() {
+		for (String shape : DungeonRoom.SHAPES) {
+			for (int size : new int[] {32, 40, 48}) {
+				int[][] g = RoomBuilder.floorMap(shape, size);
+				int c = size / 2;
+				int voids = 0;
+				for (int[] col : g) {
+					for (int h : col) {
+						voids += h == RoomBuilder.VOID ? 1 : 0;
+					}
+				}
+				boolean isVoidShape = shape.equals("gaps") || shape.equals("islands");
+				assertEquals(isVoidShape, voids > 0, shape + ": only the End shapes have void");
+				assertTrue(voids <= size * size / 4, shape + " " + size + ": void covers " + voids + " of " + size * size);
+				for (int dx = 0; dx < size; dx++) {
+					for (int dz = c - 1; dz <= c + 1; dz++) {
+						assertTrue(g[dx][dz] != RoomBuilder.VOID, shape + " " + size + ": the bridge on the door line is 3 blocks wide, column " + dx);
+					}
+				}
+			}
+		}
+	}
+
+	@Test
+	void elytraComeOncePerPlayerFromTheThemesTier() {
+		assertTrue(DungeonRules.elytraDue(3, 3, false));
+		assertTrue(DungeonRules.elytraDue(9, 3, false));
+		assertFalse(DungeonRules.elytraDue(2, 3, false), "tier 2 is too low");
+		assertFalse(DungeonRules.elytraDue(5, 3, true), "only once");
+		assertFalse(DungeonRules.elytraDue(5, 0, false), "a theme without elytra gives none");
 	}
 
 	@Test
@@ -530,6 +563,22 @@ class DungeonTest {
 		assertTrue(overgrown.openFromStart());
 		assertEquals("Mossbound", overgrown.lieutenant().name());
 		assertEquals("The Rotwood Witch", overgrown.boss().name());
+		DungeonTheme trial = DungeonTheme.CODEC.parse(JsonOps.INSTANCE,
+			JsonParser.parseString(Files.readString(dir.resolve("trial.json"), StandardCharsets.UTF_8))).getOrThrow();
+		assertTrue(trial.openFromStart(), "Trial is open from the start in the MVP");
+		assertEquals("Gale", trial.lieutenant().name());
+		assertEquals("The Vault Keeper", trial.boss().name());
+		assertEquals(0, trial.elytraTier());
+		DungeonTheme end = DungeonTheme.CODEC.parse(JsonOps.INSTANCE,
+			JsonParser.parseString(Files.readString(dir.resolve("end.json"), StandardCharsets.UTF_8))).getOrThrow();
+		assertFalse(end.openFromStart());
+		assertEquals("dragonslayer", end.unlockFeat(), "the End opens with dragon 1");
+		assertEquals("The Shellguard", end.lieutenant().name());
+		assertEquals(3, end.lieutenant().count(), "a pack of three shulkers");
+		assertEquals("minecraft:shulker", end.lieutenant().mob());
+		assertEquals("The Void Stalker", end.boss().name());
+		assertEquals("minecraft:enderman", end.boss().mob());
+		assertEquals(3, end.elytraTier(), "elytra from tier 3");
 		assertEquals(1, overgrown.boss().count());
 		assertEquals("dragonslayer", new DungeonTheme("End", "light_purple", "feat:dragonslayer").unlockFeat());
 	}

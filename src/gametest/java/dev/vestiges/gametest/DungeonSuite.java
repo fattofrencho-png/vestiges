@@ -140,8 +140,9 @@ final class DungeonSuite {
 
 	private static boolean bars(TestServerContext server, int x, int z) {
 		int y = DungeonPlots.FLOOR_Y;
-		return block(server, x, y + 1, z, st -> st.is(Blocks.IRON_BARS)) && block(server, x, y + 4, z + 2, st -> st.is(Blocks.IRON_BARS))
-			&& block(server, x, y + 4, z - 2, st -> st.is(Blocks.IRON_BARS));
+		java.util.function.Predicate<net.minecraft.world.level.block.state.BlockState> gate = st -> BuiltInRegistries.BLOCK.getKey(st.getBlock()).getPath().endsWith("_bars")
+			|| st.is(Blocks.IRON_BARS);
+		return block(server, x, y + 1, z, gate) && block(server, x, y + 4, z + 2, gate) && block(server, x, y + 4, z - 2, gate);
 	}
 
 	private static boolean open(TestServerContext server, int x, int z) {
@@ -155,8 +156,157 @@ final class DungeonSuite {
 			DungeonRuns.Run run = DungeonService.runs(s).byId(runId);
 			ServerLevel level = s.getLevel(DungeonService.DUNGEON);
 			String tag = "vdr" + runId + "r" + room;
-			return level.getEntities((Entity) null, run.rooms().get(room).box(), e -> e.isAlive() && e.entityTags().contains(tag)).size();
+			DungeonRuns.Room r = run.rooms().get(room);
+			net.minecraft.world.phys.AABB around = new net.minecraft.world.phys.AABB(r.x() - 64, DungeonPlots.FLOOR_Y - 8, r.z() - 64, r.x() + r.size() + 64,
+				DungeonPlots.FLOOR_Y + 30, r.z() + r.size() + 64);
+			return level.getEntities((Entity) null, around, e -> e.isAlive() && e.entityTags().contains(tag)).size();
 		});
+	}
+
+	/**
+	 * A quick run of another theme: key in, every room woken and cleared (its monsters are of the theme), the Lieutenant and Boss as named, and the
+	 * reward chest's key of the right theme. Returns the run's id (it is still running, the player stands in the reward room).
+	 */
+	private static void themeRun(ClientGameTestContext ctx, TestServerContext server, Checks c, BlockPos feet, BlockPos tuffBlock, String id, int tier, String label,
+								 java.util.List<String> themeMobs, String lieutenant, int lieutenantCount, String lieutenantMob, int lieutenantHealth, String boss,
+								 String bossMob, int bossHealth, java.util.Set<String> cacheItems, boolean voidRooms) {
+		c.section(label + " dungeon");
+		backToPad(ctx, server, feet);
+		useKey(server, id, tier, tuffBlock);
+		ctx.waitTicks(60);
+		DungeonRuns.Run run = first(server);
+		c.check("the " + label + " key opens the portal (tier " + tier + ")", inDungeon(server) && run != null && run.theme().equals(id) && run.tier() == tier,
+			String.valueOf(run));
+		if (run == null || !inDungeon(server)) {
+			return;
+		}
+		int runId = run.id();
+		boolean good = true;
+		java.util.List<String> failures = new java.util.ArrayList<>();
+		int level = 12 + 3 * tier;
+		for (int k = 1; k <= 11; k++) {
+			DungeonRuns.Room room = first(server).rooms().get(k);
+			tpIn(server, room.x() + 6.5, DungeonPlots.FLOOR_Y + 1, room.centerZ() + 0.5);
+			ctx.waitTicks(22);
+			java.util.List<String> who = describe(server, runId, k);
+			DungeonRuns.Run during = first(server);
+			boolean right;
+			if (room.role().equals("combat")) {
+				right = who.size() >= 6 && who.size() <= 10 && who.stream().allMatch(w -> themeMobs.contains("minecraft:" + w.split("\\|")[0])
+					&& w.split("\\|")[1].equals(String.valueOf(level)));
+			} else if (room.role().equals("lieutenant")) {
+				right = who.size() == lieutenantCount && who.stream().allMatch(w -> w.startsWith(lieutenantMob.substring(10) + "|" + level + "|4|0|" + lieutenantHealth + "|" + lieutenant));
+			} else {
+				right = who.size() == 1 && who.get(0).startsWith(bossMob.substring(10) + "|" + level + "|5|0|" + bossHealth + "|" + boss);
+			}
+			boolean shut = during.rooms().get(k).state() == DungeonRuns.Room.ACTIVE && bars(server, room.westWallX(), room.centerZ());
+			if (!right || !shut) {
+				good = false;
+				failures.add("room " + k + " " + room.role() + "/" + room.shape() + ": " + who + " state " + during.rooms().get(k).state());
+			}
+			server.runCommand("kill @e[tag=vdr" + runId + "r" + k + "]");
+			ctx.waitTicks(22);
+			if (first(server).rooms().get(k).state() != DungeonRuns.Room.CLEARED || !open(server, room.eastWallX(), room.centerZ())) {
+				good = false;
+				failures.add("room " + k + " not cleared");
+			}
+		}
+		c.check("rooms 1 to 11 woke with the theme's monsters (level " + level + "), the Lieutenant is " + lieutenant + " and the Boss " + boss + ", and each opened again",
+			good, failures.toString());
+		DungeonRuns.Room reward = first(server).rooms().get(12);
+		tpIn(server, reward.x() + 6.5, DungeonPlots.FLOOR_Y + 1, reward.centerZ() + 0.5);
+		ctx.waitTicks(25);
+		java.util.List<ItemStack> prize = openChest(server, reward.caches().get(0));
+		DungeonKeys.Data next = prize == null ? null : prize.stream().map(DungeonKeys::read).filter(java.util.Objects::nonNull).findFirst().orElse(null);
+		c.check("the reward chest holds a next key (" + next + ")", next != null && next.tier() >= Math.max(1, tier - 1) && next.tier() <= tier + 2);
+		java.util.List<ItemStack> cache = openChest(server, first(server).rooms().get(1).caches().get(0));
+		c.check("a fighting room's cache is one kind of this theme's blocks (" + cache + ")",
+			cacheTotal(cache, st -> cacheItems.contains(BuiltInRegistries.ITEM.getKey(st.getItem()).getPath())) >= 1);
+		if (voidRooms) {
+			boolean allVoid = true;
+			int checked = 0;
+			for (DungeonRuns.Room room : first(server).rooms()) {
+				if (!room.shape().equals("gaps") && !room.shape().equals("islands")) {
+					continue;
+				}
+				int[][] g = dev.vestiges.dungeon.RoomBuilder.floorMap(room.shape(), room.size());
+				for (int dx = 0; dx < room.size() && checked < 40; dx++) {
+					for (int dz = 0; dz < room.size() && checked < 40; dz++) {
+						if (g[dx][dz] == dev.vestiges.dungeon.RoomBuilder.VOID) {
+							int bx = room.x() + dx;
+							int bz = room.z() + dz;
+							allVoid &= block(server, bx, DungeonPlots.FLOOR_Y, bz, st -> st.isAir()) && block(server, bx, DungeonPlots.FLOOR_Y - 3, bz, st -> st.isAir());
+							checked++;
+						}
+					}
+				}
+			}
+			c.check("the End's gap rooms have no floor in their gaps (" + checked + " cells looked at)", checked > 0 && allVoid);
+		}
+		server.runOnServer(s -> DungeonService.endRun(s, runId));
+		ctx.waitTicks(30);
+	}
+
+	/** The Trial and End themes: a quick run of each, the End's lock, the elytra, and that every id in the data is real. */
+	static void themes(ClientGameTestContext ctx, TestServerContext server, Checks c) {
+		c.section("Themes: the data is real");
+		server.runCommand("gamemode creative @p");
+		BlockPos feet = T.pad(ctx, server, 600, 600);
+		BlockPos inside = buildFrame(server, feet);
+		BlockPos tuffBlock = inside.west();
+		java.util.List<String> ids = VestigesData.DUNGEON_THEMES.all().keySet().stream().map(k -> k.getPath()).toList();
+		c.check("Overgrown, Trial and End are loaded", ids.containsAll(java.util.List.of("overgrown", "trial", "end")), ids.toString());
+		java.util.List<String> bad = new java.util.ArrayList<>();
+		VestigesData.DUNGEON_THEMES.all().forEach((id, theme) -> {
+			var pal = theme.palette();
+			for (java.util.List<String> list : java.util.List.of(pal.floor(), pal.wall(), pal.ceiling(), pal.pillar(), pal.light(), pal.gate())) {
+				for (String b : list) {
+					var key = net.minecraft.resources.Identifier.tryParse(b);
+					if (key == null || BuiltInRegistries.BLOCK.getOptional(key).isEmpty()) {
+						bad.add(id.getPath() + " block " + b);
+					}
+				}
+			}
+			java.util.List<String> mobs = new java.util.ArrayList<>(theme.mobs());
+			mobs.add(theme.lieutenant().mob());
+			mobs.add(theme.boss().mob());
+			for (String m : mobs) {
+				var key = net.minecraft.resources.Identifier.tryParse(m);
+				if (key == null || BuiltInRegistries.ENTITY_TYPE.getOptional(key).isEmpty()) {
+					bad.add(id.getPath() + " monster " + m);
+				}
+			}
+		});
+		c.check("every block and monster the themes name exists", bad.isEmpty(), bad.toString());
+		c.check("every room template belongs to a theme and a real shape", VestigesData.DUNGEON_ROOMS.all().values().stream()
+			.allMatch(r -> ids.contains(r.theme()) && dev.vestiges.dungeon.DungeonRoom.SHAPES.contains(r.shape())));
+
+		themeRun(ctx, server, c, feet, tuffBlock, "trial", 1, "Trial",
+			java.util.List.of("minecraft:breeze", "minecraft:bogged", "minecraft:skeleton", "minecraft:zombie", "minecraft:cave_spider", "minecraft:silverfish"),
+			"Gale", 1, "minecraft:breeze", 585, "The Vault Keeper", "minecraft:bogged", 520,
+			java.util.Set.of("copper_block", "cut_copper", "chiseled_copper", "tuff", "tuff_bricks", "polished_tuff", "chiseled_tuff", "breeze_rod", "heavy_core"), false);
+
+		c.section("The End is closed until dragon 1");
+		backToPad(ctx, server, feet);
+		server.runOnServer(s -> FeatService.grant(player(s), "dragonslayer", false));
+		InteractionResult locked = useKey(server, "end", 3, tuffBlock);
+		ctx.waitTicks(10);
+		c.check("without the Dragonslayer feat an End key is refused", locked == InteractionResult.SUCCESS && !inDungeon(server) && runs(server).runs().isEmpty());
+		c.check("and the key stays in the hand", server.computeOnServer(s -> DungeonKeys.read(player(s).getMainHandItem()) != null));
+		server.runCommand("clear @p");
+		server.runOnServer(s -> FeatService.grant(player(s), "dragonslayer", true));
+		server.runCommand("clear @p");
+		c.check("no elytra yet before the End run", count(server, Items.ELYTRA) == 0 && !server.computeOnServer(s -> DungeonService.state(player(s)).elytra()));
+		themeRun(ctx, server, c, feet, tuffBlock, "end", 3, "End",
+			java.util.List.of("minecraft:enderman", "minecraft:shulker", "minecraft:endermite", "minecraft:phantom"),
+			"The Shellguard", 3, "minecraft:shulker", 747, "The Void Stalker", "minecraft:enderman", 1660,
+			java.util.Set.of("purpur_block", "end_stone", "end_rod", "chorus_flower", "shulker_shell", "elytra"), true);
+		c.check("the first End Boss clear at tier 3 gave the player elytra, once", count(server, Items.ELYTRA) == 1
+			&& server.computeOnServer(s -> DungeonService.state(player(s)).elytra()), String.valueOf(count(server, Items.ELYTRA)));
+		assetRoom(ctx, server, c);
+		server.runOnServer(s -> FeatService.grant(player(s), "dragonslayer", false));
+		server.runCommand("clear @p");
+		server.runCommand("gamemode creative @p");
 	}
 
 	/** What each living monster of a room is: type, level, rank, number of powers, maximum health and custom name, as "type|level|rank|powers|health|name". */
@@ -231,6 +381,72 @@ final class DungeonSuite {
 			mob.discard();
 			return keys;
 		});
+	}
+
+	/** A room the author builds as a structure file: made here by hand, saved as a template, cleared and pasted as a room. */
+	private static void assetRoom(ClientGameTestContext ctx, TestServerContext server, Checks c) {
+		c.section("Rooms from structure files");
+		int ox = DungeonPlots.originX(30) + 100;
+		int oz = DungeonPlots.originZ(30) - 40;
+		int y = DungeonPlots.FLOOR_Y - 1;
+		java.util.List<String> results = server.computeOnServer(s -> {
+			ServerLevel level = s.getLevel(DungeonService.DUNGEON);
+			java.util.List<String> out = new java.util.ArrayList<>();
+			var bricks = Blocks.STONE_BRICKS.defaultBlockState();
+			// A 12 x 8 x 12 file: a base layer, the floor, walls all round, and the marker blocks standing on the floor.
+			for (int dx = 0; dx < 12; dx++) {
+				for (int dz = 0; dz < 12; dz++) {
+					level.setBlock(new BlockPos(ox + dx, y, oz + dz), Blocks.STONE.defaultBlockState(), 2);
+					level.setBlock(new BlockPos(ox + dx, y + 1, oz + dz), bricks, 2);
+					boolean wall = dx == 0 || dz == 0 || dx == 11 || dz == 11;
+					for (int dy = 2; dy < 8; dy++) {
+						level.setBlock(new BlockPos(ox + dx, y + dy, oz + dz), wall ? bricks : Blocks.AIR.defaultBlockState(), 2);
+					}
+				}
+			}
+			level.setBlock(new BlockPos(ox + 3, y + 2, oz + 3), Blocks.GOLD_BLOCK.defaultBlockState(), 2);
+			level.setBlock(new BlockPos(ox + 8, y + 2, oz + 5), Blocks.GOLD_BLOCK.defaultBlockState(), 2);
+			level.setBlock(new BlockPos(ox + 9, y + 2, oz + 9), Blocks.CHEST.defaultBlockState(), 2);
+			level.setBlock(new BlockPos(ox + 6, y + 2, oz + 6), Blocks.LODESTONE.defaultBlockState(), 2);
+			level.setBlock(new BlockPos(ox, y + 2, oz + 6), Blocks.IRON_DOOR.defaultBlockState(), 2);
+			net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate template = new net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate();
+			template.fillFromWorld(level, new BlockPos(ox, y, oz), new net.minecraft.core.Vec3i(12, 8, 12), false, java.util.List.of(Blocks.STRUCTURE_VOID));
+			clearBox(level, ox, y, oz);
+			DungeonRuns.Room room = new DungeonRuns.Room(1, "combat", "none", "arena", ox + 1, oz + 1, 10, 6, 8, DungeonRuns.Room.IDLE, false, java.util.List.of(),
+				java.util.List.of(), java.util.List.of());
+			DungeonRuns.Room placed = dev.vestiges.dungeon.RoomAssets.place(level, room, template, new java.util.Random(1));
+			out.add(placed == null ? "null" : "ok");
+			if (placed != null) {
+				java.util.Set<BlockPos> spawns = new java.util.HashSet<>(placed.spawns());
+				out.add(spawns.equals(java.util.Set.of(new BlockPos(ox + 3, y + 2, oz + 3), new BlockPos(ox + 8, y + 2, oz + 5))) ? "spawns" : "spawns " + spawns);
+				out.add(placed.caches().equals(java.util.List.of(new BlockPos(ox + 9, y + 2, oz + 9))) ? "cache" : "cache " + placed.caches());
+				out.add(placed.boss().equals(java.util.List.of(new BlockPos(ox + 6, y + 2, oz + 6))) ? "boss" : "boss " + placed.boss());
+				out.add(placed.built() ? "built" : "not built");
+				boolean markersGone = level.getBlockState(new BlockPos(ox + 3, y + 2, oz + 3)).isAir() && level.getBlockState(new BlockPos(ox + 9, y + 2, oz + 9)).isAir()
+					&& level.getBlockState(new BlockPos(ox + 6, y + 2, oz + 6)).isAir() && level.getBlockState(new BlockPos(ox, y + 2, oz + 6)).isAir();
+				out.add(markersGone ? "markers gone" : "markers left");
+				boolean kept = level.getBlockState(new BlockPos(ox + 5, y + 1, oz + 5)).is(Blocks.STONE_BRICKS) && level.getBlockState(new BlockPos(ox, y + 2, oz + 3)).is(Blocks.STONE_BRICKS)
+					&& level.getBlockState(new BlockPos(ox + 5, y, oz + 5)).is(Blocks.STONE);
+				out.add(kept ? "room kept" : "room not pasted");
+			}
+			out.add(dev.vestiges.dungeon.RoomAssets.place(level, room, null, new java.util.Random(1)) == null ? "no file: null" : "no file: not null");
+			out.add(dev.vestiges.dungeon.RoomAssets.load(s, "vestiges:no/such/room") == null ? "missing: null" : "missing: found");
+			clearBox(level, ox, y, oz);
+			return out;
+		});
+		c.check("a structure file is pasted as a room (markers read and removed), and a missing one gives null so the built layout takes over",
+			results.equals(java.util.List.of("ok", "spawns", "cache", "boss", "built", "markers gone", "room kept", "no file: null", "missing: null")), results.toString());
+	}
+
+	/** Empties the 12 x 8 x 12 test box. */
+	private static void clearBox(ServerLevel level, int ox, int y, int oz) {
+		for (int dx = 0; dx < 12; dx++) {
+			for (int dz = 0; dz < 12; dz++) {
+				for (int dy = 0; dy < 8; dy++) {
+					level.setBlock(new BlockPos(ox + dx, y + dy, oz + dz), Blocks.AIR.defaultBlockState(), 2);
+				}
+			}
+		}
 	}
 
 	static void run(ClientGameTestContext ctx, TestServerContext server, Checks c) {
@@ -464,8 +680,8 @@ final class DungeonSuite {
 		c.check("an ordinary monster never drops a key", normal.isEmpty(), String.valueOf(normal.size()));
 		c.check("an Elite drops one about 2% of the time", elite.size() >= 30 && elite.size() <= 100, String.valueOf(elite.size()));
 		c.check("a Warlord drops one about 8% of the time", warlord.size() >= 80 && warlord.size() <= 170, String.valueOf(warlord.size()));
-		c.check("they are Overgrown keys of tier 1 to 3, all three tiers turn up", java.util.stream.Stream.concat(elite.stream(), warlord.stream())
-			.allMatch(d -> d.theme().equals("overgrown") && d.tier() >= 1 && d.tier() <= 3) && warlord.stream().map(DungeonKeys.Data::tier).distinct().count() == 3);
+		c.check("they are keys of an open theme (Overgrown or Trial, not the closed End) of tier 1 to 3, all three tiers turn up", java.util.stream.Stream.concat(elite.stream(), warlord.stream())
+			.allMatch(d -> (d.theme().equals("overgrown") || d.theme().equals("trial")) && d.tier() >= 1 && d.tier() <= 3) && warlord.stream().map(DungeonKeys.Data::tier).distinct().count() == 3);
 		server.runCommand("vestiges config system dungeons false");
 		ctx.waitTicks(5);
 		c.check("with the Dungeons switch off no key drops", rollKeyDrops(server, 3, 1500).isEmpty());

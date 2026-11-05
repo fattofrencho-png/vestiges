@@ -29,6 +29,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -165,6 +166,9 @@ final class DungeonRunner {
 		}
 		tell(players, "The way on is open.", ChatFormatting.GREEN);
 		placeChests(level, run, room, room.role().equals("lieutenant") ? "lieutenant" : "cache");
+		if (room.role().equals("boss")) {
+			giveElytra(run, theme, players);
+		}
 		if (room.role().equals("boss") && room.index() + 1 < run.rooms().size()) {
 			DungeonRuns.Room reward = run.rooms().get(room.index() + 1);
 			if (reward.built() && reward.caches().size() >= 2) {
@@ -174,6 +178,18 @@ final class DungeonRunner {
 			}
 		}
 		return run.withRoom(room.withState(DungeonRuns.Room.CLEARED));
+	}
+
+	/** The first Boss clear of a theme with elytra (the End, tier 3 and up) gives every player present elytra, once each. */
+	private static void giveElytra(DungeonRuns.Run run, DungeonTheme theme, List<ServerPlayer> players) {
+		for (ServerPlayer p : players) {
+			PlayerDungeon state = DungeonService.state(p);
+			if (DungeonRules.elytraDue(run.tier(), theme.elytraTier(), state.elytra())) {
+				DungeonService.setState(p, state.withElytra());
+				DungeonService.give(p, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ELYTRA));
+				p.sendSystemMessage(Component.literal("You found elytra.").withStyle(ChatFormatting.LIGHT_PURPLE));
+			}
+		}
 	}
 
 	private static void placeChests(ServerLevel level, DungeonRuns.Run run, DungeonRuns.Room room, String kind) {
@@ -195,7 +211,9 @@ final class DungeonRunner {
 	/** Monsters of a room that are still alive. */
 	static int alive(ServerLevel level, DungeonRuns.Run run, DungeonRuns.Room room) {
 		String tag = roomTag(run.id(), room.index());
-		return level.getEntities((Entity) null, room.box(), e -> e.isAlive() && e.entityTags().contains(tag)).size();
+		// Wide, not just the room: an enderman can teleport into the corridor or the next room.
+		AABB around = new AABB(room.x() - 64, DungeonPlots.FLOOR_Y - 8, room.z() - 64, room.x() + room.size() + 64, DungeonPlots.FLOOR_Y + 30, room.z() + room.size() + 64);
+		return level.getEntities((Entity) null, around, e -> e.isAlive() && e.entityTags().contains(tag)).size();
 	}
 
 	/** Where the members of a boss pack stand around the boss spot. */

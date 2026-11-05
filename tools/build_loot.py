@@ -323,6 +323,10 @@ ELITES = {  # rank: (emerald lo, hi, gear chance, book chance, book rarity)
 DUNGEON_CACHES = {
     "overgrown": [("moss_block", 30, 12, 28), ("azalea", 12, 2, 5), ("spore_blossom", 6, 1, 3), ("glow_berries", 16, 6, 14),
                   ("big_dripleaf", 10, 3, 8), ("mud", 18, 12, 28), ("bamboo", 14, 8, 20), ("cocoa_beans", 14, 6, 14)],
+    "trial": [("copper_block", 14, 4, 10), ("cut_copper", 16, 8, 20), ("chiseled_copper", 10, 4, 10), ("tuff", 12, 12, 28), ("tuff_bricks", 14, 8, 20),
+              ("polished_tuff", 12, 8, 20), ("chiseled_tuff", 8, 4, 10), ("breeze_rod", 10, 1, 4), ("heavy_core", 1, 1, 1)],
+    "end": [("purpur_block", 24, 8, 24), ("end_stone", 24, 8, 24), ("end_rod", 16, 2, 8), ("chorus_flower", 10, 1, 3), ("shulker_shell", 8, 1, 2),
+            ("elytra", 1, 1, 1)],
 }
 DUNGEON_GEAR_MIN = "uncommon"
 REWARD_GEAR_ROLLS = 2

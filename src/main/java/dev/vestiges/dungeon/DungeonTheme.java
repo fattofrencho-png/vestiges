@@ -8,9 +8,10 @@ import java.util.List;
  * One dungeon theme, loaded from {@code data/<namespace>/vestiges/dungeon_themes/<id>.json}. {@code unlock} is empty when the theme is open from the
  * start, or {@code feat:<id>} when a feat opens it (the End theme waits for the Dragonslayer feat). {@code palette} lists the block ids the rooms are
  * built from (one is picked at random for each block, so a repeated id counts double), and {@code mobs} the entity ids the fighting rooms spawn.
- * {@code lieutenant} and {@code boss} name the two bosses (plain strong monsters, no moves yet). Caches join this record with the rewards.
+ * {@code lieutenant} and {@code boss} name the two bosses (plain strong monsters, no moves yet). {@code elytraTier} (0 = none) is the tier from
+ * which the first Boss clear gives every player present elytra, once. Caches join this record with the rewards.
  */
-public record DungeonTheme(String name, String color, String unlock, Palette palette, List<String> mobs, Boss lieutenant, Boss boss) {
+public record DungeonTheme(String name, String color, String unlock, Palette palette, List<String> mobs, Boss lieutenant, Boss boss, int elytraTier) {
 	/** A named boss: a pack of {@code count} strong monsters of one kind that the name card announces. */
 	public record Boss(String name, String mob, int count) {
 		public static final Codec<Boss> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -42,12 +43,13 @@ public record DungeonTheme(String name, String color, String unlock, Palette pal
 		Palette.CODEC.optionalFieldOf("palette", Palette.DEFAULT).forGetter(DungeonTheme::palette),
 		Codec.STRING.listOf().optionalFieldOf("mobs", List.of("minecraft:zombie")).forGetter(DungeonTheme::mobs),
 		Boss.CODEC.optionalFieldOf("lieutenant", new Boss("The Lieutenant", "minecraft:zombie", 1)).forGetter(DungeonTheme::lieutenant),
-		Boss.CODEC.optionalFieldOf("boss", new Boss("The Boss", "minecraft:zombie", 1)).forGetter(DungeonTheme::boss)
+		Boss.CODEC.optionalFieldOf("boss", new Boss("The Boss", "minecraft:zombie", 1)).forGetter(DungeonTheme::boss),
+		Codec.INT.optionalFieldOf("elytra_tier", 0).forGetter(DungeonTheme::elytraTier)
 	).apply(i, DungeonTheme::new));
 
 	public DungeonTheme(String name, String color, String unlock) {
 		this(name, color, unlock, Palette.DEFAULT, List.of("minecraft:zombie"), new Boss("The Lieutenant", "minecraft:zombie", 1),
-			new Boss("The Boss", "minecraft:zombie", 1));
+			new Boss("The Boss", "minecraft:zombie", 1), 0);
 	}
 
 	public boolean openFromStart() {

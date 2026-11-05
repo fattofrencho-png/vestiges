@@ -1,5 +1,7 @@
 package dev.vestiges.dungeon;
 
+import dev.vestiges.Vestiges;
+import dev.vestiges.data.VestigesData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 public final class RoomBuilder {
 	/** A cell of the floor map that a pillar fills. */
 	public static final int BLOCKED = Integer.MIN_VALUE;
+	/** A cell of the floor map with no floor at all: a drop into the void (the End's gaps). */
+	public static final int VOID = Integer.MIN_VALUE + 1;
 	private static final int DEPTH = 5;
 
 	private RoomBuilder() {
@@ -84,10 +88,41 @@ public final class RoomBuilder {
 					}
 				}
 			}
+			case "gaps" -> {
+				// Two void channels across the room, each crossed by a bridge 3 blocks wide on the line between the doors. At most a quarter void.
+				int w = Math.max(3, size / 8);
+				for (int centre : new int[] {size / 3, size * 2 / 3}) {
+					for (int dx = centre - w / 2; dx < centre - w / 2 + w; dx++) {
+						for (int dz = 0; dz < size; dz++) {
+							if (Math.abs(dz - c) > 1) {
+								g[dx][dz] = VOID;
+							}
+						}
+					}
+				}
+			}
+			case "islands" -> {
+				// A void square in the middle with a small island in its centre, joined to both sides by a bridge 3 blocks wide.
+				int half = size / 5;
+				for (int dx = c - half; dx <= c + half; dx++) {
+					for (int dz = c - half; dz <= c + half; dz++) {
+						boolean bridge = Math.abs(dz - c) <= 1;
+						boolean island = Math.abs(dx - c) <= 2 && Math.abs(dz - c) <= 2;
+						if (!bridge && !island) {
+							g[dx][dz] = VOID;
+						}
+					}
+				}
+			}
 			default -> {
 			}
 		}
 		return g;
+	}
+
+	/** Free floor: not a pillar and not a drop into the void. */
+	public static boolean solid(int cell) {
+		return cell != BLOCKED && cell != VOID;
 	}
 
 	private static void pillar(int[][] g, int x, int z) {
@@ -100,6 +135,16 @@ public final class RoomBuilder {
 
 	/** Builds one room's hall and returns it with its markers filled in. */
 	public static DungeonRuns.Room build(ServerLevel level, DungeonRuns.Room room, DungeonTheme theme, Random random) {
+		DungeonRoom def = VestigesData.DUNGEON_ROOMS.get(Vestiges.id(room.template()));
+		if (def != null && !def.structure().isEmpty()) {
+			// A room the author built: pasted from its structure file. A missing file falls back to the built layout.
+			DungeonRuns.Room placed = RoomAssets.place(level, room, RoomAssets.load(level.getServer(), def.structure()), random);
+			if (placed != null) {
+				exitFrame(level, room);
+				return placed;
+			}
+			Vestiges.LOGGER.warn("Vestiges: dungeon room {} names the structure {}, which is missing: using the built layout", room.template(), def.structure());
+		}
 		Palette pal = Palette.of(theme.palette());
 		int x0 = room.x();
 		int z0 = room.z();
@@ -116,7 +161,9 @@ public final class RoomBuilder {
 				int top = g[dx][dz];
 				int x = x0 + dx;
 				int z = z0 + dz;
-				if (top == BLOCKED) {
+				if (top == VOID) {
+					DungeonBuilder.air(level, x, y - DEPTH, z, x, y, z);
+				} else if (top == BLOCKED) {
 					DungeonBuilder.fillRandom(level, x, y, z, x, y + h, z, pal.pillar(), random);
 				} else if (top >= 0) {
 					DungeonBuilder.fillRandom(level, x, y, z, x, y + top, z, pal.floor(), random);
@@ -132,17 +179,21 @@ public final class RoomBuilder {
 				DungeonBuilder.set(level, x0 + dx, y + h + 1, z0 + dz, pal.pick(pal.light(), random));
 			}
 		}
-		// Rooms with an exit frame: against the west wall for the start, against the east wall for the reward room.
-		if (room.role().equals("start")) {
-			DungeonBuilder.exitFrame(level, x0, room.centerZ());
-		} else if (room.role().equals("reward")) {
-			DungeonBuilder.exitFrame(level, x0 + size - 1, room.centerZ());
-		}
+		exitFrame(level, room);
 		return room.withMarkers(spawnPoints(room, g, random), cachePoints(room, g), bossSpot(room, g));
 	}
 
+	/** Rooms with an exit frame: against the west wall for the start room, against the east wall for the reward room. */
+	private static void exitFrame(ServerLevel level, DungeonRuns.Room room) {
+		if (room.role().equals("start")) {
+			DungeonBuilder.exitFrame(level, room.x(), room.centerZ());
+		} else if (room.role().equals("reward")) {
+			DungeonBuilder.exitFrame(level, room.x() + room.size() - 1, room.centerZ());
+		}
+	}
+
 	/** Cells where monsters may stand: free floor, away from the walls and from the entrance. */
-	private static List<BlockPos> spawnPoints(DungeonRuns.Room room, int[][] g, Random random) {
+	static List<BlockPos> spawnPoints(DungeonRuns.Room room, int[][] g, Random random) {
 		if (!room.fighting()) {
 			return List.of();
 		}
@@ -150,7 +201,7 @@ public final class RoomBuilder {
 		int size = room.size();
 		for (int dx = 8; dx < size - 3; dx++) {
 			for (int dz = 3; dz < size - 3; dz++) {
-				if (g[dx][dz] != BLOCKED && g[dx - 1][dz] != BLOCKED && g[dx + 1][dz] != BLOCKED && g[dx][dz - 1] != BLOCKED && g[dx][dz + 1] != BLOCKED) {
+				if (solid(g[dx][dz]) && solid(g[dx - 1][dz]) && solid(g[dx + 1][dz]) && solid(g[dx][dz - 1]) && solid(g[dx][dz + 1])) {
 					all.add(new BlockPos(room.x() + dx, DungeonPlots.FLOOR_Y + g[dx][dz] + 1, room.z() + dz));
 				}
 			}
@@ -171,7 +222,7 @@ public final class RoomBuilder {
 			return List.of();
 		}
 		int dx = size - 3;
-		int dz = g[dx][3] == BLOCKED ? size - 4 : 3;
+		int dz = !solid(g[dx][3]) ? size - 4 : 3;
 		return List.of(new BlockPos(room.x() + dx, DungeonPlots.FLOOR_Y + Math.max(0, g[dx][dz]) + 1, room.z() + dz));
 	}
 
@@ -180,7 +231,7 @@ public final class RoomBuilder {
 			return List.of();
 		}
 		int c = room.size() / 2;
-		int top = g[c][c] == BLOCKED ? 0 : g[c][c];
+		int top = !solid(g[c][c]) ? 0 : g[c][c];
 		return List.of(new BlockPos(room.x() + c, DungeonPlots.FLOOR_Y + top + 1, room.z() + c));
 	}
 
