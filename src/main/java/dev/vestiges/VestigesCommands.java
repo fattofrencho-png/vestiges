@@ -425,6 +425,8 @@ public final class VestigesCommands {
 	}
 
 	private static final java.util.List<String> MOB_RANKS = java.util.List.of("normal", "champion", "elite", "warlord");
+	/** Every rank a monster can show, including the dungeon bosses (those cannot be set by command). */
+	private static final java.util.List<String> MOB_RANK_NAMES = java.util.List.of("normal", "champion", "elite", "warlord", "lieutenant", "boss");
 
 	/** The nearest scaling monster within 16 blocks of whoever runs the command. */
 	private static net.minecraft.world.entity.Mob nearestMob(CommandSourceStack src) {
@@ -449,7 +451,7 @@ public final class VestigesCommands {
 			src.sendFailure(Component.literal("No levelled monster within 16 blocks"));
 			return 0;
 		}
-		String msg = mob.getName().getString() + ": level " + d.level() + " · " + MOB_RANKS.get(d.rank()) + (d.powers().isEmpty() ? "" : " · " + String.join(", ", d.powers()))
+		String msg = mob.getName().getString() + ": level " + d.level() + " · " + MOB_RANK_NAMES.get(Math.min(d.rank(), MOB_RANK_NAMES.size() - 1)) + (d.powers().isEmpty() ? "" : " · " + String.join(", ", d.powers()))
 			+ " · size " + Math.round(d.size() * 100) + "% · health " + Math.round(mob.getHealth()) + "/" + Math.round(mob.getMaxHealth())
 			+ " · damage x" + String.format(java.util.Locale.ROOT, "%.2f", dev.vestiges.mobs.MobService.damageMultiplier(mob));
 		src.sendSuccess(() -> Component.literal(msg), false);

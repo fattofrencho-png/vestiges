@@ -9,6 +9,8 @@ import dev.vestiges.dungeon.DungeonRuns;
 import dev.vestiges.dungeon.DungeonService;
 import dev.vestiges.dungeon.RoomLayout;
 import dev.vestiges.feats.FeatService;
+import dev.vestiges.mobs.MobData;
+import dev.vestiges.mobs.MobService;
 import dev.vestiges.tree.TreeService;
 import java.util.Locale;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -17,12 +19,14 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -142,6 +146,23 @@ final class DungeonSuite {
 		});
 	}
 
+	/** What each living monster of a room is: type, level, rank, number of powers, maximum health and custom name, as "type|level|rank|powers|health|name". */
+	private static java.util.List<String> describe(TestServerContext server, int runId, int room) {
+		return server.computeOnServer(s -> {
+			DungeonRuns.Run run = DungeonService.runs(s).byId(runId);
+			ServerLevel level = s.getLevel(DungeonService.DUNGEON);
+			String tag = "vdr" + runId + "r" + room;
+			java.util.List<String> out = new java.util.ArrayList<>();
+			for (Entity e : level.getEntities((Entity) null, run.rooms().get(room).box(), e -> e.isAlive() && e.entityTags().contains(tag))) {
+				MobData d = MobService.data(e);
+				float hp = e instanceof Mob m ? m.getMaxHealth() : 0;
+				out.add(BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).getPath() + "|" + (d == null ? -1 : d.level()) + "|" + (d == null ? -1 : d.rank()) + "|"
+					+ (d == null ? 0 : d.powers().size()) + "|" + Math.round(hp) + "|" + (e.hasCustomName() ? e.getCustomName().getString() : ""));
+			}
+			return out;
+		});
+	}
+
 	static void run(ClientGameTestContext ctx, TestServerContext server, Checks c) {
 		c.section("Data and the dungeon world");
 		c.check("the Overgrown theme is loaded", VestigesData.DUNGEON_THEMES.get(Vestiges.id("overgrown")) != null,
@@ -258,6 +279,12 @@ final class DungeonSuite {
 		c.check("walking in wakes the room", now.rooms().get(1).state() == DungeonRuns.Room.ACTIVE, String.valueOf(now.rooms().get(1).state()));
 		int alive = monsters(server, runId, 1);
 		c.check("6 to 10 monsters appear", alive >= 6 && alive <= 10, String.valueOf(alive));
+		java.util.List<String> theme = java.util.List.of("zombie", "spider", "cave_spider", "bogged", "witch");
+		java.util.List<String> kinds = describe(server, runId, 1);
+		c.check("they are monsters of the theme (" + kinds.stream().map(k -> k.split("\\|")[0]).distinct().toList() + ")",
+			!kinds.isEmpty() && kinds.stream().allMatch(k -> theme.contains(k.split("\\|")[0])));
+		c.check("every one is level 18 (tier 2: 12 + 3 x 2), a plain rank, with no powers",
+			kinds.stream().allMatch(k -> k.split("\\|")[1].equals("18") && k.split("\\|")[2].equals("0") && k.split("\\|")[3].equals("0")), kinds.toString());
 		c.check("the doors close behind the party", bars(server, r1.westWallX(), r1.centerZ()) && bars(server, r1.eastWallX(), r1.centerZ()));
 		c.check("the rooms ahead get built (up to room 3)", now.rooms().get(3).built() && !now.rooms().get(4).built());
 		ctx.takeScreenshot("dungeon_room1_fight");
@@ -274,10 +301,28 @@ final class DungeonSuite {
 		for (int k = 2; k <= 11; k++) {
 			DungeonRuns.Room room = first(server).rooms().get(k);
 			shapes.append(room.shape()).append(' ');
+			if (k == 2) {
+				server.runCommand("vestiges config system mob_scaling false");
+				ctx.waitTicks(5);
+			}
 			tpIn(server, room.x() + 6.5, DungeonPlots.FLOOR_Y + 1, room.centerZ() + 0.5);
 			ctx.waitTicks(25);
 			DungeonRuns.Run during = first(server);
 			int n = monsters(server, runId, k);
+			java.util.List<String> who = describe(server, runId, k);
+			if (k == 2) {
+				c.check("with Mob levels switched off the dungeon's monsters stay vanilla (no level, no rank)",
+					!who.isEmpty() && who.stream().allMatch(w -> w.split("\\|")[1].equals("-1") && w.endsWith("|")), who.toString());
+				server.runCommand("vestiges config system mob_scaling true");
+			} else if (k == 7) {
+				String w = who.isEmpty() ? "" : who.get(0);
+				c.check("the Lieutenant is Mossbound: one zombie, level 18, rank Lieutenant, 444 health (20 x 3.7 x 6)", who.size() == 1 && w.startsWith("zombie|18|4|0|444|Mossbound"),
+					who.toString());
+			} else if (k == 11) {
+				String w = who.isEmpty() ? "" : who.get(0);
+				c.check("the Boss is The Rotwood Witch: one witch, level 18, rank Boss, 962 health (26 x 3.7 x 10)", who.size() == 1 && w.startsWith("witch|18|5|0|962|The Rotwood Witch"),
+					who.toString());
+			}
 			boolean right = room.role().equals("combat") ? n >= 6 && n <= 10 : n == 1;
 			boolean shut = during.rooms().get(k).state() == DungeonRuns.Room.ACTIVE && bars(server, room.westWallX(), room.centerZ())
 				&& bars(server, room.eastWallX(), room.centerZ());

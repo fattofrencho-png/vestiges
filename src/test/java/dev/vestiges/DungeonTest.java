@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import dev.vestiges.dungeon.DungeonPlots;
+import dev.vestiges.mobs.MobData;
 import dev.vestiges.dungeon.DungeonRoom;
 import dev.vestiges.dungeon.RoomBuilder;
 import dev.vestiges.dungeon.RoomLayout;
@@ -164,6 +165,32 @@ class DungeonTest {
 		assertEquals(2, DungeonRules.startingLives(24));
 		assertEquals(1, DungeonRules.startingLives(25));
 		assertEquals(1, DungeonRules.startingLives(300));
+	}
+
+	@Test
+	void monstersScaleWithTheTierAndTheParty() {
+		assertEquals(15, DungeonRules.mobLevel(1), "tier 1 is level 15");
+		assertEquals(18, DungeonRules.mobLevel(2));
+		assertEquals(21, DungeonRules.mobLevel(3));
+		assertEquals(42, DungeonRules.mobLevel(10));
+		assertEquals(15, DungeonRules.mobLevel(0), "never below tier 1");
+		assertEquals(1.0, DungeonRules.partyHealth(1));
+		assertEquals(1.5, DungeonRules.partyHealth(2), "+50% for each extra player");
+		assertEquals(2.5, DungeonRules.partyHealth(4));
+		assertEquals(1.0, DungeonRules.partyHealth(0));
+		assertEquals(6, DungeonRules.MIN_MONSTERS);
+		assertEquals(10, DungeonRules.MAX_MONSTERS);
+	}
+
+	@Test
+	void bossRanksAreSixAndTenTimesAsTough() {
+		assertEquals(6, new MobData(15, MobData.LIEUTENANT, List.of(), 1f, false).strength());
+		assertEquals(10, new MobData(15, MobData.BOSS, List.of(), 1f, false).strength());
+		assertEquals(5, new MobData(15, MobData.LIEUTENANT, List.of(), 1f, false).damageStrength(), "damage stops at a Warlord's x5");
+		assertEquals(5, new MobData(15, MobData.BOSS, List.of(), 1f, false).damageStrength());
+		assertEquals(3, new MobData(15, MobData.ELITE, List.of(), 1f, false).damageStrength(), "the other ranks are unchanged");
+		assertEquals(1, new MobData(15, MobData.NORMAL, List.of(), 1f, false).damageStrength());
+		assertTrue(new MobData(15, MobData.BOSS, List.of(), 1f, false).elite());
 	}
 
 	private static DungeonRuns.Run run(int id, int plot, UUID... players) {
@@ -442,6 +469,9 @@ class DungeonTest {
 		DungeonTheme overgrown = DungeonTheme.CODEC.parse(JsonOps.INSTANCE,
 			JsonParser.parseString(Files.readString(dir.resolve("overgrown.json"), StandardCharsets.UTF_8))).getOrThrow();
 		assertTrue(overgrown.openFromStart());
+		assertEquals("Mossbound", overgrown.lieutenant().name());
+		assertEquals("The Rotwood Witch", overgrown.boss().name());
+		assertEquals(1, overgrown.boss().count());
 		assertEquals("dragonslayer", new DungeonTheme("End", "light_purple", "feat:dragonslayer").unlockFeat());
 	}
 }

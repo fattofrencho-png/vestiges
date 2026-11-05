@@ -10,5 +10,7 @@
     "light": ["minecraft:shroomlight"],
     "gate": ["minecraft:iron_bars"]
   },
-  "mobs": ["minecraft:zombie", "minecraft:spider", "minecraft:cave_spider", "minecraft:bogged", "minecraft:witch"]
+  "mobs": ["minecraft:zombie", "minecraft:spider", "minecraft:cave_spider", "minecraft:bogged", "minecraft:witch"],
+  "lieutenant": { "name": "Mossbound", "mob": "minecraft:zombie", "count": 1 },
+  "boss": { "name": "The Rotwood Witch", "mob": "minecraft:witch", "count": 1 }
 }

@@ -8,9 +8,18 @@ import java.util.List;
  * One dungeon theme, loaded from {@code data/<namespace>/vestiges/dungeon_themes/<id>.json}. {@code unlock} is empty when the theme is open from the
  * start, or {@code feat:<id>} when a feat opens it (the End theme waits for the Dragonslayer feat). {@code palette} lists the block ids the rooms are
  * built from (one is picked at random for each block, so a repeated id counts double), and {@code mobs} the entity ids the fighting rooms spawn.
- * Bosses and caches join this record as their slices are built.
+ * {@code lieutenant} and {@code boss} name the two bosses (plain strong monsters, no moves yet). Caches join this record with the rewards.
  */
-public record DungeonTheme(String name, String color, String unlock, Palette palette, List<String> mobs) {
+public record DungeonTheme(String name, String color, String unlock, Palette palette, List<String> mobs, Boss lieutenant, Boss boss) {
+	/** A named boss: a pack of {@code count} strong monsters of one kind that the name card announces. */
+	public record Boss(String name, String mob, int count) {
+		public static final Codec<Boss> CODEC = RecordCodecBuilder.create(i -> i.group(
+			Codec.STRING.fieldOf("name").forGetter(Boss::name),
+			Codec.STRING.optionalFieldOf("mob", "minecraft:zombie").forGetter(Boss::mob),
+			Codec.INT.optionalFieldOf("count", 1).forGetter(Boss::count)
+		).apply(i, Boss::new));
+	}
+
 	/** The blocks of a theme: floor, wall, ceiling, pillar, ceiling light and the gate that closes a door. */
 	public record Palette(List<String> floor, List<String> wall, List<String> ceiling, List<String> pillar, List<String> light, List<String> gate) {
 		public static final Palette DEFAULT = new Palette(List.of("minecraft:stone_bricks"), List.of("minecraft:stone_bricks"), List.of("minecraft:stone_bricks"),
@@ -31,11 +40,14 @@ public record DungeonTheme(String name, String color, String unlock, Palette pal
 		Codec.STRING.optionalFieldOf("color", "white").forGetter(DungeonTheme::color),
 		Codec.STRING.optionalFieldOf("unlock", "").forGetter(DungeonTheme::unlock),
 		Palette.CODEC.optionalFieldOf("palette", Palette.DEFAULT).forGetter(DungeonTheme::palette),
-		Codec.STRING.listOf().optionalFieldOf("mobs", List.of("minecraft:zombie")).forGetter(DungeonTheme::mobs)
+		Codec.STRING.listOf().optionalFieldOf("mobs", List.of("minecraft:zombie")).forGetter(DungeonTheme::mobs),
+		Boss.CODEC.optionalFieldOf("lieutenant", new Boss("The Lieutenant", "minecraft:zombie", 1)).forGetter(DungeonTheme::lieutenant),
+		Boss.CODEC.optionalFieldOf("boss", new Boss("The Boss", "minecraft:zombie", 1)).forGetter(DungeonTheme::boss)
 	).apply(i, DungeonTheme::new));
 
 	public DungeonTheme(String name, String color, String unlock) {
-		this(name, color, unlock, Palette.DEFAULT, List.of("minecraft:zombie"));
+		this(name, color, unlock, Palette.DEFAULT, List.of("minecraft:zombie"), new Boss("The Lieutenant", "minecraft:zombie", 1),
+			new Boss("The Boss", "minecraft:zombie", 1));
 	}
 
 	public boolean openFromStart() {
