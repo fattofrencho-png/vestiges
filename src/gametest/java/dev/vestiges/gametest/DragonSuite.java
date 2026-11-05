@@ -5,6 +5,7 @@ import dev.vestiges.codex.CodexService;
 import dev.vestiges.data.VestigesData;
 import dev.vestiges.dragon.DragonDef;
 import dev.vestiges.dragon.DragonMark;
+import dev.vestiges.dragon.DragonMoves;
 import dev.vestiges.dragon.DragonService;
 import dev.vestiges.dragon.PlayerDragons;
 import dev.vestiges.dungeon.DungeonService;
@@ -25,6 +26,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhase;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
@@ -453,5 +455,108 @@ final class DragonSuite {
 		c.check("Tulva comes back", waitForDragon(server, 1, 2400));
 		c.check("with the full 200 health", Math.abs(dragon(server).max() - 200.0) < 0.5 && dragon(server).health() > 199);
 		DragonService.repairStepOverride = -1;
+	}
+
+	/** Makes the dragon in the End act as dragon {@code number} (its moves), without a summoning. */
+	private static void actAs(TestServerContext server, int number) {
+		server.runOnServer(s -> {
+			ServerLevel end = s.getLevel(Level.END);
+			EnderDragon d = (EnderDragon) end.getEntity(end.getDragonFight().dragonUUID());
+			d.setAttached(DragonService.MARK, new DragonMark(number, 1, false));
+			DragonMoves.reset();
+		});
+	}
+
+	private static void phase(TestServerContext server, net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhase<?> phase) {
+		server.runOnServer(s -> {
+			ServerLevel end = s.getLevel(Level.END);
+			((EnderDragon) end.getEntity(end.getDragonFight().dragonUUID())).getPhaseManager().setPhase(phase);
+		});
+	}
+
+	/** Puts the player this far east of the dragon, at its height, held in the air. */
+	private static void besideDragon(TestServerContext server, double east) {
+		server.runOnServer(s -> {
+			ServerLevel end = s.getLevel(Level.END);
+			EnderDragon d = (EnderDragon) end.getEntity(end.getDragonFight().dragonUUID());
+			ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			p.setNoGravity(true);
+			p.setDeltaMovement(Vec3.ZERO);
+			p.setPos(d.getX() + east, d.getY(), d.getZ());
+		});
+	}
+
+	private static void hitCrystals(TestServerContext server, int from, int to) {
+		server.runOnServer(s -> {
+			ServerLevel end = s.getLevel(Level.END);
+			ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			var spikes = EndSpikeFeature.getSpikesForLevel(end);
+			for (int i = from; i < Math.min(to, spikes.size()); i++) {
+				for (EndCrystal crystal : end.getEntitiesOfClass(EndCrystal.class, spikes.get(i).getTopBoundingBox())) {
+					crystal.hurtServer(end, end.damageSources().playerAttack(p), 10f);
+				}
+			}
+		});
+	}
+
+	/** S12c: the signature moves of dragons 2 to 4 (Belaz, Morst, Dhars). The dragon in the End takes on each dragon's moves in turn. */
+	static void moves(ClientGameTestContext ctx, TestServerContext server, Checks c) {
+		server.runCommand("gamemode creative @p");
+		server.runCommand("vestiges level set @p 30");
+		server.runCommand("execute in minecraft:the_end run tp @p 0 90 0");
+		c.check("dragon 1 appears", waitForDragon(server, 1, 1200));
+		c.check("dragon 1 has no moves of its own", server.computeOnServer(s -> DragonService.def(1).moves().isEmpty()));
+
+		c.section("Belaz: the ring of fire when it perches");
+		actAs(server, 2);
+		phase(server, EnderDragonPhase.HOLDING_PATTERN);
+		ctx.waitTicks(30);
+		int ringsBefore = DragonMoves.rings;
+		server.runCommand("gamemode survival @p");
+		float healthBefore = server.computeOnServer(s -> s.getPlayerList().getPlayers().get(0).getHealth());
+		besideDragon(server, 6);
+		phase(server, EnderDragonPhase.SITTING_SCANNING);
+		c.check("the perch starts a ring", waitUntil(server, s -> DragonMoves.rings > ringsBefore, 100), DragonMoves.rings + " rings");
+		c.check("a player in the ring burns and is hurt", waitUntil(server, s -> {
+			ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			return p.getHealth() < healthBefore - 0.5f || p.isDeadOrDying();
+		}, 120));
+		server.runOnServer(s -> s.getPlayerList().getPlayers().get(0).setNoGravity(false));
+		server.runCommand("gamemode creative @p");
+		server.runCommand("effect clear @p");
+
+		c.section("Morst: the wing shove");
+		actAs(server, 3);
+		phase(server, EnderDragonPhase.HOLDING_PATTERN);
+		int shovesBefore = DragonMoves.shoves;
+		for (int i = 0; i < 12 && DragonMoves.shoves == shovesBefore; i++) {
+			besideDragon(server, 6);
+			ctx.waitTicks(10);
+		}
+		c.check("a player near the flying dragon is warned and then shoved", DragonMoves.shoves > shovesBefore, DragonMoves.shoves + " shoves");
+		double sideways = Math.hypot(DragonMoves.lastShove.x, DragonMoves.lastShove.z);
+		c.check("the shove is sideways at the agreed speed with a little lift", Math.abs(sideways - 1.4) < 0.01 && Math.abs(DragonMoves.lastShove.y - 0.35) < 0.01,
+			DragonMoves.lastShove.toString());
+		server.runOnServer(s -> s.getPlayerList().getPlayers().get(0).setNoGravity(false));
+
+		c.section("Dhars: the last three destroyed crystals grow back, twice at most");
+		actAs(server, 4);
+		DragonMoves.regrowDelayOverride = 100;
+		DragonMoves.regrowWarnOverride = 40;
+		c.check("ten pillar crystals stand", crystalsOnPillars(server, 0, 10) == 10, String.valueOf(crystalsOnPillars(server, 0, 10)));
+		hitCrystals(server, 0, 3);
+		ctx.waitTicks(5);
+		c.check("three are destroyed", crystalsOnPillars(server, 0, 3) == 0, String.valueOf(crystalsOnPillars(server, 0, 3)));
+		c.check("after the wait they grow back", waitUntil(server, s -> DragonMoves.wavesRun() == 1, 400));
+		c.check("all three stand again", crystalsOnPillars(server, 0, 3) == 3, String.valueOf(crystalsOnPillars(server, 0, 3)));
+		hitCrystals(server, 0, 3);
+		c.check("a second wave grows them back again", waitUntil(server, s -> DragonMoves.wavesRun() == 2, 400));
+		c.check("all three stand again after the second wave", crystalsOnPillars(server, 0, 3) == 3, String.valueOf(crystalsOnPillars(server, 0, 3)));
+		hitCrystals(server, 0, 3);
+		ctx.waitTicks(260);
+		c.check("a third time nothing grows back", crystalsOnPillars(server, 0, 3) == 0 && DragonMoves.wavesRun() == 2,
+			crystalsOnPillars(server, 0, 3) + " crystals, " + DragonMoves.wavesRun() + " waves");
+		DragonMoves.regrowDelayOverride = -1;
+		DragonMoves.regrowWarnOverride = -1;
 	}
 }

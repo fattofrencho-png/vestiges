@@ -9,6 +9,7 @@ import com.mojang.serialization.JsonOps;
 import dev.vestiges.dragon.DragonDef;
 import dev.vestiges.dragon.DragonRules;
 import dev.vestiges.dragon.DragonWorld;
+import dev.vestiges.dragon.MoveRules;
 import dev.vestiges.dragon.PlayerDragons;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -203,5 +204,44 @@ class DragonTest {
 			assertTrue(text.contains("[Placeholder]"), chapter + " must be marked as placeholder text until the lore chat writes it");
 			assertFalse(text.toLowerCase().contains("kesmar"), chapter);
 		}
+	}
+
+	@Test
+	void theRingOfFireIsABandAroundThePerchedDragon() {
+		assertFalse(MoveRules.inRing(0, 0, 0), "under the dragon is not in the ring");
+		assertFalse(MoveRules.inRing(3.9, 0, 0));
+		assertTrue(MoveRules.inRing(4.0, 0, 0));
+		assertTrue(MoveRules.inRing(3, 0, 4.5), "distance counts in the plane");
+		assertTrue(MoveRules.inRing(0, -4, 8));
+		assertFalse(MoveRules.inRing(8.1, 0, 0));
+		assertFalse(MoveRules.inRing(6, 4.5, 0), "flying above the ring is safe");
+		assertEquals(140, MoveRules.RING_TICKS);
+	}
+
+	@Test
+	void theWingShovePushesSidewaysToTheSideThePlayerIsOn() {
+		// The dragon flies east (+x). Sideways is north or south (z).
+		double[] south = MoveRules.sideways(1, 0, 0, 5);
+		assertEquals(0.0, south[0], 1e-9);
+		assertEquals(1.0, south[1], 1e-9);
+		double[] north = MoveRules.sideways(1, 0, 0, -5);
+		assertEquals(-1.0, north[1], 1e-9);
+		// Unit length whatever the speed, and always at right angles to the heading.
+		double[] diagonal = MoveRules.sideways(3, 4, 10, -2);
+		assertEquals(1.0, Math.hypot(diagonal[0], diagonal[1]), 1e-9);
+		assertEquals(0.0, diagonal[0] * 3 + diagonal[1] * 4, 1e-9);
+		assertEquals(0.0, MoveRules.sideways(0, 0, 3, 3)[0], 1e-9);
+	}
+
+	@Test
+	void onlyTheLastThreeDestroyedCrystalsGrowBackAndOnlyTwiceAFight() {
+		List<Integer> destroyed = List.of(1, 2, 3, 4, 5, 6, 7);
+		assertEquals(List.of(5, 6, 7), MoveRules.last(destroyed, MoveRules.REGROW_COUNT));
+		assertEquals(List.of(1, 2), MoveRules.last(List.of(1, 2), 3));
+		assertTrue(MoveRules.last(List.<Integer>of(), 3).isEmpty());
+		assertTrue(MoveRules.wavesLeft(0));
+		assertTrue(MoveRules.wavesLeft(1));
+		assertFalse(MoveRules.wavesLeft(2));
+		assertEquals(60 * 20, MoveRules.REGROW_DELAY_TICKS);
 	}
 }

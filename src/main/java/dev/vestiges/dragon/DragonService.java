@@ -93,6 +93,7 @@ public final class DragonService {
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(DragonService::tick);
+		ServerTickEvents.END_SERVER_TICK.register(DragonMoves::tick);
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof ServerPlayer p) {
 				onPlayerDied(p);
@@ -158,6 +159,16 @@ public final class DragonService {
 
 	public static DragonMark mark(Entity dragon) {
 		return dragon == null ? null : dragon.getAttached(MARK);
+	}
+
+	/** The lore dragon that stands in the End right now (loaded, alive, with its mark), or null. */
+	public static EnderDragon live(ServerLevel end) {
+		EnderDragonFight fight = end.getDragonFight();
+		java.util.UUID id = fight == null ? null : fight.dragonUUID();
+		if (id != null && end.getEntity(id) instanceof EnderDragon d && !d.isDeadOrDying() && d.getAttached(MARK) != null) {
+			return d;
+		}
+		return null;
 	}
 
 	/** The portal the fight is centred on (the exit portal, or the fight's origin before one exists). */
@@ -275,6 +286,7 @@ public final class DragonService {
 		save(server, w.fighting(number));
 		someoneDied = false;
 		failedAt = -1;
+		DragonMoves.reset();
 		Vestiges.LOGGER.info("Vestiges: dragon {} ({}) appears, health {}", number, def.display(), dragon.getMaxHealth());
 	}
 
@@ -438,6 +450,7 @@ public final class DragonService {
 		failedAt = -1;
 		someoneDied = false;
 		startRepair(end);
+		DragonMoves.reset();
 	}
 
 	// ---- the arena repairs itself -------------------------------------------------------------------------------------
@@ -563,6 +576,7 @@ public final class DragonService {
 		someoneDied = false;
 		failedAt = -1;
 		startRepair(level);
+		DragonMoves.reset();
 		Vestiges.LOGGER.info("Vestiges: dragon {} killed, {} fighter(s) rewarded", mark.number(), winners.size());
 		if (def != null) {
 			for (ServerPlayer p : winners) {
