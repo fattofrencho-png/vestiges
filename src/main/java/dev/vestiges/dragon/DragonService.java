@@ -426,6 +426,8 @@ public final class DragonService {
 	/** Everyone who fought has died: the dragon heals at once and leaves after a short while. The count does not change; the crystals are gone. */
 	private static void lost(ServerLevel end, EnderDragonFight fight, EnderDragon dragon) {
 		dragon.setHealth(dragon.getMaxHealth());
+		DragonMoves2.clearSwarm(end);
+		DragonMoves2.finish(dragon);
 		failedAt = end.getGameTime();
 		Vestiges.LOGGER.info("Vestiges: the fight against dragon {} is lost", mark(dragon).number());
 	}
@@ -443,6 +445,8 @@ public final class DragonService {
 		EnderDragonFightAccessor a = (EnderDragonFightAccessor) fight;
 		a.vestiges$bar().setProgress(0f);
 		a.vestiges$bar().setVisible(false);
+		DragonMoves2.clearSwarm(end);
+		DragonMoves2.finish(dragon);
 		dragon.discard();
 		a.vestiges$setKilled(true);
 		MinecraftServer server = end.getServer();
@@ -558,6 +562,8 @@ public final class DragonService {
 			return;
 		}
 		MinecraftServer server = level.getServer();
+		DragonMoves2.clearSwarm(level);
+		DragonMoves2.finish(dragon);
 		DragonWorld w = world(server);
 		if (mark.byCommand()) {
 			save(server, w.idle());

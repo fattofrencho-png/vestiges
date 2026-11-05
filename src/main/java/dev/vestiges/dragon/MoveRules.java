@@ -38,6 +38,15 @@ public final class MoveRules {
 	public static final int REGROW_COUNT = 3;
 	public static final int REGROW_WAVES = 2;
 
+	// ---- swarm (Ilvig) and shade (Durhos) ------------------------------------------------------------------------------
+	public static final int SWARM_EVERY_TICKS = 30 * 20;
+	public static final int SWARM_PER_WAVE = 2;
+	public static final int SWARM_MAX = 5;
+	/** Darkness reaches everyone this close to the perched shade. */
+	public static final double DARKNESS_RADIUS = 60.0;
+	/** The shade is out of sight for 25 + 10 ticks of every 100 in flight. */
+	public static final int SHADE_PERIOD = 100;
+
 	private MoveRules() {
 	}
 
@@ -65,6 +74,17 @@ public final class MoveRules {
 	/** The last {@code n} of a list (the most recent ones), oldest first. */
 	public static <T> List<T> last(List<T> items, int n) {
 		return items.subList(Math.max(0, items.size() - Math.max(0, n)), items.size());
+	}
+
+	/** Phantoms to add to a swarm of {@code alive}: two, but never above five. */
+	public static int swarmToSpawn(int alive) {
+		return Math.min(SWARM_PER_WAVE, Math.max(0, SWARM_MAX - Math.max(0, alive)));
+	}
+
+	/** Is the shade out of sight at this game time (in flight)? It flickers: gone for a moment, back, gone again, back. */
+	public static boolean shadeHidden(long gameTime) {
+		long t = Math.floorMod(gameTime, (long) SHADE_PERIOD);
+		return t < 25 || t >= 50 && t < 60;
 	}
 
 	/** May another regrow wave be planned: fewer than the allowed waves have run. */

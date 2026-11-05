@@ -244,4 +244,32 @@ class DragonTest {
 		assertFalse(MoveRules.wavesLeft(2));
 		assertEquals(60 * 20, MoveRules.REGROW_DELAY_TICKS);
 	}
+
+	@Test
+	void theSwarmAddsTwoAtATimeUpToFive() {
+		assertEquals(2, MoveRules.swarmToSpawn(0));
+		assertEquals(2, MoveRules.swarmToSpawn(3));
+		assertEquals(1, MoveRules.swarmToSpawn(4));
+		assertEquals(0, MoveRules.swarmToSpawn(5));
+		assertEquals(0, MoveRules.swarmToSpawn(9));
+		assertEquals(600, MoveRules.SWARM_EVERY_TICKS);
+	}
+
+	@Test
+	void theShadeFlickersButIsNotGoneForGood() {
+		int hidden = 0;
+		boolean wasHidden = MoveRules.shadeHidden(0);
+		int flips = 0;
+		for (long t = 0; t < 1000; t++) {
+			boolean h = MoveRules.shadeHidden(t);
+			hidden += h ? 1 : 0;
+			flips += h != wasHidden ? 1 : 0;
+			wasHidden = h;
+		}
+		assertEquals(350, hidden, "35 of every 100 ticks out of sight");
+		assertEquals(39, flips, "four changes in every period (the last one of the tenth falls on tick 1000), so it flickers");
+		assertFalse(MoveRules.shadeHidden(30), "visible between the two gaps");
+		assertTrue(MoveRules.shadeHidden(55));
+		assertEquals(MoveRules.shadeHidden(7), MoveRules.shadeHidden(7 + 3 * MoveRules.SHADE_PERIOD));
+	}
 }

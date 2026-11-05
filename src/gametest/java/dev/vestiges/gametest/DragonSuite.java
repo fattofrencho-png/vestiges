@@ -6,6 +6,7 @@ import dev.vestiges.data.VestigesData;
 import dev.vestiges.dragon.DragonDef;
 import dev.vestiges.dragon.DragonMark;
 import dev.vestiges.dragon.DragonMoves;
+import dev.vestiges.dragon.DragonMoves2;
 import dev.vestiges.dragon.DragonService;
 import dev.vestiges.dragon.PlayerDragons;
 import dev.vestiges.dungeon.DungeonService;
@@ -85,7 +86,7 @@ final class DragonSuite {
 				return (m == null ? 0 : m.number()) == number;
 			}, ticks);
 			return true;
-		} catch (RuntimeException e) {
+		} catch (RuntimeException | AssertionError e) {
 			return false;
 		}
 	}
@@ -234,7 +235,7 @@ final class DragonSuite {
 				return id == null || !(end.getEntity(id) instanceof EnderDragon d) || d.isRemoved();
 			}, ticks);
 			return true;
-		} catch (RuntimeException e) {
+		} catch (RuntimeException | AssertionError e) {
 			return false;
 		}
 	}
@@ -243,7 +244,7 @@ final class DragonSuite {
 		try {
 			server.waitFor(test::test, ticks);
 			return true;
-		} catch (RuntimeException e) {
+		} catch (RuntimeException | AssertionError e) {
 			return false;
 		}
 	}
@@ -558,5 +559,65 @@ final class DragonSuite {
 			crystalsOnPillars(server, 0, 3) + " crystals, " + DragonMoves.wavesRun() + " waves");
 		DragonMoves.regrowDelayOverride = -1;
 		DragonMoves.regrowWarnOverride = -1;
+
+		c.section("Durhos: the shade flickers in flight and darkens the End when it perches");
+		actAs(server, 6);
+		phase(server, EnderDragonPhase.HOLDING_PATTERN);
+		int hiddenBefore = DragonMoves2.hidden;
+		int seenHidden = 0;
+		int seenVisible = 0;
+		for (int i = 0; i < 60; i++) {
+			boolean invisible = server.computeOnServer(s -> {
+				ServerLevel end = s.getLevel(Level.END);
+				return end.getEntity(end.getDragonFight().dragonUUID()).isInvisible();
+			});
+			seenHidden += invisible ? 1 : 0;
+			seenVisible += invisible ? 0 : 1;
+			ctx.waitTicks(5);
+		}
+		c.check("in flight it goes out of sight and comes back", seenHidden > 0 && seenVisible > 0 && DragonMoves2.hidden > hiddenBefore,
+			seenHidden + " hidden, " + seenVisible + " visible, " + (DragonMoves2.hidden - hiddenBefore) + " flickers");
+		int darkBefore = DragonMoves2.darkened;
+		besideDragon(server, 10);
+		int sat = 0;
+		int hiddenWhileSitting = 0;
+		boolean dark = false;
+		for (int i = 0; i < 20 && !dark; i++) {
+			phase(server, EnderDragonPhase.SITTING_SCANNING);
+			ctx.waitTicks(3);
+			boolean[] now = server.computeOnServer(s -> {
+				ServerLevel end = s.getLevel(Level.END);
+				EnderDragon d = (EnderDragon) end.getEntity(end.getDragonFight().dragonUUID());
+				boolean sitting = d.getPhaseManager().getCurrentPhase().isSitting();
+				return new boolean[] {sitting, sitting && d.isInvisible(),
+					s.getPlayerList().getPlayers().get(0).hasEffect(net.minecraft.world.effect.MobEffects.DARKNESS)};
+			});
+			sat += now[0] ? 1 : 0;
+			hiddenWhileSitting += now[1] ? 1 : 0;
+			dark = now[2] && DragonMoves2.darkened > darkBefore;
+		}
+		c.check("when it perches the players near are in Darkness", dark, "sat " + sat + " times, darkened " + (DragonMoves2.darkened - darkBefore));
+		c.check("and while it sits it is plainly visible", sat > 0 && hiddenWhileSitting == 0, sat + " samples sitting, " + hiddenWhileSitting + " of them invisible");
+		server.runCommand("effect clear @p");
+		server.runOnServer(s -> s.getPlayerList().getPlayers().get(0).setNoGravity(false));
+
+		c.section("Ilvig: phantoms join while it perches, five at most");
+		actAs(server, 5);
+		DragonMoves2.swarmEveryOverride = 20;
+		int swarmedBefore = DragonMoves2.swarmed;
+		int most = 0;
+		for (int i = 0; i < 16; i++) {
+			phase(server, EnderDragonPhase.SITTING_SCANNING);
+			ctx.waitTicks(20);
+			most = Math.max(most, server.computeOnServer(s -> DragonMoves2.swarm(s.getLevel(Level.END)).size()));
+		}
+		c.check("two came at the first perch", DragonMoves2.swarmed - swarmedBefore >= 2, (DragonMoves2.swarmed - swarmedBefore) + " spawned");
+		c.check("they pile up to five and no further", most == 5, "most alive " + most);
+		DragonMoves2.swarmEveryOverride = -1;
+
+		c.section("The swarm burns away with the dragon");
+		server.runCommand("execute in minecraft:the_end run kill @e[type=minecraft:ender_dragon]");
+		c.check("the fight ends", waitUntil(server, s -> DragonService.world(s).active() == 0, 1500));
+		c.check("no phantom of the swarm is left", server.computeOnServer(s -> DragonMoves2.swarm(s.getLevel(Level.END)).size()) == 0);
 	}
 }
