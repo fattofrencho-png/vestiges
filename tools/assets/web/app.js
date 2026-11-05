@@ -1529,13 +1529,12 @@ initReview({
   page: (...nodes) => page(...nodes),
   showFailure: (problem) => showFailure(problem),
   enter: () => { screen = "review"; stopPolling(); project = null; queue = null; backToReview = null; steps(); },
-  attach3d: async (slot, id, number, raise = 0) => {
+  attach3d: async (slot, id, number) => {
     slot.append($("view"));
-    if (viewHeldFor === id + ":" + number) { viewer.resume(); viewer.setLift(raise); return; }
+    if (viewHeldFor === id + ":" + number) { viewer.resume(); return; }
     viewHeldFor = id + ":" + number;
-    try { await viewer.show([await get(`/api/version?id=${encodeURIComponent(id)}&v=${number}`)], false, raise); } catch (problem) { viewHeldFor = null; throw problem; }
+    try { await viewer.show([await get(`/api/version?id=${encodeURIComponent(id)}&v=${number}`)]); } catch (problem) { viewHeldFor = null; throw problem; }
   },
-  lift3d: (blocks) => viewer.setLift(blocks),
   openWorkbench: (id) => { leaveReview(); backToReview = id; openProject(id).catch((problem) => showFailure(problem)); },
 });
 

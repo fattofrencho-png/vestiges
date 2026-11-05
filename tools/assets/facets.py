@@ -22,7 +22,7 @@ project["review"] = {"state": "inbox" | "accepted" | "rejected" | "needs_work", 
 """
 import time
 
-FACETS = ("name", "type", "subtype", "species", "realm", "style", "palette", "setting", "scale", "complexity", "rarity", "front", "ground", "season")
+FACETS = ("name", "type", "subtype", "species", "realm", "style", "palette", "setting", "scale", "complexity", "rarity", "front", "ground", "season", "kind")
 SOURCES = ("human", "rule", "fingerprint", "picture", "vision", "import")
 STATES = ("inbox", "accepted", "rejected", "needs_work")
 REJECT_REASONS = ("duplicate", "ugly", "wrong", "not vanilla", "too small", "package", "other")

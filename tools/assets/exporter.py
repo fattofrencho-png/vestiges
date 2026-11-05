@@ -16,8 +16,10 @@ import time
 from pathlib import Path
 
 import analyse
+import cards
 import dashboard
 import facets
+import libname
 import library
 import projects
 import review
@@ -117,7 +119,7 @@ def _accepted_builds(rows):
 
 
 def ready_ids(rows, world=False):
-    ok = [r for r in _accepted_builds(rows) if r.get("rights") in RIGHTS_OK and not review.is_package(r)]
+    ok = [r for r in _accepted_builds(rows) if r.get("rights") in RIGHTS_OK and not review.is_package(r) and not review.is_piece(r)]
     if world:
         ok = [r for r in ok if not r.get("not_vanilla")]
     return [r["id"] for r in sorted(ok, key=lambda r: (r.get("f_type", ""), r.get("f_species", ""), r["id"]))]
@@ -141,25 +143,35 @@ def _keepers(rows):
 
 
 def video_entries(rows):
-    accepted = _accepted_builds(rows)
-    numbers = assign_numbers([r["id"] for r in accepted])
+    accepted = [r for r in _accepted_builds(rows) if not review.is_piece(r)]   # a street tile is never a video card
     keepers = _keepers(accepted)
-    entries = []
-    for row in sorted(accepted, key=lambda r: (numbers[r["id"]], r["id"])):
+    loaded = {}
+    for row in accepted:
         project = projects.load(row["id"])
+        if not project.get("card") and cards.assign(project):   # accepted before numbers followed the folder: number it now
+            libname.stamp(project)
+            projects.save(project)
+        loaded[row["id"]] = project
+    entries = []
+    order = lambda r: ((loaded[r["id"]].get("card") or {}).get("model", 10 ** 9), (loaded[r["id"]].get("card") or {}).get("realm", 0),
+                       (loaded[r["id"]].get("card") or {}).get("variant", 0), r["id"])
+    for row in sorted(accepted, key=order):
+        project = loaded[row["id"]]
         measures = (project.get("analysis") or {}).get("measures") or {}
         credit = project.get("credit") or {}
-        model = numbers[row["id"]]
+        card = project.get("card")
         keeper = keepers.get(row["id"])
         entries.append({
-            "id": row["id"], "model_no": model, "variant_no": 0, "number": label(model), "title": project.get("title", ""),
+            "id": row["id"], "card": cards.short(card) if card else "", "model_no": card["model"] if card else None, "realm_no": card["realm"] if card else None,
+            "variant_no": card["variant"] if card else None, "number": cards.label(card) if card else "", "video_label": libname.video_label(project),
+            "library_file": (project.get("library") or {}).get("file_name", ""), "game_id": libname.game_id(project) or "", "title": project.get("title", ""),
             "folder": facets.get(project, "type") or "", "subfolder": facets.get(project, "subtype") or "", "species": facets.get(project, "species") or "",
             "realm": facets.get(project, "realm") or "", "style": facets.get(project, "style") or "", "palette": facets.get(project, "palette") or "",
             "setting": facets.get(project, "setting") or "", "scale": facets.get(project, "scale") or "", "complexity": facets.get(project, "complexity") or "",
             "rarity": facets.get(project, "rarity") or "", "series": {"kind": "folder", "key": _series_key(project)},
             "blocks": measures.get("blocks", row.get("blocks", 0)), "w": measures.get("w", 0), "h": measures.get("h", 0), "d": measures.get("d", 0),
             "distinct": measures.get("distinct", 0), "difficulty": measures.get("difficulty", 0), "rarity_points": measures.get("rarity_points", 0),
-            "rights": row.get("rights", "unknown"), "video_ready": row.get("rights") in RIGHTS_OK and not review.is_package(row), "parts": measures.get("parts", 1), "creator": credit.get("creator", ""),
+            "rights": row.get("rights", "unknown"), "video_ready": bool(card) and row.get("rights") in RIGHTS_OK and not review.is_package(row), "parts": measures.get("parts", 1), "creator": credit.get("creator", ""),
             "licence": credit.get("licence", ""), "permission": credit.get("permission", ""), "link": credit.get("link", ""),
             "pack": (project.get("source") or {}).get("name", ""), "path": (project.get("source") or {}).get("item", ""),
             "vanilla": not row.get("not_vanilla"), "duplicate_of": keeper if keeper and keeper != row["id"] else "",
@@ -199,9 +211,11 @@ def write_video(rows=None):
 def _origin(project, blocks):
     xs, ys, zs = zip(*((b[0], b[1], b[2]) for b in blocks))
     low = (min(xs), min(ys), min(zs))
-    offset = int(project.get("ground_offset", 0) or 0)   # sunk (-) or raised (+) by the author in Review
-    return {"ground_y": -low[1], "ground_offset": offset, "lower_by": -low[1] - offset, "origin_x": -low[0], "origin_z": -low[2],
-            "size": [max(xs) - low[0] + 1, max(ys) - low[1] + 1, max(zs) - low[2] + 1]}
+    return {"ground_y": -low[1], "origin_x": -low[0], "origin_z": -low[2], "size": [max(xs) - low[0] + 1, max(ys) - low[1] + 1, max(zs) - low[2] + 1]}
+
+
+def measures_of(project):
+    return (project.get("analysis") or {}).get("measures") or {}
 
 
 def world_entries(rows):
@@ -227,9 +241,11 @@ def world_entries(rows):
             replaces = None
             biomes = PALETTE_BIOMES.get(palette, [])
         rarity = facets.get(project, "rarity") or "Common"
-        out.append({"id": asset_id, "name": chosen["name"] if chosen else None, "structure": f"vestiges:{project.get('category', 'tree')}/{chosen['name']}" if chosen else None,
+        game_id = libname.game_id(project)
+        out.append({"id": asset_id, "name": chosen["name"] if chosen else None, "card": cards.short(project["card"]) if project.get("card") else "",
+                    "structure": game_id or (f"vestiges:{project.get('category', 'tree')}/{chosen['name']}" if chosen else None),
                     "title": project.get("title", ""), "type": kind, "species": species, "subtype": facets.get(project, "subtype") or "", "replaces": replaces,
-                    "biomes": biomes, "weight": WEIGHT.get(rarity, 5), "rarity": rarity, "scale": facets.get(project, "scale") or "",
+                    "biomes": biomes, "weight": WEIGHT.get(rarity, 5), "rarity": rarity, "scale": facets.get(project, "scale") or "", "players": measures_of(project).get("players"),
                     "complexity": facets.get(project, "complexity") or "", **placement, "vanilla": True,
                     "creator": (project.get("credit") or {}).get("creator", ""), "licence": (project.get("credit") or {}).get("licence", "")})
     return out

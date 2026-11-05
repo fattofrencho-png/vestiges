@@ -137,7 +137,7 @@ class AnalyseTests(unittest.TestCase):
         blocks = [[x, y, z, "minecraft:nether_bricks"] for x in range(70) for y in range(1) for z in range(2)]
         found, _ = self.proposals(blocks)
         self.assertEqual(found["realm"][0], "Nether")
-        self.assertEqual(found["scale"][0], "Mega")
+        self.assertEqual(found["scale"][0], "Giant")   # 70 blocks long, and the library is too small for a distribution yet: fixed reaches
 
     def test_fingerprints_ignore_turning_and_mirroring(self):
         base = analyse.fingerprints(house())
@@ -325,30 +325,84 @@ class ReviewTests(LibraryCase):
         self.assertEqual(review.rights_of(project), "permission")
         self.assertEqual(review.rights_of({"mode": "ai"}), "own")
 
+    def test_a_number_is_given_when_accepted_and_a_recoloured_twin_becomes_a_variant(self):
+        import cards
+        ids = self.fill()
+        self.assertIsNone(projects.load(ids["oak"]).get("card"), "nothing is numbered before it is accepted")
+        review_decide = studio.review_decide
+        review_decide({"id": ids["oak"], "action": "accept_all"})
+        oak = projects.load(ids["oak"])["card"]
+        self.assertEqual(oak, {"model": 1001, "realm": 0, "variant": 1})
+        review_decide({"id": ids["birch"], "action": "accept_all"})   # the same shape in other materials
+        self.assertEqual(projects.load(ids["birch"])["card"], {"model": 1001, "realm": 0, "variant": 2})
+        review_decide({"id": ids["house"], "action": "accept_all"})
+        review_decide({"id": ids["turned"], "action": "accept_all"})  # an exact turned copy is a duplicate, not a variant
+        house, turned = projects.load(ids["house"])["card"], projects.load(ids["turned"])["card"]
+        self.assertEqual(house["model"] // 1000, 5, "houses are folder 5")
+        self.assertNotEqual(house["model"], turned["model"])
+        review_decide({"id": ids["oak"], "action": "change", "facet": "type", "value": "Houses"})
+        self.assertEqual(projects.load(ids["oak"])["card"], oak, "a number never changes")
+        self.assertEqual(cards.label({"model": 1001, "realm": 1, "variant": 1}), "#1001-0101")
+        self.assertEqual(cards.short({"model": 28001, "realm": 0, "variant": 12}), "28001-0012")
+
+    def test_farm_house_subtypes_pieces_and_packages(self):
+        farm = {"blocks": 400, "crops": 60, "roofed": 0, "enclosed": 0, "w": 14, "h": 4, "d": 14, "log_share": 0}
+        self.assertEqual(analyse.farm_subtype(farm, {"farmland": 60, "wheat": 60})[0], "Crop farms")
+        self.assertEqual(analyse.farm_subtype({**farm, "roofed": 80}, {"farmland": 60})[0], "Farmsteads")
+        self.assertEqual(analyse.farm_subtype({**farm, "crops": 0}, {"oak_fence": 80})[0], "Animal pens")
+        self.assertEqual(analyse.farm_subtype({**farm, "crops": 0, "roofed": 90}, {"oak_planks": 300})[0], "Barns")
+        home = {"blocks": 1200, "log_share": 0.05, "h": 8, "w": 9, "d": 9, "roofed": 60, "enclosed": 60}
+        self.assertEqual(analyse.house_subtype(home)[0], "Cottages")
+        self.assertEqual(analyse.house_subtype({**home, "blocks": 100})[0], "Starter huts")
+        self.assertEqual(analyse.house_subtype({**home, "blocks": 4500})[0], "Mansions")
+        self.assertEqual(analyse.house_subtype({**home, "h": 14, "w": 8, "d": 8})[0], "Townhouses")
+        self.assertEqual(analyse.kind_of({"parts": 5, "h": 20}, "Other", {})[0], "Package")
+        self.assertEqual(analyse.kind_of({"parts": 1, "h": 2}, "Streets and plazas", {"Streets and plazas": ("", "streets", 0.7)})[0], "Piece")
+        self.assertEqual(analyse.kind_of({"parts": 1, "h": 2}, "Streets and plazas", {"Streets and plazas": ("", "meeting point", 0.7)})[0], "Build")
+        scores, _ = analyse.type_scores({**farm, "doors": 0, "glass": 0, "beds": 0, "workstations": 0, "logs": 0, "leaves": 0, "log_share": 0, "leaf_share": 0, "flora": 0,
+                                         "water": 0, "floating": 0, "fill": 0.5, "top_blocks": [], "parts": 1}, {"Streets and plazas": ("", "streets", 0.7)})
+        self.assertEqual(scores.most_common(1)[0][0], "Streets and plazas", "a street tile beside fields is still a street piece")
+
+    def test_size_is_judged_inside_its_own_type(self):
+        import sizeclass
+        self.assertEqual(sizeclass.players(18), 10.0)
+        self.assertEqual([sizeclass.class_of("Nothing yet", r) for r in (5, 20, 40, 90)], ["Compact", "Typical", "Grand", "Giant"])
+        sizeclass._cache.update(at=10 ** 12, cuts={"Trees": (10, 20, 30), "Houses": (12, 17, 25)})   # a distribution per type
+        try:
+            self.assertEqual(sizeclass.class_of("Trees", 20), "Typical")
+            self.assertEqual(sizeclass.class_of("Houses", 20), "Grand", "the same reach is bigger for a house than for a tree")
+            self.assertEqual(sizeclass.class_of("Trees", 31), "Giant")
+        finally:
+            sizeclass.forget()
+
+    def test_several_naming_rules_are_offered_and_the_choice_sticks(self):
+        import libname
+        ids = self.fill()
+        found = studio.review_asset(ids["oak"])["library"]
+        self.assertEqual([o["rule"] for o in found["options"]], [r for r, _ in libname.RULES])
+        names = [o["file_name"] for o in found["options"]]
+        self.assertEqual(len(set(names)), 4)
+        card = found["card"][1:]
+        self.assertTrue(all(card in n for n in names))
+        self.assertTrue(names[2].startswith("0" + card))             # the number rule sorts by card number
+        size = (projects.load(ids["oak"])["analysis"]["measures"])
+        self.assertIn(f"{size['w']}x{size['h']}x{size['d']}", names[0])   # the size is in the name
+        studio.review_decide({"id": ids["oak"], "action": "naming_rule", "value": "short"})
+        self.assertEqual(studio.review_asset(ids["oak"])["library"]["rule"], "short")
+        with self.assertRaises(ValueError):
+            studio.review_decide({"id": ids["oak"], "action": "naming_rule", "value": "nonsense"})
+        studio.review_decide({"id": ids["oak"], "action": "naming_rule", "value": "convention"})
+
     def test_name_changes_the_library_file_name_but_not_the_number(self):
         ids = self.fill()
         before = studio.review_asset(ids["oak"])["library"]
         studio.review_decide({"id": ids["oak"], "action": "change", "facet": "name", "value": "Great  Oak of the Meadow"})
         after = studio.review_asset(ids["oak"])["library"]
         self.assertEqual(before["card"], after["card"])
-        self.assertTrue(after["file_name"].endswith("_great-oak-of-the-meadow.nbt"), after)
+        self.assertIn("_great-oak-of-the-meadow_", after["file_name"])
         self.assertNotEqual(before["file_name"], after["file_name"])
         studio.review_decide({"id": ids["oak"], "action": "accept_all"})
         self.assertEqual(projects.load(ids["oak"])["library"]["file_name"], after["file_name"])
-
-    def test_ground_offset_is_saved_limited_and_undoable(self):
-        ids = self.fill()
-        self.assertEqual(studio.review_asset(ids["oak"])["ground_offset"], 0)
-        studio.review_decide({"id": ids["oak"], "action": "ground_offset", "value": -2})
-        self.assertEqual(studio.review_asset(ids["oak"])["ground_offset"], -2)
-        studio.review_decide({"id": ids["oak"], "action": "ground_offset", "value": 1})
-        self.assertEqual(projects.load(ids["oak"])["ground_offset"], 1)
-        with self.assertRaises(ValueError):
-            studio.review_decide({"id": ids["oak"], "action": "ground_offset", "value": 40})
-        studio.review_decide({"id": ids["oak"], "action": "undo"})
-        self.assertEqual(studio.review_asset(ids["oak"])["ground_offset"], -2)
-        studio.review_decide({"id": ids["oak"], "action": "undo"})
-        self.assertEqual(studio.review_asset(ids["oak"])["ground_offset"], 0)
 
     def test_api_functions(self):
         ids = self.fill()
@@ -363,8 +417,9 @@ class ReviewTests(LibraryCase):
         self.assertTrue(asset["facets"][0]["why"])
         for row in ("front", "ground", "season"):
             self.assertIn(row, names)
-        self.assertRegex(asset["library"]["file_name"], r"^trees_[a-z0-9-]+_\d{4}-00_[a-z0-9-]+\.nbt$")
-        self.assertRegex(asset["library"]["card"], r"^#\d{4}-00$")
+        self.assertRegex(asset["library"]["file_name"], r"^trees_[a-z0-9-]+_1\d{3}-0001_[a-z0-9-]+_\d+x\d+x\d+(_[a-z0-9-]+)*\.nbt$")
+        self.assertRegex(asset["library"]["card"], r"^#1\d{3}-0001$")
+        self.assertTrue(asset["library"]["preview"], "not accepted yet: the number is only a preview")
         studio.review_decide({"id": ids["oak"], "action": "accept_all"})
         self.assertEqual(studio.review_asset(ids["oak"])["review"]["state"], "accepted")
         self.assertTrue(studio.review_decide({"id": ids["oak"], "action": "undo"})["ok"] or True)
@@ -491,8 +546,10 @@ class ExportTests(LibraryCase):
         document = json.loads(Path(result["file"]).read_text(encoding="utf-8"))
         by_id = {e["id"]: e for e in document["entries"]}
         oak = by_id[ids["oak"]]
-        self.assertEqual((oak["folder"], oak["species"], oak["realm"], oak["variant_no"], oak["video_ready"]), ("Trees", "oak", "Overworld", 0, True))
-        self.assertRegex(oak["number"], r"^#\d{3}-00$")
+        self.assertEqual((oak["folder"], oak["species"], oak["realm"], oak["variant_no"], oak["video_ready"]), ("Trees", "oak", "Overworld", 1, True))
+        self.assertRegex(oak["number"], r"^#1\d{3}-0001$")
+        self.assertEqual(oak["card"], oak["number"][1:])
+        self.assertEqual(oak["game_id"], f"vestiges:trees/oak_{oak['model_no']}_0001")
         self.assertEqual(oak["series"], {"kind": "folder", "key": "Trees/oak"})
         twins = [by_id[ids["house"]]["duplicate_of"], by_id[ids["turned"]]["duplicate_of"]]
         self.assertEqual(len([t for t in twins if t]), 1, "one twin points at the other as the keeper")
@@ -519,7 +576,6 @@ class ExportTests(LibraryCase):
         self.assertEqual(len(before["unsaved"]), 2)
         ready = exporter.prepare_world()
         self.assertEqual(len(ready), 2)
-        studio.review_decide({"id": ids["oak"], "action": "ground_offset", "value": -2})   # sunk by two blocks in Review
         after = exporter.write_world()
         self.assertEqual(after["unsaved"], [])
         entries = json.loads(Path(after["file"]).read_text(encoding="utf-8"))["entries"]
@@ -528,7 +584,6 @@ class ExportTests(LibraryCase):
         self.assertIn("forest", oak["biomes"])
         self.assertTrue(oak["structure"].startswith("vestiges:"))
         self.assertEqual((oak["ground_y"], oak["origin_x"]), (0, 2))
-        self.assertEqual((oak["ground_offset"], oak["lower_by"]), (-2, 2))   # the placer lowers it two more blocks
         self.assertTrue(all(e["vanilla"] for e in entries))
         self.assertEqual(exporter.summary()["world"], 2)
 

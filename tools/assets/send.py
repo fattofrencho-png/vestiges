@@ -13,6 +13,7 @@ from pathlib import Path
 import explore
 import export
 import files
+import libname
 import licences
 import pipeline
 import projects
@@ -53,12 +54,16 @@ def build_bytes(project):
     if errors:
         return chosen["name"], None, None, "the mod only uses vanilla blocks: " + "; ".join(errors[:2])
     structure, placement = export.to_structure(version, pipeline.jar().data_version(), with_air=project.get("mode") == "import")
-    return chosen["name"], export.write_nbt(structure), export.with_ground_offset(placement, project), None
+    return chosen["name"], export.write_nbt(structure), placement, None
 
 
 def default_destination(project):
     """Where an asset goes inside src/main/resources, from its original path when it has one, else from its kind."""
     if project.get("mode") != "file":
+        game_id = libname.game_id(project)   # a numbered asset goes where its permanent game id says
+        if game_id:
+            namespace, path = game_id.split(":")
+            return f"data/{namespace}/structure/{path}.nbt"
         return f"data/{NAMESPACE}/structure/{project.get('category', 'tree')}/{{name}}.nbt"
     file = project.get("file") or {}
     name = _lower(file.get("name", "file"))

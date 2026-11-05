@@ -17,24 +17,26 @@ import time
 
 import analyse
 import facets
+import cards
 import libname
 
 VIEWS = (("inbox", "Not reviewed yet"), ("sure", "Sure first (fast accept)"), ("unsure", "Unsure first"), ("groups", "Look-alikes"),
-         ("needs", "Needs work"), ("accepted", "Accepted"), ("rejected", "Archived"), ("all", "Everything"))
+         ("pieces", "Pieces and packages"), ("needs", "Needs work"), ("accepted", "Accepted"), ("rejected", "Archived"), ("all", "Everything"))
 SURE = 0.8
 UNSURE = 0.5
 HISTORY = 30
 OLD_KIND_FACETS = ("type",)
 
 VOCAB = {
-    "type": list(analyse.TYPES),
+    "type": list(cards.FOLDERS) + ["Other"],
+    "kind": ["Build", "Piece", "Package"],
     "realm": ["Overworld", "Nether", "End", "Elven", "Dwarven", "Wizard", "Undead", "Fairy", "Dragon", "Frost", "Pirate", "Tribal"],
     "style": ["Medieval", "Gothic", "Nordic", "Japanese", "Chinese", "Mediterranean", "Greek-Roman", "Egyptian", "Arabic", "Aztec-Maya", "Russian",
               "Victorian", "Colonial", "Art Deco", "Industrial", "Steampunk", "Rustic", "Modern", "Futuristic", "Ruined"],
     "palette": ["Plains", "Desert", "Snowy", "Taiga", "Savanna", "Jungle", "Swamp", "Cherry grove", "Dark forest", "Pale garden", "Day", "Night",
                 "Sunset", "Spring", "Summer", "Autumn", "Winter", "Halloween", "Christmas", "Lunar New Year"],
     "setting": ["Surface", "Underground", "Underwater", "Floating", "Tree-top", "Cliff-side", "Island"],
-    "scale": ["Micro", "Small", "Medium", "Large", "Mega"],
+    "scale": list(analyse.SCALES),
     "complexity": ["Simple", "Standard", "Detailed", "Masterpiece"],
     "rarity": ["Common", "Uncommon", "Rare", "Epic", "Legendary"],
     "species": ["oak", "birch", "spruce", "dark oak", "acacia", "jungle", "mangrove", "cherry", "pale oak", "giant mushroom", "crimson fungus", "warped fungus"],
@@ -45,12 +47,22 @@ VOCAB = {
     "season": list(analyse.SEASONS),
 }
 # What the review screen shows, in this order. The first three are what the author checks hardest.
-SHOWN = ("name", "type", "subtype", "species", "realm", "style", "palette", "setting", "scale", "complexity", "rarity", "front", "ground", "season")
+SHOWN = ("name", "type", "subtype", "species", "kind", "realm", "style", "palette", "setting", "scale", "complexity", "rarity", "front", "ground", "season")
 
 
 def is_package(row):
     """A file that holds several separate builds. It can't be accepted as one build until it is split."""
-    return row.get("parts", 1) > 1
+    return row.get("parts", 1) > 1 or row.get("f_kind") == "Package"
+
+
+def is_kit(row):
+    """A piece or a package: reviewed on its own, not mixed in with the builds."""
+    return row.get("f_kind") in ("Piece", "Package")
+
+
+def is_piece(row):
+    """A kit piece (a street tile, a path): kept in the library but not a design for the catalog, the videos or world generation."""
+    return row.get("f_kind") == "Piece"
 
 
 def _is_build(row):
@@ -72,7 +84,7 @@ def _matches(row, flt):
 
 
 def counts(rows):
-    out = {"inbox": 0, "sure": 0, "batch": 0, "unsure": 0, "groups": 0, "needs": 0, "accepted": 0, "rejected": 0, "all": 0, "unanalysed": 0, "today": 0}
+    out = {"inbox": 0, "pieces": 0, "sure": 0, "batch": 0, "unsure": 0, "groups": 0, "needs": 0, "accepted": 0, "rejected": 0, "all": 0, "unanalysed": 0, "today": 0}
     twins = _twins(rows)
     midnight = time.mktime(time.localtime()[:3] + (0, 0, 0, 0, 0, -1))
     grouped = _grouped_ids(rows)
@@ -84,7 +96,9 @@ def counts(rows):
             continue
         out["all"] += 1
         state = row.get("review", "inbox")
-        if state == "inbox":
+        if state == "inbox" and is_kit(row):
+            out["pieces"] += 1
+        elif state == "inbox":
             out["inbox"] += 1
             out["sure"] += row.get("conf", 0) >= SURE
             out["batch"] += row.get("conf", 0) >= SURE and row["id"] not in twins and not is_package(row)
@@ -108,7 +122,8 @@ def queue(rows, view="inbox", flt=None):
     flt = flt or {}
     rows = [r for r in rows if _is_build(r) and r.get("analysed")]
     pool = [r for r in rows if _matches(r, flt)]
-    inbox = [r for r in pool if r.get("review", "inbox") == "inbox"]
+    inbox_all = [r for r in pool if r.get("review", "inbox") == "inbox"]
+    inbox = [r for r in inbox_all if not is_kit(r)]
     kind = lambda r: (r.get("f_type") or "~", r.get("f_species") or r.get("f_subtype") or "~", -r.get("blocks", 0), r["id"])
     if view == "inbox":
         chosen = sorted(inbox, key=kind)
@@ -116,6 +131,8 @@ def queue(rows, view="inbox", flt=None):
         chosen = sorted([r for r in inbox if r.get("conf", 0) >= SURE], key=lambda r: (-r.get("conf", 0),) + kind(r))
     elif view == "unsure":
         chosen = sorted(inbox, key=lambda r: (r.get("conf", 0),) + kind(r))
+    elif view == "pieces":
+        chosen = sorted([r for r in inbox_all if is_kit(r)], key=kind)
     elif view == "groups":
         return _in_groups(inbox, rows)
     elif view == "needs":
@@ -168,8 +185,7 @@ def related(rows, asset_id):
 
 
 def _snapshot(project):
-    return copy.deepcopy({"facets": project.get("facets") or {}, "review": project.get("review"), "category": project.get("category"),
-                          "ground_offset": project.get("ground_offset", 0)})
+    return copy.deepcopy({"facets": project.get("facets") or {}, "review": project.get("review"), "category": project.get("category")})
 
 
 def _remember(project):
@@ -191,7 +207,6 @@ def undo(project):
         project["review"] = before["review"]
     if before["category"] is not None:
         project["category"] = before["category"]
-    project["ground_offset"] = before.get("ground_offset", 0)
     return True
 
 
@@ -205,6 +220,7 @@ def _sync_kind(project):
 def restamp(project):
     """An accepted asset keeps its library file name up to date with its rows."""
     if facets.review_of(project).get("state") == "accepted":
+        cards.assign(project)      # the permanent card number, given once, when the asset is accepted
         libname.stamp(project)
 
 
@@ -233,18 +249,6 @@ def change(project, name, value):
     facets.decide(project, name, value)
     _sync_kind(project)
     restamp(project)
-
-
-MAX_OFFSET = 16
-
-
-def set_ground_offset(project, blocks):
-    """How many blocks the build sits above (+) or below (-) the ground it is placed on. 0 is as it was saved: the lowest layer on the ground."""
-    blocks = int(blocks)
-    if abs(blocks) > MAX_OFFSET:
-        raise ValueError(f"The offset can be at most {MAX_OFFSET} blocks up or down")
-    _remember(project)
-    project["ground_offset"] = blocks
 
 
 def reject_facet(project, name):
@@ -319,6 +323,6 @@ def view_of(project, rows=None):
                       "status": record["status"], "rejected": record.get("rejected", []), "options": VOCAB.get(name, [])})
     measures = (project.get("analysis") or {}).get("measures") or {}
     keep = ("blocks", "w", "h", "d", "distinct", "logs", "leaves", "doors", "beds", "glass", "workstations", "crops", "roofed", "enclosed",
-            "symmetry", "floating", "parts", "difficulty", "rarity_points", "top_blocks")
-    return {"ground_offset": project.get("ground_offset", 0), "library": libname.of(project), "facets": shown, "measures": {k: measures[k] for k in keep if k in measures}, "review": facets.review_of(project),
+            "symmetry", "floating", "parts", "difficulty", "rarity_points", "top_blocks", "reach", "players")
+    return {"library": libname.of(project), "facets": shown, "measures": {k: measures[k] for k in keep if k in measures}, "review": facets.review_of(project),
             "confidence": facets.confidence_of(project), "can_undo": bool(project.get("review_history"))}

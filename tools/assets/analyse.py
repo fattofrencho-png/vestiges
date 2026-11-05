@@ -17,7 +17,7 @@ from collections import Counter, deque
 import facets
 import naming
 
-VERSION = 2  # 2: a package of many builds is never 'sure'
+VERSION = 3  # 2: a package of many builds is never 'sure'; 3: farm and house subtypes, kind (build, piece, package), size class within the type
 MAX_CELLS = 700_000  # biggest bounding box we flood-fill for rooms
 
 TYPES = ("Trees", "Gardens and plants", "Houses", "Towers", "Gates", "Walls", "Castles and fortresses", "Bridges and roads", "Farms",
@@ -41,7 +41,9 @@ PATH_HINTS = (
     (r"\b(walls?|palisade|rampart|battlement)\b", "Walls", ""),
     (r"\b(castles?|fortress|keep|citadel|palace)\b", "Castles and fortresses", ""),
     (r"\b(bridges?|roads?|aqueduct|tunnel)\b", "Bridges and roads", ""),
-    (r"\b(farms?|barn|stable|silo|windmill|watermill|orchard|vineyard|crops?|pens?)\b", "Farms", ""),
+    (r"\b(windmill|watermill)\b", "Farms", "Windmills and watermills"), (r"\bbarn\b", "Farms", "Barns"), (r"\bstable\b", "Farms", "Stables"),
+    (r"\b(silo|granary)\b", "Farms", "Silos and granaries"), (r"\b(animal pens?|pens?)\b", "Farms", "Animal pens"), (r"\borchard\b", "Farms", "Orchards"),
+    (r"\bvineyard\b", "Farms", "Vineyards"), (r"\b(farms?|crops?)\b", "Farms", ""),
     (r"\b(ponds?|lake|river|waterfall|fountain|oasis|lagoon|well)\b", "Water", ""),
     (r"\b(hills?|mountain|cliff|rock|arch|boulder|cave|canyon|island|volcano)\b", "Terrain", ""),
     (r"\b(ships?|boat|galleon|longship|submarine|cart|train|airship|balloon)\b", "Ships and vehicles", ""),
@@ -135,6 +137,7 @@ def measure(blocks):
         "floating": round(floating, 3), "roof": round(roof, 3), "fill": round(total / (w * h * d), 3),
         "widest_layer": max(layer_cells), "base_layer": layer_cells[0], "top_layer": layer_cells[-1],
         "top_blocks": [[n, c] for n, c in names.most_common(6)], "dominant": dominant[0],
+        "reach": max(w, h, d), "players": round(max(w, h, d) / PLAYER_HEIGHT, 1),
     }
     out["symmetry"] = round(max(_mirror(pos, x0, w, 0), _mirror(pos, z0, d, 2)), 3)
     out["enclosed"] = _enclosed(pos, x0, y0, z0, w, h, d)
@@ -290,6 +293,9 @@ def difficulty(m):
 
 
 DIFFICULTY_WORDS = ("", "Starter", "Easy", "Medium", "Hard", "Master")
+PLAYER_HEIGHT = 1.8   # blocks: the game character, the yardstick for every size
+SCALES = ("Compact", "Typical", "Grand", "Giant")
+OLD_SCALES = ("Micro", "Small", "Medium", "Large", "Mega")
 COMPLEXITY = {1: "Simple", 2: "Simple", 3: "Standard", 4: "Detailed", 5: "Masterpiece"}
 RARITY_STEPS = ((4, "Common"), (8, "Uncommon"), (10, "Rare"), (12, "Epic"), (10 ** 9, "Legendary"))
 
@@ -308,9 +314,10 @@ def rarity_name(points):
     return next(name for limit, name in RARITY_STEPS if points <= limit)
 
 
-def scale_of(m):
-    biggest = max(m["w"], m["h"], m["d"])
-    return "Micro" if biggest < 8 else "Small" if biggest < 16 else "Medium" if biggest < 32 else "Large" if biggest < 64 else "Mega"
+def scale_of(m, type_value=None):
+    """Compact, Typical, Grand or Giant for its own type (a big tree is judged against trees, a big house against houses); see sizeclass.py."""
+    import sizeclass
+    return sizeclass.class_of(type_value, max(m["w"], m["h"], m["d"]))
 
 
 def type_scores(m, hints):
@@ -352,6 +359,9 @@ def type_scores(m, hints):
         add("Walls", 0.35, f"long and thin ({m['w']}x{m['d']})")
         if m["floating"] > 0.08 and m["h"] <= 8:
             add("Bridges and roads", 0.2, "long, thin, with parts hanging over nothing")
+    street = hints.get("Streets and plazas")
+    if street and street[1].startswith("street") and m["h"] <= 8 and not building:
+        add("Streets and plazas", 0.9, "its name says it is a street piece")
     if m["crops"] >= 8 and m["crops"] / n > 0.15:
         add("Farms", 0.7, f"{m['crops']} crop, farmland or hay blocks")
     if m["water"] > 0.3 and not treeish:
@@ -418,6 +428,48 @@ def palette_of(m, names):
     return best
 
 
+def farm_subtype(m, names):
+    """Which kind of farm: fields, pens, a building, or a building with fields (a farmstead)."""
+    total = max(m["blocks"], 1)
+    fences = sum(c for n, c in names.items() if "fence" in n)
+    rooms = max(m.get("roofed") or 0, m.get("enclosed") or 0)
+    if rooms >= 20 and m["crops"] >= 8:
+        return "Farmsteads", "rule", 0.4, f"a roofed building and {m['crops']} crop blocks together"
+    if m["crops"] >= 8 and m["crops"] / total > 0.1:
+        return "Crop farms", "rule", 0.5, f"{m['crops']} crop, farmland or hay blocks"
+    if fences / total > 0.08:
+        return "Animal pens", "rule", 0.4, f"{round(100 * fences / total)}% fences"
+    if rooms >= 20:
+        return "Barns", "rule", 0.3, f"a roofed building ({rooms} cells) with few crops"
+    return "Crop farms", "rule", 0.25, "no clear sign: a field is the most common farm"
+
+
+def house_subtype(m):
+    """A first guess from size and shape; the name's own words (cottage, cabin...) win over this when there are any."""
+    rooms = max(m.get("roofed") or 0, m.get("enclosed") or 0)
+    if m["blocks"] < 250:
+        return "Starter huts", "rule", 0.3, f"only {m['blocks']} blocks"
+    if m["log_share"] > 0.25 and m["blocks"] < 1200:
+        return "Cabins", "rule", 0.3, f"{round(100 * m['log_share'])}% logs and not large"
+    if m["h"] >= 12 and max(m["w"], m["d"]) <= 14:
+        return "Townhouses", "rule", 0.3, f"tall ({m['h']}) on a small base"
+    if m["blocks"] >= 4000:
+        return "Mansions", "rule", 0.3, f"{m['blocks']:,} blocks"
+    if m["blocks"] >= 2500:
+        return "Manors", "rule", 0.3, f"{m['blocks']:,} blocks"
+    return "Cottages", "rule", 0.25, f"{m['blocks']:,} blocks, nothing else stands out"
+
+
+def kind_of(m, best, hints):
+    """Build, Piece (a street tile or path: kit, not a design) or Package (several builds in one file)."""
+    if m.get("parts", 1) > 1:
+        return "Package", "rule", 0.9, f"{m['parts']} separate builds in one file"
+    street = hints.get("Streets and plazas", ("", "", 0))[1]
+    if best == "Streets and plazas" and m["h"] <= 8 and street and street != "meeting point":
+        return "Piece", "rule", 0.7, f"a street piece, {m['h']} blocks high"
+    return "Build", "rule", 0.8, "a build of its own"
+
+
 def analyse_blocks(blocks, path="", title=""):
     """Everything the analyser can say about one build. Returns {'measures', 'prints', 'proposals': [(facet, value, source, conf, why)]}."""
     m = measure(blocks)
@@ -444,6 +496,10 @@ def analyse_blocks(blocks, path="", title=""):
             out.append(("subtype", sub, "rule", 0.8 if sub == species else 0.55, "from the wood and shape"))
     elif hints.get(best, ("", "", 0))[0]:
         out.append(("subtype", hints[best][0], "rule", 0.5, f"the name says '{hints[best][1]}'"))
+    elif best == "Farms":
+        out.append(("subtype",) + farm_subtype(m, names))
+    elif best == "Houses":
+        out.append(("subtype",) + house_subtype(m))
     realm, rconf, rwhy = realm_of(m)
     out.append(("realm", realm, "rule", rconf, rwhy))
     palette = palette_of(m, names)
@@ -453,13 +509,15 @@ def analyse_blocks(blocks, path="", title=""):
         out.append(("setting", "Underwater", "rule", 0.6, f"{round(100 * m['sea'])}% sea blocks"))
     elif m["floating"] >= 0.4 and best != "Trees":
         out.append(("setting", "Floating", "rule", 0.4, f"{round(100 * m['floating'])}% of the blocks hang over nothing"))
-    out.append(("scale", scale_of(m), "rule", 1.0, f"{m['w']}x{m['h']}x{m['d']}, {m['blocks']:,} blocks"))
+    size_class = scale_of(m, best)
+    out.append(("scale", size_class, "rule", 0.6, f"{m['w']}x{m['h']}x{m['d']}: {m['reach']} blocks, about {m['players']} players; {size_class.lower()} for its type"))
     stars = difficulty(m)
     out.append(("complexity", COMPLEXITY[stars], "rule", 0.7, f"difficulty {DIFFICULTY_WORDS[stars]} ({stars} of 5)"))
     points, rwhy = rarity_points(m)
     out.append(("rarity", rarity_name(points), "rule", 0.5, f"{points} points: {rwhy}"))
     m["difficulty"] = stars
     m["rarity_points"] = points
+    out.append(("kind",) + kind_of(m, best, hints))
     out.extend(extra_proposals(blocks, m, title, palette[0] if palette else None))
     return {"measures": m, "prints": fingerprints(blocks), "proposals": out}
 

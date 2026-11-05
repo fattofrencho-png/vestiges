@@ -52,7 +52,7 @@ def organiser_fields(project):
     out = {"review": facet_book.review_of(project)["state"], "analysed": bool(analysis), "conf": facet_book.confidence_of(project) if analysis else 0,
            "undecided": len(facet_book.undecided(project)), "fp_exact": prints.get("exact", ""), "fp_shape": prints.get("shape", ""),
            "fp_palette": prints.get("palette", ""), "decided": facet_book.review_of(project).get("decided_at", 0), "rights": review_rules.rights_of(project), "analysis_error": bool(project.get("analysis_error")), "parts": measures.get("parts", 1), "w": measures.get("w", 0), "h": measures.get("h", 0), "d": measures.get("d", 0)}
-    for name in ("type", "subtype", "species", "realm", "style", "palette", "setting", "scale", "complexity", "rarity"):
+    for name in ("type", "subtype", "species", "realm", "style", "palette", "setting", "scale", "complexity", "rarity", "kind"):
         out["f_" + name] = facet_book.get(project, name) or ""
     return out
 

@@ -36,6 +36,7 @@ import send
 import projects
 import providers
 import analyse
+import libname
 import facets
 import review
 import thumbs
@@ -254,7 +255,6 @@ def add_to_mod(project_id, number=None, confirmed=False):
         raise ValueError("The mod only uses vanilla blocks. " + "; ".join(errors))
     imported = project.get("mode") == "import"
     structure, placement = export.to_structure(version, pipeline.jar().data_version(), with_air=imported)
-    placement = export.with_ground_offset(placement, project)
     category = project.get("category", "tree")
     folder = MOD_STRUCTURES / category
     folder.mkdir(parents=True, exist_ok=True)
@@ -293,8 +293,8 @@ def review_asset(project_id):
         # analysed before the name, front, ground and season rows existed: offer them now
         if analyse.ensure_extras(project, projects.load_version(project_id, project["versions"][-1]["number"])["blocks"]):
             projects.save(project)
-    if facets.review_of(project).get("state") == "accepted" and not project.get("library"):
-        review.restamp(project)   # accepted before library file names existed
+    if facets.review_of(project).get("state") == "accepted" and (project.get("library") or {}).get("file_name") != libname.of(project).get("file_name"):
+        review.restamp(project)   # accepted before library file names existed, or the naming rule changed
         projects.save(project)
     rows = library.all_rows()
     row = next((r for r in rows if r["id"] == project_id), None) or library.row_of(project)
@@ -312,6 +312,9 @@ def review_asset(project_id):
 def review_decide(data):
     """One decision on one asset. Delete is the only one that can't be undone."""
     project_id, action = data.get("id", ""), data.get("action")
+    if action == "naming_rule":
+        libname.set_rule(str(data.get("value", "")))
+        return {"ok": True}
     if action == "delete":
         projects.delete(project_id)
         library.flush()
@@ -326,8 +329,6 @@ def review_decide(data):
         review.change(project, facet, data.get("value"))
     elif action == "reject_facet":
         review.reject_facet(project, facet)
-    elif action == "ground_offset":
-        review.set_ground_offset(project, data.get("value", 0))
     elif action == "reject":
         review.reject_asset(project, str(data.get("reason", "other")))
     elif action == "needs_work":
