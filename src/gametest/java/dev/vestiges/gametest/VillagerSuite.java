@@ -80,6 +80,13 @@ final class VillagerSuite {
 		ctx.waitTicks(25);
 	}
 
+	/** Buys from the test toolsmith; it is stood next to the player first, because villagers wander. */
+	private static void buy(ClientGameTestContext ctx, TestServerContext server, String id, String arg) {
+		server.runCommand("tp @e[tag=vt_tool] @p");
+		ctx.waitTicks(3);
+		act(ctx, "buy", id, arg);
+	}
+
 	private static JsonObject last() {
 		return ClientVillagers.last();
 	}
@@ -160,22 +167,22 @@ final class VillagerSuite {
 		ctx.runOnClient(mc -> ((VillagerScreen) mc.gui.screen()).showTab("Trades"));
 		int price0 = trade(view, 0).get("price").getAsInt();
 		int emeraldsBefore = count(server, Items.EMERALD);
-		act(ctx, "buy", toolId, "0");
+		buy(ctx, server, toolId, "0");
 		c.check("buying an open offer takes its price", count(server, Items.EMERALD) == emeraldsBefore - price0, emeraldsBefore + " -> " + count(server, Items.EMERALD) + " (price " + price0 + ")");
 		c.check("and gives the item", count(server, Items.STONE_PICKAXE) == 1, String.valueOf(count(server, Items.STONE_PICKAXE)));
 		c.check("the screen refreshed: one fewer in stock", last().getAsJsonArray("trades").get(0).getAsJsonObject().get("left").getAsInt() == 11);
 
 		int before = count(server, Items.EMERALD);
-		act(ctx, "buy", toolId, "12");
+		buy(ctx, server, toolId, "12");
 		c.check("a locked offer is refused", count(server, Items.EMERALD) == before && count(server, Items.DIAMOND_PICKAXE) == 0);
 
 		int shovelPrice = trade(last(), 2).get("price").getAsInt();
 		before = count(server, Items.EMERALD);
-		act(ctx, "buy", toolId, "2:all");
+		buy(ctx, server, toolId, "2:all");
 		int bought = count(server, Items.STONE_SHOVEL);
 		c.check("shift-buy takes the whole daily stock (12)", bought == 12 && count(server, Items.EMERALD) == before - 12 * shovelPrice, bought + " bought, emeralds " + before + " -> " + count(server, Items.EMERALD));
 		before = count(server, Items.EMERALD);
-		act(ctx, "buy", toolId, "2");
+		buy(ctx, server, toolId, "2");
 		c.check("sold out stays sold out", count(server, Items.EMERALD) == before && count(server, Items.STONE_SHOVEL) == 12);
 
 		server.runCommand("vestiges level set @p 10");
@@ -186,12 +193,12 @@ final class VillagerSuite {
 		c.check("at level 10 tier 2 opens", view.get("tier").getAsInt() == 2 && !trade(view, 3).get("locked").getAsBoolean());
 		before = count(server, Items.EMERALD);
 		int ironPrice = trade(view, 3).get("price").getAsInt();
-		act(ctx, "buy", toolId, "3");
+		buy(ctx, server, toolId, "3");
 		c.check("a tier 2 offer can now be bought", count(server, Items.IRON_PICKAXE) == 1 && count(server, Items.EMERALD) == before - ironPrice,
 			"iron pickaxes " + count(server, Items.IRON_PICKAXE) + ", emeralds " + before + " -> " + count(server, Items.EMERALD) + ", price " + ironPrice);
 
 		server.runCommand("clear @p emerald");
-		act(ctx, "buy", toolId, "4");
+		buy(ctx, server, toolId, "4");
 		c.check("without emeralds nothing is sold", count(server, Items.IRON_AXE) == 0);
 
 		c.section("Wandering Trader");
@@ -229,6 +236,50 @@ final class VillagerSuite {
 			ctx.waitTicks(5);
 			ctx.takeScreenshot("villager_quest_tab");
 		}
+
+		c.section("Turn in at the giver");
+		server.runCommand("gamemode creative @p");
+		server.runCommand("summon villager ~ ~ ~4 {Xp:1,Invulnerable:1b,Tags:[\"vt_carto\"],VillagerData:{type:\"minecraft:plains\",profession:\"minecraft:cartographer\",level:1}}");
+		ctx.waitTicks(60);
+		String cartoId = idOf(server, "vt_carto");
+		boolean accepted = server.computeOnServer(s -> {
+			ServerPlayer pl = player(s);
+			dev.vestiges.quest.QuestService.adminReset(pl, "side_cartographer");
+			dev.vestiges.quest.QuestService.offer(pl, "side_cartographer", cartoId);
+			return dev.vestiges.quest.QuestService.accept(pl, "side_cartographer");
+		});
+		c.check("the cartographer quest is accepted with the villager as its giver", accepted && !cartoId.isEmpty());
+		server.computeOnServer(s -> {
+			dev.vestiges.quest.QuestService.event(player(s), "new_biome", "", 1);
+			dev.vestiges.quest.QuestService.check(player(s));
+			return true;
+		});
+		ctx.waitTicks(10);
+		var st = server.computeOnServer(s -> dev.vestiges.quest.QuestService.get(player(s)));
+		c.check("with every step done the quest is not finished yet: it waits to be turned in", st.active().containsKey("side_cartographer") && !st.finished().containsKey("side_cartographer"),
+			"active " + st.active().containsKey("side_cartographer") + ", finished " + st.finished().containsKey("side_cartographer"));
+		ctx.runOnClient(mc -> mc.setScreenAndShow(null));
+		InteractionResult cartoClick = click(server, "vt_carto");
+		ctx.waitTicks(20);
+		String shown = ctx.computeOnClient(mc -> mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getSimpleName());
+		c.check("the villager's screen offers the turn-in", last().has("turnin") && last().getAsJsonArray("turnin").size() == 1,
+			"view keys " + last().keySet() + ", turnin " + last().get("turnin") + ", server says " + server.computeOnServer(s -> {
+				var v = (net.minecraft.world.entity.npc.villager.Villager) tagged(s, "vt_carto");
+				return dev.vestiges.quest.QuestService.readyAt(player(s), v) + " / active " + dev.vestiges.quest.QuestService.get(player(s)).active();
+			}));
+		ctx.runOnClient(mc -> mc.setScreenAndShow(null));
+		server.runCommand("tp @p ~40 ~ ~");
+		ctx.waitTicks(20);
+		ctx.runOnClient(mc -> ClientPlayNetworking.send(new dev.vestiges.net.QuestPayloads.Action("turn_in", "side_cartographer", "")));
+		ctx.waitTicks(25);
+		st = server.computeOnServer(s -> dev.vestiges.quest.QuestService.get(player(s)));
+		c.check("it cannot be turned in from far away", st.active().containsKey("side_cartographer") && !st.finished().containsKey("side_cartographer"));
+		server.runCommand("tp @p @e[tag=vt_carto,limit=1]");
+		ctx.waitTicks(20);
+		ctx.runOnClient(mc -> ClientPlayNetworking.send(new dev.vestiges.net.QuestPayloads.Action("turn_in", "side_cartographer", "")));
+		ctx.waitTicks(25);
+		st = server.computeOnServer(s -> dev.vestiges.quest.QuestService.get(player(s)));
+		c.check("turned in near the giver, the quest finishes", st.finished().containsKey("side_cartographer") && !st.active().containsKey("side_cartographer"));
 
 		c.section("The Trade system switch");
 		ctx.runOnClient(mc -> mc.setScreenAndShow(null));

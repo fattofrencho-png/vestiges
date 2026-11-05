@@ -191,8 +191,21 @@ public final class QuestService {
 	}
 
 	private static void advance(ServerPlayer p, String id, QuestDef d, QuestState.Active a) {
+		advance(p, id, d, a, false);
+	}
+
+	/**
+	 * Moves a quest on one step. The last step of a quest a villager gave does not finish it: the quest waits, ready, until the player turns it in
+	 * near the giver ({@code atGiver} is true when that just happened). Quests that did not come from a villager finish at once.
+	 */
+	private static void advance(ServerPlayer p, String id, QuestDef d, QuestState.Active a, boolean atGiver) {
 		if (a.step() + 1 >= d.steps().size()) {
-			complete(p, id, d, a);
+			if (a.giver().isEmpty() || atGiver) {
+				complete(p, id, d, a);
+			} else {
+				setActive(p, id, new QuestState.Active(d.steps().size(), 0, 0, a.giver(), a.picks(), a.comeback()));
+				MapNet.message(p, "Return to the " + d.giver().toLowerCase(java.util.Locale.ROOT) + " to turn in: " + d.name(), false);
+			}
 			return;
 		}
 		QuestDef.Step next = d.steps().get(a.step() + 1);
@@ -607,6 +620,7 @@ public final class QuestService {
 				}
 			}
 			case "hand_in" -> handIn(p, a.id());
+			case "turn_in" -> turnIn(p, a.id());
 			case "choose" -> choose(p, a.id(), a.arg());
 			case "title" -> {
 				if (a.id().isEmpty() || get(p).titles().contains(a.id())) {
@@ -724,10 +738,75 @@ public final class QuestService {
 	}
 
 	/** Takes what a bring step asks for from the inventory, on the server. */
+	/**
+	 * Whether the player stands near the villager who gave this quest. If that villager is gone or not loaded, any villager of the same job
+	 * within 16 blocks will do, so a quest can never get stuck. Quests that did not come from a villager have no giver to find.
+	 */
+	public static boolean nearGiver(ServerPlayer p, QuestDef d, QuestState.Active a) {
+		if (a.giver().isEmpty()) {
+			return true;
+		}
+		ServerLevel level = (ServerLevel) p.level();
+		try {
+			net.minecraft.world.entity.Entity e = level.getEntity(UUID.fromString(a.giver()));
+			if (e != null && e.distanceTo(p) < 16) {
+				return true;
+			}
+		} catch (IllegalArgumentException ex) {
+			// not a villager id: fall through to the job check
+		}
+		if (d.job() == null || d.job().isBlank()) {
+			return false;
+		}
+		for (Villager v : level.getEntitiesOfClass(Villager.class, p.getBoundingBox().inflate(16))) {
+			if (v.getVillagerData().profession().unwrapKey().map(k -> k.identifier().getPath()).orElse("").equals(d.job())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** The ready quests this villager can take in: the player stands near the giver, and this villager is the giver or has the giver's job. */
+	public static List<String> readyAt(ServerPlayer p, Villager v) {
+		List<String> out = new ArrayList<>();
+		String job = v.getVillagerData().profession().unwrapKey().map(k -> k.identifier().getPath()).orElse("");
+		for (Map.Entry<String, QuestState.Active> e : get(p).active().entrySet()) {
+			QuestDef d = def(e.getKey());
+			QuestState.Active a = e.getValue();
+			if (d != null && ready(d, a) && !a.giver().isEmpty() && (a.giver().equals(v.getUUID().toString()) || job.equals(d.job()))) {
+				out.add(e.getKey());
+			}
+		}
+		return out;
+	}
+
+	/** A quest whose steps are all done and that waits for the player to return to the giver. */
+	public static boolean ready(QuestDef d, QuestState.Active a) {
+		return a != null && a.step() >= d.steps().size();
+	}
+
+	/** Hands a ready quest in, near the giver, and finishes it with its reward. */
+	public static void turnIn(ServerPlayer p, String id) {
+		QuestDef d = def(id);
+		QuestState.Active a = get(p).active().get(id);
+		if (d == null || !ready(d, a)) {
+			return;
+		}
+		if (!nearGiver(p, d, a)) {
+			MapNet.message(p, "Go back to the " + d.giver().toLowerCase(java.util.Locale.ROOT) + " to turn this in.", true);
+			return;
+		}
+		complete(p, id, d, a);
+	}
+
 	private static void handIn(ServerPlayer p, String id) {
 		QuestDef d = def(id);
 		QuestState.Active a = get(p).active().get(id);
 		if (d == null || a == null || a.step() >= d.steps().size() || !"bring".equals(d.steps().get(a.step()).type())) {
+			return;
+		}
+		if (!nearGiver(p, d, a)) {
+			MapNet.message(p, "Bring it to the " + d.giver().toLowerCase(java.util.Locale.ROOT) + ".", true);
 			return;
 		}
 		QuestDef.Step s = d.steps().get(a.step());
@@ -747,7 +826,7 @@ public final class QuestService {
 			}
 		}
 		p.getInventory().setChanged();
-		advance(p, id, d, a);
+		advance(p, id, d, a, true);
 	}
 
 	private static void choose(ServerPlayer p, String id, String option) {
@@ -880,6 +959,9 @@ public final class QuestService {
 		o.addProperty("giver", d.giver());
 		o.addProperty("intro", d.intro());
 		int comeback = a != null ? a.comeback() : st.finished().getOrDefault(id, 0) + 1;
+		o.addProperty("villager", a != null && !a.giver().isEmpty());
+		o.addProperty("ready", ready(d, a));
+		o.addProperty("near", a == null || nearGiver(p, d, a));
 		o.addProperty("reward", rewardText(p, d, comeback));
 		o.addProperty("comeback", comeback);
 		JsonArray steps = new JsonArray();
@@ -986,6 +1068,11 @@ public final class QuestService {
 			o.addProperty("text", fill(s.text(), pick(s, a), need));
 			o.addProperty("have", Math.min(need, "choice".equals(s.type()) ? 0 : have(p, s, a)));
 			o.addProperty("need", need);
+		} else if (a != null && ready(d, a)) {
+			o.addProperty("name", d.name());
+			o.addProperty("text", "Return to the " + d.giver().toLowerCase(java.util.Locale.ROOT) + " to turn in.");
+			o.addProperty("have", 1);
+			o.addProperty("need", 1);
 		}
 		String json = o.toString();
 		if (!json.equals(LAST_TRACKER.get(p.getUUID()))) {

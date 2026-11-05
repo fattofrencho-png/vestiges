@@ -87,7 +87,7 @@ public final class VillagerScreen extends Screen {
 			list.add(Tab.TRADES);
 		}
 		list.add(Tab.ABOUT);
-		if (!viewOnly() && view.has("quest")) {
+		if (!viewOnly() && (view.has("quest") || view.has("turnin"))) {
 			list.add(Tab.QUESTS);
 		}
 		return list;
@@ -127,11 +127,19 @@ public final class VillagerScreen extends Screen {
 		if (tab == Tab.TRADES) {
 			buildTrades();
 		}
-		if (tab == Tab.QUESTS && view.has("quest")) {
-			JsonObject q = view.getAsJsonObject("quest");
-			Button hear = Button.builder(Component.literal("Hear the offer"), b -> send("quest", str(q, "id"))).bounds(left() + 8, top() + H - 28, 110, 20).build();
-			hear.active = !(q.has("full") && q.get("full").getAsBoolean());
-			addRenderableWidget(hear);
+		if (tab == Tab.QUESTS) {
+			int bx = left() + 8;
+			if (view.has("turnin")) {
+				String ready = str(view.getAsJsonArray("turnin").get(0).getAsJsonObject(), "id");
+				addRenderableWidget(Button.builder(Component.literal("Turn in"), b -> send("turn_in", ready)).bounds(bx, top() + H - 28, 80, 20).build());
+				bx += 84;
+			}
+			if (view.has("quest")) {
+				JsonObject q = view.getAsJsonObject("quest");
+				Button hear = Button.builder(Component.literal("Hear the offer"), b -> send("quest", str(q, "id"))).bounds(bx, top() + H - 28, 110, 20).build();
+				hear.active = !(q.has("full") && q.get("full").getAsBoolean());
+				addRenderableWidget(hear);
+			}
 		}
 		addRenderableWidget(Button.builder(Component.literal("Close"), b -> onClose()).bounds(left() + W - 58, top() + H - 28, 50, 20).build());
 	}
@@ -252,6 +260,14 @@ public final class VillagerScreen extends Screen {
 	}
 
 	private void renderQuest(GuiGraphicsExtractor g, int x, int y) {
+		if (view.has("turnin")) {
+			JsonObject t = view.getAsJsonArray("turnin").get(0).getAsJsonObject();
+			g.text(font, "Ready to turn in: " + str(t, "name"), x, y, UiTheme.good(), UiTheme.shadow());
+			y += 16;
+		}
+		if (!view.has("quest")) {
+			return;
+		}
 		JsonObject q = view.getAsJsonObject("quest");
 		g.text(font, str(q, "name"), x, y, UiTheme.head(), UiTheme.shadow());
 		y = paragraph(g, "From " + str(q, "giver"), x, y + 12, UiTheme.muted()) + 4;

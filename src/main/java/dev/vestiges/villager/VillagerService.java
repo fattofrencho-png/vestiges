@@ -319,6 +319,13 @@ public final class VillagerService {
 		}
 		o.add("trades", trades);
 		if (v instanceof Villager villager) {
+			JsonArray turnin = new JsonArray();
+			for (String ready : QuestService.readyAt(p, villager)) {
+				turnin.add(QuestService.describe(ready));
+			}
+			if (!turnin.isEmpty()) {
+				o.add("turnin", turnin);
+			}
 			String quest = QuestService.available(p, villager);
 			if (!quest.isEmpty()) {
 				JsonObject q = QuestService.describe(quest);
@@ -351,6 +358,14 @@ public final class VillagerService {
 		}
 		switch (a.op()) {
 			case "buy" -> buy(p, v, a.arg());
+			case "turn_in" -> {
+				if (v instanceof Villager villager && QuestService.readyAt(p, villager).contains(a.arg())) {
+					QuestService.turnIn(p, a.arg());
+					sendView(p, v);
+				} else {
+					MapNet.message(p, "That quest is not ready to hand in here.", true);
+				}
+			}
 			case "quest" -> {
 				if (v instanceof Villager villager && QuestService.available(p, villager).equals(a.arg()) && !QuestService.sideFull(p)) {
 					QuestService.offer(p, a.arg(), v.getUUID().toString());
