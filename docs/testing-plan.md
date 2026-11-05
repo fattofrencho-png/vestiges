@@ -109,3 +109,12 @@ If a Layer 2 check cannot be automated after 3 attempts, it moves to this list w
 - A dedicated-server-only bug or a two-player bug will only show in Layer 5.
 - The test client is the real game, so a test can still stall; the 5-minute limit and per-suite reruns handle that.
 - Anything I cannot assert by code (taste, balance) is left to JB; I will not call a balance number "tested" because it ran without error.
+
+## Suites added 2026-11-05
+
+Run with `powershell -File tools\run_suite.ps1 <name>` (5-minute limit, muted).
+
+- `atlas-vanilla`: a vanilla world with the mod installed names no places (the Create World screen is used).
+- `atlas-vestiges`: the Vestiges world type is in the list, selected on the Create World screen, created; continents arrive named, every label stands on its continent, spawn is on Trenec, Codex places keep their continent, the map screen opens. One world per run.
+- `villagers`: names and profiles, the library, right-click opens our screen, trades by level band (locked, price, daily stock, shift-buy, sold out), the Wandering Trader, a quest through the screen, the Trade system switch, every offer is a real item.
+- `grave`: a real death makes a gravestone, timer off gives no expiry, Gravestones off drops like vanilla.

@@ -161,7 +161,7 @@ public enum VestigesSystem {
 	public String section() {
 		return switch (id) {
 			case "sorting", "stacks", "shapes", "shulkers", "peek" -> "Inventory";
-			case "farming", "freecam" -> "In the world";
+			case "farming", "freecam", "graves" -> "In the world";
 			case "sleep", "griefing" -> "Server rules";
 			default -> null;
 		};

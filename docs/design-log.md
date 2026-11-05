@@ -372,6 +372,8 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
 - **Villager viewer:** the library shows a small render of each villager.
 - **Villager screen (Batch 4):** right-clicking a villager opens our screen (quick trades, presentation, quick actions, management tabs). The vanilla trade screen is removed.
 
+- **Built 2026-11-05 (MVP slices):** names and backgrounds at first load (draft word lists in `data/vestiges/vestiges/villager_lore/`, to be replaced by the lore chat), the library (hub Villagers tab, view-only screen), our villager screen (Overview, Trades, About, Quests) replacing vanilla trading behind the Trade system switch, trades by level band from `data/vestiges/vestiges/villager_trades/` (draft prices, stock 12/3/1 a day per player, shift-buy, emerald-trim discount, 1 XP per emerald), the Wandering Trader on the same screen (6 offers, new pick every 3 days, price +50% per tier), quests offered from the Quests tab (old Shift + right-click only when the screen is off). Not built yet: Trust, recruiting, Post and modes, Contract, Orders and Work.
+
 ## Map ✅ (new)
 - **Our own full map from the start**, JourneyMap-style and written from scratch: a minimap, a world map (hub tab plus key M), waypoints, and layer views (surface, caves, deepslate, Nether).
 - It shows settlements and their radii, wards, recruited villagers, portals and waypoints.
