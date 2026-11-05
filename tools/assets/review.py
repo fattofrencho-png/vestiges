@@ -168,7 +168,8 @@ def related(rows, asset_id):
 
 
 def _snapshot(project):
-    return copy.deepcopy({"facets": project.get("facets") or {}, "review": project.get("review"), "category": project.get("category")})
+    return copy.deepcopy({"facets": project.get("facets") or {}, "review": project.get("review"), "category": project.get("category"),
+                          "ground_offset": project.get("ground_offset", 0)})
 
 
 def _remember(project):
@@ -190,6 +191,7 @@ def undo(project):
         project["review"] = before["review"]
     if before["category"] is not None:
         project["category"] = before["category"]
+    project["ground_offset"] = before.get("ground_offset", 0)
     return True
 
 
@@ -231,6 +233,18 @@ def change(project, name, value):
     facets.decide(project, name, value)
     _sync_kind(project)
     restamp(project)
+
+
+MAX_OFFSET = 16
+
+
+def set_ground_offset(project, blocks):
+    """How many blocks the build sits above (+) or below (-) the ground it is placed on. 0 is as it was saved: the lowest layer on the ground."""
+    blocks = int(blocks)
+    if abs(blocks) > MAX_OFFSET:
+        raise ValueError(f"The offset can be at most {MAX_OFFSET} blocks up or down")
+    _remember(project)
+    project["ground_offset"] = blocks
 
 
 def reject_facet(project, name):
@@ -306,5 +320,5 @@ def view_of(project, rows=None):
     measures = (project.get("analysis") or {}).get("measures") or {}
     keep = ("blocks", "w", "h", "d", "distinct", "logs", "leaves", "doors", "beds", "glass", "workstations", "crops", "roofed", "enclosed",
             "symmetry", "floating", "parts", "difficulty", "rarity_points", "top_blocks")
-    return {"library": libname.of(project), "facets": shown, "measures": {k: measures[k] for k in keep if k in measures}, "review": facets.review_of(project),
+    return {"ground_offset": project.get("ground_offset", 0), "library": libname.of(project), "facets": shown, "measures": {k: measures[k] for k in keep if k in measures}, "review": facets.review_of(project),
             "confidence": facets.confidence_of(project), "can_undo": bool(project.get("review_history"))}

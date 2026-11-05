@@ -199,7 +199,9 @@ def write_video(rows=None):
 def _origin(project, blocks):
     xs, ys, zs = zip(*((b[0], b[1], b[2]) for b in blocks))
     low = (min(xs), min(ys), min(zs))
-    return {"ground_y": -low[1], "origin_x": -low[0], "origin_z": -low[2], "size": [max(xs) - low[0] + 1, max(ys) - low[1] + 1, max(zs) - low[2] + 1]}
+    offset = int(project.get("ground_offset", 0) or 0)   # sunk (-) or raised (+) by the author in Review
+    return {"ground_y": -low[1], "ground_offset": offset, "lower_by": -low[1] - offset, "origin_x": -low[0], "origin_z": -low[2],
+            "size": [max(xs) - low[0] + 1, max(ys) - low[1] + 1, max(zs) - low[2] + 1]}
 
 
 def world_entries(rows):

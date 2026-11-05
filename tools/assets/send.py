@@ -53,7 +53,7 @@ def build_bytes(project):
     if errors:
         return chosen["name"], None, None, "the mod only uses vanilla blocks: " + "; ".join(errors[:2])
     structure, placement = export.to_structure(version, pipeline.jar().data_version(), with_air=project.get("mode") == "import")
-    return chosen["name"], export.write_nbt(structure), placement, None
+    return chosen["name"], export.write_nbt(structure), export.with_ground_offset(placement, project), None
 
 
 def default_destination(project):

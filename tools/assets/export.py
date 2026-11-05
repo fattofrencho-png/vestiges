@@ -153,6 +153,16 @@ def to_structure(tree, data_version, with_air=False):
     return structure, placement
 
 
+def with_ground_offset(placement, project):
+    """Adds the author's ground offset (Review: Lower / Raise) to a build's placement.
+
+    ground_y is how many layers lie below the ground in the file; ground_offset is the blocks the author sank (-) or raised (+) the build
+    in Review; lower_by is what a placer should use: the blocks to put the file's lowest layer below the ground surface.
+    """
+    offset = int(project.get("ground_offset", 0) or 0)
+    return {**placement, "ground_offset": offset, "lower_by": placement["ground_y"] - offset}
+
+
 def _varint(value):
     out = bytearray()
     while value >= 0x80:

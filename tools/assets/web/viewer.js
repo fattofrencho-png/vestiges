@@ -197,6 +197,8 @@ function applyLook() {
 }
 
 let lastItems = null;
+let lift = 0;            // blocks the builds are raised (+) or sunk (-) relative to the ground
+let builds = [];       // the groups holding the builds (not the player or the reference oak)
 async function place(items) {
   const number = ++wanted;
   await ready();
@@ -212,6 +214,7 @@ async function place(items) {
       low = Math.min(low, x); high = Math.max(high, x); near = Math.min(near, z); far = Math.max(far, z); top = Math.max(top, y);
     }
     group.position.x = cursor - low;
+    group.position.y = lift;
     made.push(group);
     cursor += high - low + 1 + 6;
     deep = Math.max(deep, far - near + 1);
@@ -223,6 +226,7 @@ async function place(items) {
     child.traverse?.((part) => { if (part.geometry && part !== player && !player.children.includes(part)) part.geometry.dispose(); });
   });
   made.forEach((m) => world.add(m));
+  builds = made;
   oak = reference;
   oak.position.set(-5, 0, deep / 2 + 3);
   oak.visible = $("showOak").checked;
@@ -336,13 +340,20 @@ function frame(now) {
 requestAnimationFrame(frame);
 
 /** Shows these block lists side by side. */
-export async function show(items, keepView) {
+export async function show(items, keepView, raise = 0) {
+  lift = raise;
   visible = true;
   resize();
   if (await place(items)) {
     resize();
     if (!keepView) resetView();
   }
+}
+/** Raises (+) or sinks (-) the builds relative to the ground, without reloading them. */
+export function setLift(blocks) {
+  lift = blocks;
+  builds.forEach((group) => { group.position.y = lift; });
+  renderer.shadowMap.needsUpdate = true;
 }
 /** Shows the view again with what it already holds (used when its page was redrawn around it). */
 export function resume() {
@@ -354,6 +365,7 @@ export function hide() {
 }
 /** Photographs one block list from four sides, as PNG data URLs. Works with the view hidden. */
 export async function photograph(data) {
+  lift = 0;
   await place([data]);
   photoRenderer = photoRenderer || new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
   photoRenderer.shadowMap.enabled = true;

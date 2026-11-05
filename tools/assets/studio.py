@@ -254,6 +254,7 @@ def add_to_mod(project_id, number=None, confirmed=False):
         raise ValueError("The mod only uses vanilla blocks. " + "; ".join(errors))
     imported = project.get("mode") == "import"
     structure, placement = export.to_structure(version, pipeline.jar().data_version(), with_air=imported)
+    placement = export.with_ground_offset(placement, project)
     category = project.get("category", "tree")
     folder = MOD_STRUCTURES / category
     folder.mkdir(parents=True, exist_ok=True)
@@ -325,6 +326,8 @@ def review_decide(data):
         review.change(project, facet, data.get("value"))
     elif action == "reject_facet":
         review.reject_facet(project, facet)
+    elif action == "ground_offset":
+        review.set_ground_offset(project, data.get("value", 0))
     elif action == "reject":
         review.reject_asset(project, str(data.get("reason", "other")))
     elif action == "needs_work":

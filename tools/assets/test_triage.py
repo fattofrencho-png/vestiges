@@ -336,6 +336,20 @@ class ReviewTests(LibraryCase):
         studio.review_decide({"id": ids["oak"], "action": "accept_all"})
         self.assertEqual(projects.load(ids["oak"])["library"]["file_name"], after["file_name"])
 
+    def test_ground_offset_is_saved_limited_and_undoable(self):
+        ids = self.fill()
+        self.assertEqual(studio.review_asset(ids["oak"])["ground_offset"], 0)
+        studio.review_decide({"id": ids["oak"], "action": "ground_offset", "value": -2})
+        self.assertEqual(studio.review_asset(ids["oak"])["ground_offset"], -2)
+        studio.review_decide({"id": ids["oak"], "action": "ground_offset", "value": 1})
+        self.assertEqual(projects.load(ids["oak"])["ground_offset"], 1)
+        with self.assertRaises(ValueError):
+            studio.review_decide({"id": ids["oak"], "action": "ground_offset", "value": 40})
+        studio.review_decide({"id": ids["oak"], "action": "undo"})
+        self.assertEqual(studio.review_asset(ids["oak"])["ground_offset"], -2)
+        studio.review_decide({"id": ids["oak"], "action": "undo"})
+        self.assertEqual(studio.review_asset(ids["oak"])["ground_offset"], 0)
+
     def test_api_functions(self):
         ids = self.fill()
         queue = studio.review_queue({"view": "inbox", "type": "Trees"})
@@ -505,6 +519,7 @@ class ExportTests(LibraryCase):
         self.assertEqual(len(before["unsaved"]), 2)
         ready = exporter.prepare_world()
         self.assertEqual(len(ready), 2)
+        studio.review_decide({"id": ids["oak"], "action": "ground_offset", "value": -2})   # sunk by two blocks in Review
         after = exporter.write_world()
         self.assertEqual(after["unsaved"], [])
         entries = json.loads(Path(after["file"]).read_text(encoding="utf-8"))["entries"]
@@ -513,6 +528,7 @@ class ExportTests(LibraryCase):
         self.assertIn("forest", oak["biomes"])
         self.assertTrue(oak["structure"].startswith("vestiges:"))
         self.assertEqual((oak["ground_y"], oak["origin_x"]), (0, 2))
+        self.assertEqual((oak["ground_offset"], oak["lower_by"]), (-2, 2))   # the placer lowers it two more blocks
         self.assertTrue(all(e["vanilla"] for e in entries))
         self.assertEqual(exporter.summary()["world"], 2)
 

@@ -24,7 +24,7 @@ Double-click **`Asset Studio.bat`**.
 
 - Keys and settings: `~/.vestiges-assets/`, outside the repo.
 - The library: `~/.vestiges-assets/library/`, outside git. Only assets added to the mod enter the repo. **Back this folder up**: git doesn't hold it, and source files aren't kept.
-- `tools/assets/exports.json` says where each tree's ground and trunk are inside its file. Roots go below the ground, so `/place template` needs the position lowered by `ground_y`.
+- `tools/assets/exports.json` says where each tree's ground and trunk are inside its file. Roots go below the ground, so `/place template` needs the position lowered by `ground_y`. The author can also sink or raise a build in Review (Lower / Raise); that is saved as `ground_offset`, and `lower_by` (`ground_y` minus `ground_offset`) is the number a placer should use.
 
 ## Organiser (first round of sorting)
 
