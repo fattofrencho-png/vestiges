@@ -40,7 +40,6 @@
 		"FarmlandBlockMixin",
 		"FoodDataMixin",
 		"FoodPropertiesMixin",
-		"GrindstoneMenuMixin",
 		"InventoryMenuMixin",
 		"InventoryMixin",
 		"ItemStackMixin",
