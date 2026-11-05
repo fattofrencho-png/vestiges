@@ -174,9 +174,10 @@ final class QuestSuite {
 		c.check("the switch comes back on", server.computeOnServer(s -> QuestService.enabled()));
 
 		grid(ctx, server, c);
+		newSteps(ctx, server, c);
 
 		// Leave the player as the other suites expect: pockets empty, level 1, quests reset.
-		for (String id : new String[] {"a_little_stronger", "easy_harvest", "side_shepherd", "side_weaponsmith", "side_farmer", "test_note", "test_choice"}) {
+		for (String id : new String[] {"a_little_stronger", "easy_harvest", "side_shepherd", "side_weaponsmith", "side_farmer", "test_note", "test_choice", "test_new_steps"}) {
 			server.runOnServer(s -> QuestService.adminReset(player(s), id));
 		}
 		server.runOnServer(s -> LevelService.set(player(s), PlayerLevel.START));
@@ -254,5 +255,180 @@ final class QuestSuite {
 		c.check("an empty grid has no result", server.computeOnServer(s -> player(s).inventoryMenu.getSlot(InventoryMenu.RESULT_SLOT).getItem().isEmpty()));
 		server.runOnServer(s -> ((ExtraHolder) player(s)).vestiges$slots().setItem(ExtraSlots.TABLE, ItemStack.EMPTY));
 		c.note("the Bank move, racks and shulker items are covered by the inventory suite (S4); the inventory screen's look is the UI room's");
+	}
+
+	// ---------------------------------------------------------------- the steps and rewards added for quest content
+
+	private static int stepOf(TestServerContext server, String id) {
+		QuestState.Active a = state(server).active().get(id);
+		return a == null ? -1 : a.step();
+	}
+
+	private static boolean killed(TestServerContext server, int level, int rank, java.util.List<String> powers) {
+		return server.computeOnServer(s -> {
+			ServerPlayer p = player(s);
+			net.minecraft.server.level.ServerLevel lv = p.level();
+			net.minecraft.world.entity.Entity e = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getValue(net.minecraft.resources.Identifier.withDefaultNamespace("husk")).spawn(lv, p.blockPosition().offset(3, 0, 0),
+				net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+			if (!(e instanceof net.minecraft.world.entity.Mob mob)) {
+				return false;
+			}
+			dev.vestiges.mobs.MobService.apply(mob, new dev.vestiges.mobs.MobData(level, rank, powers, 1.0f, false));
+			mob.hurtServer(lv, lv.damageSources().playerAttack(p), 100000f);
+			boolean dead = mob.isDeadOrDying();
+			mob.discard();
+			QuestService.check(p);
+			return dead;
+		});
+	}
+
+	private static void chest(TestServerContext server, String table) {
+		server.runOnServer(s -> {
+			net.minecraft.advancements.triggers.CriteriaTriggers.GENERATE_LOOT.trigger(player(s), net.minecraft.resources.ResourceKey.create(
+				net.minecraft.core.registries.Registries.LOOT_TABLE, net.minecraft.resources.Identifier.withDefaultNamespace(table)));
+			QuestService.check(player(s));
+		});
+	}
+
+	private static void newSteps(ClientGameTestContext ctx, TestServerContext server, Checks c) {
+		c.section("Quest content: new steps, emerald tiers, gear and refunds");
+		String id = "test_new_steps";
+		server.runCommand("gamemode survival @p");
+		server.runCommand("advancement revoke @p only minecraft:story/mine_stone");
+		server.runOnServer(s -> {
+			QuestService.adminReset(player(s), id);
+			LevelService.set(player(s), PlayerLevel.START);
+			((ExtraHolder) player(s)).vestiges$slots().setItem(ExtraSlots.TABLE, ItemStack.EMPTY);
+		});
+		ctx.waitTicks(3);
+		int emeralds0 = count(server, Items.EMERALD);
+		c.check("the test quest starts", start(server, id));
+		c.check("it waits on its first step", stepOf(server, id) == 0, "step " + stepOf(server, id));
+
+		event(server, "kill", "minecraft:zombie", 1, 1);
+		c.check("hub_open ignores other events", stepOf(server, id) == 0);
+		event(server, "hub_open", "", 1, 1);
+		c.check("hub_open: the event moves it on", stepOf(server, id) == 1, "step " + stepOf(server, id));
+		event(server, "track_quest", id, 1, 1);
+		c.check("track_quest: the event moves it on", stepOf(server, id) == 2, "step " + stepOf(server, id));
+
+		ctx.waitTicks(2);
+		c.check("table_slot: waits while the slot is empty", stepOf(server, id) == 2);
+		server.runOnServer(s -> {
+			((ExtraHolder) player(s)).vestiges$slots().setItem(ExtraSlots.TABLE, new ItemStack(Items.CRAFTING_TABLE));
+			QuestService.check(player(s));
+		});
+		c.check("table_slot: a table in the slot moves it on", stepOf(server, id) == 3, "step " + stepOf(server, id));
+
+		// grid_craft: take a result from the player's own inventory menu with the table slot filled.
+		Item p = Items.OAK_PLANKS;
+		Item st = Items.STICK;
+		fill(server, new Item[] {p, p, p, null, st, null, null, st, null});
+		ctx.waitTicks(3);
+		server.runOnServer(s -> {
+			ServerPlayer pl = player(s);
+			pl.inventoryMenu.clicked(InventoryMenu.RESULT_SLOT, 0, net.minecraft.world.inventory.ContainerInput.PICKUP, pl);
+			pl.inventoryMenu.setCarried(ItemStack.EMPTY);
+			QuestService.check(pl);
+		});
+		c.check("grid_craft: taking a craft result with a table in the slot moves it on", stepOf(server, id) == 4, "step " + stepOf(server, id));
+		fill(server, new Item[9]);
+
+		// loot_chest: only the generation of a chests/ table counts; fishing and other tables don't.
+		chest(server, "gameplay/fishing");
+		c.check("loot_chest: a table outside chests/ does not count", stepOf(server, id) == 4 && state(server).active().get(id).count() == 0);
+		chest(server, "chests/simple_dungeon");
+		chest(server, "chests/simple_dungeon");
+		ctx.waitTicks(2);
+		c.check("loot_chest: two chests move it on", stepOf(server, id) == 5, "step " + stepOf(server, id));
+
+		// Real kills: the event comes from the death of a mob with MobData (the player is level 1).
+		c.check("a normal husk dies", killed(server, 5, 0, java.util.List.of()));
+		c.check("kill_rank: a normal kill does not count", stepOf(server, id) == 5);
+		c.check("a Champion husk dies", killed(server, 1, dev.vestiges.mobs.MobData.CHAMPION, java.util.List.of()));
+		ctx.waitTicks(2);
+		c.check("kill_rank: a Champion moves it on", stepOf(server, id) == 6, "step " + stepOf(server, id));
+		c.check("a Warlord husk with Brute dies", killed(server, 1, dev.vestiges.mobs.MobData.WARLORD, java.util.List.of("brute")));
+		c.check("kill_power: another power does not count", stepOf(server, id) == 6, "step " + stepOf(server, id));
+		c.check("an Elite husk with Swift dies", killed(server, 1, dev.vestiges.mobs.MobData.ELITE, java.util.List.of("swift")));
+		ctx.waitTicks(2);
+		c.check("kill_power: the Swift power moves it on", stepOf(server, id) == 7, "step " + stepOf(server, id));
+		server.runOnServer(s -> LevelService.set(player(s), PlayerLevel.START));
+		c.check("a husk 2 levels above the player dies", killed(server, 3, 0, java.util.List.of()));
+		c.check("kill_high_level: a gap of 2 does not count", stepOf(server, id) == 7, "step " + stepOf(server, id));
+		// The kills above gave XP: put the player back at level 1 so the gap is what the check says.
+		server.runOnServer(s -> LevelService.set(player(s), PlayerLevel.START));
+		c.check("a husk 4 levels above the player dies", killed(server, 5, 0, java.util.List.of()));
+		ctx.waitTicks(2);
+		c.check("kill_high_level: a gap of 4 moves it on", stepOf(server, id) == 8, "step " + stepOf(server, id));
+
+		// advancement and stat steps
+		ctx.waitTicks(45);
+		c.check("advancement: waits while the player lacks it", stepOf(server, id) == 8, "step " + stepOf(server, id));
+		server.runCommand("advancement grant @p only minecraft:story/mine_stone");
+		server.runOnServer(s -> QuestService.check(player(s)));
+		ctx.waitTicks(3);
+		c.check("advancement: having it moves it on", stepOf(server, id) == 9, "step " + stepOf(server, id));
+		server.runOnServer(s -> {
+			player(s).awardStat(net.minecraft.stats.Stats.JUMP, 2);
+			QuestService.check(player(s));
+		});
+		c.check("stat: 2 of 3 jumps wait", stepOf(server, id) == 9, "step " + stepOf(server, id));
+		server.runOnServer(s -> {
+			player(s).awardStat(net.minecraft.stats.Stats.JUMP, 1);
+			QuestService.check(player(s));
+		});
+		c.check("stat: the 3rd jump moves it on", stepOf(server, id) == 10, "step " + stepOf(server, id));
+		int refunds0 = server.computeOnServer(s -> dev.vestiges.tree.TreeService.freeRefunds(player(s)));
+		server.runOnServer(s -> {
+			player(s).awardStat(net.minecraft.stats.Stats.TRADED_WITH_VILLAGER, 1);
+			QuestService.check(player(s));
+		});
+		ctx.waitTicks(3);
+		c.check("trade: a villager trade finishes the quest", state(server).done(id), "active " + state(server).active().keySet());
+		c.check("reward: 5 emeralds at level 1 (tier x1)", count(server, Items.EMERALD) - emeralds0 == 5, "emeralds " + emeralds0 + " -> " + count(server, Items.EMERALD));
+		c.check("reward: two free tree refunds", server.computeOnServer(s -> dev.vestiges.tree.TreeService.freeRefunds(player(s))) - refunds0 == 2);
+		c.check("reward: an Uncommon piece of gear", server.computeOnServer(s -> {
+			for (ItemStack stack : player(s).getInventory().getNonEquipmentItems()) {
+				if (!stack.isEmpty() && dev.vestiges.gear.Rarity.applies(stack) && dev.vestiges.gear.Rarity.of(stack).tier() == dev.vestiges.gear.Rarity.Tier.UNCOMMON) {
+					return true;
+				}
+			}
+			return false;
+		}));
+
+		// Emerald tiers: the same quest pays 4 times as much at level 30 (price tier x4).
+		server.runOnServer(s -> {
+			QuestService.adminReset(player(s), "test_note");
+			LevelService.set(player(s), PlayerLevel.START.withXp(30, 0, 0));
+		});
+		int e1 = count(server, Items.EMERALD);
+		start(server, "test_note");
+		ctx.waitTicks(2);
+		c.check("tiers: test_note (9 emeralds) pays 9 x 4 at level 30", count(server, Items.EMERALD) - e1 == 36, "emeralds " + e1 + " -> " + count(server, Items.EMERALD));
+
+		// XP with Levels off: vanilla XP instead.
+		server.runOnServer(s -> {
+			QuestService.adminReset(player(s), "test_note");
+			LevelService.set(player(s), PlayerLevel.START);
+		});
+		server.runCommand("vestiges config system character false");
+		ctx.waitTicks(3);
+		int xp0 = server.computeOnServer(s -> player(s).totalExperience);
+		int e2 = count(server, Items.EMERALD);
+		start(server, "test_note");
+		ctx.waitTicks(2);
+		int xp1 = server.computeOnServer(s -> player(s).totalExperience);
+		c.check("Levels off: quest XP is paid as vanilla XP", xp1 > xp0, "vanilla xp " + xp0 + " -> " + xp1);
+		c.check("Levels off: emeralds are not multiplied", count(server, Items.EMERALD) - e2 == 9, "emeralds " + e2 + " -> " + count(server, Items.EMERALD));
+		server.runCommand("vestiges config system character true");
+		ctx.waitTicks(3);
+
+		server.runOnServer(s -> {
+			QuestService.adminReset(player(s), id);
+			QuestService.adminReset(player(s), "test_note");
+			((ExtraHolder) player(s)).vestiges$slots().setItem(ExtraSlots.TABLE, ItemStack.EMPTY);
+		});
+		c.note("not covered by machine: hub_open and track_quest are sent by the client (Quests tab, Track button), the checks send the same events directly; a real chest, a real craft click and a real villager trade are for the hand test");
 	}
 }

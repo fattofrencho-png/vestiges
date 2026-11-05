@@ -71,7 +71,7 @@ public final class AutoCheck implements FabricClientGameTest {
 					default -> checks.check("suite exists", false, "unknown suite " + suite);
 				}
 			} catch (RuntimeException | AssertionError e) {
-				checks.check("suite finished without an exception", false, e.toString());
+				checks.check("suite finished without an exception", false, e + " at " + java.util.Arrays.stream(e.getStackTrace()).limit(6).map(StackTraceElement::toString).collect(java.util.stream.Collectors.joining(" <- ")));
 			}
 			T.restore(server, switches);
 			ctx.waitTicks(5);

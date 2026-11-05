@@ -397,7 +397,9 @@ public final class QuestService {
 			case "killed" -> BuiltInRegistries.ENTITY_TYPE.containsKey(key) ? stats.getValue(Stats.ENTITY_KILLED.get(BuiltInRegistries.ENTITY_TYPE.getValue(key))) : 0;
 			case "killed_by" -> BuiltInRegistries.ENTITY_TYPE.containsKey(key) ? stats.getValue(Stats.ENTITY_KILLED_BY.get(BuiltInRegistries.ENTITY_TYPE.getValue(key))) : 0;
 			default -> {
-				long raw = BuiltInRegistries.CUSTOM_STAT.containsKey(key) ? stats.getValue(Stats.CUSTOM.get(key)) : 0;
+				// The registry's own Identifier object: statistics are found by identity, a parsed copy would have no name.
+				Identifier registered = BuiltInRegistries.CUSTOM_STAT.getValue(key);
+				long raw = registered != null ? stats.getValue(Stats.CUSTOM.get(registered)) : 0;
 				yield key.getPath().endsWith("_one_cm") ? raw / 100 : raw;
 			}
 		};

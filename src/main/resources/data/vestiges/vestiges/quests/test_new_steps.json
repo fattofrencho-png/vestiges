@@ -1,0 +1,25 @@
+{
+  "kind": "note",
+  "name": "Test of the new steps",
+  "giver": "A note",
+  "intro": "Runs every step type added for quest content, in order. Used by the quests game suite.",
+  "steps": [
+    {"type": "hub_open", "text": "Open the Quests tab.", "amount": 1},
+    {"type": "track_quest", "text": "Track a quest.", "amount": 1},
+    {"type": "table_slot", "text": "Put a crafting table in the table slot.", "amount": 1},
+    {"type": "grid_craft", "text": "Craft something on the 3x3 grid.", "amount": 1},
+    {"type": "loot_chest", "text": "Open {amount} natural chests.", "amount": 2},
+    {"type": "kill_rank", "text": "Kill a Champion.", "amount": 1, "targets": ["champion"]},
+    {"type": "kill_power", "text": "Kill an elite with the Swift power.", "amount": 1, "targets": ["swift"]},
+    {"type": "kill_high_level", "text": "Kill a monster {target} levels above you.", "amount": 1, "targets": ["3"]},
+    {"type": "advancement", "text": "Mine stone.", "amount": 1, "targets": ["minecraft:story/mine_stone"]},
+    {"type": "stat", "text": "Jump {amount} times.", "amount": 3, "targets": ["minecraft:jump"]},
+    {"type": "trade", "text": "Trade with a villager.", "amount": 1}
+  ],
+  "reward": {
+    "emeralds": 5,
+    "gear": "uncommon",
+    "refunds": 2
+  },
+  "start": "command"
+}
