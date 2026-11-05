@@ -1,0 +1,89 @@
+{
+ "job": "librarian",
+ "offers": [
+  {
+   "item": "minecraft:paper",
+   "count": 12,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:book",
+   "count": 3,
+   "price": 3,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:glass",
+   "count": 8,
+   "price": 1,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:bookshelf",
+   "count": 1,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:lantern",
+   "count": 2,
+   "price": 8,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:writable_book",
+   "count": 1,
+   "price": 7,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:clock",
+   "count": 1,
+   "price": 12,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:compass",
+   "count": 1,
+   "price": 12,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:lectern",
+   "count": 1,
+   "price": 14,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:experience_bottle",
+   "count": 4,
+   "price": 30,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:name_tag",
+   "count": 2,
+   "price": 26,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:experience_bottle",
+   "count": 16,
+   "price": 100,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

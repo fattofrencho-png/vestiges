@@ -32,7 +32,7 @@ public final class AutoCheck implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext ctx) {
 		String wanted = System.getenv("VESTIGES_SUITE");
-		if (wanted == null || wanted.isBlank() || wanted.equals("groups") || wanted.equals("camshots")) {
+		if (wanted == null || wanted.isBlank() || wanted.equals("groups") || wanted.equals("camshots") || AtlasCheck.handles(wanted)) {
 			return;
 		}
 		ctx.getInput().resizeWindow(1920, 1080);
@@ -62,6 +62,11 @@ public final class AutoCheck implements FabricClientGameTest {
 						case "structures2" -> LootSuite.structuresDeep(ctx, server, checks);
 						case "settlements" -> SettlementSuite.run(ctx, server, checks);
 						case "quests" -> QuestSuite.run(ctx, server, checks);
+						case "villagers" -> VillagerSuite.run(ctx, server, checks);
+						case "grave" -> GraveSuite.run(ctx, server, checks);
+						case "mending" -> MendingSuite.run(ctx, server, checks);
+						case "dungeons" -> DungeonSuite.run(ctx, server, checks);
+						case "dungeons2" -> DungeonSuite.themes(ctx, server, checks);
 						case "persistence" -> PersistenceSuite.run(ctx, server, checks);
 					default -> checks.check("suite exists", false, "unknown suite " + suite);
 				}

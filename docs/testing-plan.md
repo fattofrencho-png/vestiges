@@ -109,3 +109,25 @@ If a Layer 2 check cannot be automated after 3 attempts, it moves to this list w
 - A dedicated-server-only bug or a two-player bug will only show in Layer 5.
 - The test client is the real game, so a test can still stall; the 5-minute limit and per-suite reruns handle that.
 - Anything I cannot assert by code (taste, balance) is left to JB; I will not call a balance number "tested" because it ran without error.
+
+## Suites added 2026-11-05
+
+Run with `powershell -File tools\run_suite.ps1 <name>` (5-minute limit, muted).
+
+- `atlas-vanilla`: a vanilla world with the mod installed names no places (the Create World screen is used).
+- `atlas-vestiges`: the Vestiges world type is in the list, selected on the Create World screen, created; continents arrive named, every label stands on its continent, spawn is on Trenec, Codex places keep their continent, the map screen opens. One world per run.
+- `villagers`: names and profiles, the library, right-click opens our screen, trades by level band (locked, price, daily stock, shift-buy, sold out), the Wandering Trader, a quest through the screen, the Trade system switch, every offer is a real item.
+- `grave`: a real death makes a gravestone, timer off gives no expiry, Gravestones off drops like vanilla.
+- `dungeons`: the key, the portal frame (right size and blocks, switch off, broken), going in, 13 rooms built two ahead, doors that close and open, all Overgrown rooms walked, the Lieutenant and Boss, caches and rewards (own copy, the next key), Elite and Warlord key drops, unbreakable walls, both exit frames, plots cleared before reuse, lives (dying, falling), the First Key feat.
+- `dungeons2`: the Trial and End runs room by room, the End's lock (Dragonslayer feat), void gaps, the one-time elytra, and that every block and monster id in the theme data is real. Run the two suites one after the other (each needs about 2 to 3 minutes).
+
+## One command for everything (2026-11-05)
+
+`powershell -File tools\run_all.ps1` runs the unit tests and then every real-game suite, grouped into batches of one game run each (core, gameplay, structures, villagers, dungeons, themes, atlas-vanilla, atlas-vestiges). It writes `build\run\all-report.md` (a table of every suite with passed and failed counts, then the list of failures) and copies each batch's reports and screenshots to `build\run\all\<batch>\`. A batch that fails is rerun once; if the rerun passes it is marked "flaky" (a timing problem in a check). Exit code 0 means all passed. Options: `-Only core,dungeons` (some batches), `-SkipUnit`, `-NoRetry`.
+
+**New suites go into a batch:** when a suite is added to `AutoCheck.java`, add its name to the right batch in `tools\run_all.ps1`, so the one command keeps covering everything.
+
+**What stays human:** the guides `docs/jb-test-guide.md` and `docs/jb-test-guide-dungeons.md` hold only what a machine cannot judge: feel, sound, controls, the look of the screens, a second player, performance and balance.
+- `mending` (batch `gear`): the reworked Mending on the real server with a survival player. A Mending tool or armor piece that would break stays at 1 durability, flagged broken, with the enchant gone; a broken pickaxe mines at hand speed, harvests nothing and can't be used; broken armor gives no stats; hitting a broken item again does not break it; repairing ends the state, and a repaired item can take Mending again; gear without Mending breaks as in vanilla; an XP orb is picked up but repairs nothing; with the Gear switch off everything is vanilla. 19 checks. Not covered: the anvil's material and emerald repair, the warning message and sound, the red tooltip line (for the play test).
+
+**Running suites while other chats run games (2026-11-05):** `tools\run_suite.ps1` used to end every run by stopping all game and Gradle processes on the machine, which killed other chats' runs and builds (a run in another worktree ending killed this one two seconds later). It now stops only the processes of its own folder (commit `695fc88`); a worktree needs that script (merge main) for the same safety. If a batch shows "no report" with a run time under the limit, suspect a kill from outside and rerun it alone.

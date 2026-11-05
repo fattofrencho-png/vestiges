@@ -147,6 +147,9 @@ public final class HubScreen extends Screen {
 		if (tab == Tab.MAP) {
 			buildMap();
 		}
+		if (tab == Tab.VILLAGERS) {
+			dev.vestiges.client.villager.VillagerPanel.build(this::addRenderableWidget, this, width, height, HEADER + 4, height - FOOTER - 2, this::rebuildWidgets);
+		}
 		if (tab == Tab.QUESTS) {
 			if (!questOpenSent) {
 				questOpenSent = true;
@@ -268,6 +271,9 @@ public final class HubScreen extends Screen {
 				}).bounds(x, settingsY, w, 20).build());
 				String[] sleeps = {"100", "50", "1"};
 				row(cycle(x, settingsY, w, "Sleep percentage", sleeps, String.valueOf(ClientFeatures.sleepPercent()), v -> ClientFeatures.send("sleep", v)));
+					if (ClientFeatures.on(dev.vestiges.config.VestigesSystem.GRAVE_TIMER)) {
+						row(cycle(x, settingsY, w, "Gravestone timer (days)", new String[] {"1", "3", "7", "14"}, String.valueOf(ClientFeatures.graveDays()), v -> ClientFeatures.send("grave", v)));
+					}
 					if (ClientFeatures.on(dev.vestiges.config.VestigesSystem.STACKS)) {
 						row(cycle(x, settingsY, w, "Stack limit", new String[] {"64", "99"}, String.valueOf(ClientFeatures.stackLimit()), v -> ClientFeatures.send("stack", v)));
 					}
@@ -338,6 +344,7 @@ public final class HubScreen extends Screen {
 		int top = HEADER + 8;
 		switch (tab) {
 			case FEATS -> renderFeats(g, top);
+			case VILLAGERS -> dev.vestiges.client.villager.VillagerPanel.render(g, font, HEADER + 6);
 			case QUESTS -> dev.vestiges.client.quest.QuestPanel.render(g, font, width, HEADER + 26, height - FOOTER - 26);
 			case SETTLEMENTS -> renderSettlements(g, top, mouseX, mouseY);
 			case SETTINGS -> renderSettings(g, top);

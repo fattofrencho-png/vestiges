@@ -121,6 +121,9 @@ public final class FeatService {
 	}
 
 	private static void award(ServerPlayer p, Feat f) {
+		if ("dungeon_key".equals(f.item())) {
+			dev.vestiges.dungeon.DungeonService.giveFirstKit(p);
+		}
 		ItemStack item = reward(f.item());
 		if (!item.isEmpty() && !p.getInventory().add(item)) {
 			ItemEntity drop = new ItemEntity(p.level(), p.getX(), p.getY(), p.getZ(), item);

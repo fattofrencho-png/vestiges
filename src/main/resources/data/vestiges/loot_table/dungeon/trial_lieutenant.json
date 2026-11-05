@@ -1,0 +1,162 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:copper_block",
+     "weight": 14,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 4,
+        "max": 10
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:cut_copper",
+     "weight": 16,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 8,
+        "max": 20
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:chiseled_copper",
+     "weight": 10,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 4,
+        "max": 10
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:tuff",
+     "weight": 12,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 12,
+        "max": 28
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:tuff_bricks",
+     "weight": 14,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 8,
+        "max": 20
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:polished_tuff",
+     "weight": 12,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 8,
+        "max": 20
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:chiseled_tuff",
+     "weight": 8,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 4,
+        "max": 10
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:breeze_rod",
+     "weight": 10,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 4
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:heavy_core",
+     "weight": 1,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_sword",
+     "weight": 1,
+     "modifier": [
+      {
+       "kind": "gear",
+       "min_rarity": "uncommon",
+       "type": "vestiges:loot_gear"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   }
+  }
+ ]
+}

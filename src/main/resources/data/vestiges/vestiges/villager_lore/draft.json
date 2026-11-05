@@ -1,0 +1,24 @@
+{
+  "_note": "DRAFT placeholder text so the villager system can be built and tested. The lore chat replaces these lists; nothing here is approved lore.",
+  "first_names": ["Aldo", "Berta", "Corin", "Dessa", "Edric", "Fenna", "Garrick", "Hilde", "Isolde", "Joren", "Kettil", "Lysa", "Marek", "Nessa", "Orrin", "Petra", "Quill", "Rowan", "Sabine", "Tamsin", "Ulric", "Vesna", "Wendel", "Yara"],
+  "bynames": ["Hollow", "Brightwater", "Marsh", "Oakhand", "Thatcher", "Longstride", "Quickfinger", "Greyloaf", "Stonebrook", "Pennyworth", "Lanternman", "Fieldmouse"],
+  "family_trades": ["a family of millers", "a line of shepherds", "a household of fishers", "a clan of stonecutters", "a family of candle makers", "a house of tanners", "a line of woodcutters", "a family of bakers", "a clan of toolsmiths", "a household of weavers"],
+  "turning_points": [
+    {"kind": "hardship", "text": "lost the family farm to a bad winter", "byname": "Hollow"},
+    {"kind": "hardship", "text": "walked home alone after the flood", "byname": "Marsh"},
+    {"kind": "journey", "text": "travelled three seasons with a trader and came back changed", "byname": "Longstride"},
+    {"kind": "journey", "text": "carried a letter across the sea"},
+    {"kind": "ambition", "text": "swore to own the best workshop in the village"},
+    {"kind": "ambition", "text": "learned a second trade at night to get ahead"},
+    {"kind": "loss", "text": "buried a brother who never came back from the mines", "byname": "Stonebrook"},
+    {"kind": "loss", "text": "lost a best friend to a quarrel and never made it right"},
+    {"kind": "strange", "text": "swore the lanterns hummed on the night of their birth", "byname": "Lanternman"},
+    {"kind": "strange", "text": "found a stone that is always warm"}
+  ],
+  "wants": ["a quiet harvest", "a way to repay an old debt", "word from a sibling far away", "a better tool for the trade", "a safe road to the next village", "to see the sea once", "a feast the whole village remembers", "someone to take over the trade"],
+  "traits": ["Careful with every coin.", "Talks too much when nervous.", "Never forgets a face.", "Hums while working.", "Distrusts strangers until fed.", "Always early, never late.", "Tells every story twice.", "Gives more than they should."],
+  "hooks": ["Sometimes wakes from a dream of a gate that is not there.", "Has a book full of glyphs nobody can read.", "Listens for a distant voice at dusk and will not say whose it is."],
+  "birthplace_near": "a village near here",
+  "birthplace_region": "a place in {continent}",
+  "birthplace_far": "far across the sea, in {continent}"
+}

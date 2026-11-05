@@ -1,0 +1,145 @@
+{
+ "job": "wandering_trader",
+ "offers": [
+  {
+   "item": "minecraft:sea_pickle",
+   "count": 4,
+   "price": 3,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:lily_pad",
+   "count": 4,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:glow_berries",
+   "count": 8,
+   "price": 3,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:moss_block",
+   "count": 4,
+   "price": 4,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:bone_meal",
+   "count": 8,
+   "price": 3,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:sunflower",
+   "count": 2,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:rose_bush",
+   "count": 2,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:packed_ice",
+   "count": 4,
+   "price": 5,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:blue_ice",
+   "count": 2,
+   "price": 8,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:red_sand",
+   "count": 8,
+   "price": 3,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:podzol",
+   "count": 4,
+   "price": 3,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:pointed_dripstone",
+   "count": 4,
+   "price": 4,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:name_tag",
+   "count": 1,
+   "price": 10,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:nautilus_shell",
+   "count": 1,
+   "price": 20,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:gunpowder",
+   "count": 4,
+   "price": 6,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:cherry_sapling",
+   "count": 1,
+   "price": 6,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:mangrove_propagule",
+   "count": 1,
+   "price": 6,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:brain_coral",
+   "count": 2,
+   "price": 5,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:slime_ball",
+   "count": 3,
+   "price": 6,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:amethyst_shard",
+   "count": 4,
+   "price": 12,
+   "tier": 1,
+   "kind": "n"
+  }
+ ]
+}

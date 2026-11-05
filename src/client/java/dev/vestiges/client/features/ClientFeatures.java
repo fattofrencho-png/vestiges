@@ -20,6 +20,9 @@ public final class ClientFeatures {
 	private static int stackLimit = 64;
 	/** Features switched off only because something they need is off (they return with it). */
 	private static final java.util.List<String> REMEMBERED = new java.util.ArrayList<>();
+	private static final java.util.List<Land> LANDS = new java.util.ArrayList<>();
+	private static String atlas = "";
+	private static int graveDays = 3;
 
 	private ClientFeatures() {
 	}
@@ -28,6 +31,8 @@ public final class ClientFeatures {
 		ClientPlayNetworking.registerGlobalReceiver(FeaturePayloads.State.TYPE, (payload, ctx) -> ctx.client().execute(() -> receive(ctx.client(), payload.json())));
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
 			SYSTEMS.clear();
+			LANDS.clear();
+			atlas = "";
 			operator = false;
 		}));
 	}
@@ -48,9 +53,18 @@ public final class ClientFeatures {
 			ConfigStore.server().numbers.stackLimit = root.get("stack_limit").getAsInt();
 		}
 		stackLimit = root.get("stack_limit").getAsInt();
+		graveDays = root.has("grave_days") ? root.get("grave_days").getAsInt() : 3;
 		REMEMBERED.clear();
 		if (root.has("remembered")) {
 			root.getAsJsonArray("remembered").forEach(e -> REMEMBERED.add(e.getAsString()));
+		}
+		LANDS.clear();
+		atlas = root.has("atlas") ? root.get("atlas").getAsString() : "";
+		if (root.has("lands")) {
+			root.getAsJsonArray("lands").forEach(e -> {
+				JsonObject o = e.getAsJsonObject();
+				LANDS.add(new Land(o.get("name").getAsString(), o.get("x").getAsInt(), o.get("z").getAsInt()));
+			});
 		}
 		operator = root.get("operator").getAsBoolean();
 		sleep = root.get("sleep").getAsInt();
@@ -61,6 +75,24 @@ public final class ClientFeatures {
 
 	public static boolean on(VestigesSystem system) {
 		return system.core() || SYSTEMS.getOrDefault(system.id, system.onByDefault());
+	}
+
+	/** A continent's name and centre. */
+	public record Land(String name, int x, int z) {
+	}
+
+	/** The continents of this world, empty in a vanilla world (the map then shows no continent names). */
+	public static java.util.List<Land> lands() {
+		return LANDS;
+	}
+
+	/** Where a block is: a continent's name, "an island", "the open sea", or null in a world without continents. */
+	public static String placeAt(double x, double z) {
+		return dev.vestiges.world.WorldAtlas.lookup(atlas, LANDS.stream().map(Land::name).toList(), x, z);
+	}
+
+	public static int graveDays() {
+		return graveDays;
 	}
 
 	public static boolean operator() {

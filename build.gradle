@@ -71,3 +71,23 @@ jar {
 		rename { "${it}_$projectName"}
 	}
 }
+
+// Release guard: the mod jar must not carry the author's wiki copy, test or run files, or anything outside the mod's own folders. Runs with `build`.
+tasks.register('checkJarContents') {
+	dependsOn tasks.named('jar')
+	doLast {
+		def jarFile = tasks.named('jar').get().archiveFile.get().asFile
+		def bad = []
+		zipTree(jarFile).visit { entry ->
+			def path = entry.relativePath.toString()
+			if (path.toLowerCase().contains('wiki-author') || path.endsWith('.log') || path.contains('node_modules') || path.startsWith('run/') || path.startsWith('docs/')) {
+				bad << path
+			}
+		}
+		if (!bad.isEmpty()) {
+			throw new GradleException("The mod jar contains files that must not ship: " + bad.take(10))
+		}
+		logger.lifecycle("Jar contents checked: no author wiki, logs or run files in " + jarFile.name)
+	}
+}
+tasks.named('build') { dependsOn tasks.named('checkJarContents') }

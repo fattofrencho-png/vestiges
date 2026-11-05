@@ -171,7 +171,9 @@ public final class MobService {
 		if (layer != MobLevels.Layer.SURFACE && r < 0.012) {
 			return MobData.ELITE;
 		}
-		return r < 0.042 ? MobData.CHAMPION : MobData.NORMAL;
+		// The champion band is 3% wide: right after the elite band underground (0.012 to 0.042), from 0 on the surface (which has no elites).
+		double championFrom = layer == MobLevels.Layer.SURFACE ? 0.0 : 0.012;
+		return r >= championFrom && r < championFrom + 0.03 ? MobData.CHAMPION : MobData.NORMAL;
 	}
 
 	private static List<String> rollPowers(RandomSource random, int rank, boolean deep) {
@@ -224,7 +226,7 @@ public final class MobService {
 		if (d == null || !enabled()) {
 			return 1.0;
 		}
-		return (1 + 0.06 * d.level()) * d.size() * d.strength() * (d.has("brute") ? 1.4 : 1.0);
+		return (1 + 0.06 * d.level()) * d.size() * d.damageStrength() * (d.has("brute") ? 1.4 : 1.0);
 	}
 
 	/** Gives the mob its data and the matching attribute modifiers (permanent ones, saved with the mob, so they stay after a reload). */

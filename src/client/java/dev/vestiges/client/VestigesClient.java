@@ -45,6 +45,7 @@ public class VestigesClient implements ClientModInitializer {
 		dev.vestiges.client.codex.ClientCodex.register();
 		dev.vestiges.client.farming.ClientMeals.register();
 		dev.vestiges.client.settlement.ClientSettlements.register();
+		dev.vestiges.client.villager.ClientVillagers.register();
 		MapScanner.register();
 		dev.vestiges.client.camera.IsoCamera.load();
 		dev.vestiges.client.camera.CameraCommand.register();

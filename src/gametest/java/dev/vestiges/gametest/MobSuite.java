@@ -287,7 +287,7 @@ final class MobSuite {
 				return out;
 			});
 			c.note(layer + " 2000 zombies: normal " + counts[0] + ", champion " + counts[1] + ", elite " + counts[2] + ", warlord " + counts[3]);
-			c.check(layer + ": champions are about 3% (30 to 100 of 2000)", counts[1] >= 30 && counts[1] <= 100, "champions " + counts[1]);
+			c.check(layer + ": champions are about 3% (30 to 95 of 2000)", counts[1] >= 30 && counts[1] <= 95, "champions " + counts[1]);
 			if (layer.equals("surface")) {
 				c.check("surface: no elites and no warlords", counts[2] == 0 && counts[3] == 0, "elites " + counts[2] + ", warlords " + counts[3]);
 			} else {
@@ -386,19 +386,22 @@ final class MobSuite {
 	private static void persistence(ClientGameTestContext ctx, TestServerContext server, Checks c) {
 		c.section("Set once and saved");
 		MobData[] first = new MobData[1];
+		java.util.UUID[] tracked = new java.util.UUID[1];
 		server.runOnServer(s -> {
 			ServerPlayer p = player(s);
 			sweepMobs(p.level(), p.blockPosition());
 			Mob mob = spawn(p.level(), type("husk"), p.blockPosition().offset(3, 0, 0));
 			MobService.setRank(mob, MobData.ELITE, 12);
 			first[0] = MobService.data(mob);
+			tracked[0] = mob.getUUID();
 		});
 		setLevel(server, 90);
 		ctx.waitTicks(60);
 		MobData later = server.computeOnServer(s -> {
 			ServerPlayer p = player(s);
-			List<Mob> mobs = p.level().getEntitiesOfClass(Mob.class, new AABB(p.blockPosition()).inflate(20));
-			return mobs.isEmpty() ? null : MobService.data(mobs.get(0));
+			// The very mob made above (a natural spawn next to it must not be mistaken for it).
+			net.minecraft.world.entity.Entity e = p.level().getEntity(tracked[0]);
+			return e instanceof Mob mob ? MobService.data(mob) : null;
 		});
 		c.check("60 ticks and a new player level later, the monster's data is unchanged", first[0] != null && first[0].equals(later), first[0] + " vs " + later);
 		var encoded = MobData.CODEC.encodeStart(NbtOps.INSTANCE, first[0]).result();

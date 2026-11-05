@@ -26,8 +26,12 @@ public final class HubNet {
 	}
 
 	public static void register() {
-		ServerPlayNetworking.registerGlobalReceiver(VestigesPayloads.HubRequest.TYPE,
-			(payload, ctx) -> ctx.server().execute(() -> send(ctx.player())));
+		RequestLimit.register();
+		ServerPlayNetworking.registerGlobalReceiver(VestigesPayloads.HubRequest.TYPE, (payload, ctx) -> ctx.server().execute(() -> {
+			if (RequestLimit.allow(ctx.player(), "hub")) {
+				send(ctx.player());
+			}
+		}));
 	}
 
 	public static void send(ServerPlayer player) {
@@ -68,6 +72,7 @@ public final class HubNet {
 		root.add("feats", feats);
 		root.add("settlements", dev.vestiges.settlement.SettlementService.snapshot(player));
 		root.add("quests", dev.vestiges.quest.QuestService.snapshot(player));
+		root.add("villagers", dev.vestiges.villager.VillagerService.libraryJson(player));
 
 		JsonObject data = new JsonObject();
 		for (DataType<?> type : VestigesData.ALL) {

@@ -78,6 +78,7 @@ public final class MapView {
 	public static void drawMarkers(GuiGraphicsExtractor g, net.minecraft.client.gui.Font font, String dim, int sx, int sy, int w, int h, double cx, double cz, float zoom) {
 		dev.vestiges.client.settlement.ClientSettlements.draw(g, font, dim, sx, sy, w, h, cx, cz, zoom, true);
 		boolean names = zoom >= 0.5f && MapMarkers.on(MapMarkers.NAMES);
+		drawLandNames(g, font, dim, sx, sy, w, h, cx, cz, zoom);
 		Minecraft mc = Minecraft.getInstance();
 		long time = mc.level != null ? mc.level.getGameTime() : 0;
 		for (ClientWaypoints.Waypoint p : ClientWaypoints.all()) {
@@ -95,6 +96,18 @@ public final class MapView {
 				MapIcons.waystone(g, s[0], s[1], 10);
 				if (names) {
 					g.text(font, m.name(), s[0] + 8, s[1] - 4, 0xFFFFFFFF, true);
+				}
+			}
+		}
+	}
+
+	/** Continent names in a Vestiges world, at the centre the plan gives each one. */
+	public static void drawLandNames(GuiGraphicsExtractor g, net.minecraft.client.gui.Font font, String dim, int sx, int sy, int w, int h, double cx, double cz, float zoom) {
+		if (MapMarkers.on(MapMarkers.NAMES) && dim.equals("minecraft:overworld")) {
+			for (dev.vestiges.client.features.ClientFeatures.Land land : dev.vestiges.client.features.ClientFeatures.lands()) {
+				int[] s = toScreen(sx, sy, w, h, cx, cz, zoom, land.x(), land.z());
+				if (s[0] >= sx - 80 && s[0] <= sx + w + 80 && s[1] >= sy - 10 && s[1] <= sy + h + 10) {
+					g.text(font, land.name(), s[0] - font.width(land.name()) / 2, s[1] - 4, 0xFFFFE9A8, true);
 				}
 			}
 		}

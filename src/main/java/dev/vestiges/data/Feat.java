@@ -40,7 +40,7 @@ public record Feat(String chain, int order, String name, String requirement, Str
 
 	/** True while a feature this feat counts on or rewards is switched off in this world: it can't be earned then. */
 	public boolean blockedIn(ServerConfig config) {
-		VestigesSystem reward = item.isEmpty() ? null : "waystone".equals(item) ? VestigesSystem.WAYSTONES : VestigesSystem.SETTLEMENTS;
+		VestigesSystem reward = item.isEmpty() ? null : "waystone".equals(item) ? VestigesSystem.WAYSTONES : "dungeon_key".equals(item) ? VestigesSystem.DUNGEONS : VestigesSystem.SETTLEMENTS;
 		return off(config, reward) || off(config, system(counter)) || goals.stream().anyMatch(g -> off(config, system(g.type())));
 	}
 

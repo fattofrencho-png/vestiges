@@ -1,0 +1,96 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:purpur_block",
+     "weight": 24,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 8,
+        "max": 24
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:end_stone",
+     "weight": 24,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 8,
+        "max": 24
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:end_rod",
+     "weight": 16,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:chorus_flower",
+     "weight": 10,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 3
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:shulker_shell",
+     "weight": 8,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 1,
+        "max": 2
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:elytra",
+     "weight": 1,
+     "modifier": [
+      {
+       "count": 1,
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -536,6 +536,74 @@
      }
     ]
    }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "vestiges:dungeon_key",
+     "weight": 1,
+     "modifier": [
+      {
+       "mode": "drop",
+       "min_tier": 1,
+       "max_tier": 3,
+       "type": "vestiges:dungeon_key"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "vestiges:mob_rank",
+      "rank": 2
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.02
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "vestiges:dungeon_key",
+     "weight": 1,
+     "modifier": [
+      {
+       "mode": "drop",
+       "min_tier": 1,
+       "max_tier": 3,
+       "type": "vestiges:dungeon_key"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "minecraft:killed_by_player"
+     },
+     {
+      "type": "vestiges:mob_rank",
+      "rank": 3
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.08
+     }
+    ]
+   }
   }
  ]
 }

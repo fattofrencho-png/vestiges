@@ -339,6 +339,7 @@ public final class WorldMapScreen extends Screen {
 		g.enableScissor(0, HEADER, mw, HEADER + mh);
 		MapView.drawTiles(g, dimension, layer, 0, HEADER, mw, mh, cx, cz, zoom);
 		dev.vestiges.client.settlement.ClientSettlements.draw(g, font, dimension.toString(), 0, HEADER, mw, mh, cx, cz, zoom, true);
+		MapView.drawLandNames(g, font, dimension.toString(), 0, HEADER, mw, mh, cx, cz, zoom);
 		for (Entry e : entries()) {
 			boolean picked = selected != null && same(selected, e);
 			if (!e.shown() && !picked) {
@@ -391,7 +392,8 @@ public final class WorldMapScreen extends Screen {
 		if (mouseX < mw && mouseY > HEADER) {
 			int bx = (int) Math.floor(cx + (mouseX - mw / 2.0) / zoom);
 			int bz = (int) Math.floor(cz + (mouseY - HEADER - mh / 2.0) / zoom);
-			g.text(font, "x " + bx + "   z " + bz, 6, height - 12, 0xFFFFFFFF, true);
+			String place = mc.level != null && dimension.toString().equals("minecraft:overworld") ? dev.vestiges.client.features.ClientFeatures.placeAt(bx, bz) : null;
+			g.text(font, "x " + bx + "   z " + bz + (place != null ? "   ·   " + place : ""), 6, height - 12, 0xFFFFFFFF, true);
 		}
 		if (pendingSpot != null) {
 			g.text(font, "New waypoint at " + pendingSpot[0] + ", " + pendingSpot[1] + ", " + pendingSpot[2], 6, height - 38, 0xFFE6C36A, true);

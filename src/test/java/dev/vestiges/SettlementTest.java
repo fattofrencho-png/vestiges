@@ -110,11 +110,12 @@ class SettlementTest {
 			assertTrue(checkable || !f.later().isEmpty(), e.getKey() + " has goals, a counter or a later system");
 			f.goals().forEach(g -> assertTrue(types.contains(g.type()), e.getKey() + ": " + g.type()));
 			assertTrue(f.counter().isEmpty() || types.contains(f.counter()), e.getKey());
-			assertTrue(f.item().isEmpty() || "waystone".equals(f.item()) || MarkerType.byId(f.item()) != null, e.getKey() + " item " + f.item());
+			assertTrue(f.item().isEmpty() || "waystone".equals(f.item()) || "dungeon_key".equals(f.item()) || MarkerType.byId(f.item()) != null, e.getKey() + " item " + f.item());
 		}
 		assertEquals("bell", feats.get("founder").item());
 		assertEquals(10, feats.get("elite_hunter").every());
-		assertFalse(feats.get("first_key").later().isEmpty(), "First Key waits for dungeons");
+		assertTrue(feats.get("first_key").later().isEmpty(), "First Key is earnable now that dungeons exist");
+		assertEquals("dungeon_key", feats.get("first_key").item());
 		assertEquals("blueprint_32", feats.get("charted").owed());
 	}
 }

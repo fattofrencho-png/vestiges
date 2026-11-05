@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:add",
+  "left": {
+    "type": "minecraft:mul",
+    "left": {
+      "type": "minecraft:noise",
+      "noise": "vestiges:vegetation_medium",
+      "shift_x": "minecraft:shift_x",
+      "shift_z": "minecraft:shift_z",
+      "xz_scale": 0.25,
+      "y_scale": 0.0
+    },
+    "right": {
+      "type": "vestiges:globe",
+      "channel": "humidity_weight"
+    }
+  },
+  "right": {
+    "type": "vestiges:globe",
+    "channel": "humidity_base"
+  }
+}

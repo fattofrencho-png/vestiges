@@ -21,15 +21,16 @@ public enum VestigesSystem {
 	LOOT("loot", "Banded loot", Category.LOOT, F.IN_CORE | F.BUILT, "Chest and mob loot scale with your level, and gear has rarity.\n\nOff: vanilla loot.", "enchant_levels"),
 	PER_PLAYER_LOOT("per_player_loot", "Per-player chests", Category.LOOT, F.IN_CORE | F.BUILT, "Each player gets their own loot from a natural chest."),
 
+	CONTINENTS("continents", "Continent of Trenec", Category.WORLD, F.BUILT | F.CREATION_ONLY | F.OFF_BY_DEFAULT, "A world made for the story. You start on the continent of Trenec, with four more continents across the sea, real rivers, taller mountains, bigger caves and the capital Dilecta. Emerald ore only exists at a few rich mines.\n\nOff: vanilla terrain, where the places in the story may not match the land.\n\nOnly chosen now. It is the same as picking Vestiges Vanilla under World Type, on the World tab."),
 	QUESTS("quests", "Quests", Category.WORLD, F.IN_CORE | F.BUILT, "Optional quests: guide quests that teach the mod, side quests from villagers, and notes you find. Rewards never include power you can't get elsewhere."),
 	CODEX("codex", "Codex", Category.WORLD, F.IN_CORE | F.BUILT, "Blocks, Bestiary, Places and Items."),
 	FEATS("feats", "Feats", Category.WORLD, F.IN_CORE | F.BUILT, "Goals that earn Bells, Banners, Ward Lanterns and more."),
 	SETTLEMENTS("settlements", "Settlements", Category.WORLD, F.IN_CORE | F.BUILT, "Bells, renown, wards, banners and land protection.", "feats"),
 	WAYSTONES("waystones", "Waystones", Category.WORLD, F.IN_CORE | F.BUILT, "Earned fast travel between lodestones, paid in emeralds.", "feats"),
-	VILLAGERS("villagers", "Villagers", Category.WORLD, F.IN_CORE, "Library, villager screen and recruiting."),
-	TRADES("trades", "Trade system", Category.WORLD, F.IN_CORE, "Our trades replace vanilla trading.", "villagers"),
+	VILLAGERS("villagers", "Villagers", Category.WORLD, F.IN_CORE | F.BUILT, "Every villager gets a name and a story, and the library remembers each one you meet.\n\nOff: villagers stay as vanilla made them. Recruiting comes in a later update."),
+	TRADES("trades", "Trade system", Category.WORLD, F.IN_CORE | F.BUILT, "Right-click opens the villager screen. Villagers sell for emeralds, and what they sell depends on your level.\n\nOff: vanilla trading.", "villagers"),
 	WORKERS("workers", "Workers", Category.WORLD, 0, "Jobs that make any item in your settlement.", "settlements", "villagers"),
-	DUNGEONS("dungeons", "Dungeons", Category.WORLD, F.IN_CORE, "Portal runs and the Gate tree."),
+	DUNGEONS("dungeons", "Dungeons", Category.WORLD, F.IN_CORE | F.BUILT, "Portal runs: a key and a portal frame open a dungeon of locked rooms with a boss and rewards.\n\nOff: portal frames do nothing."),
 	EVENTS("events", "World events", Category.WORLD, 0, "Blood Moon, caravans, shrines and more."),
 	NETHER_POCKETS("nether_pockets", "Nether pockets", Category.WORLD, 0, "Rare Nether caves in deepslate."),
 	DRAGONS("dragons", "24 dragons", Category.WORLD, F.IN_CORE, "The End, the Vestige and the story's ending."),
@@ -41,13 +42,15 @@ public enum VestigesSystem {
 	SHAPES("shapes", "Ctrl + Alt shapes", Category.COMFORT, F.COMFORT, "Scroll an item to swap it for related shapes, at the normal recipe cost. You can undo."),
 	SHULKERS("shulkers", "Open shulker boxes", Category.COMFORT, F.COMFORT | F.BUILT, "Right-click a box in your inventory to open it."),
 	SLEEP("sleep", "Sleep percentage", Category.COMFORT, F.BUILT | F.OFF_BY_DEFAULT, "Fewer players need to sleep to skip the night. Half by default; operators can change it in Settings, World."),
+	GRAVES("graves", "Gravestones", Category.COMFORT, F.IN_CORE | F.BUILT, "When you die, your things rest in a gravestone where you fell, and only you can collect them.\n\nOff: vanilla, your things drop where you died."),
+	GRAVE_TIMER("grave_timer", "Gravestone timer", Category.COMFORT, F.IN_CORE | F.BUILT, "The gravestone crumbles after a number of days (set in Settings, World), leaving a skull with your most valuable item.\n\nOff: the gravestone stays until you collect it.", "graves"),
 	GRIEFING("griefing", "No mob griefing", Category.COMFORT, F.BUILT | F.OFF_BY_DEFAULT, "No creeper holes, no endermen moving blocks. This is vanilla's mobGriefing rule, so villagers can't farm while it is on."),
 	PEEK("peek", "Peek", Category.COMFORT, F.COMFORT, "See inside containers you could open, without opening them."),
 	FREECAM("freecam", "Freecam", Category.COMFORT, F.OFF_BY_DEFAULT, "Free flying camera, through walls too.\n\nIn survival it works like x-ray, so turn it off where that matters.");
 
 	/** Groups on the welcome page. */
 	public enum Category {
-		CORE("Always on"), CHARACTER("Character"), LOOT("Loot and enchants"), MOBS("Mobs"), WORLD("World"), COMFORT("Comfort");
+		CORE("Foundation"), CHARACTER("Character"), LOOT("Loot and enchants"), MOBS("Mobs"), WORLD("World"), COMFORT("Comfort");
 
 		public final String label;
 
@@ -58,7 +61,7 @@ public enum VestigesSystem {
 
 	/** Ready-made choices on the welcome page. Each one includes the one before it. */
 	public enum Preset {
-		CORE("Core", "The RPG: levels, trees, gear, mobs, loot, Codex, feats, settlements, villagers, dungeons and dragons."),
+		CORE("RPG", "The RPG: levels, trees, gear, mobs, loot, Codex, feats, settlements, villagers, dungeons and dragons."),
 		COMFORT("Comfort", "Core plus quality of life: sorting, bigger stacks, shapes, shulker boxes and peek."),
 		FULL("Full RPG", "Comfort plus workers, world events, Nether pockets and blueprints.");
 
@@ -158,7 +161,7 @@ public enum VestigesSystem {
 	public String section() {
 		return switch (id) {
 			case "sorting", "stacks", "shapes", "shulkers", "peek" -> "Inventory";
-			case "farming", "freecam" -> "In the world";
+			case "farming", "freecam", "graves" -> "In the world";
 			case "sleep", "griefing" -> "Server rules";
 			default -> null;
 		};

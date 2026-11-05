@@ -1,6 +1,7 @@
 package dev.vestiges.client.features;
 
 import com.mojang.datafixers.util.Pair;
+import dev.vestiges.Vestiges;
 import dev.vestiges.client.mixin.CreateWorldScreenAccessor;
 import dev.vestiges.config.ConfigStore;
 import dev.vestiges.config.ServerConfig;
@@ -12,14 +13,20 @@ import java.util.List;
 import net.minecraft.client.gui.components.tabs.GridLayoutTab;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
+import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.world.level.WorldDataConfiguration;
+import net.minecraft.world.level.levelgen.presets.WorldPreset;
+import net.minecraft.world.level.levelgen.presets.WorldPresets;
 
 /** The Vestiges tab of the Create World screen. The choice lives as long as the screen, because a data pack change rebuilds the tabs. */
 public final class WelcomeTab extends GridLayoutTab {
 	public static final int INDEX = 3;
 	private static final String ENCHANT_PACK_SUFFIX = "enchant_levels";
+	private static final ResourceKey<WorldPreset> VESTIGES_VANILLA = ResourceKey.create(Registries.WORLD_PRESET, Vestiges.id("trenec"));
 	private static WeakReference<CreateWorldScreen> owner = new WeakReference<>(null);
 	private static ServerConfig choice;
 	private static boolean reopen;
@@ -27,8 +34,31 @@ public final class WelcomeTab extends GridLayoutTab {
 
 	public WelcomeTab(CreateWorldScreen screen) {
 		super(Component.literal("Vestiges"));
-		panel = new FeaturePanel(choiceFor(screen), true, () -> syncEnchantPack(screen));
+		panel = new FeaturePanel(choiceFor(screen), true, () -> {
+			syncWorldType(screen);
+			syncEnchantPack(screen);
+		});
 		layout.addChild(panel, 0, 0);
+		// The other way round: picking a world type on the World tab moves the switch here.
+		screen.getUiState().addListener(state -> choice.set(VestigesSystem.CONTINENTS, isVestigesWorld(state.getWorldType())));
+	}
+
+	private static boolean isVestigesWorld(WorldCreationUiState.WorldTypeEntry type) {
+		return type.preset() != null && type.preset().is(VESTIGES_VANILLA);
+	}
+
+	/** The switch and the World Type button are one choice, so a change here moves the button. */
+	private static void syncWorldType(CreateWorldScreen screen) {
+		WorldCreationUiState state = screen.getUiState();
+		boolean wanted = choice.enabled(VestigesSystem.CONTINENTS);
+		if (wanted == isVestigesWorld(state.getWorldType())) {
+			return;
+		}
+		ResourceKey<WorldPreset> target = wanted ? VESTIGES_VANILLA : WorldPresets.NORMAL;
+		state.getNormalPresetList().stream()
+			.filter(type -> type.preset() != null && type.preset().is(target))
+			.findFirst()
+			.ifPresent(state::setWorldType);
 	}
 
 	public static ServerConfig choiceFor(CreateWorldScreen screen) {

@@ -98,7 +98,7 @@ Every quest needs an intro (flavour text that explains its purpose). The 13 side
 - **Tested Metal (side_armorer):** yes, it copied Toolsmith (bring iron ingots) and Weaponsmith (kill an elite). Now: wear 4 armor pieces, kill 8 monsters in them.
 - **Drafts reordered:** Your Journal is the first quest of First Steps; A Table in Your Pack moved into First Steps right after A Little Stronger. Chain order numbers get set when their JSON is written.
 
-**Rule for the main chat (needs code), from "Blank Space" (user):** a quest is completed by going back to the quest giver. When all steps are done, the tracker turns into a "Turn in" button that works once you are near the giver. Bring steps and the cartographer's last "talk" step (sneak + right-click) then go away. Until built, the cartographer quest stays as it is.
+**Rule for the main chat (needs code), from "Blank Space" (user):** a quest is completed by going back to the quest giver. When all steps are done, the tracker turns into a "Turn in" button that works once you are near the giver. Bring steps and the cartographer's last "talk" step (sneak + right-click) then go away. **Built 2026-11-05:** quests a villager gave wait, ready, after their last step; the Quests panel shows Turn in near the giver (or any villager of the giver's job within 16 blocks, so a quest never gets stuck), the villager screen's Quests tab offers it too, and bring steps are handed in near the giver. The cartographer's `talk` step was removed. Quests from the Quests tab or notes (no villager giver) still finish by themselves.
 
 ## Review round 2 (2026-11-04): checked against the other chats' approved notes
 

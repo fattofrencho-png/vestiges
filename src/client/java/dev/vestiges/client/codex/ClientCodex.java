@@ -24,7 +24,7 @@ import net.minecraft.world.item.Items;
 public final class ClientCodex {
 	/** One entry as the screen shows it; names, icons and lines are blank until earned. */
 	public record Entry(String id, String section, String name, String cls, Item icon, int stage, int max, int count, int need, String label,
-						String line1, String line2, String later, List<Map.Entry<String, Boolean>> unlocks) {
+						String line1, String line2, String later, String where, List<Map.Entry<String, Boolean>> unlocks) {
 		public boolean known() {
 			return stage > 0;
 		}
@@ -89,7 +89,7 @@ public final class ClientCodex {
 			list.add(new Entry(o.get("id").getAsString(), o.get("section").getAsString(), o.get("name").getAsString(), o.get("cls").getAsString(),
 				item(o.get("icon").getAsString()), o.get("stage").getAsInt(), o.get("max").getAsInt(), o.get("count").getAsInt(),
 				o.get("need").getAsInt(), o.get("label").getAsString(), o.get("line1").getAsString(), o.get("line2").getAsString(),
-				o.get("later").getAsString(), List.copyOf(unlocks)));
+				o.get("later").getAsString(), o.has("where") ? o.get("where").getAsString() : "", List.copyOf(unlocks)));
 		}
 		entries = Collections.unmodifiableList(list);
 		Map<String, String> idx = new HashMap<>();
