@@ -18,8 +18,10 @@ from urllib.parse import parse_qs, urlparse
 
 import backup
 import batches
+import dashboard
 import edits
 import explore
+import exporter
 import files
 import export
 import licences
@@ -33,8 +35,10 @@ import presets
 import send
 import projects
 import providers
+import review
 import thumbs
 import tree_gen
+import triage
 
 HOST, PORT = "127.0.0.1", int(os.environ.get("VESTIGES_PORT") or 8765)
 ALLOWED_HOSTS = {f"127.0.0.1:{PORT}", f"localhost:{PORT}"}
@@ -259,6 +263,89 @@ def add_to_mod(project_id, number=None, confirmed=False):
     return {"file": f"data/vestiges/structure/{category}/{name}.nbt", "name": f"vestiges:{category}/{name}", **placement}
 
 
+def dashboard_data():
+    status = triage.run_status()
+    return dashboard.build(library.all_rows(), dashboard.load_targets(), backup.list_backups(), status if status["running"] or status["total"] else None)
+
+
+def review_filter(query):
+    return {k: str(query.get(k, "")) for k in ("type", "species", "q", "batch", "source")}
+
+
+def review_queue(query):
+    """The ids of a review view, in order, with the numbers the screen shows."""
+    rows = library.all_rows()
+    view = query.get("view") or "inbox"
+    ids = review.queue(rows, view, review_filter(query))
+    builds = [r for r in rows if r.get("analysed") and r.get("mode") != "file"]
+    return {"ids": ids, "view": view, "counts": review.counts(rows), "views": review.VIEWS,
+            "types": sorted({r["f_type"] for r in builds if r.get("f_type")}), "packs": sorted({r["source"] for r in builds if r.get("source")}),
+            "species": sorted({r["f_species"] for r in builds if r.get("f_species")})}
+
+
+def review_asset(project_id):
+    """Everything the Review screen shows about one asset."""
+    project = projects.load(project_id)
+    rows = library.all_rows()
+    row = next((r for r in rows if r["id"] == project_id), None) or library.row_of(project)
+    source, credit = project.get("source") or {}, project.get("credit") or {}
+    licence = licences.of_project(project)
+    latest = project["versions"][-1] if project.get("versions") else None
+    return {"id": project_id, "title": project.get("title", ""), "path": naming.source_path(source), "pack": source.get("name", ""),
+            "creator": credit.get("creator", ""), "rights": review.rights_of(project), "licence": {"status": licence["status"], "words": licence.get("words", "")},
+            "versions": len(project.get("versions", [])), "size": row.get("size", ""), "blocks": row.get("blocks", 0),
+            "not_vanilla": bool(row.get("not_vanilla")), "problems": (latest["check"]["errors"][:2] if latest else []),
+            "tags": project.get("tags", []), "kind": project.get("category", ""), "analysed": bool(project.get("analysis")),
+            "related": review.related(rows, project_id), **review.view_of(project)}
+
+
+def review_decide(data):
+    """One decision on one asset. Delete is the only one that can't be undone."""
+    project_id, action = data.get("id", ""), data.get("action")
+    if action == "delete":
+        projects.delete(project_id)
+        library.flush()
+        return {"deleted": True}
+    project = projects.load(project_id)
+    facet = str(data.get("facet", ""))
+    if action == "accept_all":
+        review.accept_all(project)
+    elif action == "accept":
+        review.accept_facet(project, facet)
+    elif action == "change":
+        review.change(project, facet, data.get("value"))
+    elif action == "reject_facet":
+        review.reject_facet(project, facet)
+    elif action == "reject":
+        review.reject_asset(project, str(data.get("reason", "other")))
+    elif action == "needs_work":
+        review.needs_work(project)
+    elif action == "restore":
+        review.restore(project)
+    elif action == "undo":
+        if not review.undo(project):
+            raise ValueError("Nothing to undo")
+    else:
+        raise ValueError("Unknown action")
+    projects.save(project)
+    return {"ok": True, "can_undo": bool(project.get("review_history"))}
+
+
+def review_batch(data):
+    """Accept many sure builds at once. First a preview (dry_run), then the same call with dry_run false and the ids confirmed."""
+    ids = review.batch_accept_ids(library.all_rows(), review_filter(data), float(data.get("min_conf", review.SURE)))
+    if data.get("dry_run", True):
+        return {"count": len(ids), "sample": ids[:24], "ids": ids}
+    allowed = set(ids)
+    chosen = [i for i in (data.get("ids") or ids) if i in allowed]
+    for project_id in chosen:
+        project = projects.load(project_id)
+        review.accept_all(project)
+        projects.save(project)
+    library.flush()
+    return {"accepted": len(chosen)}
+
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *args):
         pass
@@ -295,6 +382,16 @@ class Handler(BaseHTTPRequestHandler):
             if url.path == "/api/library":
                 return self.send_json({**library.search(query.get("q", ""), query.get("kind", ""), query.get("status", ""), query.get("batch", ""),
                                                         query.get("no_credit") == "1", query.get("not_vanilla") == "1", int(query.get("page", 0)), query.get("licence", ""), query.get("tag", ""), query.get("collection", ""), query.get("favorite") == "1"), **library.facets()})
+            if url.path == "/api/dashboard":
+                return self.send_json(dashboard_data())
+            if url.path == "/api/exports":
+                return self.send_json(exporter.summary())
+            if url.path == "/api/rights/packs":
+                return self.send_json({"packs": exporter.packs(library.all_rows())})
+            if url.path == "/api/review/queue":
+                return self.send_json(review_queue(query))
+            if url.path == "/api/review/asset":
+                return self.send_json(review_asset(query.get("id", "")))
             if url.path == "/api/thumb":
                 return self.send(thumbs.get(query.get("id", "")), "image/png")
             if url.path == "/api/file-info":
@@ -467,6 +564,23 @@ class Handler(BaseHTTPRequestHandler):
                 files.rename_file(project_id, data["rename_file"])
             set_details(project_id, data)
             return {"ok": True}
+        if path == "/api/targets":
+            dashboard.set_target(data.get("key"), data.get("value"))
+            return {"ok": True}
+        if path == "/api/export/video":
+            return exporter.write_video()
+        if path == "/api/export/world":
+            if data.get("prepare"):
+                exporter.prepare_world()
+            return exporter.write_world()
+        if path == "/api/rights":
+            return {"changed": exporter.set_pack_rights(str(data.get("source", "")), data.get("creator", ""), data.get("licence", ""), data.get("permission", ""), data.get("link", ""))}
+        if path == "/api/triage/analyse":
+            return {"started": triage.start_analyse()}
+        if path == "/api/review/decide":
+            return review_decide(data)
+        if path == "/api/review/batch":
+            return review_batch(data)
         if path == "/api/library/bulk":
             bulk(data)
             return {"ok": True}

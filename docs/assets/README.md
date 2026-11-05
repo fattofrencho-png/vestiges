@@ -26,6 +26,21 @@ Double-click **`Asset Studio.bat`**.
 - The library: `~/.vestiges-assets/library/`, outside git. Only assets added to the mod enter the repo. **Back this folder up**: git doesn't hold it, and source files aren't kept.
 - `tools/assets/exports.json` says where each tree's ground and trunk are inside its file. Roots go below the ground, so `/place template` needs the position lowered by `ground_y`.
 
+## Organiser (first round of sorting)
+
+Every build is checked when it is imported: `analyse.py` reads the build itself (blocks, size, rooms, doors, materials) and proposes its type, species, realm, palette, scale, complexity and rarity, each with a reason and how sure it is. Proposals are not decisions: yours always win (`facets.py`). Plan and progress: `organiser-plan.md`.
+
+The app opens on the **Dashboard**: what to do next, the inbox, progress against your goals, what is ready for the videos and the mod, and health. From the Dashboard you can note a pack's rights, export a catalog for the videos (`~/.vestiges-assets/exports/video-catalog.json`) and send vanilla, rights-cleared builds to the mod. Open **Review** in the header to check what the analyser found. One build at a time: **A** accepts everything shown, **1-9** change a row, **X** archives (or deletes), **U** undoes, **E** opens the workbench, **?** lists the keys. Queues: Not reviewed yet, Sure first (with a batch accept), Unsure first, Look-alikes, Needs work, Accepted, Archived.
+
+```bat
+python tools/assets/triage.py summary          rem counts by type, review state, sure and unsure
+python tools/assets/triage.py analyse          rem analyse builds that have not been analysed (makes a backup first)
+python tools/assets/triage.py analyse --all    rem analyse everything again; your decisions are kept
+python tools/assets/triage.py numbers --import F rem adopt the video catalog's card_numbers.json
+python tools/assets/triage.py categories       rem show kinds that would change; add --apply to fix them
+python tools/assets/test_triage.py             rem organiser tests
+```
+
 ## For developers
 
 ```bat

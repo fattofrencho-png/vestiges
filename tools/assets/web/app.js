@@ -1,5 +1,7 @@
 // The step-by-step page. Everything the AI writes is shown with textContent, never as HTML.
 import * as viewer from "./viewer.js";
+import { initReview, drawReview, leaveReview } from "./review.js";
+import { initDashboard, drawDashboard } from "./dashboard.js";
 
 const $ = (id) => document.getElementById(id);
 const STEPS = ["Request", "Questions", "Building", "Preview", "Saved"];
@@ -39,7 +41,7 @@ function spent(p) {
 }
 
 function steps() {
-  if (screen === "library" || screen === "settings" || screen === "find" || screen === "explore" || screen === "presets" || screen === "addfiles" || screen === "send" || project?.mode === "file") { $("steps").replaceChildren(); return; }
+  if (screen === "dashboard" || screen === "review" || screen === "library" || screen === "settings" || screen === "find" || screen === "explore" || screen === "presets" || screen === "addfiles" || screen === "send" || project?.mode === "file") { $("steps").replaceChildren(); return; }
   if (screen === "home" || screen === "import" || project?.mode === "import") {
     let step = 0;
     if (screen === "project" && project) step = project.stage === "saved" ? 3 : project.versions.length > 1 ? 2 : 1;
@@ -53,6 +55,7 @@ function steps() {
   $("steps").replaceChildren(...STEPS.map((name, i) => el("span", { className: i === now ? "now" : i < now ? "done" : "", textContent: name })));
 }
 function page(...children) {
+  if (screen !== "review") leaveReview();
   $("page").classList.remove("wide");
   viewer.hide();
   shown = null;
@@ -307,7 +310,12 @@ function sectionize(nodes) {
   return out;
 }
 
+let backToReview = null;  // set when the Review screen opened the workbench, so one click returns
 function queueBar() {
+  if (backToReview && backToReview === project.id) {
+    return el("div", { className: "queue" }, el("button", { className: "main", textContent: "Back to Review", on: { click: () => { const id = backToReview; backToReview = null; drawReview({ id }).catch((problem) => showFailure(problem)); } } }),
+      el("span", { className: "dim", textContent: "Changes you make here are kept. The analysis stays as it was until you re-analyse." }));
+  }
   if (!queue || queue.ids[queue.index] !== project.id) return null;
   const go = (step) => openQueue(queue.ids, queue.index + step);
   return el("div", { className: "queue" },
@@ -1511,10 +1519,30 @@ async function drawSettings() {
   );
 }
 
+initReview({
+  page: (...nodes) => page(...nodes),
+  showFailure: (problem) => showFailure(problem),
+  enter: () => { screen = "review"; stopPolling(); project = null; queue = null; backToReview = null; steps(); },
+  openWorkbench: (id) => { leaveReview(); backToReview = id; openProject(id).catch((problem) => showFailure(problem)); },
+});
+
+initDashboard({
+  page: (...nodes) => page(...nodes),
+  showFailure: (problem, where) => showFailure(problem, where),
+  enter: () => { screen = "dashboard"; stopPolling(); project = null; queue = null; backToReview = null; steps(); },
+  isActive: () => screen === "dashboard",
+  openReview: (options) => drawReview(options),
+  openLibrary: (start) => drawLibrary(start).catch((problem) => showFailure(problem)),
+  openImport: () => drawImport(),
+  openSend: (ids) => drawSend(ids, () => drawDashboard()).catch((problem) => showFailure(problem)),
+});
+
+$("homeBtn").onclick = () => drawDashboard();
+$("reviewBtn").onclick = () => drawReview().catch((problem) => showFailure(problem));
 $("newBtn").onclick = drawHome;
 $("findBtn").onclick = drawFind;
 $("exploreBtn").onclick = () => drawExplore();
 $("libraryBtn").onclick = () => drawLibrary({ batch: "" }).catch((problem) => showFailure(problem));
 $("settingsBtn").onclick = drawSettings;
 get("/api/state").then((state) => { app = state; }).catch(() => {});
-drawHome();
+drawDashboard().catch(() => drawHome());

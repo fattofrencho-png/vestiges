@@ -9,10 +9,12 @@ import shutil
 import threading
 from pathlib import Path
 
+import facets as facet_book
 import licences
 import naming
 import organise
 import projects
+import review as review_rules
 
 PAGE = 100
 _rows = None
@@ -42,6 +44,19 @@ def _file_size(project):
     return f"{size / 1048576:.1f} MB" if size > 1048576 else f"{max(1, round(size / 1024))} KB"
 
 
+def organiser_fields(project):
+    """What the organiser knows about an asset, as flat index fields: believed facet values, review state, how sure the machine is,
+    measured numbers and fingerprints. Empty for assets that haven't been analysed yet."""
+    analysis = project.get("analysis") or {}
+    measures, prints = analysis.get("measures") or {}, analysis.get("prints") or {}
+    out = {"review": facet_book.review_of(project)["state"], "analysed": bool(analysis), "conf": facet_book.confidence_of(project) if analysis else 0,
+           "undecided": len(facet_book.undecided(project)), "fp_exact": prints.get("exact", ""), "fp_shape": prints.get("shape", ""),
+           "fp_palette": prints.get("palette", ""), "decided": facet_book.review_of(project).get("decided_at", 0), "rights": review_rules.rights_of(project), "analysis_error": bool(project.get("analysis_error")), "parts": measures.get("parts", 1), "w": measures.get("w", 0), "h": measures.get("h", 0), "d": measures.get("d", 0)}
+    for name in ("type", "subtype", "species", "realm", "style", "palette", "setting", "scale", "complexity", "rarity"):
+        out["f_" + name] = facet_book.get(project, name) or ""
+    return out
+
+
 def row_of(project):
     latest = project["versions"][-1] if project.get("versions") else None
     credit = project.get("credit") or {}
@@ -55,6 +70,7 @@ def row_of(project):
         "blocks": latest["check"]["stats"]["blocks"] if latest else 0,
         "size": f"{latest['check']['stats']['width_x']}x{latest['check']['stats']['height']}x{latest['check']['stats']['width_z']}" if latest else _file_size(project),
         "hash": project.get("hash"), "created": project.get("created", 0), "busy": project.get("busy", False),
+        **organiser_fields(project),
     }
 
 
@@ -79,7 +95,7 @@ def _load():
                 project_file = folder / "project.json"
                 if project_file.exists():
                     found.add(folder.name)
-                    if folder.name not in rows or project_file.stat().st_mtime > stamp or "collections" not in rows[folder.name]:
+                    if folder.name not in rows or project_file.stat().st_mtime > stamp or "collections" not in rows[folder.name] or "review" not in rows[folder.name] or "rights" not in rows[folder.name] or "parts" not in rows[folder.name]:
                         rows[folder.name] = row_of(projects.load(folder.name))
         _rows = {k: v for k, v in rows.items() if k in found}
         return _rows
@@ -128,6 +144,11 @@ def reset():
     global _rows
     with _lock:
         _rows = None
+
+
+def all_rows():
+    """Every index row (a copy of the list; the rows themselves are shared, so don't change them)."""
+    return list(_load().values())
 
 
 def has_hash(value):

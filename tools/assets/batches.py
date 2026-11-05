@@ -4,6 +4,7 @@ import threading
 import time
 from pathlib import Path
 
+import analyse
 import import_formats
 import library
 import naming
@@ -59,6 +60,10 @@ def add_build(result, source, details, batch_id=None, title=""):
     number = 1
     projects.save_version(project["id"], number, None, tree)
     project["versions"].append({"number": number, "edits": [], "check": check, "dropped": result["dropped"], "notes": result["notes"]})
+    try:  # the first check: what is it? Never lets a strange build stop the import.
+        analyse.analyse_project(project, result["blocks"])
+    except Exception as problem:
+        project["analysis_error"] = str(problem)[:200]
     projects.save(project)
     return project["id"]
 
