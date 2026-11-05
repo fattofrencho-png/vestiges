@@ -159,15 +159,13 @@ public final class RoomBuilder {
 		return List.copyOf(all.subList(0, Math.min(30, all.size())));
 	}
 
-	/** Where the cache goes: a back corner (the reward room gets four spots along its east end). */
+	/** Where the cache goes: a back corner (the reward room gets two, beside its exit frame). */
 	private static List<BlockPos> cachePoints(DungeonRuns.Room room, int[][] g) {
 		int size = room.size();
 		if (room.role().equals("reward")) {
-			List<BlockPos> out = new ArrayList<>();
-			for (int k = -3; k <= 3; k += 2) {
-				out.add(new BlockPos(room.x() + size - 3, DungeonPlots.FLOOR_Y + 1, room.centerZ() + k));
-			}
-			return out;
+			// The reward chest and a block cache, either side of the exit frame.
+			return List.of(new BlockPos(room.x() + size - 3, DungeonPlots.FLOOR_Y + 1, room.centerZ() - 3),
+				new BlockPos(room.x() + size - 3, DungeonPlots.FLOOR_Y + 1, room.centerZ() + 3));
 		}
 		if (!room.fighting()) {
 			return List.of();

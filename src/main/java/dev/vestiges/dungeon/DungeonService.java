@@ -27,6 +27,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -72,6 +73,8 @@ public final class DungeonService {
 			PlotCleaner.tick(server);
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> PlotCleaner.reset());
+		// Dying inside a dungeon costs a life and keeps the things (no gravestone, no drops).
+		net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> !(entity instanceof ServerPlayer p) || !loseLife(p));
 		// The walls are unbreakable: in the dungeon world only blocks that a player placed can be broken (operators in creative mode may edit).
 		PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> {
 			if (world.isClientSide() || !world.dimension().equals(DUNGEON) || player.isCreative() && dev.vestiges.server.Permissions.isOperator((ServerPlayer) player)) {
@@ -253,6 +256,9 @@ public final class DungeonService {
 				if (!p.level().dimension().equals(DUNGEON)) {
 					// They left some other way (a command, a respawn): they are out.
 					markOut(server, run.id(), m.id());
+				} else if (p.getY() < DungeonPlots.FLOOR_Y - 24) {
+					// Fell out of the world: the same as dying.
+					loseLife(p);
 				} else if (exits.stream().anyMatch(z -> p.getBoundingBox().intersects(z))) {
 					leave(server, p);
 				}
@@ -338,6 +344,94 @@ public final class DungeonService {
 		}
 		Vec3 pos = Vec3.atBottomCenterOf(m.returnPos());
 		p.teleport(new TeleportTransition(level, pos, Vec3.ZERO, p.getYRot(), 0f, TeleportTransition.DO_NOTHING));
+	}
+
+	// ---- keys and levels from loot -----------------------------------------------------------------------------------
+
+	/** The themes a player may enter (ids, sorted). With no player, the themes that are open to everyone. */
+	public static List<String> openThemes(ServerPlayer p) {
+		List<String> out = new ArrayList<>();
+		VestigesData.DUNGEON_THEMES.all().forEach((id, theme) -> {
+			if (p == null ? theme.openFromStart() : unlocked(p, theme)) {
+				out.add(id.getPath());
+			}
+		});
+		return out;
+	}
+
+	/** The key a loot table pays out, see {@link dev.vestiges.loot.LootTypes.DungeonKey}. */
+	public static ItemStack lootKey(String mode, int minTier, int maxTier, net.minecraft.world.level.storage.loot.LootContext ctx) {
+		if (!enabled()) {
+			return ItemStack.EMPTY;
+		}
+		var random = ctx.getRandom();
+		Entity who = ctx.getOptional(net.minecraft.world.level.storage.loot.parameters.LootContextParams.THIS_ENTITY);
+		net.minecraft.world.entity.player.Player killer = ctx.getOptional(net.minecraft.world.level.storage.loot.parameters.LootContextParams.LAST_DAMAGE_PLAYER);
+		ServerPlayer player = who instanceof ServerPlayer sp ? sp : killer instanceof ServerPlayer kp ? kp : null;
+		List<String> open = openThemes(player);
+		if (open.isEmpty()) {
+			return ItemStack.EMPTY;
+		}
+		if (mode.equals("next")) {
+			Vec3 at = ctx.getOptional(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN);
+			DungeonRuns.Run run = at == null ? null : runs(ctx.getLevel().getServer()).byPlot(DungeonPlots.plotAt((int) Math.floor(at.x), (int) Math.floor(at.z)));
+			int tier = run == null ? 1 : run.tier();
+			String theme = run == null ? open.get(0) : run.theme();
+			return DungeonKeys.create(DungeonRules.nextTheme(theme, open, random.nextDouble(), random.nextDouble()), DungeonRules.nextTier(tier, random.nextDouble()));
+		}
+		int low = Math.max(1, minTier);
+		int tier = low + random.nextInt(Math.max(low, maxTier) - low + 1);
+		return DungeonKeys.create(open.get(random.nextInt(open.size())), tier);
+	}
+
+	/** The loot level inside a dungeon run's plot (the tier's monster level), or null outside the dungeon world. */
+	public static Integer lootLevelAt(ServerLevel level, Vec3 at) {
+		if (!level.dimension().equals(DUNGEON)) {
+			return null;
+		}
+		DungeonRuns.Run run = runs(level.getServer()).byPlot(DungeonPlots.plotAt((int) Math.floor(at.x), (int) Math.floor(at.z)));
+		return run == null ? null : DungeonRules.mobLevel(run.tier());
+	}
+
+	// ---- lives -------------------------------------------------------------------------------------------------------
+
+	/**
+	 * A player of a run is about to die (or fell into the void): they lose a life and are put back in the start room with their things. With no
+	 * life left they are sent home with their things, out of the run for good. Returns true when it handled the death (so it must not happen).
+	 */
+	static boolean loseLife(ServerPlayer p) {
+		if (!p.level().dimension().equals(DUNGEON)) {
+			return false;
+		}
+		MinecraftServer server = p.level().getServer();
+		DungeonRuns all = runs(server);
+		DungeonRuns.Run run = all.byPlayer(p.getUUID());
+		if (run == null || run.rooms().isEmpty()) {
+			return false;
+		}
+		DungeonRuns.Member m = run.member(p.getUUID());
+		int left = Math.max(0, m.lives() - 1);
+		save(server, all.replace(run.withMember(m.withLives(left))));
+		restore(p);
+		if (left == 0) {
+			markOut(server, run.id(), p.getUUID());
+			sendHome(server, p, m);
+			p.sendSystemMessage(Component.literal("You are out of lives. You are sent home with your things.").withStyle(ChatFormatting.RED));
+		} else {
+			DungeonRuns.Room start = run.rooms().get(0);
+			Vec3 spawn = new Vec3(start.x() + 8.5, DungeonPlots.FLOOR_Y + 1, start.centerZ() + 0.5);
+			p.teleport(new TeleportTransition(dungeonLevel(server), spawn, Vec3.ZERO, -90f, 0f, TeleportTransition.DO_NOTHING));
+			p.sendSystemMessage(Component.literal("You lost a life. " + left + (left == 1 ? " life" : " lives") + " left.").withStyle(ChatFormatting.RED));
+		}
+		server.execute(() -> restore(p));
+		return true;
+	}
+
+	private static void restore(ServerPlayer p) {
+		p.setHealth(p.getMaxHealth());
+		p.clearFire();
+		p.removeAllEffects();
+		p.resetFallDistance();
 	}
 
 	// ---- the First Key feat ------------------------------------------------------------------------------------------

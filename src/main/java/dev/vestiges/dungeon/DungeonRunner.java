@@ -10,6 +10,12 @@ import java.util.List;
 import java.util.Random;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
@@ -158,7 +164,32 @@ final class DungeonRunner {
 			RoomBuilder.gate(level, room.eastWallX(), room.centerZ(), false, theme, rng(run, 500 + room.index()));
 		}
 		tell(players, "The way on is open.", ChatFormatting.GREEN);
+		placeChests(level, run, room, room.role().equals("lieutenant") ? "lieutenant" : "cache");
+		if (room.role().equals("boss") && room.index() + 1 < run.rooms().size()) {
+			DungeonRuns.Room reward = run.rooms().get(room.index() + 1);
+			if (reward.built() && reward.caches().size() >= 2) {
+				placeChest(level, reward.caches().get(0), run.theme(), "reward");
+				placeChest(level, reward.caches().get(1), run.theme(), "cache");
+				tell(players, "The reward room is open.", ChatFormatting.GOLD);
+			}
+		}
 		return run.withRoom(room.withState(DungeonRuns.Room.CLEARED));
+	}
+
+	private static void placeChests(ServerLevel level, DungeonRuns.Run run, DungeonRuns.Room room, String kind) {
+		for (BlockPos pos : room.caches()) {
+			placeChest(level, pos, run.theme(), kind);
+		}
+	}
+
+	/** A cache: a chest with the theme's loot table. Every player gets their own copy when they open it (the per-player chests system). */
+	static void placeChest(ServerLevel level, BlockPos pos, String theme, String kind) {
+		level.setBlock(pos, Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.WEST), 3);
+		if (level.getBlockEntity(pos) instanceof ChestBlockEntity chest) {
+			chest.setLootTable(ResourceKey.create(Registries.LOOT_TABLE, Vestiges.id("dungeon/" + theme + "_" + kind)));
+			chest.setLootTableSeed(level.getRandom().nextLong());
+			chest.setChanged();
+		}
 	}
 
 	/** Monsters of a room that are still alive. */

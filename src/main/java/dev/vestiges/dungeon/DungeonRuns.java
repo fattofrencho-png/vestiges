@@ -233,6 +233,15 @@ public record DungeonRuns(List<Run> runs, List<Integer> freePlots, List<Dirty> c
 		return null;
 	}
 
+	public Run byPlot(int plot) {
+		for (Run r : runs) {
+			if (r.plot() == plot) {
+				return r;
+			}
+		}
+		return null;
+	}
+
 	public Run byId(int id) {
 		for (Run r : runs) {
 			if (r.id() == id) {

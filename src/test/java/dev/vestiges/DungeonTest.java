@@ -193,6 +193,65 @@ class DungeonTest {
 		assertTrue(new MobData(15, MobData.BOSS, List.of(), 1f, false).elite());
 	}
 
+	@Test
+	void theNextKeyFollowsTheAgreedOdds() {
+		// After clearing tier 5: lower 15%, same 55%, one up 25%, two up 5%.
+		assertEquals(4, DungeonRules.nextTier(5, 0.0));
+		assertEquals(4, DungeonRules.nextTier(5, 0.149));
+		assertEquals(5, DungeonRules.nextTier(5, 0.15));
+		assertEquals(5, DungeonRules.nextTier(5, 0.699));
+		assertEquals(6, DungeonRules.nextTier(5, 0.70));
+		assertEquals(6, DungeonRules.nextTier(5, 0.949));
+		assertEquals(7, DungeonRules.nextTier(5, 0.95));
+		assertEquals(7, DungeonRules.nextTier(5, 0.9999));
+		assertEquals(1, DungeonRules.nextTier(1, 0.0), "never below tier 1");
+		Random random = new Random(7);
+		int[] seen = new int[4];
+		int n = 200_000;
+		for (int i = 0; i < n; i++) {
+			seen[DungeonRules.nextTier(10, random.nextDouble()) - 9]++;
+		}
+		assertEquals(0.15, seen[0] / (double) n, 0.01);
+		assertEquals(0.55, seen[1] / (double) n, 0.01);
+		assertEquals(0.25, seen[2] / (double) n, 0.01);
+		assertEquals(0.05, seen[3] / (double) n, 0.01);
+	}
+
+	@Test
+	void theNextKeyKeepsTheThemeSixtyPercentOfTheTime() {
+		List<String> open = List.of("end", "overgrown", "trial");
+		assertEquals("overgrown", DungeonRules.nextTheme("overgrown", open, 0.0, 0.9));
+		assertEquals("overgrown", DungeonRules.nextTheme("overgrown", open, 0.599, 0.9));
+		assertEquals("end", DungeonRules.nextTheme("overgrown", open, 0.60, 0.0), "changed: one of the others");
+		assertEquals("trial", DungeonRules.nextTheme("overgrown", open, 0.99, 0.99));
+		assertEquals("overgrown", DungeonRules.nextTheme("overgrown", List.of("overgrown"), 0.99, 0.5), "no other theme is open");
+		assertEquals("overgrown", DungeonRules.nextTheme("overgrown", List.of(), 0.99, 0.5));
+	}
+
+	@Test
+	void everyThemeHasItsDungeonLootTables() throws IOException {
+		Path themes = Path.of("src/main/resources/data/vestiges/vestiges/dungeon_themes");
+		Path tables = Path.of("src/main/resources/data/vestiges/loot_table/dungeon");
+		try (var files = Files.list(themes)) {
+			for (Path f : files.filter(p -> p.toString().endsWith(".json")).toList()) {
+				String theme = f.getFileName().toString().replace(".json", "");
+				for (String kind : List.of("cache", "lieutenant", "reward")) {
+					Path t = tables.resolve(theme + "_" + kind + ".json");
+					assertTrue(Files.exists(t), "loot table " + t.getFileName() + " (run tools/build_loot.py)");
+					assertEquals("minecraft:chest", JsonParser.parseString(Files.readString(t, StandardCharsets.UTF_8)).getAsJsonObject().get("type").getAsString());
+				}
+			}
+		}
+	}
+
+	@Test
+	void aRunIsFoundByItsPlot() {
+		UUID a = UUID.randomUUID();
+		DungeonRuns r = DungeonRuns.EMPTY.with(run(1, 0, a)).with(run(2, 1, UUID.randomUUID()));
+		assertEquals(2, r.byPlot(1).id());
+		assertNull(r.byPlot(5));
+	}
+
 	private static DungeonRuns.Run run(int id, int plot, UUID... players) {
 		List<DungeonRuns.Member> party = new ArrayList<>();
 		for (UUID u : players) {

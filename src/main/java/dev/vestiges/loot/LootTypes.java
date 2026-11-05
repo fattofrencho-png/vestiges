@@ -25,7 +25,8 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
  * <li>{@code vestiges:loot_level} {min, max}: the loot level (see {@link LootLevels}) is in range;</li>
  * <li>{@code vestiges:loot_enabled} {value}: whether the {@code loot} system is on (chests fall back to their vanilla pools when it is off);</li>
  * <li>{@code vestiges:mob_rank} {rank}: the dying mob's rank (1 Champion, 2 Elite, 3 Warlord);</li>
- * <li>{@code vestiges:loot_gear} {kind: gear|book, min_rarity, rarity}: replaces the item with found gear or a book (see {@link LootGear}).</li>
+ * <li>{@code vestiges:loot_gear} {kind: gear|book, min_rarity, rarity}: replaces the item with found gear or a book (see {@link LootGear});</li>
+ * <li>{@code vestiges:dungeon_key} {mode, min_tier, max_tier}: replaces the item with a dungeon key (see {@link DungeonKey}).</li>
  * </ul>
  */
 public final class LootTypes {
@@ -122,6 +123,29 @@ public final class LootTypes {
 		}
 	}
 
+	/**
+	 * {@code vestiges:dungeon_key} {mode: next|drop, min_tier, max_tier}: replaces the item with a dungeon key. "next" is the key a cleared run pays
+	 * out (the tier and theme come from the odds, see DungeonRules); "drop" is a low key an Elite or Warlord carries (a random tier in the range, a
+	 * theme the player has open). With the Dungeons switch off there is no key.
+	 */
+	public record DungeonKey(String mode, int minTier, int maxTier) implements LootItemFunction {
+		public static final MapCodec<DungeonKey> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+			Codec.STRING.fieldOf("mode").forGetter(DungeonKey::mode),
+			Codec.INT.optionalFieldOf("min_tier", 1).forGetter(DungeonKey::minTier),
+			Codec.INT.optionalFieldOf("max_tier", 1).forGetter(DungeonKey::maxTier)
+		).apply(i, DungeonKey::new));
+
+		@Override
+		public ItemStack apply(ItemStack stack, LootContext ctx) {
+			return dev.vestiges.dungeon.DungeonService.lootKey(mode, minTier, maxTier, ctx);
+		}
+
+		@Override
+		public MapCodec<DungeonKey> codec() {
+			return CODEC;
+		}
+	}
+
 	static Rarity.Tier tier(Optional<String> name) {
 		return name.map(n -> Rarity.Tier.valueOf(n.toUpperCase(Locale.ROOT))).orElse(null);
 	}
@@ -132,5 +156,6 @@ public final class LootTypes {
 		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, Vestiges.id("mob_rank"), MobRank.CODEC);
 		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, Vestiges.id("drop_chance"), DropChance.CODEC);
 		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Vestiges.id("loot_gear"), Gear.CODEC);
+		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Vestiges.id("dungeon_key"), DungeonKey.CODEC);
 	}
 }

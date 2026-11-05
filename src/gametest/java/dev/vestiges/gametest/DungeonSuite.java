@@ -9,6 +9,10 @@ import dev.vestiges.dungeon.DungeonRuns;
 import dev.vestiges.dungeon.DungeonService;
 import dev.vestiges.dungeon.RoomLayout;
 import dev.vestiges.feats.FeatService;
+import dev.vestiges.grave.GraveList;
+import dev.vestiges.grave.GraveService;
+import dev.vestiges.loot.MobDrops;
+import dev.vestiges.loot.PersonalLoot;
 import dev.vestiges.mobs.MobData;
 import dev.vestiges.mobs.MobService;
 import dev.vestiges.tree.TreeService;
@@ -26,7 +30,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -160,6 +173,63 @@ final class DungeonSuite {
 					+ (d == null ? 0 : d.powers().size()) + "|" + Math.round(hp) + "|" + (e.hasCustomName() ? e.getCustomName().getString() : ""));
 			}
 			return out;
+		});
+	}
+
+	/** The player opens a dungeon cache the way the game does (their own copy); returns what is in it, or null when it is not a loot chest. */
+	private static java.util.List<ItemStack> openChest(TestServerContext server, BlockPos pos) {
+		return server.computeOnServer(s -> {
+			ServerLevel level = s.getLevel(DungeonService.DUNGEON);
+			ServerPlayer p = player(s);
+			BlockEntity be = level.getBlockEntity(pos);
+			AbstractContainerMenu menu = be == null ? null : PersonalLoot.open(be, 99, p.getInventory(), p);
+			if (!(menu instanceof ChestMenu cm)) {
+				return null;
+			}
+			java.util.List<ItemStack> out = new java.util.ArrayList<>();
+			for (int i = 0; i < cm.getContainer().getContainerSize(); i++) {
+				if (!cm.getContainer().getItem(i).isEmpty()) {
+					out.add(cm.getContainer().getItem(i).copy());
+				}
+			}
+			return out;
+		});
+	}
+
+	/** A theme cache after the game has split its stacks over the slots: every stack is one kind of theme block. Returns the total, or 0 when it is not one. */
+	private static int cacheTotal(java.util.List<ItemStack> list, java.util.function.Predicate<ItemStack> isBlock) {
+		if (list == null || list.isEmpty() || !list.stream().allMatch(isBlock) || list.stream().map(ItemStack::getItem).distinct().count() != 1) {
+			return 0;
+		}
+		return list.stream().mapToInt(ItemStack::getCount).sum();
+	}
+
+	private static boolean isCacheBlock(ItemStack st) {
+		return java.util.Set.of("moss_block", "azalea", "spore_blossom", "glow_berries", "big_dripleaf", "mud", "bamboo", "cocoa_beans")
+			.contains(BuiltInRegistries.ITEM.getKey(st.getItem()).getPath());
+	}
+
+	/** Rolls the monster drop table many times for a husk of a rank and returns the dungeon keys it dropped. */
+	private static java.util.List<DungeonKeys.Data> rollKeyDrops(TestServerContext server, int rank, int rolls) {
+		return server.computeOnServer(s -> {
+			ServerPlayer p = player(s);
+			Mob mob = (Mob) MobSuite.type("husk").spawn(p.level(), p.blockPosition().offset(3, 0, 0), EntitySpawnReason.COMMAND);
+			MobService.apply(mob, new MobData(20, rank, java.util.List.of(), 1.0f, false));
+			LootTable table = s.reloadableRegistries().getLootTable(MobDrops.TABLE);
+			LootParams params = new LootParams.Builder(p.level()).withParameter(LootContextParams.THIS_ENTITY, mob)
+				.withParameter(LootContextParams.ORIGIN, mob.position()).withParameter(LootContextParams.DAMAGE_SOURCE, p.level().damageSources().playerAttack(p))
+				.withParameter(LootContextParams.LAST_DAMAGE_PLAYER, p).create(LootContextParamSets.ENTITY);
+			java.util.List<DungeonKeys.Data> keys = new java.util.ArrayList<>();
+			for (int i = 0; i < rolls; i++) {
+				for (ItemStack st : table.getRandomItems(params, p.getRandom())) {
+					DungeonKeys.Data d = DungeonKeys.read(st);
+					if (d != null) {
+						keys.add(d);
+					}
+				}
+			}
+			mob.discard();
+			return keys;
 		});
 	}
 
@@ -344,12 +414,63 @@ final class DungeonSuite {
 		c.check("rooms 2 to 11 (fighting rooms, Lieutenant, Boss) each woke, shut, and opened again (shapes " + shapes.toString().trim() + ")", allShapes);
 		DungeonRuns.Room reward = first(server).rooms().get(12);
 		c.check("every room is built by now", first(server).rooms().stream().allMatch(DungeonRuns.Room::built));
-		c.check("the Lieutenant and Boss rooms have a boss spot, the reward room four cache spots", first(server).rooms().get(7).boss().size() == 1
-			&& first(server).rooms().get(11).boss().size() == 1 && reward.caches().size() == 4 && reward.spawns().isEmpty());
+		c.check("the Lieutenant and Boss rooms have a boss spot, the reward room two chest spots", first(server).rooms().get(7).boss().size() == 1
+			&& first(server).rooms().get(11).boss().size() == 1 && reward.caches().size() == 2 && reward.spawns().isEmpty());
 		tpIn(server, reward.x() + 6.5, DungeonPlots.FLOOR_Y + 1, reward.centerZ() + 0.5);
 		ctx.waitTicks(25);
 		c.check("stepping into the reward room finishes the run's rooms", first(server).rooms().get(12).state() == DungeonRuns.Room.CLEARED);
 		ctx.takeScreenshot("dungeon_reward_room");
+
+		c.section("Caches, rewards and the next key");
+		DungeonRuns.Run all = first(server);
+		boolean everyCache = true;
+		for (int k = 1; k <= 11; k++) {
+			DungeonRuns.Room room = all.rooms().get(k);
+			BlockPos pos = room.caches().get(0);
+			everyCache &= block(server, pos.getX(), pos.getY(), pos.getZ(), st -> st.is(Blocks.CHEST));
+		}
+		c.check("a cache chest stands in every cleared fighting room", everyCache);
+		c.check("the loot level in a dungeon comes from the tier (18 at tier 2), and nowhere else",
+			server.computeOnServer(s -> dev.vestiges.dungeon.DungeonService.lootLevelAt(s.getLevel(DungeonService.DUNGEON), new Vec3(reward.x() + 3, 65, reward.centerZ()))) == 18
+				&& server.computeOnServer(s -> dev.vestiges.dungeon.DungeonService.lootLevelAt(s.overworld(), new Vec3(1, 65, 1))) == null);
+		java.util.List<ItemStack> cache1 = openChest(server, all.rooms().get(1).caches().get(0));
+		c.check("a fighting room's cache is one kind of theme block, 2 to 28 of it (the game may split it over slots)", cacheTotal(cache1, DungeonSuite::isCacheBlock) >= 1
+			&& cacheTotal(cache1, DungeonSuite::isCacheBlock) <= 28, String.valueOf(cache1));
+		java.util.List<ItemStack> again = openChest(server, all.rooms().get(1).caches().get(0));
+		c.check("opening it again gives the same copy", again != null && cache1 != null && ItemStack.listMatches(cache1, again), String.valueOf(again));
+		java.util.List<ItemStack> lieutenantChest = openChest(server, all.rooms().get(7).caches().get(0));
+		java.util.List<ItemStack> lieutenantBlocks = lieutenantChest == null ? null : lieutenantChest.stream().filter(DungeonSuite::isCacheBlock).toList();
+		c.check("the Lieutenant's chest has a theme cache and exactly one gear roll", lieutenantChest != null && cacheTotal(lieutenantBlocks, DungeonSuite::isCacheBlock) >= 1
+			&& lieutenantChest.size() - lieutenantBlocks.size() == 1, String.valueOf(lieutenantChest));
+		java.util.List<ItemStack> bossCache = openChest(server, all.rooms().get(11).caches().get(0));
+		c.check("the Boss room has a plain cache", cacheTotal(bossCache, DungeonSuite::isCacheBlock) >= 1, String.valueOf(bossCache));
+		java.util.List<ItemStack> prize = openChest(server, reward.caches().get(0));
+		int emeralds = prize == null ? 0 : prize.stream().filter(st -> st.is(Items.EMERALD)).mapToInt(ItemStack::getCount).sum();
+		long keys = prize == null ? 0 : prize.stream().filter(st -> DungeonKeys.read(st) != null).count();
+		long others = prize == null ? 0 : prize.stream().filter(st -> !st.is(Items.EMERALD) && DungeonKeys.read(st) == null).count();
+		c.check("the reward chest has 4 to 8 emeralds, exactly one key, 2 gear rolls and sometimes a book", emeralds >= 4 && emeralds <= 8 && keys == 1 && others >= 2 && others <= 3,
+			emeralds + " emeralds, " + keys + " keys, " + others + " other: " + prize);
+		DungeonKeys.Data nextKey = prize == null ? null : prize.stream().map(DungeonKeys::read).filter(java.util.Objects::nonNull).findFirst().orElse(null);
+		c.check("the next key is Overgrown, tier 1 to 4 (after tier 2: 15% / 55% / 25% / 5%)", nextKey != null && nextKey.theme().equals("overgrown")
+			&& nextKey.tier() >= 1 && nextKey.tier() <= 4, String.valueOf(nextKey));
+		java.util.List<ItemStack> prizeCache = openChest(server, reward.caches().get(1));
+		c.check("the reward room also holds a theme block cache", cacheTotal(prizeCache, DungeonSuite::isCacheBlock) >= 1, String.valueOf(prizeCache));
+
+		c.section("Elites and Warlords drop low keys");
+		java.util.List<DungeonKeys.Data> normal = rollKeyDrops(server, 0, 1500);
+		java.util.List<DungeonKeys.Data> elite = rollKeyDrops(server, 2, 3000);
+		java.util.List<DungeonKeys.Data> warlord = rollKeyDrops(server, 3, 1500);
+		c.note("keys in 3000 elite rolls: " + elite.size() + " (2%), in 1500 warlord rolls: " + warlord.size() + " (8%)");
+		c.check("an ordinary monster never drops a key", normal.isEmpty(), String.valueOf(normal.size()));
+		c.check("an Elite drops one about 2% of the time", elite.size() >= 30 && elite.size() <= 100, String.valueOf(elite.size()));
+		c.check("a Warlord drops one about 8% of the time", warlord.size() >= 80 && warlord.size() <= 170, String.valueOf(warlord.size()));
+		c.check("they are Overgrown keys of tier 1 to 3, all three tiers turn up", java.util.stream.Stream.concat(elite.stream(), warlord.stream())
+			.allMatch(d -> d.theme().equals("overgrown") && d.tier() >= 1 && d.tier() <= 3) && warlord.stream().map(DungeonKeys.Data::tier).distinct().count() == 3);
+		server.runCommand("vestiges config system dungeons false");
+		ctx.waitTicks(5);
+		c.check("with the Dungeons switch off no key drops", rollKeyDrops(server, 3, 1500).isEmpty());
+		server.runCommand("vestiges config system dungeons true");
+		ctx.waitTicks(5);
 
 		c.section("The walls are unbreakable");
 		server.runCommand("gamemode survival @p");
@@ -431,6 +552,46 @@ final class DungeonSuite {
 		server.runCommand("execute in minecraft:overworld run tp @p " + feet.getX() + " " + feet.getY() + " " + feet.getZ());
 		ctx.waitTicks(40);
 		c.check("walking out by command ends the run", !inDungeon(server) && runs(server).runs().isEmpty());
+
+		c.section("Lives: dying and falling out of the world");
+		server.runCommand("clear @p");
+		backToPad(ctx, server, feet);
+		useKey(server, "overgrown", 1, tuffBlock);
+		ctx.waitTicks(60);
+		server.runCommand("give @p diamond 3");
+		DungeonRuns.Run livesRun = first(server);
+		c.check("a new run (tier 1) starts with 3 lives", inDungeon(server) && livesRun != null && livesRun.party().get(0).lives() == 3);
+		if (livesRun != null) {
+			DungeonRuns.Room s1 = livesRun.rooms().get(0);
+			GraveList graves0 = server.computeOnServer(s -> s.overworld().getAttached(GraveService.GRAVES));
+			int graveCount = graves0 == null ? 0 : graves0.graves().size();
+			tpIn(server, livesRun.rooms().get(1).x() + 5.5, DungeonPlots.FLOOR_Y + 1, livesRun.rooms().get(1).centerZ() + 0.5);
+			ctx.waitTicks(10);
+			server.runCommand("kill @p");
+			ctx.waitTicks(30);
+			DungeonRuns.Member afterDeath = first(server) == null ? null : first(server).party().get(0);
+			Vec3 pos = server.computeOnServer(s -> player(s).position());
+			boolean healed = server.computeOnServer(s -> player(s).isAlive() && player(s).getHealth() >= player(s).getMaxHealth() - 0.5f);
+			c.check("dying in a dungeon costs a life, not the run (2 left)", inDungeon(server) && afterDeath != null && afterDeath.lives() == 2 && !afterDeath.out());
+			c.check("the player is alive with full health, back in the start room", healed && pos.x >= s1.x() && pos.x < s1.x() + s1.size() && Math.abs(pos.z - s1.centerZ()) < 16, pos.toString());
+			c.check("with their things (no gravestone, nothing dropped)", count(server, Items.DIAMOND) == 3 && server.computeOnServer(s -> {
+				GraveList g = s.overworld().getAttached(GraveService.GRAVES);
+				return (g == null ? 0 : g.graves().size()) == graveCount;
+			}));
+			tpIn(server, s1.x() + 8.5, 20.0, s1.centerZ() + 0.5);
+			ctx.waitTicks(40);
+			DungeonRuns.Member afterFall = first(server) == null ? null : first(server).party().get(0);
+			Vec3 pos2 = server.computeOnServer(s -> player(s).position());
+			c.check("falling out of the world costs a life too (1 left) and puts the player back in the start room",
+				inDungeon(server) && afterFall != null && afterFall.lives() == 1 && pos2.y > DungeonPlots.FLOOR_Y && pos2.x >= s1.x() && pos2.x < s1.x() + s1.size(),
+				String.valueOf(afterFall) + " " + pos2);
+			server.runCommand("kill @p");
+			ctx.waitTicks(40);
+			c.check("with no life left the player is sent home with their things", !inDungeon(server) && count(server, Items.DIAMOND) == 3
+				&& server.computeOnServer(s -> player(s).isAlive() && player(s).level().dimension().equals(net.minecraft.world.level.Level.OVERWORLD)));
+			c.check("and the run is over (everyone is out)", runs(server).runs().isEmpty() && runs(server).isClearing(livesRun.plot()), runs(server).toString());
+		}
+		server.runCommand("clear @p");
 
 		c.section("The First Key feat");
 		server.runCommand("clear @p");
