@@ -1,0 +1,135 @@
+{
+  "type": "minecraft:add",
+  "left": {
+    "type": "minecraft:min",
+    "left": {
+      "type": "minecraft:squeeze",
+      "input": {
+        "type": "minecraft:interpolated",
+        "cell_size_xz": 4,
+        "cell_size_y": 8,
+        "input": {
+          "type": "minecraft:mul",
+          "left": {
+            "type": "minecraft:blend_density",
+            "input": {
+              "type": "minecraft:lerp",
+              "alpha": {
+                "type": "minecraft:gradient",
+                "axis": "y",
+                "from_coordinate": -64,
+                "from_value": 0.0,
+                "to_coordinate": -40,
+                "to_value": 1.0
+              },
+              "first": 0.1171875,
+              "second": {
+                "type": "minecraft:lerp",
+                "alpha": {
+                  "type": "minecraft:gradient",
+                  "axis": "y",
+                  "from_coordinate": 304,
+                  "from_value": 1.0,
+                  "to_coordinate": 320,
+                  "to_value": 0.0
+                },
+                "first": -0.078125,
+                "second": {
+                  "type": "minecraft:range_choice",
+                  "input": "vestiges:trenec/sloped_cheese",
+                  "max_exclusive": 1.5625,
+                  "min_inclusive": -1000000.0,
+                  "when_in_range": {
+                    "type": "minecraft:min",
+                    "left": "vestiges:trenec/sloped_cheese",
+                    "right": {
+                      "type": "minecraft:mul",
+                      "left": "vestiges:trenec/caves/entrances",
+                      "right": 5.0
+                    }
+                  },
+                  "when_out_of_range": {
+                    "type": "minecraft:max",
+                    "left": {
+                      "type": "minecraft:min",
+                      "left": {
+                        "type": "minecraft:min",
+                        "left": {
+                          "type": "minecraft:add",
+                          "left": {
+                            "type": "minecraft:mul",
+                            "left": {
+                              "type": "minecraft:square",
+                              "input": {
+                                "type": "minecraft:noise",
+                                "noise": "minecraft:cave_layer",
+                                "xz_scale": 0.7,
+                                "y_scale": 5.6
+                              }
+                            },
+                            "right": 4.0
+                          },
+                          "right": {
+                            "type": "minecraft:add",
+                            "left": {
+                              "type": "minecraft:clamp",
+                              "input": {
+                                "type": "minecraft:add",
+                                "left": {
+                                  "type": "minecraft:noise",
+                                  "noise": "minecraft:cave_cheese",
+                                  "xz_scale": 0.7,
+                                  "y_scale": 0.4666666666666666
+                                },
+                                "right": 0.27
+                              },
+                              "max": 1.0,
+                              "min": -1.0
+                            },
+                            "right": {
+                              "type": "minecraft:clamp",
+                              "input": {
+                                "type": "minecraft:add",
+                                "left": {
+                                  "type": "minecraft:mul",
+                                  "left": "vestiges:trenec/sloped_cheese",
+                                  "right": -0.64
+                                },
+                                "right": 1.5
+                              },
+                              "max": 0.5,
+                              "min": 0.0
+                            }
+                          }
+                        },
+                        "right": "vestiges:trenec/caves/entrances"
+                      },
+                      "right": {
+                        "type": "minecraft:add",
+                        "left": "vestiges:trenec/caves/spaghetti_2d",
+                        "right": "vestiges:trenec/caves/spaghetti_roughness_function"
+                      }
+                    },
+                    "right": {
+                      "type": "minecraft:range_choice",
+                      "input": "vestiges:trenec/caves/pillars",
+                      "max_exclusive": 0.03,
+                      "min_inclusive": -1000000.0,
+                      "when_in_range": -1000000.0,
+                      "when_out_of_range": "vestiges:trenec/caves/pillars"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "right": 0.64
+        }
+      }
+    },
+    "right": "vestiges:trenec/caves/noodle"
+  },
+  "right": {
+    "type": "minecraft:beardifier"
+  }
+}

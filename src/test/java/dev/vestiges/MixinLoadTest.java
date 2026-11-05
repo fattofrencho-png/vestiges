@@ -52,6 +52,7 @@ class MixinLoadTest {
 		"net.minecraft.world.level.block.CakeBlock",
 		"net.minecraft.world.food.FoodProperties",
 		"net.minecraft.world.entity.SpawnPlacements",
+		"net.minecraft.world.level.ServerExplosion",
 		"net.minecraft.world.level.block.state.BlockBehaviour$BlockStateBase");
 	/** Client screens and HUD, checked when the tests run as a client. */
 	private static final List<String> CLIENT_TARGETS = List.of(

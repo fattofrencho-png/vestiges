@@ -88,7 +88,11 @@ public final class CodexService {
 			sendSnapshot(handler.player);
 		}));
 		ServerPlayNetworking.registerGlobalReceiver(dev.vestiges.net.CodexPayloads.Request.TYPE,
-			(payload, ctx) -> ctx.server().execute(() -> sendSnapshot(ctx.player())));
+			(payload, ctx) -> ctx.server().execute(() -> {
+				if (dev.vestiges.server.RequestLimit.allow(ctx.player(), "codex")) {
+					sendSnapshot(ctx.player());
+				}
+			}));
 	}
 
 	private static boolean counts(ServerPlayer p) {

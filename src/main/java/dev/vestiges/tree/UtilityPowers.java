@@ -202,7 +202,7 @@ public final class UtilityPowers {
 				if (p.getMainHandItem() != tool || (tool.isDamageableItem() && tool.getMaxDamage() - tool.getDamageValue() <= 1)) {
 					return;
 				}
-				if (level.getBlockEntity(n) != null || !level.mayInteract(p, n)) {
+				if (level.getBlockEntity(n) != null || !mayChange(p, level, n)) {
 					continue;
 				}
 				p.gameMode.destroyBlock(n);
@@ -297,7 +297,7 @@ public final class UtilityPowers {
 			for (int dz = -r; dz <= r; dz++) {
 				BlockPos n = pos.offset(dx, 0, dz);
 				BlockState ns = level.getBlockState(n);
-				if (n.equals(pos) || !TreeDrops.isRipeCrop(ns) || !level.mayInteract(p, n)) {
+				if (n.equals(pos) || !TreeDrops.isRipeCrop(ns) || !mayChange(p, level, n)) {
 					continue;
 				}
 				Item seed = ns.getBlock().asItem();
@@ -340,6 +340,18 @@ public final class UtilityPowers {
 		return ripe.getBlock().defaultBlockState();
 	}
 
+	/** Area powers obey the same rules as a single use: vanilla's spawn protection and settlements. */
+	private static boolean mayChange(ServerPlayer p, ServerLevel level, BlockPos n) {
+		return level.mayInteract(p, n) && dev.vestiges.settlement.SettlementService.lockedFor(p, level, n) == null;
+	}
+
+	/** Whether right-clicking this block with this tool would change it (tilling, making a path, stripping a log). */
+	public static boolean toolChanges(ItemStack tool, BlockState state) {
+		return tool.is(ItemTags.HOES) && TILLABLE.contains(state.getBlock())
+			|| tool.is(ItemTags.SHOVELS) && FLATTENABLE.contains(state.getBlock())
+			|| tool.is(ItemTags.AXES) && state.is(BlockTags.LOGS);
+	}
+
 	// ---- using tools on blocks ---------------------------------------------------------------------------------------
 
 	private static void onUseBlock(ServerPlayer p, ServerLevel level, InteractionHand hand, BlockPos pos) {
@@ -360,7 +372,7 @@ public final class UtilityPowers {
 					for (int dz = -r; dz <= r; dz++) {
 						BlockPos n = pos.offset(dx, 0, dz);
 						if (tool.isEmpty() || !TILLABLE.contains(level.getBlockState(n).getBlock()) || !level.getBlockState(n.above()).isAir()
-							|| !level.mayInteract(p, n)) {
+							|| !mayChange(p, level, n)) {
 							continue;
 						}
 						level.setBlockAndUpdate(n, Blocks.FARMLAND.defaultBlockState());
@@ -379,7 +391,7 @@ public final class UtilityPowers {
 					for (Direction d : new Direction[] {facing.getClockWise(), facing.getCounterClockWise()}) {
 						BlockPos n = pos.relative(d, i);
 						if (tool.isEmpty() || !FLATTENABLE.contains(level.getBlockState(n).getBlock()) || !level.getBlockState(n.above()).isAir()
-							|| !level.mayInteract(p, n)) {
+							|| !mayChange(p, level, n)) {
 							continue;
 						}
 						level.setBlockAndUpdate(n, Blocks.DIRT_PATH.defaultBlockState());
@@ -399,7 +411,7 @@ public final class UtilityPowers {
 					return;
 				}
 				for (BlockPos n : connected(level, pos, b -> b.is(log), limit - 1, false)) {
-					if (tool.isEmpty() || !level.mayInteract(p, n)) {
+					if (tool.isEmpty() || !mayChange(p, level, n)) {
 						break;
 					}
 					BlockState old = level.getBlockState(n);

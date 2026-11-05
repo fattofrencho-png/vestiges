@@ -1,5 +1,5 @@
 # Vestiges (RPG Mod) — Design Log
-*Every topic below was agreed with you one at a time. Approving this starts with the tree review page; no code is written until you sign off on the tree.*
+*Every topic below was agreed with you one at a time.*
 
 ## ▶ Current plan: the new ideas (2026-10-30)
 
@@ -957,7 +957,7 @@ You sent about 60 new ideas. Your goal has grown: this becomes your all-in-one m
   - **Marker items:** vanilla blocks with a name, glint and tooltip (like the Waystone); Banners can take loom patterns and stay markers.
   - **Names:** the settlement is named once when its Bell finishes setting up; each Banner's area once when placed; no renaming after.
   - **Members:** the owner adds players in the Settlements tab; members share the settlement's block and biome Codex progress (highest count wins).
-  - **Land protection (user):** inside a settlement, players who are not members can open doors but cannot break anything or take things from player-placed chests and containers.
+  - **Land protection (user):** inside a settlement, players who are not members can open doors but cannot break anything or take things from player-placed chests and containers. **Added with the review plan (2026-11-01):** this also covers placing from just outside the border, harvesting, and tilling, path-making and stripping. Explosions can't damage a settlement unless a member caused them; mobs' explosions stay under the griefing switch.
   - **Setting-up bar** at the top of the screen ("Setting up settlement 6:12") for the owner nearby.
   - **Renown updates every 10 minutes (user)** while the area is loaded; the Settlements tab shows the 5 scores, level, members and markers against the limits.
   - **Building XP:** 5 XP per new renown point (only the settlement's highest total ever counts).

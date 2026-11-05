@@ -16,6 +16,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "25"
+          cache: gradle
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -23,6 +24,20 @@ jobs:
       # Compiles the mod, runs the JUnit suite (src/test) and produces the jar: the same command a local `dev build` runs.
       - name: Build and test
         run: ./gradlew build --no-daemon
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      # Fails if generated files were edited by hand or a generator was changed without running it. Runs after Gradle: build_worldgen.py reads the game jar.
+      - name: Check generated files
+        run: |
+          python tools/build_loot.py
+          python tools/build_codex.py
+          python tools/build_worldgen.py
+          git status --porcelain -- src/main/resources/data
+          test -z "$(git status --porcelain -- src/main/resources/data)"
 
       - name: Upload jar
         uses: actions/upload-artifact@v4

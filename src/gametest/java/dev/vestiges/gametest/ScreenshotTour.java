@@ -58,6 +58,18 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		if (System.getenv("VESTIGES_SUITE") != null) {
 			return;
 		}
+		if ("capital".equals(System.getenv("VESTIGES_TOUR"))) {
+			WorldTour.capital(ctx);
+			return;
+		}
+		if ("world".equals(System.getenv("VESTIGES_TOUR"))) {
+			WorldTour.run(ctx);
+			return;
+		}
+		if ("protection".equals(System.getenv("VESTIGES_TOUR"))) {
+			ProtectionCheck.run(ctx);
+			return;
+		}
 		boolean off = "off".equals(System.getenv("VESTIGES_TOUR"));
 		ctx.getInput().resizeWindow(1920, 1080);
 		ctx.runOnClient(mc -> mc.options.getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource.MASTER).set(0.0));
