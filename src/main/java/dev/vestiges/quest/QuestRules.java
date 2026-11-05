@@ -35,25 +35,57 @@ public final class QuestRules {
 	/** Every step type the game can run. Escorts come with villagers (M6). */
 	public static final Set<String> STEP_TYPES = Set.of("enchant", "breed", "fish", "craft", "use", "kill", "mine", "harvest", "structure", "biome", "new_biome", "waypoint",
 		"go_there", "waystone_trip", "talk", "level", "codex", "fight_points", "craft_points", "rarity", "wear", "rack_tool", "rack_weapon", "hold_tool", "hold_weapon", "belt",
-		"bank", "ascended", "familiar", "bestiary", "feat", "renown", "named_settlement", "ward", "bring", "choice");
+		"bank", "ascended", "familiar", "bestiary", "feat", "renown", "named_settlement", "ward", "bring", "choice",
+			"hub_open", "track_quest", "table_slot", "grid_craft", "loot_chest", "trade", "kill_high_level", "kill_rank", "kill_power", "stat", "advancement");
 
 	private QuestRules() {
 	}
 
-	/** The feature a step type can't work without, or null. A quest with such a step isn't offered while that feature is off. */
+	/**
+	 * The feature a step type can't work without, or null. A quest with such a step isn't offered while that feature is off. Also names the
+	 * feature of step types that are planned but not built yet, so the quest kind (vanilla, mod, feature) is already right for them.
+	 */
 	public static VestigesSystem needs(String stepType) {
 		return switch (stepType) {
 			case "level" -> VestigesSystem.CHARACTER;
-			case "fight_points", "craft_points", "ascended" -> VestigesSystem.PASSIVE_TREE;
-			case "rarity" -> VestigesSystem.GEAR;
-			case "codex", "familiar", "bestiary" -> VestigesSystem.CODEX;
-			case "harvest" -> VestigesSystem.FARMING;
-			case "feat" -> VestigesSystem.FEATS;
-			case "renown", "named_settlement", "ward" -> VestigesSystem.SETTLEMENTS;
+			case "fight_points", "craft_points", "ascended", "trees_open", "ascendancy_points", "ascension_counter" -> VestigesSystem.PASSIVE_TREE;
+			case "rarity", "craft_rarity", "trim_set" -> VestigesSystem.GEAR;
+			case "codex", "familiar", "bestiary", "codex_open", "codex_section" -> VestigesSystem.CODEX;
+			case "harvest", "meal_buff" -> VestigesSystem.FARMING;
+			case "feat", "feats_open", "feat_follow" -> VestigesSystem.FEATS;
+			case "renown", "named_settlement", "ward", "settlements_open", "area_blocks", "area_beds", "area_kinds" -> VestigesSystem.SETTLEMENTS;
 			case "waystone_trip" -> VestigesSystem.WAYSTONES;
 			case "new_biome", "structure" -> VestigesSystem.CHARACTER;
+			case "kill_high_level" -> VestigesSystem.MOB_SCALING;
+			case "kill_rank", "kill_power", "encounter" -> VestigesSystem.ELITES;
+			case "villager_meet", "villager_about" -> VestigesSystem.VILLAGERS;
+			case "dungeon_enter", "dungeon_boss", "dungeon_reward" -> VestigesSystem.DUNGEONS;
+			case "end_enter", "dragon_summon", "dragon_kill" -> VestigesSystem.DRAGONS;
 			default -> null;
 		};
+	}
+
+	/** The price tier of a player level (what villagers charge, x1 / 2 / 4 / 8 / 12): quest emeralds, written for levels 1-9, are multiplied by it. */
+	public static int priceTier(int level) {
+		if (level >= 75) {
+			return 12;
+		}
+		if (level >= 50) {
+			return 8;
+		}
+		if (level >= 25) {
+			return 4;
+		}
+		return level >= 10 ? 2 : 1;
+	}
+
+	/** Whether a level gap ("5") is at least the one a step asks for ("3"). */
+	public static boolean atLeast(String gap, String wanted) {
+		try {
+			return Integer.parseInt(gap) >= Integer.parseInt(wanted);
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 
 	/** A goal on comeback {@code step} (1 = the first time): 50% more per comeback. */
@@ -67,8 +99,15 @@ public final class QuestRules {
 		return side && step > 1 ? Math.round(used * levelNeed) : flat + Math.round(used * levelNeed);
 	}
 
+	/** The emeralds a quest pays at levels 1-9: side quests pay less from their first comeback. */
 	public static int emeralds(int base, boolean side, int step) {
 		return side && step > 1 ? Math.max(1, Math.min(3, base / 4)) : base;
+	}
+
+	/** The emeralds paid to a player of {@code level}: the base amount times their price tier. Pays nothing when the quest pays nothing. */
+	public static int emeralds(int base, boolean side, int step, int level) {
+		int amount = emeralds(base, side, step);
+		return base <= 0 ? 0 : amount * priceTier(level);
 	}
 
 	/** Whether a finished side quest may be offered again. */

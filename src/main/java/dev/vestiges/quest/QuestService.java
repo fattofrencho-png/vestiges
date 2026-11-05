@@ -16,6 +16,8 @@ import dev.vestiges.gear.Rarity;
 import dev.vestiges.inventory.ExtraHolder;
 import dev.vestiges.inventory.ExtraSlots;
 import dev.vestiges.level.LevelService;
+import dev.vestiges.loot.LootGear;
+import dev.vestiges.loot.LootLevels;
 import dev.vestiges.mobs.MobData;
 import dev.vestiges.mobs.MobService;
 import dev.vestiges.net.QuestPayloads;
@@ -73,10 +75,13 @@ public final class QuestService {
 	public static final AttachmentType<QuestState> STATE = AttachmentRegistry.create(Vestiges.id("quests"),
 		b -> b.persistent(QuestState.CODEC).copyOnDeath());
 	private static final String NOTE_KEY = "vestiges_quest";
-	private static final Set<String> STAT_TYPES = Set.of("enchant", "breed", "fish", "craft", "use");
-	private static final Set<String> EVENT_TYPES = Set.of("kill", "mine", "harvest", "structure", "biome", "waypoint", "go_there", "waystone_trip", "talk", "new_biome");
+	private static final Set<String> STAT_TYPES = Set.of("enchant", "breed", "fish", "craft", "use", "trade", "stat");
+	/** The kinds a generic {@code stat} step names before the id ("mined:minecraft:stone"); no kind means a custom statistic ("minecraft:walk_one_cm"). */
+	private static final Set<String> STAT_KINDS = Set.of("custom", "mined", "crafted", "used", "broken", "picked_up", "dropped", "killed", "killed_by");
+	private static final Set<String> EVENT_TYPES = Set.of("kill", "mine", "harvest", "structure", "biome", "waypoint", "go_there", "waystone_trip", "talk", "new_biome",
+		"hub_open", "track_quest", "grid_craft", "loot_chest", "kill_high_level", "kill_rank", "kill_power");
 	private static final Set<String> STATE_TYPES = Set.of("level", "codex", "fight_points", "craft_points", "rarity", "wear", "rack_tool", "rack_weapon", "hold_tool", "hold_weapon",
-		"belt", "bank", "ascended", "familiar", "bestiary", "feat", "renown", "named_settlement", "ward");
+		"belt", "bank", "ascended", "familiar", "bestiary", "feat", "renown", "named_settlement", "ward", "table_slot", "advancement");
 	/** Offers a player has seen and may still accept: quest id to the villager who offered it, "" for a note. Not saved. */
 	private static final Map<UUID, Map<String, String>> OFFERS = new HashMap<>();
 	/** The last tracker text sent per player, so an unchanged one isn't sent again. Not saved. */
@@ -209,15 +214,21 @@ public final class QuestService {
 			st = st.earned(r.title());
 		}
 		p.setAttached(STATE, st);
-		long xp = QuestRules.xp(r.xp(), r.share(), LevelService.get(p).need(), d.side(), a.comeback());
-		long gained = xp > 0 ? LevelService.addXp(p, xp, "quest") : 0;
-		int emeralds = QuestRules.emeralds(r.emeralds(), d.side(), a.comeback());
+		long xp = QuestRules.xp(r.xp(), r.share(), levelNeed(p), d.side(), a.comeback());
+		long gained = xp > 0 ? payXp(p, xp) : 0;
+		int emeralds = emeralds(p, d, a.comeback());
 		if (emeralds > 0) {
 			give(p, new ItemStack(Items.EMERALD, emeralds));
 		}
 		if (a.comeback() == 1) {
 			for (String item : r.items()) {
 				give(p, stack(item));
+			}
+			if (!r.gear().isEmpty()) {
+				give(p, gearPiece(p, r.gear()));
+			}
+			if (r.refunds() > 0 && ConfigStore.server().enabled(VestigesSystem.PASSIVE_TREE)) {
+				TreeService.addFreeRefunds(p, r.refunds());
 			}
 		}
 		checkAllGuides(p);
@@ -229,6 +240,32 @@ public final class QuestService {
 		o.addProperty("quest", true);
 		LevelService.notice(p, "feat", o);
 		MapNet.message(p, "Quest done: " + d.name(), false);
+	}
+
+	/** One piece of gear of the asked rarity, in the band of the player's loot level (the same builder as found loot). */
+	private static ItemStack gearPiece(ServerPlayer p, String rarity) {
+		Rarity.Tier tier = Rarity.Tier.valueOf(rarity.toUpperCase(java.util.Locale.ROOT));
+		return LootGear.build(p.level(), p.getRandom(), LootLevels.forPlayer(p, p.position()), false, tier, tier);
+	}
+
+	/** What a share of XP is taken from: the Levels need, or with Levels off the player's next vanilla level. */
+	private static long levelNeed(ServerPlayer p) {
+		return LevelService.enabled() ? LevelService.get(p).need() : p.getXpNeededForNextLevel();
+	}
+
+	/** Pays quest XP as Levels XP, or as vanilla XP when Levels are off (vanilla quests must work without the mod's core). Returns what was paid. */
+	private static long payXp(ServerPlayer p, long xp) {
+		if (LevelService.enabled()) {
+			return LevelService.addXp(p, xp, "quest");
+		}
+		p.giveExperiencePoints((int) Math.min(xp, Integer.MAX_VALUE));
+		return xp;
+	}
+
+	/** The emeralds a quest pays this player: written for levels 1-9, times their price tier. With Levels off there is no tier. */
+	private static int emeralds(ServerPlayer p, QuestDef d, int comeback) {
+		int level = LevelService.enabled() ? LevelService.get(p).level() : 1;
+		return QuestRules.emeralds(d.reward().emeralds(), d.side(), comeback, level);
 	}
 
 	/** Finishing every guide quest gives its own title. */
@@ -312,8 +349,52 @@ public final class QuestService {
 			case "fish" -> stats.getValue(Stats.CUSTOM.get(Stats.FISH_CAUGHT));
 			case "craft" -> stats.getValue(Stats.ITEM_CRAFTED.get(item));
 			case "use" -> stats.getValue(Stats.ITEM_USED.get(item));
+			case "trade" -> stats.getValue(Stats.CUSTOM.get(Stats.TRADED_WITH_VILLAGER));
+			case "stat" -> statValue(p, pick(s, a));
 			default -> 0;
 		};
+	}
+
+	/**
+	 * Any vanilla statistic by id, for the generic {@code stat} step: "kind:id" with a kind from {@link #STAT_KINDS}, or just an id for a custom
+	 * statistic. Distances ("..._one_cm") count in blocks. An id that doesn't exist counts 0.
+	 */
+	static long statValue(ServerPlayer p, String target) {
+		String kind = "custom";
+		String id = target;
+		for (String k : STAT_KINDS) {
+			if (target.startsWith(k + ":")) {
+				kind = k;
+				id = target.substring(k.length() + 1);
+				break;
+			}
+		}
+		Identifier key = Identifier.tryParse(id);
+		if (key == null) {
+			return 0;
+		}
+		var stats = p.getStats();
+		return switch (kind) {
+			case "mined" -> BuiltInRegistries.BLOCK.containsKey(key) ? stats.getValue(Stats.BLOCK_MINED.get(BuiltInRegistries.BLOCK.getValue(key))) : 0;
+			case "crafted" -> BuiltInRegistries.ITEM.containsKey(key) ? stats.getValue(Stats.ITEM_CRAFTED.get(BuiltInRegistries.ITEM.getValue(key))) : 0;
+			case "used" -> BuiltInRegistries.ITEM.containsKey(key) ? stats.getValue(Stats.ITEM_USED.get(BuiltInRegistries.ITEM.getValue(key))) : 0;
+			case "broken" -> BuiltInRegistries.ITEM.containsKey(key) ? stats.getValue(Stats.ITEM_BROKEN.get(BuiltInRegistries.ITEM.getValue(key))) : 0;
+			case "picked_up" -> BuiltInRegistries.ITEM.containsKey(key) ? stats.getValue(Stats.ITEM_PICKED_UP.get(BuiltInRegistries.ITEM.getValue(key))) : 0;
+			case "dropped" -> BuiltInRegistries.ITEM.containsKey(key) ? stats.getValue(Stats.ITEM_DROPPED.get(BuiltInRegistries.ITEM.getValue(key))) : 0;
+			case "killed" -> BuiltInRegistries.ENTITY_TYPE.containsKey(key) ? stats.getValue(Stats.ENTITY_KILLED.get(BuiltInRegistries.ENTITY_TYPE.getValue(key))) : 0;
+			case "killed_by" -> BuiltInRegistries.ENTITY_TYPE.containsKey(key) ? stats.getValue(Stats.ENTITY_KILLED_BY.get(BuiltInRegistries.ENTITY_TYPE.getValue(key))) : 0;
+			default -> {
+				long raw = BuiltInRegistries.CUSTOM_STAT.containsKey(key) ? stats.getValue(Stats.CUSTOM.get(key)) : 0;
+				yield key.getPath().endsWith("_one_cm") ? raw / 100 : raw;
+			}
+		};
+	}
+
+	/** Whether the player has a vanilla advancement, for the generic {@code advancement} step (0 or 1). */
+	private static int advancement(ServerPlayer p, String id) {
+		Identifier key = Identifier.tryParse(id);
+		var holder = key == null ? null : p.level().getServer().getAdvancements().get(key);
+		return holder != null && p.getAdvancements().getOrStartProgress(holder).isDone() ? 1 : 0;
 	}
 
 	private static long value(ServerPlayer p, QuestDef.Step s, QuestState.Active a) {
@@ -339,6 +420,8 @@ public final class QuestService {
 			case "renown" -> SettlementService.bestOwnedLevel(p);
 			case "named_settlement" -> namedSettlements(p);
 			case "ward" -> wards(p);
+			case "table_slot" -> ((ExtraHolder) p).vestiges$slots().hasTable() ? 1 : 0;
+			case "advancement" -> advancement(p, target);
 			default -> 0;
 		};
 	}
@@ -455,6 +538,26 @@ public final class QuestService {
 		}
 		MobData mob = MobService.data(dead);
 		event(killer, "kill", EntityType.getKey(dead.getType()).toString(), mob != null && mob.elite() ? 2 : 1);
+		if (mob != null) {
+			if (mob.rank() > MobData.NORMAL) {
+				event(killer, "kill_rank", rankName(mob.rank()), 1);
+			}
+			for (String power : mob.powers()) {
+				event(killer, "kill_power", power, 1);
+			}
+			int gap = mob.level() - LevelService.get(killer).level();
+			if (gap > 0) {
+				event(killer, "kill_high_level", String.valueOf(gap), 1);
+			}
+		}
+	}
+
+	private static String rankName(int rank) {
+		return switch (rank) {
+			case MobData.CHAMPION -> "champion";
+			case MobData.ELITE -> "elite";
+			default -> "warlord";
+		};
 	}
 
 	/**
@@ -466,7 +569,7 @@ public final class QuestService {
 			return;
 		}
 		apply(p, type, target, amount);
-		if ("kill".equals(type) || "mine".equals(type) || "harvest".equals(type)) {
+		if ("kill".equals(type) || "mine".equals(type) || "harvest".equals(type) || "kill_rank".equals(type) || "kill_power".equals(type)) {
 			for (ServerPlayer other : p.level().getServer().getPlayerList().getPlayers()) {
 				if (other != p && other.level() == p.level() && other.distanceTo(p) <= QuestRules.SHARE_RADIUS) {
 					apply(other, type, target, amount);
@@ -488,7 +591,8 @@ public final class QuestService {
 			}
 			String wanted = pick(s, a);
 			boolean elite = "kill".equals(type) && amount == 2;
-			boolean match = "kill".equals(type) && wantsElite(s, a) ? elite : wanted.isEmpty() || "any".equals(wanted) || wanted.equals(target);
+			boolean match = "kill".equals(type) && wantsElite(s, a) ? elite : wanted.isEmpty() || "any".equals(wanted) || wanted.equals(target)
+					|| "kill_high_level".equals(type) && QuestRules.atLeast(target, wanted);
 			if (match) {
 				setActive(p, e.getKey(), a.counted(a.count() + 1));
 			}
@@ -567,6 +671,7 @@ public final class QuestService {
 			case "track" -> {
 				if (get(p).active().containsKey(a.id())) {
 					p.setAttached(STATE, get(p).tracking(a.id()));
+					event(p, "track_quest", a.id(), 1);
 				}
 			}
 			case "hand_in" -> handIn(p, a.id());
@@ -577,7 +682,7 @@ public final class QuestService {
 				}
 			}
 			case "event" -> {
-				if ("waypoint".equals(a.id()) || "go_there".equals(a.id())) {
+				if ("waypoint".equals(a.id()) || "go_there".equals(a.id()) || "hub_open".equals(a.id())) {
 					event(p, a.id(), "", 1);
 				}
 			}
@@ -813,11 +918,11 @@ public final class QuestService {
 	private static String rewardText(ServerPlayer p, QuestDef d, int comeback) {
 		QuestDef.Reward r = d.reward();
 		List<String> parts = new ArrayList<>();
-		long xp = QuestRules.xp(r.xp(), r.share(), LevelService.get(p).need(), d.side(), comeback);
+		long xp = QuestRules.xp(r.xp(), r.share(), levelNeed(p), d.side(), comeback);
 		if (xp > 0) {
 			parts.add(xp + " XP");
 		}
-		int emeralds = QuestRules.emeralds(r.emeralds(), d.side(), comeback);
+		int emeralds = emeralds(p, d, comeback);
 		if (emeralds > 0) {
 			parts.add(emeralds + " emeralds");
 		}
@@ -825,6 +930,12 @@ public final class QuestService {
 			for (String item : r.items()) {
 				ItemStack stack = stack(item);
 				parts.add(stack.getCount() + " " + stack.getHoverName().getString());
+			}
+			if (!r.gear().isEmpty()) {
+				parts.add("1 " + r.gear() + " piece of gear");
+			}
+			if (r.refunds() > 0 && ConfigStore.server().enabled(VestigesSystem.PASSIVE_TREE)) {
+				parts.add(r.refunds() + " free tree refund" + (r.refunds() == 1 ? "" : "s"));
 			}
 			if (!r.title().isEmpty()) {
 				parts.add("Title: " + r.title());

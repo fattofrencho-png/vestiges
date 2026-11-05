@@ -124,4 +124,63 @@ class QuestTest {
 		assertEquals("", s.tracked());
 		assertFalse(s.reset("q").done("q"));
 	}
+
+	@Test
+	void emeraldsFollowThePriceTier() {
+		assertEquals(1, QuestRules.priceTier(1));
+		assertEquals(1, QuestRules.priceTier(9));
+		assertEquals(2, QuestRules.priceTier(10));
+		assertEquals(2, QuestRules.priceTier(24));
+		assertEquals(4, QuestRules.priceTier(25));
+		assertEquals(4, QuestRules.priceTier(49));
+		assertEquals(8, QuestRules.priceTier(50));
+		assertEquals(8, QuestRules.priceTier(74));
+		assertEquals(12, QuestRules.priceTier(75));
+		assertEquals(12, QuestRules.priceTier(100));
+		assertEquals(30, QuestRules.emeralds(30, false, 1, 9));
+		assertEquals(360, QuestRules.emeralds(30, false, 1, 80));
+		assertEquals(12, QuestRules.emeralds(12, false, 1, 1));
+		assertEquals(24, QuestRules.emeralds(12, false, 1, 10));
+		// A side quest's comeback pays the small amount, scaled the same way.
+		assertEquals(2 * 4, QuestRules.emeralds(8, true, 2, 30));
+		assertEquals(0, QuestRules.emeralds(0, true, 2, 80));
+	}
+
+	@Test
+	void everyNewStepNamesItsFeature() {
+		assertEquals(null, QuestRules.needs("stat"));
+		assertEquals(null, QuestRules.needs("advancement"));
+		assertEquals(null, QuestRules.needs("trade"));
+		assertEquals(null, QuestRules.needs("loot_chest"));
+		assertEquals(null, QuestRules.needs("hub_open"));
+		assertEquals(null, QuestRules.needs("track_quest"));
+		assertEquals(null, QuestRules.needs("table_slot"));
+		assertEquals(null, QuestRules.needs("grid_craft"));
+		assertEquals(dev.vestiges.config.VestigesSystem.MOB_SCALING, QuestRules.needs("kill_high_level"));
+		assertEquals(dev.vestiges.config.VestigesSystem.ELITES, QuestRules.needs("kill_rank"));
+		assertEquals(dev.vestiges.config.VestigesSystem.ELITES, QuestRules.needs("kill_power"));
+		assertEquals(dev.vestiges.config.VestigesSystem.PASSIVE_TREE, QuestRules.needs("ascension_counter"));
+		assertEquals(dev.vestiges.config.VestigesSystem.CODEX, QuestRules.needs("codex_section"));
+		assertEquals(dev.vestiges.config.VestigesSystem.SETTLEMENTS, QuestRules.needs("area_blocks"));
+		assertEquals(dev.vestiges.config.VestigesSystem.DRAGONS, QuestRules.needs("dragon_kill"));
+	}
+
+	@Test
+	void aLevelGapCountsFromTheAskedMinimum() {
+		assertTrue(QuestRules.atLeast("5", "3"));
+		assertTrue(QuestRules.atLeast("3", "3"));
+		assertFalse(QuestRules.atLeast("2", "3"));
+		assertFalse(QuestRules.atLeast("x", "3"));
+		assertFalse(QuestRules.atLeast("5", ""));
+	}
+
+	@Test
+	void rewardsCanNameGearAndRefunds() {
+		JsonElement json = JsonParser.parseString("{\"xp\":10,\"emeralds\":5,\"gear\":\"uncommon\",\"refunds\":2}");
+		QuestDef.Reward r = QuestDef.Reward.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
+		assertEquals("uncommon", r.gear());
+		assertEquals(2, r.refunds());
+		assertEquals("", QuestDef.Reward.NONE.gear());
+		assertEquals(0, QuestDef.Reward.NONE.refunds());
+	}
 }

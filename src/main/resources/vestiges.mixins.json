@@ -38,6 +38,7 @@
 		"ItemStackMixin",
 		"LivingEntityClimbMixin",
 		"LivingEntityMixin",
+		"LootTableTriggerMixin",
 		"LivingEntityUseMixin",
 		"PistonBaseBlockMixin",
 		"PlayerEquipmentMixin",
@@ -45,6 +46,7 @@
 		"PlayerMixin",
 		"ProjectileWeaponItemMixin",
 		"RandomizableContainerBlockEntityMixin",
+		"ResultSlotMixin",
 		"ServerGamePacketListenerImplMixin",
 		"ServerPlayerMixin",
 		"SpawnPlacementsMixin"

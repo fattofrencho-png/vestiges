@@ -295,9 +295,10 @@ public final class TreeService {
 			return fail(player, "Other nodes hang on this one: refund the outer ones first.");
 		}
 		int cost = refundCost(player);
-		if (!Emeralds.payWithBank(player, cost)) {
+		if (!payRefund(player, cost)) {
 			return fail(player, "A refund costs " + cost + " emerald" + (cost == 1 ? "" : "s") + " (you have " + Emeralds.countWithBank(player) + ").");
 		}
+		tree = get(player);
 		TreeDefs.Node node = idx.nodes().get(nodeId);
 		set(player, tree.withWheel(wheelId, state.drop(nodeId)), "Refunded " + (node != null ? node.name() : nodeId) + paid(player, cost) + ".");
 		return null;
@@ -318,14 +319,44 @@ public final class TreeService {
 			return fail(player, "Pick the other option.");
 		}
 		int cost = refundCost(player);
-		if (!Emeralds.payWithBank(player, cost)) {
+		if (!payRefund(player, cost)) {
 			return fail(player, "Switching costs " + cost + " emerald" + (cost == 1 ? "" : "s") + " (you have " + Emeralds.countWithBank(player) + ").");
 		}
+		tree = get(player);
 		set(player, tree.withWheel(wheelId, state.choose(nodeId, choice)), "Switched to " + node.choices().get(choice).name() + paid(player, cost) + ".");
 		return null;
 	}
 
+	/** Key in the tree counters: free refunds won as quest rewards. Each pays one refund or switch instead of emeralds. */
+	public static final String FREE_REFUNDS = "free_refunds";
+	/** Whether the last {@link #payRefund} used a free refund; the message that follows says so. Server thread only. */
+	private static boolean usedFreeRefund;
+
+	public static int freeRefunds(ServerPlayer player) {
+		return (int) get(player).counter(FREE_REFUNDS);
+	}
+
+	/** Quest reward: more free refunds. */
+	public static void addFreeRefunds(ServerPlayer player, int count) {
+		set(player, get(player).addCounter(FREE_REFUNDS, count), "");
+	}
+
+	/** Pays for a refund or a switch: a free refund first, then emeralds (Bank first). */
+	private static boolean payRefund(ServerPlayer player, int cost) {
+		PlayerTree tree = get(player);
+		usedFreeRefund = false;
+		if (tree.counter(FREE_REFUNDS) > 0) {
+			player.setAttached(TREE, tree.addCounter(FREE_REFUNDS, -1));
+			usedFreeRefund = true;
+			return true;
+		}
+		return Emeralds.payWithBank(player, cost);
+	}
+
 	private static String paid(ServerPlayer player, int cost) {
+		if (usedFreeRefund) {
+			return " (free refund)";
+		}
 		return Emeralds.free(player) ? "" : " for " + cost + " emerald" + (cost == 1 ? "" : "s");
 	}
 
@@ -465,9 +496,10 @@ public final class TreeService {
 			return fail(player, "Refund the next node in this branch first.");
 		}
 		int cost = refundCost(player);
-		if (!Emeralds.payWithBank(player, cost)) {
+		if (!payRefund(player, cost)) {
 			return fail(player, "A refund costs " + cost + " emerald" + (cost == 1 ? "" : "s") + " (you have " + Emeralds.countWithBank(player) + ").");
 		}
+		tree = get(player);
 		Set<String> taken = new HashSet<>(tree.ascTaken());
 		taken.remove(nodeId);
 		set(player, tree.withAscension(tree.ascendancy(), tree.ascensions(), taken), "Refunded " + branch.get(pos[1]).name() + paid(player, cost) + ".");
@@ -528,6 +560,7 @@ public final class TreeService {
 		root.addProperty("refundCost", refundCost(player));
 		root.addProperty("emeralds", Emeralds.countWithBank(player));
 		root.addProperty("free", Emeralds.free(player));
+		root.addProperty("freeRefunds", freeRefunds(player));
 		root.addProperty("message", message);
 		JsonElement treeJson = PlayerTree.CODEC.encodeStart(JsonOps.INSTANCE, tree).result().orElseGet(JsonObject::new);
 		root.add("tree", treeJson);

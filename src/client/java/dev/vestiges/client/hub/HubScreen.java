@@ -67,6 +67,8 @@ public final class HubScreen extends Screen {
 	private static java.util.function.Supplier<Screen> openPage;
 	private static double scroll;
 	private static float mapZoom = 1.0f;
+	/** Told the server once per hub screen that the Quests tab was seen (the hub_open quest step). */
+	private boolean questOpenSent;
 	private Tab tab = savedTab();
 	private final List<Tab> tabs = new ArrayList<>();
 	private int contentHeight;
@@ -146,6 +148,10 @@ public final class HubScreen extends Screen {
 			buildMap();
 		}
 		if (tab == Tab.QUESTS) {
+			if (!questOpenSent) {
+				questOpenSent = true;
+				dev.vestiges.client.quest.ClientQuests.send("event", "hub_open", "");
+			}
 			dev.vestiges.client.quest.QuestPanel.build(this::addRenderableWidget, width, height, HEADER + 4, height - FOOTER - 2, this::rebuildWidgets);
 		}
 	}

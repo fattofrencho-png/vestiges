@@ -35,15 +35,21 @@ public record QuestDef(String kind, String chain, int order, String name, String
 		).apply(i, Choice::new));
 	}
 
-	/** Flat {@code xp} plus {@code share} of what the player's level needs; {@code items} are written as "minecraft:bread:8". */
-	public record Reward(int xp, double share, int emeralds, List<String> items, String title) {
-		public static final Reward NONE = new Reward(0, 0, 0, List.of(), "");
+	/**
+	 * Flat {@code xp} plus {@code share} of what the player's level needs; {@code items} are written as "minecraft:bread:8". {@code gear} is
+	 * "common", "uncommon" or "superior": one piece of gear of that rarity in the player's loot band. {@code refunds} are free tree-point refunds
+	 * (1-5). Gear, items and refunds are paid on the first finish only.
+	 */
+	public record Reward(int xp, double share, int emeralds, List<String> items, String title, String gear, int refunds) {
+		public static final Reward NONE = new Reward(0, 0, 0, List.of(), "", "", 0);
 		public static final Codec<Reward> CODEC = RecordCodecBuilder.create(i -> i.group(
 			Codec.INT.optionalFieldOf("xp", 0).forGetter(Reward::xp),
 			Codec.DOUBLE.optionalFieldOf("share", 0.0).forGetter(Reward::share),
 			Codec.INT.optionalFieldOf("emeralds", 0).forGetter(Reward::emeralds),
 			Codec.STRING.listOf().optionalFieldOf("items", List.of()).forGetter(Reward::items),
-			Codec.STRING.optionalFieldOf("title", "").forGetter(Reward::title)
+			Codec.STRING.optionalFieldOf("title", "").forGetter(Reward::title),
+			Codec.STRING.optionalFieldOf("gear", "").forGetter(Reward::gear),
+			Codec.INT.optionalFieldOf("refunds", 0).forGetter(Reward::refunds)
 		).apply(i, Reward::new));
 	}
 
