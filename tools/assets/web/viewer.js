@@ -344,6 +344,11 @@ export async function show(items, keepView) {
     if (!keepView) resetView();
   }
 }
+/** Shows the view again with what it already holds (used when its page was redrawn around it). */
+export function resume() {
+  visible = true;
+  resize();
+}
 export function hide() {
   visible = false;
 }

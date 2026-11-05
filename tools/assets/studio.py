@@ -35,6 +35,8 @@ import presets
 import send
 import projects
 import providers
+import analyse
+import facets
 import review
 import thumbs
 import tree_gen
@@ -286,6 +288,13 @@ def review_queue(query):
 def review_asset(project_id):
     """Everything the Review screen shows about one asset."""
     project = projects.load(project_id)
+    if project.get("versions") and "name" not in (project.get("facets") or {}):
+        # analysed before the name, front, ground and season rows existed: offer them now
+        if analyse.ensure_extras(project, projects.load_version(project_id, project["versions"][-1]["number"])["blocks"]):
+            projects.save(project)
+    if facets.review_of(project).get("state") == "accepted" and not project.get("library"):
+        review.restamp(project)   # accepted before library file names existed
+        projects.save(project)
     rows = library.all_rows()
     row = next((r for r in rows if r["id"] == project_id), None) or library.row_of(project)
     source, credit = project.get("source") or {}, project.get("credit") or {}
@@ -293,7 +302,7 @@ def review_asset(project_id):
     latest = project["versions"][-1] if project.get("versions") else None
     return {"id": project_id, "title": project.get("title", ""), "path": naming.source_path(source), "pack": source.get("name", ""),
             "creator": credit.get("creator", ""), "rights": review.rights_of(project), "licence": {"status": licence["status"], "words": licence.get("words", "")},
-            "versions": len(project.get("versions", [])), "size": row.get("size", ""), "blocks": row.get("blocks", 0),
+            "versions": len(project.get("versions", [])), "latest": latest["number"] if latest else 0, "size": row.get("size", ""), "blocks": row.get("blocks", 0),
             "not_vanilla": bool(row.get("not_vanilla")), "problems": (latest["check"]["errors"][:2] if latest else []),
             "tags": project.get("tags", []), "kind": project.get("category", ""), "analysed": bool(project.get("analysis")),
             "related": review.related(rows, project_id), **review.view_of(project)}

@@ -17,6 +17,7 @@ import time
 
 import analyse
 import facets
+import libname
 
 VIEWS = (("inbox", "Not reviewed yet"), ("sure", "Sure first (fast accept)"), ("unsure", "Unsure first"), ("groups", "Look-alikes"),
          ("needs", "Needs work"), ("accepted", "Accepted"), ("rejected", "Archived"), ("all", "Everything"))
@@ -38,9 +39,13 @@ VOCAB = {
     "rarity": ["Common", "Uncommon", "Rare", "Epic", "Legendary"],
     "species": ["oak", "birch", "spruce", "dark oak", "acacia", "jungle", "mangrove", "cherry", "pale oak", "giant mushroom", "crimson fungus", "warped fungus"],
     "subtype": [],
+    "name": [],
+    "front": list(analyse.FRONTS),
+    "ground": list(analyse.GROUNDS),
+    "season": list(analyse.SEASONS),
 }
 # What the review screen shows, in this order. The first three are what the author checks hardest.
-SHOWN = ("type", "subtype", "species", "realm", "style", "palette", "setting", "scale", "complexity", "rarity")
+SHOWN = ("name", "type", "subtype", "species", "realm", "style", "palette", "setting", "scale", "complexity", "rarity", "front", "ground", "season")
 
 
 def is_package(row):
@@ -195,6 +200,12 @@ def _sync_kind(project):
         project["category"] = analyse.OLD_KIND.get(value, project.get("category"))
 
 
+def restamp(project):
+    """An accepted asset keeps its library file name up to date with its rows."""
+    if facets.review_of(project).get("state") == "accepted":
+        libname.stamp(project)
+
+
 def accept_all(project):
     """Agree with everything the machine proposed, and file the asset as accepted."""
     _remember(project)
@@ -202,21 +213,24 @@ def accept_all(project):
         facets.accept(project, name)
     facets.set_review(project, "accepted")
     _sync_kind(project)
+    restamp(project)
 
 
 def accept_facet(project, name):
     _remember(project)
     facets.accept(project, name)
     _sync_kind(project)
+    restamp(project)
 
 
 def change(project, name, value):
-    value = str(value).strip()[:40]
+    value = " ".join(str(value).split())[:60 if name == "name" else 40]
     if not value:
         raise ValueError("Pick a value")
     _remember(project)
     facets.decide(project, name, value)
     _sync_kind(project)
+    restamp(project)
 
 
 def reject_facet(project, name):
@@ -292,5 +306,5 @@ def view_of(project, rows=None):
     measures = (project.get("analysis") or {}).get("measures") or {}
     keep = ("blocks", "w", "h", "d", "distinct", "logs", "leaves", "doors", "beds", "glass", "workstations", "crops", "roofed", "enclosed",
             "symmetry", "floating", "parts", "difficulty", "rarity_points", "top_blocks")
-    return {"facets": shown, "measures": {k: measures[k] for k in keep if k in measures}, "review": facets.review_of(project),
+    return {"library": libname.of(project), "facets": shown, "measures": {k: measures[k] for k in keep if k in measures}, "review": facets.review_of(project),
             "confidence": facets.confidence_of(project), "can_undo": bool(project.get("review_history"))}

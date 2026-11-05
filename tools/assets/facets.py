@@ -22,7 +22,7 @@ project["review"] = {"state": "inbox" | "accepted" | "rejected" | "needs_work", 
 """
 import time
 
-FACETS = ("type", "subtype", "species", "realm", "style", "palette", "setting", "scale", "complexity", "rarity")
+FACETS = ("name", "type", "subtype", "species", "realm", "style", "palette", "setting", "scale", "complexity", "rarity", "front", "ground", "season")
 SOURCES = ("human", "rule", "fingerprint", "picture", "vision", "import")
 STATES = ("inbox", "accepted", "rejected", "needs_work")
 REJECT_REASONS = ("duplicate", "ugly", "wrong", "not vanilla", "too small", "package", "other")
@@ -52,6 +52,8 @@ def propose(project, name, value, source, confidence, why="", version=0):
     current = _book(project).get(name)
     if current and current.get("source") == "human":
         return False
+    if current and current.get("status") == "accepted":
+        return False   # the author already agreed with this row: a later analysis doesn't reopen it
     if current and value in current.get("rejected", []):
         return False
     rejected = list(current.get("rejected", [])) if current else []

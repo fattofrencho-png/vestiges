@@ -54,8 +54,14 @@ function steps() {
   const now = screen === "project" && project ? STEP_OF[project.stage] ?? 0 : screen === "request" ? 0 : -1;
   $("steps").replaceChildren(...STEPS.map((name, i) => el("span", { className: i === now ? "now" : i < now ? "done" : "", textContent: name })));
 }
+let viewHeldFor = null;   // the build the 3D view holds while it sits inside the Review screen
+function parkView() {
+  const stage = $("stage"), view = $("view");
+  if (view && view.parentNode !== stage) stage.prepend(view);
+}
 function page(...children) {
-  if (screen !== "review") leaveReview();
+  parkView();   // the 3D view may be sitting in the Review page that is about to be replaced
+  if (screen !== "review") { leaveReview(); viewHeldFor = null; }
   $("page").classList.remove("wide");
   viewer.hide();
   shown = null;
@@ -1523,6 +1529,12 @@ initReview({
   page: (...nodes) => page(...nodes),
   showFailure: (problem) => showFailure(problem),
   enter: () => { screen = "review"; stopPolling(); project = null; queue = null; backToReview = null; steps(); },
+  attach3d: async (slot, id, number) => {
+    slot.append($("view"));
+    if (viewHeldFor === id + ":" + number) { viewer.resume(); return; }
+    viewHeldFor = id + ":" + number;
+    try { await viewer.show([await get(`/api/version?id=${encodeURIComponent(id)}&v=${number}`)]); } catch (problem) { viewHeldFor = null; throw problem; }
+  },
   openWorkbench: (id) => { leaveReview(); backToReview = id; openProject(id).catch((problem) => showFailure(problem)); },
 });
 

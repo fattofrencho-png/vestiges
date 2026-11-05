@@ -325,6 +325,17 @@ class ReviewTests(LibraryCase):
         self.assertEqual(review.rights_of(project), "permission")
         self.assertEqual(review.rights_of({"mode": "ai"}), "own")
 
+    def test_name_changes_the_library_file_name_but_not_the_number(self):
+        ids = self.fill()
+        before = studio.review_asset(ids["oak"])["library"]
+        studio.review_decide({"id": ids["oak"], "action": "change", "facet": "name", "value": "Great  Oak of the Meadow"})
+        after = studio.review_asset(ids["oak"])["library"]
+        self.assertEqual(before["card"], after["card"])
+        self.assertTrue(after["file_name"].endswith("_great-oak-of-the-meadow.nbt"), after)
+        self.assertNotEqual(before["file_name"], after["file_name"])
+        studio.review_decide({"id": ids["oak"], "action": "accept_all"})
+        self.assertEqual(projects.load(ids["oak"])["library"]["file_name"], after["file_name"])
+
     def test_api_functions(self):
         ids = self.fill()
         queue = studio.review_queue({"view": "inbox", "type": "Trees"})
@@ -332,8 +343,14 @@ class ReviewTests(LibraryCase):
         self.assertIn("Trees", queue["types"])
         asset = studio.review_asset(ids["oak"])
         names = [f["facet"] for f in asset["facets"]]
+        self.assertEqual(names[0], "name")   # the name is the first row to check
+        names = names[1:]
         self.assertEqual(names[:3], ["type", "species", "realm"][:3] if "subtype" not in names else ["type", "subtype", "species"])
         self.assertTrue(asset["facets"][0]["why"])
+        for row in ("front", "ground", "season"):
+            self.assertIn(row, names)
+        self.assertRegex(asset["library"]["file_name"], r"^trees_[a-z0-9-]+_\d{4}-00_[a-z0-9-]+\.nbt$")
+        self.assertRegex(asset["library"]["card"], r"^#\d{4}-00$")
         studio.review_decide({"id": ids["oak"], "action": "accept_all"})
         self.assertEqual(studio.review_asset(ids["oak"])["review"]["state"], "accepted")
         self.assertTrue(studio.review_decide({"id": ids["oak"], "action": "undo"})["ok"] or True)

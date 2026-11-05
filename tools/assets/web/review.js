@@ -11,7 +11,8 @@ const KEYS = [["A / Enter", "accept everything shown"], ["1-9", "change that row
   ["U / Ctrl+Z", "undo"], ["E", "open in the workbench"], ["?", "show or hide these keys"]];
 
 const state = { active: false, view: "inbox", filter: { type: "", species: "", pack: "", q: "" }, ids: [], index: 0, counts: {}, meta: { types: [], packs: [], species: [] },
-  undo: [], seen: [], cache: new Map(), data: null, busy: false, reason: false, help: false, overlay: null, message: "" };
+  undo: [], seen: [], cache: new Map(), data: null, busy: false, reason: false, help: false, overlay: null, message: "",
+  mode3d: (() => { try { return localStorage.getItem("reviewPicture") !== "flat"; } catch (problem) { return true; } })() };
 let host = null;
 
 function el(tag, props = {}, ...children) {
@@ -107,9 +108,19 @@ async function show() {
   if (id) prefetch();
 }
 
+function setMode(on) {
+  state.mode3d = on;
+  try { localStorage.setItem("reviewPicture", on ? "3d" : "flat"); } catch (problem) { /* not saved */ }
+  paint();
+}
+
 function dots(confidence) {
   const n = Math.round(confidence * 5);
   return el("span", { className: confidence >= 0.8 ? "good-t" : confidence >= 0.5 ? "warn-t" : "bad-t", title: `${Math.round(confidence * 100)}% sure`, textContent: "●".repeat(n) + "○".repeat(5 - n) });
+}
+function nameBox(f) {
+  return el("input", { type: "text", className: "rv-text", value: f.value || "", maxLength: 60, "aria-label": "Name", placeholder: "Name this build",
+    on: { change: (e) => decide("change", { facet: "name", value: e.target.value }, false) } });
 }
 function select(options, value, label, on) {
   const list = options.includes(value) || !value ? options : [value, ...options];
@@ -171,6 +182,8 @@ function paint() {
       state.overlay));
   $("page").classList.add("wide");
   paintTop();
+  const slot = document.querySelector(".rv-3d");
+  if (slot && state.data) host.attach3d(slot, state.data.id, state.data.latest).catch((problem) => { slot.textContent = "The 3D view could not open: " + problem.message; });
 }
 
 function helpBox() {
@@ -199,12 +212,15 @@ function assetView(a) {
     return el("div", { className: "rv-row" },
       el("kbd", { textContent: key <= 9 ? String(key) : "" }),
       el("div", { className: "rv-name", textContent: f.facet }),
-      el("div", {}, select(f.options, f.value, f.facet, (value) => decide("change", { facet: f.facet, value }, false)), " ", dots(f.confidence),
+      el("div", {}, f.facet === "name" ? nameBox(f) : select(f.options, f.value, f.facet, (value) => decide("change", { facet: f.facet, value }, false)), " ", dots(f.confidence),
         el("span", { className: f.status === "proposed" ? "dim" : "good-t", textContent: ` ${f.status}${f.source === "human" ? "" : " · " + f.source}` }),
         f.status === "proposed" ? el("button", { className: "rv-mini", textContent: "✓", title: "Agree with this row", on: { click: () => decide("accept", { facet: f.facet }, false) } }) : null,
         f.status !== "rejected" && f.source !== "human" ? el("button", { className: "rv-mini", textContent: "✕", title: "This row is wrong: don't offer it again", on: { click: () => decide("reject_facet", { facet: f.facet }, false) } }) : null,
         el("div", { className: "dim", textContent: f.why })));
   });
+  const lib = a.library || {};
+  rows.push(el("div", { className: "rv-row" }, el("kbd", { textContent: "" }), el("div", { className: "rv-name", textContent: "library file" }),
+    el("div", {}, el("code", { className: "rv-file", textContent: lib.file_name || "" }), el("div", { className: "dim", textContent: `card ${lib.card || ""} · built from type, species, the permanent card number and the name above` }))));
   const m = a.measures;
   const facts = [`${m.w ?? "?"}×${m.h ?? "?"}×${m.d ?? "?"}`, `${(m.blocks ?? a.blocks).toLocaleString("en")} blocks`, `${m.distinct ?? "?"} different blocks`,
     m.doors ? `${m.doors} doors` : null, m.beds ? `${m.beds} beds` : null, m.roofed ? `${m.roofed} cells of rooms` : null, m.symmetry !== undefined ? `${Math.round(m.symmetry * 100)}% symmetric` : null,
@@ -217,7 +233,11 @@ function assetView(a) {
   const licenceBad = a.rights === "limited" || a.rights === "unknown";
   return el("div", { className: "rv-main" },
     el("div", { className: "rv-left" },
-      el("img", { className: "rv-pic", src: `/api/thumb?id=${a.id}&v=${a.versions}`, alt: a.title }),
+      el("div", { className: "row" },
+        el("button", { className: state.mode3d ? "on" : "", textContent: "3D view", on: { click: () => setMode(true) } }),
+        el("button", { className: state.mode3d ? "" : "on", textContent: "Picture", on: { click: () => setMode(false) } }),
+        el("span", { className: "dim", textContent: state.mode3d ? "drag to spin · wheel to zoom · right-drag to move" : "" })),
+      state.mode3d ? el("div", { className: "rv-3d" }) : el("img", { className: "rv-pic", src: `/api/thumb?id=${a.id}&v=${a.versions}`, alt: a.title }),
       el("h2", { textContent: a.title, style: "color:var(--text);font-size:17px" }),
       el("div", { className: "dim", textContent: `${a.pack || "own"} · ${a.path}`.slice(0, 140) }),
       el("div", { textContent: facts }),
@@ -287,6 +307,7 @@ async function decide(action, extra = {}, advance = true) {
     state.cache.delete(id);
     state.reason = false;
     state.message = "";
+    if (["change", "accept", "reject_facet"].includes(action)) state.undo.push(id);   // a single row can be undone too
     if (["accept_all", "reject", "needs_work", "restore"].includes(action)) {
       state.undo.push(id);
       if ((LEAVES[action] || []).includes(state.view)) {
@@ -374,7 +395,7 @@ function onKey(e) {
   if (key === "?") { state.help = !state.help; return paint(); }
   const n = Number(key);
   if (n >= 1 && n <= 9) {
-    const box = document.querySelectorAll(".rv-row select")[n - 1];
+    const box = document.querySelectorAll(".rv-row select, .rv-row .rv-text")[n - 1];
     if (box) { e.preventDefault(); box.focus(); try { box.showPicker(); } catch (problem) { /* arrow keys still work */ } }
   }
 }

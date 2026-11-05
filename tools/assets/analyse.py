@@ -460,7 +460,81 @@ def analyse_blocks(blocks, path="", title=""):
     out.append(("rarity", rarity_name(points), "rule", 0.5, f"{points} points: {rwhy}"))
     m["difficulty"] = stars
     m["rarity_points"] = points
+    out.extend(extra_proposals(blocks, m, title, palette[0] if palette else None))
     return {"measures": m, "prints": fingerprints(blocks), "proposals": out}
+
+
+# ---------------------------------------------------------------- name, front, ground, season (added 2026-11-05)
+
+GROUND = re.compile(r"^(grass_block|dirt|coarse_dirt|rooted_dirt|podzol|mycelium|dirt_path|farmland|sand|red_sand|gravel|snow_block|stone|netherrack|moss_block|mud|clay)$")
+FRONTS = ("North", "East", "South", "West", "No clear front")
+GROUNDS = ("Clean", "Has ground layer", "Has stray blocks", "Ground and stray blocks")
+SEASONS = ("Any", "Spring", "Summer", "Autumn", "Winter", "Day", "Sunset", "Night", "Halloween", "Christmas")
+SEASON_OF_PALETTE = {"Spring": "Spring", "Summer": "Summer", "Autumn": "Autumn", "Winter": "Winter", "Snowy": "Winter", "Halloween": "Halloween",
+                     "Christmas": "Christmas", "Day": "Day", "Night": "Night", "Sunset": "Sunset"}
+DOOR_FACING = re.compile(r"_door\[[^\]]*facing=(north|east|south|west)")
+
+
+def _stray_blocks(pos):
+    """Blocks in small pieces that touch nothing big (also across corners). Returns (how many blocks, how many pieces)."""
+    if len(pos) > 80_000:
+        return 0, 0
+    left, sizes = set(pos), []
+    while left:
+        start = left.pop()
+        stack, size = [start], 1
+        while stack:
+            x, y, z = stack.pop()
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    for dz in (-1, 0, 1):
+                        near = (x + dx, y + dy, z + dz)
+                        if near in left:
+                            left.discard(near)
+                            stack.append(near)
+                            size += 1
+        sizes.append(size)
+    sizes.sort(reverse=True)
+    small = [s for s in sizes[1:] if s <= max(3, len(pos) // 33)]
+    return sum(small), len(small)
+
+
+def extra_proposals(blocks, m, title, palette_value=None):
+    """Four more rows for the author to check: name, which side is the front, ground and stray blocks, season or time of day."""
+    out = []
+    words = re.sub(r"[_\-]+", " ", str(title or "")).strip()
+    if words:
+        out.append(("name", (words[0].upper() + words[1:])[:60], "rule", 0.5, "made from the file or pack name"))
+    doors = Counter(f for _, _, _, state in blocks for f in DOOR_FACING.findall(str(state)))
+    if doors:
+        facing, count = doors.most_common(1)[0]
+        out.append(("front", facing.capitalize(), "rule", 0.45, f"{count} of {sum(doors.values())} door blocks face {facing}"))
+    else:
+        out.append(("front", "No clear front", "rule", 0.35, "no doors to tell"))
+    pos = {(x, y, z): _name(state) for x, y, z, state in blocks if _name(state) not in ("barrier", "structure_void", "light", "jigsaw")}
+    if pos and m.get("parts", 1) < 4:
+        y0 = min(p[1] for p in pos)
+        bottom = [n for p, n in pos.items() if p[1] == y0]
+        has_ground = len(bottom) >= 0.5 * m["w"] * m["d"] and sum(1 for n in bottom if GROUND.match(n)) >= 0.6 * len(bottom)
+        stray, pieces = _stray_blocks(pos)
+        value = GROUNDS[(1 if has_ground else 0) + (2 if stray else 0)]
+        why = ("the bottom layer is ground" if has_ground else "no ground layer") + (f"; {stray} blocks in {pieces} loose pieces" if stray else "; no loose pieces")
+        out.append(("ground", value, "rule", 0.6, why))
+    season = SEASON_OF_PALETTE.get(palette_value or "")
+    out.append(("season", season or "Any", "rule", 0.5 if season else 0.4, f"the palette is {palette_value.lower()}" if season else "nothing in it marks a season or time of day"))
+    return out
+
+
+def ensure_extras(project, blocks):
+    """Offers the newer rows to an asset analysed before they existed. Returns True when something was stored."""
+    if "name" in (project.get("facets") or {}) or not blocks:
+        return False
+    palette = (project.get("facets") or {}).get("palette", {}).get("value")
+    m = (project.get("analysis") or {}).get("measures") or measure(blocks)
+    stored = False
+    for facet, value, source, confidence, why in extra_proposals(blocks, m, project.get("title", ""), palette):
+        stored |= facets.propose(project, facet, value, source, confidence, why, VERSION)
+    return stored
 
 
 # ---------------------------------------------------------------- on a project
