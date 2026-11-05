@@ -56,6 +56,39 @@ public final class WorldAtlas {
 		return grid;
 	}
 
+	/** Reads a grid from {@link #grid}: a continent's name (by its place in {@code names}), "an island", "the open sea", or null if the grid does not fit. */
+	public static String lookup(String grid, java.util.List<String> names, double x, double z) {
+		int w = gridWidth();
+		int h = gridHeight();
+		if (grid.length() != w * h) {
+			return null;
+		}
+		if (x < GlobeMap.X_MIN || z < GlobeMap.Z_MIN || x >= GlobeMap.X_MAX || z >= GlobeMap.Z_MAX) {
+			return "the open sea";
+		}
+		int ix = Math.min((int) Math.floor((x - GlobeMap.X_MIN) / GRID_CELL), w - 1);
+		int iz = Math.min((int) Math.floor((z - GlobeMap.Z_MIN) / GRID_CELL), h - 1);
+		char c = grid.charAt(iz * w + ix);
+		if (c == '.') {
+			return "the open sea";
+		}
+		if (c == 'i') {
+			return "an island";
+		}
+		int i = c - '0';
+		return i >= 0 && i < names.size() ? names.get(i) : null;
+	}
+
+	/** The continent a block is on, or null when this world has no continents. */
+	public static String continentAt(MinecraftServer server, double x, double z) {
+		if (!active(server)) {
+			return null;
+		}
+		var lands = WorldPlans.current().lands();
+		String name = lookup(grid(server), lands.stream().map(WorldPlan.Land::name).toList(), x, z);
+		return name != null && lands.stream().anyMatch(l -> l.name().equals(name)) ? name : null;
+	}
+
 	/** The continent's name, "an island", or "the open sea". */
 	public static String placeName(int owner) {
 		return owner == GlobeMap.OCEAN ? "the open sea" : owner == GlobeMap.ISLAND ? "an island" : WorldPlans.current().lands().get(owner).name();

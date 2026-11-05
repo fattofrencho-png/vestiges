@@ -86,27 +86,7 @@ public final class ClientFeatures {
 
 	/** Where a block is: a continent's name, "an island", "the open sea", or null in a world without continents. */
 	public static String placeAt(double x, double z) {
-		int w = dev.vestiges.world.WorldAtlas.gridWidth();
-		int h = dev.vestiges.world.WorldAtlas.gridHeight();
-		if (atlas.length() != w * h) {
-			return null;
-		}
-		int ix = (int) Math.floor((x - dev.vestiges.world.GlobeMap.X_MIN) / dev.vestiges.world.WorldAtlas.GRID_CELL);
-		int iz = (int) Math.floor((z - dev.vestiges.world.GlobeMap.Z_MIN) / dev.vestiges.world.WorldAtlas.GRID_CELL);
-		if (x < dev.vestiges.world.GlobeMap.X_MIN || z < dev.vestiges.world.GlobeMap.Z_MIN || x >= dev.vestiges.world.GlobeMap.X_MAX || z >= dev.vestiges.world.GlobeMap.Z_MAX) {
-			return "the open sea";
-		}
-		ix = Math.min(ix, w - 1);
-		iz = Math.min(iz, h - 1);
-		char c = atlas.charAt(iz * w + ix);
-		if (c == '.') {
-			return "the open sea";
-		}
-		if (c == 'i') {
-			return "an island";
-		}
-		int i = c - '0';
-		return i >= 0 && i < LANDS.size() ? LANDS.get(i).name() : null;
+		return dev.vestiges.world.WorldAtlas.lookup(atlas, LANDS.stream().map(Land::name).toList(), x, z);
 	}
 
 	public static boolean operator() {

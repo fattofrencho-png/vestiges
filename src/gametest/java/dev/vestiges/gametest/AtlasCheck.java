@@ -95,6 +95,22 @@ public final class AtlasCheck implements FabricClientGameTest {
 				c.check("far past the globe edge is the open sea", "the open sea".equals(ClientFeatures.placeAt(500000, 0)));
 			}
 
+			c.section("Codex Places");
+			// The Codex counts only players in survival, so the player is a survival player for a moment at spawn.
+			server.runCommand("gamemode survival @p");
+			ctx.waitTicks(100);
+			var found = server.computeOnServer(s -> {
+				var player = s.getPlayerList().getPlayers().get(0);
+				var progress = dev.vestiges.codex.CodexService.get(player);
+				return progress.lands();
+			});
+			server.runCommand("gamemode spectator @p");
+			if (vestiges) {
+				c.check("a biome found at spawn is saved with its continent", found.values().stream().anyMatch(l -> l.contains("Trenec")), found.toString());
+			} else {
+				c.check("a vanilla world saves no continent for places", found.isEmpty(), found.toString());
+			}
+
 			c.section("The map screen");
 			if (vestiges && lands > 0) {
 				var trenec = ClientFeatures.lands().getFirst();

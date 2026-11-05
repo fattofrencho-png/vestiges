@@ -171,7 +171,12 @@ public final class CodexService {
 				}
 			}
 		}
-		save(p, settle(p, prog.withSpot(id, spot), id));
+		CodexProgress next = prog.withSpot(id, spot);
+		String land = dev.vestiges.world.WorldAtlas.continentAt(p.level().getServer(), p.getX(), p.getZ());
+		if (land != null && p.level().dimension() == net.minecraft.world.level.Level.OVERWORLD) {
+			next = next.withLand(id, land);
+		}
+		save(p, settle(p, next, id));
 		if (id.startsWith(CodexEntry.BIOMES + "/")) {
 			dev.vestiges.settlement.SettlementService.shareCodex(p, id, 0, get(p).spots(id));
 		}
@@ -523,6 +528,7 @@ public final class CodexService {
 			o.addProperty("line1", CodexRules.line1Visible(e, stage, hostile) ? e.line1() : "");
 			o.addProperty("line2", CodexRules.line2Visible(e, stage) ? e.line2() : "");
 			o.addProperty("later", e.later());
+			o.addProperty("where", known && e.isPlace() ? String.join(", ", prog.lands(id)) : "");
 			JsonArray unlocks = new JsonArray();
 			if (CodexEntry.BLOCKS.equals(e.section()) && !CodexRules.unique(e)) {
 				unlocks.add(unlock("Cluster harvest can take it", stage >= 1));
