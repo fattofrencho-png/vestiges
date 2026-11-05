@@ -4,6 +4,7 @@
   "order": 0,
   "name": "A Place for Tools",
   "giver": "Guide",
+  "intro": "Tools and weapons have their own racks, so your inventory is not a heap of pickaxes and swords.",
   "steps": [
     {
       "type": "rack_tool",

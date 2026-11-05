@@ -112,12 +112,18 @@ public final class QuestPanel {
 		}
 		add.accept(Button.builder(Component.literal(q.get("tracked").getAsBoolean() ? "Tracked" : "Track"), b -> ClientQuests.send("track", id, "")).bounds(x, y, 70, 20).build());
 		add.accept(Button.builder(Component.literal("Drop"), b -> ClientQuests.send("drop", id, "")).bounds(x + 72, y, 50, 20).build());
+		boolean near = !q.has("near") || q.get("near").getAsBoolean();
+		if (q.has("ready") && q.get("ready").getAsBoolean()) {
+			Button turn = Button.builder(Component.literal("Turn in"), b -> ClientQuests.send("turn_in", id, "")).bounds(x + 124, y, 70, 20).build();
+			turn.active = near;
+			add.accept(turn);
+		}
 		for (JsonElement e : q.getAsJsonArray("steps")) {
 			JsonObject s = e.getAsJsonObject();
 			if ("now".equals(s.get("state").getAsString())) {
 				if ("bring".equals(s.get("type").getAsString())) {
 					Button hand = Button.builder(Component.literal("Hand in"), b -> ClientQuests.send("hand_in", id, "")).bounds(x + 124, y, 70, 20).build();
-					hand.active = s.get("have").getAsInt() >= s.get("need").getAsInt();
+					hand.active = s.get("have").getAsInt() >= s.get("need").getAsInt() && near;
 					add.accept(hand);
 				}
 				if (s.has("choices")) {

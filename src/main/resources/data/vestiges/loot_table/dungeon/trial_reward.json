@@ -1,0 +1,92 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 2,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_sword",
+     "weight": 1,
+     "modifier": [
+      {
+       "kind": "gear",
+       "min_rarity": "uncommon",
+       "type": "vestiges:loot_gear"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "vestiges:loot_enabled",
+    "value": true
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 1,
+     "modifier": [
+      {
+       "kind": "book",
+       "min_rarity": "uncommon",
+       "type": "vestiges:loot_gear"
+      }
+     ]
+    }
+   ],
+   "condition": {
+    "type": "minecraft:all_of",
+    "terms": [
+     {
+      "type": "vestiges:loot_enabled",
+      "value": true
+     },
+     {
+      "type": "minecraft:random_chance",
+      "chance": 0.35
+     }
+    ]
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:emerald",
+     "weight": 1,
+     "modifier": [
+      {
+       "count": {
+        "type": "minecraft:uniform",
+        "min": 4,
+        "max": 8
+       },
+       "type": "minecraft:set_count"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "vestiges:dungeon_key",
+     "weight": 1,
+     "modifier": [
+      {
+       "mode": "next",
+       "type": "vestiges:dungeon_key"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

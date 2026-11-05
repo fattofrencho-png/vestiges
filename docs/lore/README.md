@@ -17,6 +17,8 @@ This folder is where the Vestiges lore is discussed and decided, in its own Clau
 | `lore-log.md` | Every lore decision. Newest entries go in the "Decisions since Batch 5" section, with the date. |
 | `fragments.md` | The 112 approved shrine and dungeon texts. |
 | `codex-flavour.md` | The 414 approved Codex entries. `tools/build_codex.py` reads this file, so a changed line reaches the game only when the main chat rebuilds. |
+| `mob-origins.md` | The three levels of mob lore (Fluff, Flavour, Lore), the group decisions and the open points. |
+| `wiki/` | The offline wiki. Edit `wiki/content/` and run `python wiki/build_wiki.py`; the format is in `wiki/content/README.md`. Never edit its two `.html` files by hand. |
 
 Changing an approved text is allowed when the author asks. Note the change in `lore-log.md` so the main chat can pick it up.
 

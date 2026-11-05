@@ -1,0 +1,31 @@
+{
+  "safe_gap": 9000,
+  "island_gap": 2500,
+  "edge_gap": 6000,
+  "spawn_clear": 8000,
+  "emerald_max_per_land": 2,
+  "emerald_min_total": 3,
+  "emerald_radius": 128,
+  "cold_tilt": 0.52,
+  "temperature": [
+    { "at": -95000, "value": -1.0 },
+    { "at": -60000, "value": -0.45 },
+    { "at": -48000, "value": -0.15 },
+    { "at": 0, "value": 0.08 },
+    { "at": 22000, "value": 0.2 },
+    { "at": 55000, "value": 0.55 },
+    { "at": 95000, "value": 1.0 }
+  ],
+  "lands": [
+    { "name": "Trenec", "x": 0, "z": 0, "r": 28000, "sx": 1.1, "sz": 1.0, "core": 0.86, "width_min": 2600, "width_max": 4600, "len_min": 0.7, "len_max": 1.1, "mains": 1 },
+    { "name": "Thornner", "x": -4000, "z": -57000, "r": 20000, "sx": 1.4, "sz": 0.85, "core": 0.78, "width_min": 3800, "width_max": 5200, "len_min": 1.0, "len_max": 1.5, "mains": 1 },
+    { "name": "Restena", "x": 62000, "z": -24000, "r": 20000, "sx": 0.95, "sz": 1.05, "core": 0.76, "width_min": 800, "width_max": 1400, "len_min": 0.9, "len_max": 1.5, "mains": 1 },
+    { "name": "Ruthenos", "x": 4000, "z": 62000, "r": 27000, "sx": 1.25, "sz": 0.78, "core": 0.78, "width_min": 1800, "width_max": 3000, "len_min": 0.6, "len_max": 1.0, "mains": 3 },
+    { "name": "Swetren", "x": -75000, "z": 4000, "r": 28000, "sx": 0.96, "sz": 1.04, "core": 0.78, "width_min": 2400, "width_max": 3600, "len_min": 1.2, "len_max": 1.8, "mains": 1 }
+  ],
+  "land_order": ["Trenec", "Swetren", "Ruthenos", "Thornner", "Restena"],
+  "villages": [
+    { "name": "Dilecta", "land": "Trenec", "site": "north_coast", "size": "giant" }
+  ],
+  "resources": []
+}

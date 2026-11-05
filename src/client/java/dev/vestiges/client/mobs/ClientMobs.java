@@ -24,8 +24,8 @@ import net.minecraft.world.entity.player.Player;
  */
 public final class ClientMobs {
 	/** Rank colours: Champion white, Elite gold, Warlord purple. */
-	private static final int[] RANK_COLORS = {0xFFFFFF, 0xFFFFFF, 0xFFAA00, 0xB65CFF};
-	private static final String[] RANK_NAMES = {"", "Champion", "Elite", "Warlord"};
+	private static final int[] RANK_COLORS = {0xFFFFFF, 0xFFFFFF, 0xFFAA00, 0xB65CFF, 0xFF5555, 0xFF3030};
+	private static final String[] RANK_NAMES = {"", "Champion", "Elite", "Warlord", "Lieutenant", "Boss"};
 	private static final Map<String, String> ADJECTIVES = Map.ofEntries(
 		Map.entry("swift", "Swift"), Map.entry("brute", "Brutal"), Map.entry("armored", "Armored"), Map.entry("burning", "Burning"),
 		Map.entry("shove", "Hurling"), Map.entry("shadow", "Shadowy"), Map.entry("caller", "Howling"), Map.entry("volatile", "Volatile"),
@@ -76,7 +76,7 @@ public final class ClientMobs {
 	}
 
 	public static int rankColor(int rank) {
-		return RANK_COLORS[Math.max(0, Math.min(3, rank))];
+		return RANK_COLORS[Math.max(0, Math.min(RANK_COLORS.length - 1, rank))];
 	}
 
 	/** Level colour against yours: grey 6+ below, green 3-5 below, white within 2, yellow 3-5 above, red 6+ above. */

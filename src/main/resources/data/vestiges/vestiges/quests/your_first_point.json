@@ -4,6 +4,7 @@
   "order": 1,
   "name": "Your First Point",
   "giver": "Guide",
+  "intro": "Your levels turn into points for the passive trees. The Fight wheel is where you grow stronger in battle.",
   "steps": [
     {
       "type": "fight_points",

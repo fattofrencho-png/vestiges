@@ -271,6 +271,9 @@ public final class CodexScreen extends Screen {
 		}
 		y = paragraph(g, e.line1().isEmpty() ? "???" : e.line1(), tx, y, w - 16, e.line1().isEmpty() ? UiTheme.faint() : UiTheme.flavour());
 		y = paragraph(g, e.line2().isEmpty() ? "??? (Mastered)" : e.line2(), tx, y + 4, w - 16, e.line2().isEmpty() ? UiTheme.faint() : UiTheme.flavour());
+		if (!e.where().isEmpty()) {
+			y = paragraph(g, "Found on: " + e.where(), tx, y + 6, w - 16, UiTheme.muted());
+		}
 		y += 8;
 		for (Map.Entry<String, Boolean> u : e.unlocks()) {
 			for (FormattedCharSequence part : font.split(Component.literal((u.getValue() ? "✔ " : "✖ ") + UiTheme.noMilestone(u.getKey())), w - 16)) {

@@ -28,7 +28,7 @@ public final class FeaturePanel extends AbstractWidget {
 	private static final int GOLD = 0xFFE6C36A;
 	private static final int ROW_H = 13;
 	private static final int CATEGORY_H = 16;
-	private static final int CATEGORY_W = 88;
+	private static final int CATEGORY_W = 104;
 	private static final String FAQ = "FAQ";
 	private static final String MODS = "Mods to add";
 	private static final String[][] FAQ_LINES = {
@@ -74,14 +74,45 @@ public final class FeaturePanel extends AbstractWidget {
 		onChange.run();
 	}
 
-	private List<VestigesSystem> rows() {
-		List<VestigesSystem> out = new ArrayList<>();
-		for (VestigesSystem s : VestigesSystem.values()) {
-			if (s.category.label.equals(category)) {
-				out.add(s);
+	/** One line of the list: a switch (indented under the one it needs), or a small heading when {@code system} is null. */
+	private record Row(VestigesSystem system, String heading) {
+	}
+
+	private List<Row> rows() {
+		List<Row> out = new ArrayList<>();
+		String section = null;
+		for (VestigesSystem.Category c : VestigesSystem.Category.values()) {
+			if (!c.label.equals(category)) {
+				continue;
+			}
+			for (VestigesSystem s : VestigesSystem.listed(c)) {
+				if (s.depth() == 0 && s.section() != null && !s.section().equals(section)) {
+					section = s.section();
+					out.add(new Row(null, section));
+				}
+				out.add(new Row(s, null));
 			}
 		}
 		return out;
+	}
+
+	private VestigesSystem firstSwitch() {
+		for (Row r : rows()) {
+			if (r.system() != null) {
+				return r.system();
+			}
+		}
+		return VestigesSystem.INVENTORY;
+	}
+
+	/** True while something this feature needs is switched off, so it is shown dimmed under it. */
+	private boolean blocked(VestigesSystem s) {
+		for (VestigesSystem n : s.needs()) {
+			if (!config.enabled(n)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private List<String> categories() {
@@ -208,23 +239,33 @@ public final class FeaturePanel extends AbstractWidget {
 	}
 
 	private void drawFeatures(GuiGraphicsExtractor g, Font font, int mouseX, int mouseY) {
-		List<VestigesSystem> rows = rows();
+		List<Row> rows = rows();
 		int first = Math.min(scroll, Math.max(0, rows.size() - visibleRows()));
 		for (int i = first; i < rows.size() && i - first < visibleRows(); i++) {
-			VestigesSystem s = rows.get(i);
+			VestigesSystem s = rows.get(i).system();
 			int y = bodyY() + (i - first) * ROW_H;
+			if (s == null) {
+				g.text(font, rows.get(i).heading(), listX() + 2, y + 2, UiTheme.muted(), UiTheme.shadow());
+				continue;
+			}
+			int indent = s.depth() * 12;
 			if (s == selected || in(mouseX, mouseY, listX(), y - 1, listW(), ROW_H)) {
 				g.fill(listX(), y - 1, listX() + listW(), y + 12, s == selected ? UiTheme.pickedRow() : UiTheme.hoverRow());
 			}
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, config.enabled(s) ? CHECK_ON : CHECK, listX() + 2, y, 11, 11);
+			if (indent > 0) {
+				g.fill(listX() + indent - 6, y - 1, listX() + indent - 5, y + 7, divider());
+				g.fill(listX() + indent - 6, y + 6, listX() + indent, y + 7, divider());
+			}
+			g.blitSprite(RenderPipelines.GUI_TEXTURED, config.enabled(s) ? CHECK_ON : CHECK, listX() + 2 + indent, y, 11, 11);
 			boolean locked = s.core() || s.creationOnly() && !creating;
-			g.text(font, s.label, listX() + 16, y + 2, locked ? UiTheme.head() : s.built() ? UiTheme.text() : UiTheme.muted(), UiTheme.shadow());
+			int color = locked ? UiTheme.head() : s.built() && !blocked(s) ? UiTheme.text() : UiTheme.muted();
+			g.text(font, s.label, listX() + 16 + indent, y + 2, color, UiTheme.shadow());
 			if (!s.built()) {
 				g.text(font, "later", listX() + listW() - font.width("later") - 2, y + 2, UiTheme.faint(), UiTheme.shadow());
 			}
 		}
 		g.fill(helpX() - 5, bodyY() - 2, helpX() - 4, getY() + getHeight(), divider());
-		VestigesSystem s = selected.category.label.equals(category) ? selected : rows.get(0);
+		VestigesSystem s = selected.category.label.equals(category) ? selected : firstSwitch();
 		g.text(font, s.label, helpX(), bodyY(), UiTheme.head(), UiTheme.shadow());
 		int y = para(g, font, s.help, helpX(), bodyY() + 13, helpW(), body());
 		if (!s.needs().isEmpty()) {
@@ -273,9 +314,8 @@ public final class FeaturePanel extends AbstractWidget {
 			if (in(mx, my, getX(), bodyY() + i * CATEGORY_H - 1, CATEGORY_W, 14)) {
 				category = cats.get(i);
 				scroll = 0;
-				List<VestigesSystem> rows = rows();
-				if (!rows.isEmpty()) {
-					selected = rows.get(0);
+				if (!rows().isEmpty()) {
+					selected = firstSwitch();
 				}
 				return;
 			}
@@ -283,11 +323,11 @@ public final class FeaturePanel extends AbstractWidget {
 		if (category.equals(FAQ) || category.equals(MODS)) {
 			return;
 		}
-		List<VestigesSystem> rows = rows();
+		List<Row> rows = rows();
 		int first = Math.min(scroll, Math.max(0, rows.size() - visibleRows()));
 		for (int i = first; i < rows.size() && i - first < visibleRows(); i++) {
-			if (in(mx, my, listX(), bodyY() + (i - first) * ROW_H - 1, listW(), ROW_H)) {
-				VestigesSystem s = rows.get(i);
+			if (rows.get(i).system() != null && in(mx, my, listX(), bodyY() + (i - first) * ROW_H - 1, listW(), ROW_H)) {
+				VestigesSystem s = rows.get(i).system();
 				selected = s;
 				if (!s.core() && (creating || !s.creationOnly())) {
 					config.setWithNeeds(s, !config.enabled(s));

@@ -4,6 +4,7 @@
   "order": 4,
   "name": "Paid in Green",
   "giver": "Guide",
+  "intro": "Enchanting here costs lapis and emeralds, never your levels, so your progress stays yours.",
   "steps": [
     {
       "type": "enchant",

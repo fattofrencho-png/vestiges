@@ -4,6 +4,7 @@
   "order": 3,
   "name": "Safe Keeping",
   "giver": "Guide",
+  "intro": "The Bank keeps your emeralds. They pay for waystones, repairs and tree refunds, so keep some in reserve.",
   "steps": [
     {
       "type": "bank",

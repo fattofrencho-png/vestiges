@@ -4,6 +4,7 @@
   "order": 2,
   "name": "The Belt",
   "giver": "Guide",
+  "intro": "A map and a compass on your belt keep you from getting lost. They switch on the minimap and the compass directions.",
   "steps": [
     {
       "type": "belt",

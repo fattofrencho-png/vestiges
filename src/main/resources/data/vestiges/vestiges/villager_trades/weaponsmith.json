@@ -1,0 +1,89 @@
+{
+ "job": "weaponsmith",
+ "offers": [
+  {
+   "item": "minecraft:stone_sword",
+   "count": 1,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:stone_axe",
+   "count": 1,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:arrow",
+   "count": 16,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:iron_sword",
+   "count": 1,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:iron_axe",
+   "count": 1,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:bow",
+   "count": 1,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:iron_ingot",
+   "count": 8,
+   "price": 14,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:bell",
+   "count": 1,
+   "price": 12,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:crossbow",
+   "count": 1,
+   "price": 10,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:diamond_sword",
+   "count": 1,
+   "price": 45,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:diamond_axe",
+   "count": 1,
+   "price": 42,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:trident",
+   "count": 1,
+   "price": 140,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

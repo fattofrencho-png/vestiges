@@ -19,6 +19,11 @@ class MixinLoadTest {
 		"net.minecraft.server.level.ServerPlayer",
 		"net.minecraft.world.food.FoodData",
 		"net.minecraft.world.item.ItemStack",
+		"net.minecraft.world.CompoundContainer",
+		"net.minecraft.world.item.BucketItem",
+		"net.minecraft.world.inventory.Slot",
+		"net.minecraft.world.inventory.GrindstoneMenu",
+		"net.minecraft.world.inventory.ItemCombinerMenu",
 		"net.minecraft.world.item.BowItem",
 		"net.minecraft.world.item.CrossbowItem",
 		"net.minecraft.world.item.ProjectileWeaponItem",
@@ -47,10 +52,12 @@ class MixinLoadTest {
 		"net.minecraft.world.level.block.CakeBlock",
 		"net.minecraft.world.food.FoodProperties",
 		"net.minecraft.world.entity.SpawnPlacements",
+		"net.minecraft.world.level.ServerExplosion",
 		"net.minecraft.world.level.block.state.BlockBehaviour$BlockStateBase");
 	/** Client screens and HUD, checked when the tests run as a client. */
 	private static final List<String> CLIENT_TARGETS = List.of(
 		"net.minecraft.client.gui.screens.inventory.InventoryScreen",
+		"net.minecraft.client.gui.screens.inventory.ShulkerBoxScreen",
 		"net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen",
 		"net.minecraft.client.gui.screens.inventory.AbstractContainerScreen",
 		"net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen",

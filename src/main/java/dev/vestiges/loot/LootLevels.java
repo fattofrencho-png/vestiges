@@ -17,7 +17,8 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Loot level (approved): 75% of the opener's level plus the layer bonus, capped per layer (Surface 20, Caves 40, Deepslate 50; the Nether and End
- * count as deepslate), the same rule as mob levels. A mob's drops use the mob's own level.
+ * count as deepslate), the same rule as mob levels. A mob's drops use the mob's own level. Inside a dungeon the tier sets it (12 + 3 a tier,
+ * with no cap), so dungeon chests can reach the top bands.
  */
 public final class LootLevels {
 	/** Admin tools force a level while they roll. */
@@ -56,6 +57,10 @@ public final class LootLevels {
 			return mob.level();
 		}
 		Vec3 origin = ctx.getOptional(LootContextParams.ORIGIN);
+		Integer dungeon = origin == null ? null : dev.vestiges.dungeon.DungeonService.lootLevelAt(ctx.getLevel(), origin);
+		if (dungeon != null) {
+			return dungeon;
+		}
 		if (entity instanceof ServerPlayer player) {
 			return forPlayer(player, origin != null ? origin : player.position());
 		}

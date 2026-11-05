@@ -13,14 +13,15 @@ import java.util.Map;
  * (biomes), structure starts or feature positions found (places); {@code held} how many of each item entry the inventory held at the last
  * look, so only new ones count. Immutable: every change makes a new record.
  */
-public record CodexProgress(Map<String, Integer> counts, Map<String, Integer> stages, Map<String, List<Long>> spots, Map<String, Integer> held) {
-	public static final CodexProgress EMPTY = new CodexProgress(Map.of(), Map.of(), Map.of(), Map.of());
+public record CodexProgress(Map<String, Integer> counts, Map<String, Integer> stages, Map<String, List<Long>> spots, Map<String, Integer> held, Map<String, List<String>> lands) {
+	public static final CodexProgress EMPTY = new CodexProgress(Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
 
 	public static final Codec<CodexProgress> CODEC = RecordCodecBuilder.create(i -> i.group(
 		Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("counts", Map.of()).forGetter(CodexProgress::counts),
 		Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("stages", Map.of()).forGetter(CodexProgress::stages),
 		Codec.unboundedMap(Codec.STRING, Codec.LONG.listOf()).optionalFieldOf("spots", Map.of()).forGetter(CodexProgress::spots),
-		Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("held", Map.of()).forGetter(CodexProgress::held)
+		Codec.unboundedMap(Codec.STRING, Codec.INT).optionalFieldOf("held", Map.of()).forGetter(CodexProgress::held),
+		Codec.unboundedMap(Codec.STRING, Codec.STRING.listOf()).optionalFieldOf("lands", Map.of()).forGetter(CodexProgress::lands)
 	).apply(i, CodexProgress::new));
 
 	public int count(String id) {
@@ -48,7 +49,7 @@ public record CodexProgress(Map<String, Integer> counts, Map<String, Integer> st
 	public CodexProgress withCount(String id, int value) {
 		Map<String, Integer> m = new HashMap<>(counts);
 		m.put(id, value);
-		return new CodexProgress(m, stages, spots, held);
+		return new CodexProgress(m, stages, spots, held, lands);
 	}
 
 	public CodexProgress withStage(String id, int value) {
@@ -58,7 +59,7 @@ public record CodexProgress(Map<String, Integer> counts, Map<String, Integer> st
 		} else {
 			m.put(id, value);
 		}
-		return new CodexProgress(counts, m, spots, held);
+		return new CodexProgress(counts, m, spots, held, lands);
 	}
 
 	public CodexProgress withSpot(String id, long spot) {
@@ -66,10 +67,26 @@ public record CodexProgress(Map<String, Integer> counts, Map<String, Integer> st
 		List<Long> list = new ArrayList<>(m.getOrDefault(id, List.of()));
 		list.add(spot);
 		m.put(id, List.copyOf(list));
-		return new CodexProgress(counts, stages, m, held);
+		return new CodexProgress(counts, stages, m, held, lands);
 	}
 
 	public CodexProgress withHeld(Map<String, Integer> value) {
-		return new CodexProgress(counts, stages, spots, Map.copyOf(value));
+		return new CodexProgress(counts, stages, spots, Map.copyOf(value), lands);
+	}
+
+	/** The continents a place was found on, in the order they were first found. Empty in a world without continents. */
+	public List<String> lands(String id) {
+		return lands.getOrDefault(id, List.of());
+	}
+
+	public CodexProgress withLand(String id, String land) {
+		if (lands(id).contains(land)) {
+			return this;
+		}
+		Map<String, List<String>> m = new HashMap<>(lands);
+		List<String> list = new ArrayList<>(lands(id));
+		list.add(land);
+		m.put(id, List.copyOf(list));
+		return new CodexProgress(counts, stages, spots, held, m);
 	}
 }

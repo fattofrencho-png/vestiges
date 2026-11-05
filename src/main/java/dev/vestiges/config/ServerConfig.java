@@ -1,6 +1,8 @@
 package dev.vestiges.config;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,6 +13,8 @@ import java.util.Map;
 public final class ServerConfig {
 	public int schema = 1;
 	public Map<String, Boolean> systems = new LinkedHashMap<>();
+	/** Features that were switched off only because something they need was switched off: they come back when it does. */
+	public List<String> remembered = new ArrayList<>();
 	public Numbers numbers = new Numbers();
 	/** A dedicated server's new world: the first operator to join gets the welcome page. */
 	public boolean setupPending;
@@ -34,6 +38,10 @@ public final class ServerConfig {
 		public int graveDays = 3;
 		/** Share of players who must sleep to skip the night while the Sleep percentage feature is on. */
 		public int sleepPercent = 50;
+		/** Stackable items stack this high while the Bigger stacks feature is on: 64, or 99 by option. */
+		public int stackLimit = 64;
+		/** Potions, stews, filled buckets, enchanted books, and empty minecarts and boats stack this high while the Bigger stacks feature is on. */
+		public int brewStack = 16;
 	}
 
 	/** Fills in every system the file does not mention, so new systems added in an update default to on. */
@@ -50,6 +58,13 @@ public final class ServerConfig {
 			ordered.put(s.id, s.core() || (v == null ? s.onByDefault() : v));
 		}
 		systems = ordered;
+		if (remembered == null) {
+			remembered = new ArrayList<>();
+		}
+		remembered.removeIf(id -> {
+			VestigesSystem s = VestigesSystem.byId(id);
+			return s == null || enabled(s);
+		});
 		return this;
 	}
 
@@ -65,23 +80,50 @@ public final class ServerConfig {
 		systems.put(system.id, system.core() || on);
 	}
 
-	/** Switches one feature and keeps the rest valid: turning on also turns on what it needs, turning off also turns off what needs it. */
+	/**
+	 * Switches one feature and keeps the rest valid: turning on also turns on what it needs, turning off also turns off what needs it. What was
+	 * turned off with it is remembered and comes back when it is turned on again (but not when something else turns it on by need).
+	 */
 	public void setWithNeeds(VestigesSystem system, boolean on) {
 		if (system.core() || enabled(system) == on) {
 			return;
 		}
+		apply(system, on, true);
+	}
+
+	private void apply(VestigesSystem system, boolean on, boolean chosen) {
 		set(system, on);
-		for (VestigesSystem s : VestigesSystem.values()) {
-			if (on && system.needs().contains(s)) {
-				setWithNeeds(s, true);
+		if (on) {
+			remembered.remove(system.id);
+			for (VestigesSystem need : system.needs()) {
+				if (!enabled(need)) {
+					apply(need, true, false);
+				}
 			}
-			if (!on && s.needs().contains(system)) {
-				setWithNeeds(s, false);
+			if (chosen) {
+				for (VestigesSystem s : VestigesSystem.values()) {
+					if (remembered.contains(s.id) && s.needs().contains(system) && s.needs().stream().allMatch(this::enabled)) {
+						apply(s, true, true);
+					}
+				}
+			}
+		} else {
+			if (chosen) {
+				remembered.remove(system.id);
+			}
+			for (VestigesSystem s : VestigesSystem.values()) {
+				if (s.needs().contains(system) && enabled(s)) {
+					apply(s, false, false);
+					if (!remembered.contains(s.id)) {
+						remembered.add(s.id);
+					}
+				}
 			}
 		}
 	}
 
 	public void applyPreset(VestigesSystem.Preset preset) {
+		remembered.clear();
 		for (VestigesSystem s : VestigesSystem.values()) {
 			set(s, s.inPreset(preset));
 		}

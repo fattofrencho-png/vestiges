@@ -1,0 +1,89 @@
+{
+ "job": "fletcher",
+ "offers": [
+  {
+   "item": "minecraft:arrow",
+   "count": 16,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:flint",
+   "count": 10,
+   "price": 1,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:feather",
+   "count": 12,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:bow",
+   "count": 1,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:tripwire_hook",
+   "count": 4,
+   "price": 4,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:crossbow",
+   "count": 1,
+   "price": 8,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:spectral_arrow",
+   "count": 12,
+   "price": 12,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:tipped_arrow",
+   "count": 8,
+   "price": 16,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:target",
+   "count": 2,
+   "price": 10,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:crossbow",
+   "count": 1,
+   "price": 30,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:bow",
+   "count": 1,
+   "price": 26,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:bundle",
+   "count": 1,
+   "price": 80,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

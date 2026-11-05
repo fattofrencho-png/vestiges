@@ -40,8 +40,12 @@ logs/
 # written when unit tests open a world
 /config/
 
-# python
+# blueprint dashboard (dependencies, build output and local library data)
+node_modules/
 __pycache__/
+*.pyc
+/tools/blueprint-dashboard/frontend/dist/
+/tools/blueprint-dashboard/backend/storage/
 
 # app build
 *.exe

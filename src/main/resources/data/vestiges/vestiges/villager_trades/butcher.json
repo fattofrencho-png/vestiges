@@ -1,0 +1,89 @@
+{
+ "job": "butcher",
+ "offers": [
+  {
+   "item": "minecraft:cooked_porkchop",
+   "count": 4,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:cooked_chicken",
+   "count": 4,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:dried_kelp",
+   "count": 8,
+   "price": 1,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:cooked_beef",
+   "count": 6,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:cooked_mutton",
+   "count": 6,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:rabbit_stew",
+   "count": 2,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:beef",
+   "count": 16,
+   "price": 10,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:leather",
+   "count": 8,
+   "price": 9,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:saddle",
+   "count": 1,
+   "price": 16,
+   "tier": 3,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:name_tag",
+   "count": 2,
+   "price": 24,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:golden_carrot",
+   "count": 16,
+   "price": 30,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:saddle",
+   "count": 1,
+   "price": 70,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

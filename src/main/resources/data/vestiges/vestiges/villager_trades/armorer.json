@@ -1,0 +1,96 @@
+{
+ "job": "armorer",
+ "offers": [
+  {
+   "item": "minecraft:iron_ingot",
+   "count": 4,
+   "price": 3,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:chainmail_boots",
+   "count": 1,
+   "price": 3,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:shield",
+   "count": 1,
+   "price": 3,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:iron_helmet",
+   "count": 1,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:iron_boots",
+   "count": 1,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:chainmail_helmet",
+   "count": 1,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:iron_leggings",
+   "count": 1,
+   "price": 12,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:iron_chestplate",
+   "count": 1,
+   "price": 18,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:bell",
+   "count": 1,
+   "price": 14,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:diamond_helmet",
+   "count": 1,
+   "price": 32,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:diamond_boots",
+   "count": 1,
+   "price": 34,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:diamond_leggings",
+   "count": 1,
+   "price": 50,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:diamond_chestplate",
+   "count": 1,
+   "price": 95,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

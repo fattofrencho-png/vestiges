@@ -4,6 +4,7 @@
   "order": 4,
   "name": "Mark the Spot",
   "giver": "Guide",
+  "intro": "Mark your base, a cave, a good view. A waypoint is a promise that you will find the place again.",
   "steps": [
     {
       "type": "waypoint",

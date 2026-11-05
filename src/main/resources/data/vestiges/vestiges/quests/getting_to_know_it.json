@@ -4,6 +4,7 @@
   "order": 2,
   "name": "Getting to Know It",
   "giver": "Guide",
+  "intro": "Use a block again and again and you become Familiar with it. Blocks you placed yourself do not count, so go out and use the world.",
   "steps": [
     {
       "type": "familiar",

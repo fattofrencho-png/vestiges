@@ -1,0 +1,89 @@
+{
+ "job": "leatherworker",
+ "offers": [
+  {
+   "item": "minecraft:leather",
+   "count": 6,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:rabbit_hide",
+   "count": 6,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:leather_boots",
+   "count": 1,
+   "price": 3,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:leather_helmet",
+   "count": 1,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:leather_leggings",
+   "count": 1,
+   "price": 7,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:leather_chestplate",
+   "count": 1,
+   "price": 8,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:saddle",
+   "count": 1,
+   "price": 14,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:item_frame",
+   "count": 4,
+   "price": 12,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:leather_horse_armor",
+   "count": 1,
+   "price": 18,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:bundle",
+   "count": 1,
+   "price": 25,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:name_tag",
+   "count": 2,
+   "price": 32,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:leather_horse_armor",
+   "count": 1,
+   "price": 60,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

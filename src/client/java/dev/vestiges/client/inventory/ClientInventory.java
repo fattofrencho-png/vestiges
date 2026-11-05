@@ -32,11 +32,15 @@ import net.minecraft.world.level.block.state.BlockState;
 public final class ClientInventory {
 	private static final Map<Integer, ItemStack> ELYTRA = new HashMap<>();
 	private static List<String> pageNames = List.of();
+	private static boolean shulkerOpen;
+	private static int shulkerColor;
+	private static String shulkerName = "";
 	private static int unlockedPages = 1;
 	private static int totalPages = 25;
 	public static KeyMapping zoomKey;
 	public static KeyMapping toolKey;
 	public static KeyMapping weaponKey;
+	public static KeyMapping hotbarSetKey;
 
 	private ClientInventory() {
 	}
@@ -53,6 +57,7 @@ public final class ClientInventory {
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
 			ELYTRA.clear();
 			pageNames = List.of();
+			shulkerOpen = false;
 		}));
 	}
 
@@ -74,6 +79,24 @@ public final class ClientInventory {
 		if (p != null) {
 			((ExtraHolder) p).vestiges$setBank(json.get("amount").getAsLong());
 		}
+	}
+
+	public static void onShulker(JsonObject json) {
+		shulkerOpen = json.get("open").getAsBoolean();
+		shulkerColor = json.get("color").getAsInt();
+		shulkerName = json.get("name").getAsString();
+	}
+
+	public static boolean shulkerOpen() {
+		return shulkerOpen;
+	}
+
+	public static int shulkerColor() {
+		return shulkerColor;
+	}
+
+	public static String shulkerName() {
+		return shulkerName;
 	}
 
 	public static void onPages(JsonObject json) {
@@ -155,6 +178,9 @@ public final class ClientInventory {
 		}
 		while (weaponKey != null && weaponKey.consumeClick()) {
 			selectExtra(mc.player, Selection.WEAPON);
+		}
+		while (hotbarSetKey != null && hotbarSetKey.consumeClick()) {
+			send("hotbar_next", 0, 0, "");
 		}
 	}
 

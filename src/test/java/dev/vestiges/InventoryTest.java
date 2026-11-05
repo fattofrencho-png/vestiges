@@ -1,10 +1,12 @@
 package dev.vestiges;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.vestiges.inventory.ExtraSlots;
 import dev.vestiges.inventory.InventoryLayout;
+import dev.vestiges.inventory.StackRules;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -23,6 +25,17 @@ class InventoryTest {
 			assertTrue(p[0] >= 0 && p[0] + 16 <= InventoryLayout.WIDTH, "slot " + i + " outside the window");
 		}
 		assertFalse(seen.contains(InventoryLayout.BANK_X + "," + InventoryLayout.BANK_Y), "the Bank sits on its own spot");
+	}
+
+	@Test
+	void biggerStacksFollowTheRule() {
+		assertEquals(64, StackRules.max(64, false, 64, 16));
+		assertEquals(64, StackRules.max(16, false, 64, 16));
+		assertEquals(99, StackRules.max(16, false, 99, 16));
+		assertEquals(1, StackRules.max(1, false, 99, 16));
+		assertEquals(16, StackRules.max(1, true, 64, 16));
+		assertEquals(99, StackRules.max(1, true, 64, 500));
+		assertEquals(1, StackRules.max(1, true, 64, 0));
 	}
 
 	@Test

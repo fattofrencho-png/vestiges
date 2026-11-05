@@ -4,6 +4,7 @@
   "order": 4,
   "name": "Easy Harvest",
   "giver": "Guide",
+  "intro": "No more breaking and replanting. Right-click a ripe crop and it replants itself.",
   "steps": [
     {
       "type": "harvest",

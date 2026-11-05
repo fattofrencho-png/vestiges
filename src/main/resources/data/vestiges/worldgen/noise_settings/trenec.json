@@ -1,0 +1,168 @@
+{
+  "aquifers": {
+    "barrier": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:aquifer_barrier",
+      "xz_scale": 1.0,
+      "y_scale": 0.5
+    },
+    "exclusion": {
+      "type": "minecraft:min",
+      "left": {
+        "type": "minecraft:sub",
+        "left": -0.225,
+        "right": "vestiges:trenec/erosion"
+      },
+      "right": {
+        "type": "minecraft:max",
+        "left": {
+          "type": "minecraft:sub",
+          "left": "vestiges:trenec/depth",
+          "right": 0.9
+        },
+        "right": 0.0
+      }
+    },
+    "fluid_level_floodedness": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:aquifer_fluid_level_floodedness",
+      "xz_scale": 1.0,
+      "y_scale": 0.67
+    },
+    "fluid_level_spread": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:aquifer_fluid_level_spread",
+      "xz_scale": 1.0,
+      "y_scale": 0.7142857142857143
+    },
+    "lava": {
+      "type": "minecraft:noise",
+      "noise": "minecraft:aquifer_lava",
+      "xz_scale": 1.0,
+      "y_scale": 1.0
+    },
+    "surface_level": "vestiges:trenec/preliminary_surface_level"
+  },
+  "debug_functions": [
+    {
+      "function": "vestiges:trenec/final_density",
+      "label": "N"
+    },
+    {
+      "function": "vestiges:trenec/temperature",
+      "label": "T"
+    },
+    {
+      "function": "vestiges:trenec/vegetation",
+      "label": "V"
+    },
+    {
+      "function": "vestiges:trenec/continents",
+      "label": "C"
+    },
+    {
+      "function": "vestiges:trenec/erosion",
+      "label": "E"
+    },
+    {
+      "function": "vestiges:trenec/depth",
+      "label": "D"
+    },
+    {
+      "function": "vestiges:trenec/ridges",
+      "label": "W"
+    },
+    {
+      "function": {
+        "type": "minecraft:mul",
+        "left": {
+          "type": "minecraft:add",
+          "left": {
+            "type": "minecraft:abs",
+            "input": {
+              "type": "minecraft:add",
+              "left": {
+                "type": "minecraft:abs",
+                "input": "vestiges:trenec/ridges"
+              },
+              "right": -0.6666667
+            }
+          },
+          "right": -0.33333334
+        },
+        "right": -3.0
+      },
+      "label": "PV"
+    },
+    {
+      "function": "vestiges:trenec/preliminary_surface_level",
+      "label": "PS"
+    }
+  ],
+  "default_block": "minecraft:stone",
+  "default_fluid": "minecraft:water",
+  "disable_mob_generation": false,
+  "legacy_random_source": false,
+  "material_rule": "minecraft:overworld",
+  "noise": {
+    "height": 384,
+    "min_y": -64
+  },
+  "noise_router": {
+    "chunk_surface_level": "vestiges:trenec/chunk_surface_level",
+    "continents": "vestiges:trenec/continents",
+    "depth": "vestiges:trenec/depth",
+    "erosion": "vestiges:trenec/erosion",
+    "final_density": "vestiges:trenec/final_density",
+    "ridges": "vestiges:trenec/ridges",
+    "temperature": "vestiges:trenec/temperature",
+    "vegetation": "vestiges:trenec/vegetation"
+  },
+  "sea_level": 63,
+  "spawn_target": [
+    {
+      "vestiges:trenec/ridges": [
+        -1.0,
+        -0.16
+      ],
+      "vestiges:trenec/continents": [
+        -0.11,
+        1.0
+      ],
+      "vestiges:trenec/erosion": [
+        -1.0,
+        1.0
+      ],
+      "vestiges:trenec/temperature": [
+        -1.0,
+        1.0
+      ],
+      "vestiges:trenec/vegetation": [
+        -1.0,
+        1.0
+      ]
+    },
+    {
+      "vestiges:trenec/ridges": [
+        0.16,
+        1.0
+      ],
+      "vestiges:trenec/continents": [
+        -0.11,
+        1.0
+      ],
+      "vestiges:trenec/erosion": [
+        -1.0,
+        1.0
+      ],
+      "vestiges:trenec/temperature": [
+        -1.0,
+        1.0
+      ],
+      "vestiges:trenec/vegetation": [
+        -1.0,
+        1.0
+      ]
+    }
+  ]
+}

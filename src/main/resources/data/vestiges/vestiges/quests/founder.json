@@ -4,6 +4,7 @@
   "order": 0,
   "name": "Founder",
   "giver": "Guide",
+  "intro": "A feat is a goal that pays out. Founder is your first step toward a home: level 10, five beds and a villager.",
   "steps": [
     {
       "type": "feat",

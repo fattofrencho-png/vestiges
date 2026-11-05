@@ -45,7 +45,10 @@ public class VestigesClient implements ClientModInitializer {
 		dev.vestiges.client.codex.ClientCodex.register();
 		dev.vestiges.client.farming.ClientMeals.register();
 		dev.vestiges.client.settlement.ClientSettlements.register();
+		dev.vestiges.client.villager.ClientVillagers.register();
 		MapScanner.register();
+		dev.vestiges.client.camera.IsoCamera.load();
+		dev.vestiges.client.camera.CameraCommand.register();
 		KeyMapping.Category category = KeyMapping.Category.register(Vestiges.id("main"));
 		hubKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.hub", InputConstants.KEY_H, category));
 		mapKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.map", InputConstants.KEY_M, category));
@@ -55,6 +58,7 @@ public class VestigesClient implements ClientModInitializer {
 		dev.vestiges.client.inventory.ClientInventory.zoomKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.zoom", InputConstants.KEY_Z, category));
 		dev.vestiges.client.inventory.ClientInventory.toolKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.tool_slot", InputConstants.UNKNOWN.getValue(), category));
 		dev.vestiges.client.inventory.ClientInventory.weaponKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.weapon_slot", InputConstants.UNKNOWN.getValue(), category));
+		dev.vestiges.client.inventory.ClientInventory.hotbarSetKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.vestiges.hotbar_set", InputConstants.KEY_G, category));
 		HudElementRegistry.addLast(Vestiges.id("minimap"), new MinimapHud());
 		HudElementRegistry.addLast(Vestiges.id("look_at"), new LookAtHud());
 		HudElementRegistry.addLast(Vestiges.id("xp"), new XpHud());

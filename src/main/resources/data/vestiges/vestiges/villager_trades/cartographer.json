@@ -1,0 +1,89 @@
+{
+ "job": "cartographer",
+ "offers": [
+  {
+   "item": "minecraft:paper",
+   "count": 12,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:glass_pane",
+   "count": 10,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:map",
+   "count": 1,
+   "price": 3,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:compass",
+   "count": 1,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:item_frame",
+   "count": 3,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:white_banner",
+   "count": 1,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:spyglass",
+   "count": 1,
+   "price": 12,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:lantern",
+   "count": 2,
+   "price": 10,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:clock",
+   "count": 1,
+   "price": 14,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:recovery_compass",
+   "count": 1,
+   "price": 40,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:glow_item_frame",
+   "count": 4,
+   "price": 28,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:recovery_compass",
+   "count": 2,
+   "price": 110,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

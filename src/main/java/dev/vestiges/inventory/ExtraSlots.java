@@ -14,7 +14,7 @@ import net.minecraft.world.item.Items;
 
 /**
  * The new inventory slots (M2, approved layout A): tool rack (8), weapon rack (6), arrows, tool belt (4), the second offhand slot, elytra,
- * totem and ender chest. Each rack position takes one kind of item, so there is one of each type. Lives on the player and in its
+ * totem, ender chest and crafting table. Each rack position takes one kind of item, so there is one of each type. Lives on the player and in its
  * inventory menu, so vanilla keeps the client in sync.
  */
 public final class ExtraSlots extends SimpleContainer {
@@ -29,7 +29,8 @@ public final class ExtraSlots extends SimpleContainer {
 	public static final int ELYTRA = 20;
 	public static final int TOTEM = 21;
 	public static final int ENDER = 22;
-	public static final int SIZE = 23;
+	public static final int TABLE = 23;
+	public static final int SIZE = 24;
 
 	public static final Codec<List<ItemStack>> CODEC = ItemStack.OPTIONAL_CODEC.listOf();
 
@@ -45,18 +46,19 @@ public final class ExtraSlots extends SimpleContainer {
 		s -> true,
 		s -> s.has(DataComponents.GLIDER),
 		s -> s.has(DataComponents.DEATH_PROTECTION),
-		s -> s.is(Items.ENDER_CHEST));
+		s -> s.is(Items.ENDER_CHEST),
+		s -> s.is(Items.CRAFTING_TABLE));
 
 	/** Outline icons for empty slots: vanilla's where it has one, Vestiges' own (same style) for the rest. */
 	private static final String[] ICONS = {"pickaxe", "axe", "shovel", "hoe", "vestiges:shears", "vestiges:fishing_rod", "vestiges:flint_and_steel",
 		"vestiges:brush", "sword", "vestiges:mace", "spear", "vestiges:trident", "vestiges:bow", "vestiges:crossbow", "vestiges:arrow",
 		"vestiges:compass", "vestiges:clock", "vestiges:map", "vestiges:spyglass", "shield", "vestiges:elytra", "vestiges:totem",
-		"vestiges:ender_chest"};
+		"vestiges:ender_chest", "vestiges:crafting_table"};
 
 	/** What each slot is called (empty-slot tooltips). */
 	public static final String[] NAMES = {"Pickaxe", "Axe", "Shovel", "Hoe", "Shears", "Fishing rod", "Flint and steel", "Brush", "Sword",
 		"Mace", "Spear", "Trident", "Bow", "Crossbow", "Arrows", "Compass", "Clock", "Map", "Spyglass", "Second offhand", "Elytra", "Totem",
-		"Ender chest"};
+		"Ender chest", "Crafting table"};
 
 	public ExtraSlots() {
 		super(SIZE);
@@ -76,8 +78,12 @@ public final class ExtraSlots extends SimpleContainer {
 		return -1;
 	}
 
+	public boolean hasTable() {
+		return !getItem(TABLE).isEmpty();
+	}
+
 	public static int maxStack(int slot) {
-		return slot == ARROWS || slot == OFFHAND2 ? 64 : 1;
+		return slot == ARROWS || slot == OFFHAND2 ? StackRules.BIG : 1;
 	}
 
 	public static Identifier icon(int slot) {

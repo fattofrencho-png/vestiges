@@ -8,11 +8,6 @@
       "type": "new_biome",
       "text": "Discover a new biome.",
       "amount": 1
-    },
-    {
-      "type": "talk",
-      "text": "Sneak and right-click the villager again.",
-      "amount": 1
     }
   ],
   "reward": {

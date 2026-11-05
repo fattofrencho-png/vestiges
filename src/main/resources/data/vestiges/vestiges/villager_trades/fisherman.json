@@ -1,0 +1,89 @@
+{
+ "job": "fisherman",
+ "offers": [
+  {
+   "item": "minecraft:cod",
+   "count": 6,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:salmon",
+   "count": 6,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:stick",
+   "count": 16,
+   "price": 1,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:cooked_cod",
+   "count": 6,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:cooked_salmon",
+   "count": 6,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:fishing_rod",
+   "count": 1,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:campfire",
+   "count": 1,
+   "price": 10,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:oak_boat",
+   "count": 1,
+   "price": 12,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:tropical_fish",
+   "count": 3,
+   "price": 9,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:nautilus_shell",
+   "count": 1,
+   "price": 30,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:name_tag",
+   "count": 1,
+   "price": 24,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:heart_of_the_sea",
+   "count": 1,
+   "price": 110,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

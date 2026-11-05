@@ -119,6 +119,12 @@ public final class MapStore {
 		}
 	}
 
+	/** The mapped colour (ARGB) of one block column, or 0 when nothing was mapped there yet. Used by the automatic checks. */
+	public static int pixel(Identifier dimension, String layer, int x, int z) {
+		MapRegion r = forRead(dimension, layer, MapMath.region(x), MapMath.region(z));
+		return r == null ? 0 : r.get(MapMath.local(x), MapMath.local(z));
+	}
+
 	static void setPixel(Identifier dimension, String layer, int x, int z, int argb) {
 		MapRegion r = forWrite(dimension, layer, MapMath.region(x), MapMath.region(z));
 		if (r != null) {

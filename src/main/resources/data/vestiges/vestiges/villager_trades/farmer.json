@@ -1,0 +1,89 @@
+{
+ "job": "farmer",
+ "offers": [
+  {
+   "item": "minecraft:bread",
+   "count": 6,
+   "price": 1,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:carrot",
+   "count": 8,
+   "price": 1,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:apple",
+   "count": 4,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:pumpkin_pie",
+   "count": 3,
+   "price": 4,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:golden_carrot",
+   "count": 4,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:cookie",
+   "count": 12,
+   "price": 4,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:cake",
+   "count": 1,
+   "price": 10,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:hay_block",
+   "count": 6,
+   "price": 9,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:honey_bottle",
+   "count": 4,
+   "price": 14,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:golden_apple",
+   "count": 1,
+   "price": 28,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:glistering_melon_slice",
+   "count": 4,
+   "price": 24,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:enchanted_golden_apple",
+   "count": 1,
+   "price": 120,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

@@ -11,6 +11,14 @@ import org.spongepowered.asm.mixin.injection.At;
 /** The mouse wheel also reaches the belt, Tool and Weapon slots (and Ctrl / Alt + wheel move inside the racks). */
 @Mixin(MouseHandler.class)
 public abstract class MouseHandlerMixin {
+	/** Dungeon camera test: the mouse does not turn the character inside the camera zone. */
+	@org.spongepowered.asm.mixin.injection.Inject(method = "turnPlayer", at = @At("HEAD"), cancellable = true)
+	private void vestiges$noTurn(double movementTime, org.spongepowered.asm.mixin.injection.callback.CallbackInfo ci) {
+		if (dev.vestiges.client.camera.IsoCamera.steering()) {
+			ci.cancel();
+		}
+	}
+
 	@WrapOperation(method = "onScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Inventory;setSelectedSlot(I)V"))
 	private void vestiges$scroll(Inventory inventory, int next, Operation<Void> original) {
 		if (!ClientInventory.onScroll(inventory, next)) {

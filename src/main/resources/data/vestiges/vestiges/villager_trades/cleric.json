@@ -1,0 +1,89 @@
+{
+ "job": "cleric",
+ "offers": [
+  {
+   "item": "minecraft:redstone",
+   "count": 8,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:lapis_lazuli",
+   "count": 6,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:glass_bottle",
+   "count": 6,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:gold_ingot",
+   "count": 3,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:blaze_powder",
+   "count": 3,
+   "price": 7,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:nether_wart",
+   "count": 4,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:glowstone",
+   "count": 4,
+   "price": 12,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:ender_pearl",
+   "count": 2,
+   "price": 16,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:experience_bottle",
+   "count": 2,
+   "price": 14,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:ender_pearl",
+   "count": 6,
+   "price": 45,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:experience_bottle",
+   "count": 8,
+   "price": 50,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:totem_of_undying",
+   "count": 1,
+   "price": 130,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

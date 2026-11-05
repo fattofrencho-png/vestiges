@@ -55,8 +55,24 @@ public final class ScreenshotTour implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext ctx) {
+		if (System.getenv("VESTIGES_SUITE") != null) {
+			return;
+		}
+		if ("capital".equals(System.getenv("VESTIGES_TOUR"))) {
+			WorldTour.capital(ctx);
+			return;
+		}
+		if ("world".equals(System.getenv("VESTIGES_TOUR"))) {
+			WorldTour.run(ctx);
+			return;
+		}
+		if ("protection".equals(System.getenv("VESTIGES_TOUR"))) {
+			ProtectionCheck.run(ctx);
+			return;
+		}
 		boolean off = "off".equals(System.getenv("VESTIGES_TOUR"));
 		ctx.getInput().resizeWindow(1920, 1080);
+		ctx.runOnClient(mc -> mc.options.getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource.MASTER).set(0.0));
 		welcome(ctx, off);
 		ctx.waitFor(mc -> mc.player != null && mc.level != null && mc.gui.screen() == null, 3600);
 		TestServerContext server = new TestServerContextImpl(ctx.computeOnClient(Minecraft::getSingleplayerServer));
@@ -84,8 +100,22 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		if (!off) {
 			worldMap(ctx);
 			quests(ctx, server);
+			sorting(ctx, server);
 		}
+		// Away from the lava scene, healed and not burning, so the inventory shots are readable.
+		server.runCommand("gamemode creative @p");
+		server.runOnServer(s -> {
+			var p = s.getPlayerList().getPlayers().get(0);
+			p.clearFire();
+			p.setHealth(p.getMaxHealth());
+		});
+		T.goTo(ctx, server, 0, 0, 20);
+		server.runCommand("gamemode survival @p");
+		ctx.waitTicks(20);
 		inventory(ctx, mode);
+		server.runOnServer(s -> InventoryHooks.slots(s.getPlayerList().getPlayers().get(0)).setItem(ExtraSlots.TABLE, ItemStack.EMPTY));
+		inventory(ctx, mode + "no_table_");
+		server.runOnServer(s -> InventoryHooks.slots(s.getPlayerList().getPlayers().get(0)).setItem(ExtraSlots.TABLE, new ItemStack(Items.CRAFTING_TABLE)));
 		if (!off) {
 			everyScreen(ctx, server);
 		}
@@ -205,6 +235,85 @@ public final class ScreenshotTour implements FabricClientGameTest {
 		ctx.setScreen(() -> null);
 	}
 
+	/** Sort, hotbar sets and bigger stacks on a real player: prints the counts so a lost or created item shows. */
+	private static void sorting(ClientGameTestContext ctx, TestServerContext server) {
+		ctx.setScreen(() -> null);
+		ctx.waitTicks(5);
+		String result = server.computeOnServer(s -> {
+			net.minecraft.server.level.ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			net.minecraft.world.entity.player.Inventory inv = p.getInventory();
+			inv.clearContent();
+			inv.setItem(0, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.BREAD, 5));
+			inv.setItem(9, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIRT, 90));
+			inv.setItem(20, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIRT, 30));
+			inv.setItem(30, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.COBBLESTONE, 7));
+			inv.setItem(31, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.POTION, 1));
+			dev.vestiges.inventory.InventorySorter.sort(p);
+			String sorted = inv.getItem(9) + " " + inv.getItem(10) + " " + inv.getItem(11) + " " + inv.getItem(12);
+			dev.vestiges.inventory.HotbarSets.switchTo(p, 1);
+			String set1 = "slot0 " + inv.getItem(0) + " potion limit " + new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.POTION).getMaxStackSize();
+			inv.setItem(3, inv.getItem(9).copy());
+			inv.setItem(9, net.minecraft.world.item.ItemStack.EMPTY);
+			dev.vestiges.inventory.HotbarSets.switchTo(p, 0);
+			String back = "slot0 " + inv.getItem(0) + " slot3 " + inv.getItem(3);
+			dev.vestiges.inventory.HotbarSets.switchTo(p, 1);
+			p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+			net.minecraft.world.item.ItemStack water = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.WATER_BUCKET, 5);
+			String bucket = "water limit " + water.getMaxStackSize() + ", after one use " + net.minecraft.world.item.BucketItem.getEmptySuccessItem(water, p)
+				+ ", dirt limit " + new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.ENDER_PEARL).getMaxStackSize()
+				+ ", empty bucket in inventory " + inv.countItem(net.minecraft.world.item.Items.BUCKET);
+			System.out.println("[tour] stacks: " + bucket);
+			return "sorted " + sorted + " | set 1 " + set1 + " | back " + back + " | again slot3 " + inv.getItem(3);
+		});
+		System.out.println("[tour] sorting: " + result);
+		// The 3x3 grid: a chest needs a table; without one, the extra slots' items go back to the inventory.
+		String grid = server.computeOnServer(s -> {
+			net.minecraft.server.level.ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			dev.vestiges.inventory.ExtraSlots x = dev.vestiges.inventory.InventoryHooks.slots(p);
+			net.minecraft.world.inventory.CraftingContainer c = p.inventoryMenu.getCraftSlots();
+			x.setItem(dev.vestiges.inventory.ExtraSlots.TABLE, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.CRAFTING_TABLE));
+			for (int i = 0; i < 9; i++) {
+				if (i != 4) {
+					c.setItem(i, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.OAK_PLANKS));
+				}
+			}
+			p.inventoryMenu.slotsChanged(c);
+			String made = p.inventoryMenu.getSlot(0).getItem().toString();
+			x.setItem(dev.vestiges.inventory.ExtraSlots.TABLE, net.minecraft.world.item.ItemStack.EMPTY);
+			return "with table " + made + ", width " + p.inventoryMenu.getGridWidth() + ", input slots " + p.inventoryMenu.getInputGridSlots().size();
+		});
+		ctx.waitTicks(5);
+		String after = server.computeOnServer(s -> {
+			net.minecraft.server.level.ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			net.minecraft.world.inventory.CraftingContainer c = p.inventoryMenu.getCraftSlots();
+			String out = "without table result " + p.inventoryMenu.getSlot(0).getItem() + ", grid slot 2 " + c.getItem(2) + ", planks in inventory " + p.getInventory().countItem(net.minecraft.world.item.Items.OAK_PLANKS);
+			c.clearContent();
+			p.inventoryMenu.slotsChanged(c);
+			return out;
+		});
+		System.out.println("[tour] grid: " + grid + " | " + after);
+		// A shulker box from the inventory: items go into the item itself, and the box's slot is locked.
+		String box = server.computeOnServer(s -> {
+			net.minecraft.server.level.ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			net.minecraft.world.entity.player.Inventory inv = p.getInventory();
+			inv.setItem(35, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SHULKER_BOX));
+			dev.vestiges.inventory.ShulkerSession.open(p, 35);
+			net.minecraft.world.inventory.AbstractContainerMenu m = p.containerMenu;
+			m.getSlot(0).set(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND, 7));
+			boolean locked = true;
+			for (net.minecraft.world.inventory.Slot slot : m.slots) {
+				if (slot.container == inv && slot.getContainerSlot() == 35) {
+					locked = !slot.mayPickup(p);
+				}
+			}
+			boolean valid = m.stillValid(p);
+			p.closeContainer();
+			return "menu " + m.getClass().getSimpleName() + ", locked " + locked + ", valid " + valid + ", saved " + inv.getItem(35).getOrDefault(net.minecraft.core.component.DataComponents.CONTAINER, net.minecraft.world.item.component.ItemContainerContents.EMPTY).nonEmptyItemCopyStream().toList() + ", back to inventory menu " + (p.containerMenu == p.inventoryMenu);
+		});
+		System.out.println("[tour] shulker: " + box);
+		server.runOnServer(s -> dev.vestiges.inventory.InventoryHooks.slots(s.getPlayerList().getPlayers().get(0)).setItem(dev.vestiges.inventory.ExtraSlots.TABLE, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.CRAFTING_TABLE)));
+	}
+
 	private static void printQuests(ClientGameTestContext ctx, TestServerContext server, String when) {
 		ctx.waitTicks(5);
 		String state = server.computeOnServer(s -> {
@@ -305,6 +414,7 @@ public final class ScreenshotTour implements FabricClientGameTest {
 				x.setItem(ExtraSlots.BELT + i, new ItemStack(belt[i]));
 			}
 			x.setItem(ExtraSlots.ELYTRA, new ItemStack(Items.ELYTRA));
+			x.setItem(ExtraSlots.TABLE, new ItemStack(Items.CRAFTING_TABLE));
 			x.setItem(ExtraSlots.ENDER, new ItemStack(Items.ENDER_CHEST));
 			x.setItem(ExtraSlots.TOTEM, new ItemStack(Items.TOTEM_OF_UNDYING));
 		});

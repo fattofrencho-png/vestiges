@@ -28,14 +28,19 @@ public final class MapNet {
 			Vestiges.LOGGER.warn("Vestiges: bad map action '{}' from {}", a.action(), player.getName().getString());
 			return;
 		}
-		switch (a.action()) {
-			case "pin" -> PinManager.pin(player, json);
-			case "unpin" -> PinManager.unpin(player, true);
-			case "share" -> share(player, json);
-			case "waystone_travel" -> WaystoneService.travel(player, json.get("from").getAsInt(), json.get("to").getAsInt());
-			case "waystone_rename" -> WaystoneService.rename(player, json.get("id").getAsInt(), json.get("name").getAsString());
-			case "waystone_share" -> WaystoneService.share(player, json.get("id").getAsInt(), json.get("player").getAsString());
-			default -> Vestiges.LOGGER.warn("Vestiges: unknown map action '{}'", a.action());
+		try {
+			switch (a.action()) {
+				case "pin" -> PinManager.pin(player, json);
+				case "unpin" -> PinManager.unpin(player, true);
+				case "share" -> share(player, json);
+				case "waystone_travel" -> WaystoneService.travel(player, json.get("from").getAsInt(), json.get("to").getAsInt());
+				case "waystone_rename" -> WaystoneService.rename(player, json.get("id").getAsInt(), json.get("name").getAsString());
+				case "waystone_share" -> WaystoneService.share(player, json.get("id").getAsInt(), json.get("player").getAsString());
+				default -> Vestiges.LOGGER.warn("Vestiges: unknown map action '{}'", a.action());
+			}
+		} catch (RuntimeException e) {
+			// Missing or wrong fields: only a modified client sends these.
+			Vestiges.LOGGER.warn("Vestiges: bad map action '{}' from {}: {}", a.action(), player.getName().getString(), e.toString());
 		}
 	}
 

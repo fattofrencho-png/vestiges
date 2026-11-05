@@ -1,0 +1,89 @@
+{
+ "job": "mason",
+ "offers": [
+  {
+   "item": "minecraft:bricks",
+   "count": 8,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:clay_ball",
+   "count": 16,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:stone_bricks",
+   "count": 12,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:terracotta",
+   "count": 6,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:polished_andesite",
+   "count": 12,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:quartz",
+   "count": 6,
+   "price": 7,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:quartz_pillar",
+   "count": 4,
+   "price": 12,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:chiseled_stone_bricks",
+   "count": 8,
+   "price": 10,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:white_glazed_terracotta",
+   "count": 4,
+   "price": 14,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:quartz_block",
+   "count": 16,
+   "price": 28,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:red_sandstone",
+   "count": 16,
+   "price": 22,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:smooth_quartz",
+   "count": 64,
+   "price": 80,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

@@ -23,11 +23,15 @@ public class Vestiges implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		dev.vestiges.world.GlobeFunction.register();
+		dev.vestiges.world.WorldPlans.register();
 		dev.vestiges.server.SavedItems.register();
 		ModAttachments.init();
 		dev.vestiges.codex.PlacedBlocks.init();
 		dev.vestiges.loot.LootTypes.register();
 		VestigesData.register();
+		dev.vestiges.net.VillagerPayloads.register();
+		dev.vestiges.villager.VillagerService.register();
 		VestigesPayloads.register();
 		HubNet.register();
 		PlayerProfiles.register();
@@ -39,6 +43,7 @@ public class Vestiges implements ModInitializer {
 		dev.vestiges.level.LevelService.register();
 		dev.vestiges.level.XpSources.register();
 		dev.vestiges.grave.GraveService.register();
+		dev.vestiges.dungeon.DungeonService.register();
 		dev.vestiges.net.TreePayloads.register();
 		dev.vestiges.tree.TreeService.register();
 		dev.vestiges.tree.TreeTicker.register();

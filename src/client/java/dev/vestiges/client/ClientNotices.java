@@ -31,6 +31,7 @@ public final class ClientNotices {
 				case "graves" -> ClientWaypoints.syncGraves(json.getAsJsonArray("graves"));
 				case "thick_hide" -> dev.vestiges.client.tree.ClientTree.onThickHide(json);
 				case "bank" -> dev.vestiges.client.inventory.ClientInventory.onBank(json);
+				case "shulker_session" -> dev.vestiges.client.inventory.ClientInventory.onShulker(json);
 				case "pages" -> dev.vestiges.client.inventory.ClientInventory.onPages(json);
 				case "discovery" -> XpHud.discovery(json.get("key").getAsString(), json.get("xp").getAsLong());
 				case "layer" -> XpHud.layer(json.get("name").getAsString(), json.get("cap").getAsInt());
