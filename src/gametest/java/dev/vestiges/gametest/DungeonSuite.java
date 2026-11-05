@@ -667,8 +667,9 @@ final class DungeonSuite {
 		c.check("the reward chest has 4 to 8 emeralds, exactly one key, 2 gear rolls and sometimes a book", emeralds >= 4 && emeralds <= 8 && keys == 1 && others >= 2 && others <= 3,
 			emeralds + " emeralds, " + keys + " keys, " + others + " other: " + prize);
 		DungeonKeys.Data nextKey = prize == null ? null : prize.stream().map(DungeonKeys::read).filter(java.util.Objects::nonNull).findFirst().orElse(null);
-		c.check("the next key is Overgrown, tier 1 to 4 (after tier 2: 15% / 55% / 25% / 5%)", nextKey != null && nextKey.theme().equals("overgrown")
-			&& nextKey.tier() >= 1 && nextKey.tier() <= 4, String.valueOf(nextKey));
+		// The next key keeps the theme 60% of the time and otherwise takes another theme open from the start, so Trial is a fair answer too.
+		c.check("the next key is an Overgrown or Trial key, tier 1 to 4 (after tier 2: 15% / 55% / 25% / 5%)", nextKey != null
+			&& (nextKey.theme().equals("overgrown") || nextKey.theme().equals("trial")) && nextKey.tier() >= 1 && nextKey.tier() <= 4, String.valueOf(nextKey));
 		java.util.List<ItemStack> prizeCache = openChest(server, reward.caches().get(1));
 		c.check("the reward room also holds a theme block cache", cacheTotal(prizeCache, DungeonSuite::isCacheBlock) >= 1, String.valueOf(prizeCache));
 
