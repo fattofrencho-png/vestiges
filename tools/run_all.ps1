@@ -44,6 +44,7 @@ if ($Only.Count -gt 0) {
 $started = Get-Date
 $rows = New-Object System.Collections.ArrayList
 $failures = New-Object System.Collections.ArrayList
+$flakyNotes = New-Object System.Collections.ArrayList
 
 function Read-Report($suite) {
 	$f = Join-Path $runDir "report-$suite.md"
@@ -93,6 +94,17 @@ foreach ($name in $batches.Keys) {
 		Get-ChildItem "$runDir\report-*.md" -ErrorAction SilentlyContinue | Copy-Item -Destination (Join-Path $outDir $name) -Force
 		Get-ChildItem "$runDir\screenshots\*.png" -ErrorAction SilentlyContinue | Copy-Item -Destination (Join-Path $outDir $name) -Force
 		$final = $results
+		if ($batchBad.Count -gt 0 -and $try -lt $attempts) {
+			# Keep what failed on this attempt: if the rerun passes, it is the only trace of the flake.
+			$keep = Join-Path $outDir "$name-attempt$try"
+			New-Item -ItemType Directory -Force $keep | Out-Null
+			Get-ChildItem "$runDir\report-*.md" -ErrorAction SilentlyContinue | Copy-Item -Destination $keep -Force
+			Get-ChildItem "$runDir\logs\latest.log" -ErrorAction SilentlyContinue | Copy-Item -Destination $keep -Force
+			foreach ($s2 in $batchBad) {
+				if ($null -eq $results[$s2]) { [void]$flakyNotes.Add("${name} attempt ${try}: ${s2} wrote no report") }
+				else { foreach ($f2 in $results[$s2].Fails) { [void]$flakyNotes.Add("${name} attempt ${try}: ${s2}: $f2") } }
+			}
+		}
 		if ($batchBad.Count -eq 0) {
 			if ($try -gt 1) { $flaky = $true }
 			break
@@ -133,6 +145,13 @@ if ($failures.Count -gt 0) {
 	[void]$lines.Add("")
 	[void]$lines.Add("## Failures")
 	foreach ($f in $failures) { [void]$lines.Add("- $f") }
+}
+if ($flakyNotes.Count -gt 0) {
+	[void]$lines.Add("")
+	[void]$lines.Add("## What failed on a first attempt (the rerun then passed)")
+	foreach ($f in $flakyNotes) { [void]$lines.Add("- $f") }
+	[void]$lines.Add("")
+	[void]$lines.Add("A repeating line here is a check that needs hardening; its full first-attempt report and game log are in build\run\all\<batch>-attempt1\.")
 }
 [void]$lines.Add("")
 [void]$lines.Add("Full reports and screenshots per batch: build\run\all\<batch>\")
