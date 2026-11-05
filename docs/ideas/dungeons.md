@@ -2,6 +2,7 @@
 
 Idea chat for the Dungeons area. Design only, no code. Source of truth for the big design stays `docs/design-log.md` ("## Dungeons", Part 1 to 4). This file holds the **MVP slice** and later ideas.
 Status: **APPROVED by the author (2026-11-03), ready for the main chat to build.** Sections 1 and 3 are the spec; section 6 is the suggested build order.
+**BUILT 2026-11-05 on branch `claude/dungeons-559493` (slices 1 to 5), with the End theme added (2026-11-04). See the design log ("Built 2026-11-05") and `docs/jb-test-guide-dungeons.md`.**
 
 ## 1. Decided with the author (2026-11-03)
 
@@ -78,3 +79,10 @@ None. Spec approved by the author on 2026-11-03.
 3. **Mobs and bosses:** theme mob lists, level 12 + 3 per tier, party scaling, Lieutenant and Boss as plain strong named mobs.
 4. **Rewards and lives:** per-room caches, loot tables in `tools/build_loot.py`, reward room, next-key odds, First Key feat hookup, lives and leave rules.
 5. **Test pass:** one combined test guide (kit block, then commands). Not tested yet: everything.
+
+## 7. Handing in rooms as structure files (built 2026-11-05)
+A room's data file (`data/vestiges/vestiges/dungeon_rooms/<id>.json`) can name a vanilla structure file in `"structure"` (read from `data/<namespace>/structure/<path>.nbt`). It wins over the built shape of that room; a missing file falls back to the built shape with a log warning.
+- **The file is the whole room, walls included:** `size + 2` blocks wide and deep (32 x 32 floor = 34 x 34), as high as you like (8 to 14 plus the base). Its lowest corner lands on the room's north-west wall corner, one block under the floor, so **the floor surface is the second layer from the bottom** and the bottom layer is the foundation.
+- **Markers** (vanilla blocks, replaced with air when pasted): **gold block** = a monster spawn point (put it where the monster stands, at least 6 of them), **chest** = the cache spot (the game puts its own loot chest there when the room is cleared), **lodestone** = the boss spot (Lieutenant and Boss rooms), **iron door** = a door slot (removed: the game cuts its own doors, 5 wide and 4 tall, in the middle of the west and east walls, whatever the file has there).
+- The start and reward rooms keep their exit frames (west wall for the start, east wall for the reward room), so leave that wall space free.
+- Litematica schematics: send them and I convert them to structure files.

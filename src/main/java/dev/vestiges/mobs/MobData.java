@@ -8,7 +8,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 /**
- * What Vestiges gives a monster when it first appears (M3, approved): its level, its rank (0 normal, 1 Champion, 2 Elite, 3 Warlord), its
+ * What Vestiges gives a monster when it first appears (M3, approved): its level, its rank (0 normal, 1 Champion, 2 Elite, 3 Warlord, and the
+ * dungeon bosses 4 Lieutenant and 5 Boss), its
  * powers, its size, and whether Caller already called. Saved with the mob and sent to clients (look-at card, health bar, glow).
  */
 public record MobData(int level, int rank, List<String> powers, float size, boolean called) {
@@ -16,6 +17,9 @@ public record MobData(int level, int rank, List<String> powers, float size, bool
 	public static final int CHAMPION = 1;
 	public static final int ELITE = 2;
 	public static final int WARLORD = 3;
+	/** Dungeon bosses (design log): Lieutenant x6 and Boss x10 health. */
+	public static final int LIEUTENANT = 4;
+	public static final int BOSS = 5;
 
 	public static final Codec<MobData> CODEC = RecordCodecBuilder.create(i -> i.group(
 		Codec.INT.fieldOf("level").forGetter(MobData::level),
@@ -47,8 +51,15 @@ public record MobData(int level, int rank, List<String> powers, float size, bool
 			case CHAMPION -> 2;
 			case ELITE -> 3;
 			case WARLORD -> 5;
+			case LIEUTENANT -> 6;
+			case BOSS -> 10;
 			default -> 1;
 		};
+	}
+
+	/** What the rank multiplies damage by: the same as its strength, but never more than a Warlord's 5 (a draft for the balance pass). */
+	public double damageStrength() {
+		return Math.min(strength(), 5);
 	}
 
 	public MobData withCalled() {

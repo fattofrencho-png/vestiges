@@ -161,8 +161,12 @@ class LootTest {
 			return 0;
 		}
 		if (e instanceof JsonObject o) {
+			// The dungeon key is an item of ours, registered only in game.
+			if (o.has("name") && o.get("name").isJsonPrimitive() && o.get("name").getAsString().equals("vestiges:dungeon_key")) {
+				o.addProperty("name", "minecraft:trial_key");
+			}
 			if (o.has("type") && o.get("type").isJsonPrimitive() && o.get("type").getAsString().startsWith("vestiges:")) {
-				boolean function = o.get("type").getAsString().equals("vestiges:loot_gear");
+				boolean function = o.get("type").getAsString().equals("vestiges:loot_gear") || o.get("type").getAsString().equals("vestiges:dungeon_key");
 				for (String k : List.copyOf(o.keySet())) {
 					o.remove(k);
 				}

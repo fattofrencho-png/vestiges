@@ -30,7 +30,7 @@ public enum VestigesSystem {
 	VILLAGERS("villagers", "Villagers", Category.WORLD, F.IN_CORE | F.BUILT, "Every villager gets a name and a story, and the library remembers each one you meet.\n\nOff: villagers stay as vanilla made them. Recruiting comes in a later update."),
 	TRADES("trades", "Trade system", Category.WORLD, F.IN_CORE | F.BUILT, "Right-click opens the villager screen. Villagers sell for emeralds, and what they sell depends on your level.\n\nOff: vanilla trading.", "villagers"),
 	WORKERS("workers", "Workers", Category.WORLD, 0, "Jobs that make any item in your settlement.", "settlements", "villagers"),
-	DUNGEONS("dungeons", "Dungeons", Category.WORLD, F.IN_CORE, "Portal runs and the Gate tree."),
+	DUNGEONS("dungeons", "Dungeons", Category.WORLD, F.IN_CORE | F.BUILT, "Portal runs: a key and a portal frame open a dungeon of locked rooms with a boss and rewards.\n\nOff: portal frames do nothing."),
 	EVENTS("events", "World events", Category.WORLD, 0, "Blood Moon, caravans, shrines and more."),
 	NETHER_POCKETS("nether_pockets", "Nether pockets", Category.WORLD, 0, "Rare Nether caves in deepslate."),
 	DRAGONS("dragons", "24 dragons", Category.WORLD, F.IN_CORE, "The End, the Vestige and the story's ending."),

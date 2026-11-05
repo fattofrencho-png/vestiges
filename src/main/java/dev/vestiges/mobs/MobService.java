@@ -224,7 +224,7 @@ public final class MobService {
 		if (d == null || !enabled()) {
 			return 1.0;
 		}
-		return (1 + 0.06 * d.level()) * d.size() * d.strength() * (d.has("brute") ? 1.4 : 1.0);
+		return (1 + 0.06 * d.level()) * d.size() * d.damageStrength() * (d.has("brute") ? 1.4 : 1.0);
 	}
 
 	/** Gives the mob its data and the matching attribute modifiers (permanent ones, saved with the mob, so they stay after a reload). */

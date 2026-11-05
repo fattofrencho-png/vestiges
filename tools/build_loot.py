@@ -5,7 +5,8 @@ Writes, under src/main/resources/data/:
     vestiges/loot_table/loot/bands/band_<N>.json     11 band tables, RPG Craft's 6 pools
     vestiges/loot_table/loot/scaled.json             band router (vestiges:loot_level)
     vestiges/loot_table/loot/bundles/<kit>[/band_N].json  kit bundles + routers
-    vestiges/loot_table/entities/monster_drops.json  mob and elite drops (player kills)
+    vestiges/loot_table/entities/monster_drops.json  mob and elite drops (player kills), including low dungeon keys
+    vestiges/loot_table/dungeon/<theme>_{cache,lieutenant,reward}.json  dungeon chests (theme block caches, gear, books, the next key)
     vestiges/vestiges/loot_rules/default.json        gear ladder + rarity odds, read by Java (LootRules)
     minecraft/loot_table/chests/**.json              every vanilla chest table: themed pools without gear + one band
                                                      roll while the `loot` system is on; the untouched vanilla pools
@@ -19,6 +20,7 @@ Differences from RPG Craft (approved 2026-10-11):
   - every vanilla chest keeps working when the `loot` system is switched off.
 
 Run after changing anything here:   python tools/build_loot.py
+(`--dungeon` writes only the dungeon tables and the monster drops: it needs neither the game jar nor RPG Craft.)
 """
 
 import json
@@ -31,9 +33,10 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "src" / "main" / "resources" / "data"
 LOOT = DATA / "vestiges" / "loot_table" / "loot"
 CHESTS = DATA / "minecraft" / "loot_table" / "chests"
+DUNGEON = DATA / "vestiges" / "loot_table" / "dungeon"
 RPG_CRAFT_CHESTS = (ROOT.parent.parent / "Minecraft DataPacks" / "RPG Craft" / "datapacks" / "RPG_Loot_Rebalanced" / "data"
                     / "minecraft" / "loot_table" / "chests")
-MC_JAR = next((ROOT / ".gradle" / "loom-cache" / "minecraftMaven" / "net" / "minecraft").glob("minecraft-common-*/26.3/*.jar"))
+MC_JAR = next((ROOT / ".gradle" / "loom-cache" / "minecraftMaven" / "net" / "minecraft").glob("minecraft-common-*/26.3/*.jar"), None)
 
 # --- Bands (loot level ranges) -------------------------------------------------------------------------------------
 BANDS = {
@@ -315,6 +318,24 @@ ELITES = {  # rank: (emerald lo, hi, gear chance, book chance, book rarity)
 }
 
 
+# --- Dungeons (spec: docs/ideas/dungeons.md; every number here is a draft for the balance pass) ------------------------
+# Theme block caches: one stack per fighting room, per player. (item, weight, count lo, count hi)
+DUNGEON_CACHES = {
+    "overgrown": [("moss_block", 30, 12, 28), ("azalea", 12, 2, 5), ("spore_blossom", 6, 1, 3), ("glow_berries", 16, 6, 14),
+                  ("big_dripleaf", 10, 3, 8), ("mud", 18, 12, 28), ("bamboo", 14, 8, 20), ("cocoa_beans", 14, 6, 14)],
+    "trial": [("copper_block", 14, 4, 10), ("cut_copper", 16, 8, 20), ("chiseled_copper", 10, 4, 10), ("tuff", 12, 12, 28), ("tuff_bricks", 14, 8, 20),
+              ("polished_tuff", 12, 8, 20), ("chiseled_tuff", 8, 4, 10), ("breeze_rod", 10, 1, 4), ("heavy_core", 1, 1, 1)],
+    "end": [("purpur_block", 24, 8, 24), ("end_stone", 24, 8, 24), ("end_rod", 16, 2, 8), ("chorus_flower", 10, 1, 3), ("shulker_shell", 8, 1, 2),
+            ("elytra", 1, 1, 1)],
+}
+DUNGEON_GEAR_MIN = "uncommon"
+REWARD_GEAR_ROLLS = 2
+REWARD_BOOK_CHANCE = 0.35
+REWARD_EMERALDS = (4, 8)
+# Elites and Warlords sometimes drop a low key (tiers 1 to 3 in the MVP): rank -> (chance, lowest tier, highest tier)
+KEY_DROPS = {2: (0.02, 1, 3), 3: (0.08, 1, 3)}
+
+
 def rolls(pool, band):
     return {"type": "minecraft:binomial", "n": POOL_N[pool], "p": round(interp(band, *POOL_P[pool]), 3)}
 
@@ -438,6 +459,26 @@ def bundle_table(spec, band):
             {"function": "minecraft:set_contents", "component": "minecraft:bundle_contents", "entries": contents}]}]}]}
 
 
+def dungeon_gear_pool(rolls_n):
+    return {"rolls": rolls_n, "conditions": [LOOT_ON],
+            "entries": [item_entry("iron_sword", 1, [gear_fn("gear", min_rarity=DUNGEON_GEAR_MIN)])]}
+
+
+def dungeon_tables():
+    out = []
+    for theme, items in DUNGEON_CACHES.items():
+        cache = {"rolls": 1, "entries": [item_entry(i, w, [count_fn(lo, hi)]) for i, w, lo, hi in items]}
+        out.append((f"{theme}_cache", {"type": "minecraft:chest", "pools": [cache]}))
+        out.append((f"{theme}_lieutenant", {"type": "minecraft:chest", "pools": [cache, dungeon_gear_pool(1)]}))
+        out.append((f"{theme}_reward", {"type": "minecraft:chest", "pools": [
+            dungeon_gear_pool(REWARD_GEAR_ROLLS),
+            {"rolls": 1, "conditions": [LOOT_ON, {"type": "minecraft:random_chance", "chance": REWARD_BOOK_CHANCE}],
+             "entries": [item_entry("book", 1, [gear_fn("book", min_rarity=DUNGEON_GEAR_MIN)])]},
+            {"rolls": 1, "entries": [item_entry("emerald", 1, [count_fn(*REWARD_EMERALDS)])]},
+            {"rolls": 1, "entries": [item_entry("vestiges:dungeon_key", 1, [{"function": "vestiges:dungeon_key", "mode": "next"}])]}]}))
+    return out
+
+
 def router(prefix):
     return {"type": "minecraft:chest", "pools": [
         {"rolls": 1, "conditions": [band_cond(b)], "entries": [{"type": "minecraft:loot_table", "value": f"{prefix}/band_{b}"}]}
@@ -466,6 +507,10 @@ def monster_drops():
         if book > 0:
             pools.append({"rolls": 1, "conditions": [kill, rank_c, {"type": "minecraft:random_chance", "chance": book}],
                           "entries": [item_entry("book", 1, [gear_fn("book", min_rarity="uncommon", rarity=book_rarity)])]})
+    for rank, (chance, lo, hi) in KEY_DROPS.items():
+        pools.append({"rolls": 1, "conditions": [kill, {"type": "vestiges:mob_rank", "rank": rank}, {"type": "minecraft:random_chance", "chance": chance}],
+                      "entries": [item_entry("vestiges:dungeon_key", 1, [
+                          {"function": "vestiges:dungeon_key", "mode": "drop", "min_tier": lo, "max_tier": hi}])]})
     return {"type": "minecraft:entity", "pools": pools}
 
 
@@ -619,11 +664,22 @@ def report():
 
 
 def main():
+    dungeon_only = "--dungeon" in sys.argv
+    if DUNGEON.is_dir():
+        shutil.rmtree(DUNGEON)
+    n = 0
+    for name, table in dungeon_tables():
+        write_json(DUNGEON / f"{name}.json", table)
+        n += 1
+    write_json(DATA / "vestiges" / "loot_table" / "entities" / "monster_drops.json", monster_drops())
+    n += 1
+    if dungeon_only:
+        print(f"Wrote {n} files (dungeon only).")
+        return
     if LOOT.is_dir():
         shutil.rmtree(LOOT)
     if CHESTS.is_dir():
         shutil.rmtree(CHESTS)
-    n = 0
     for b in BANDS:
         write_json(LOOT / "bands" / f"band_{b}.json", band_table(b))
         n += 1
@@ -635,8 +691,6 @@ def main():
             n += 1
         write_json(LOOT / "bundles" / f"{bid}.json", router(f"vestiges:loot/bundles/{bid}"))
         n += 1
-    write_json(DATA / "vestiges" / "loot_table" / "entities" / "monster_drops.json", monster_drops())
-    n += 1
     for path, data in chest_overrides():
         write_json(path, data)
         n += 1

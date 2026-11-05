@@ -1,0 +1,50 @@
+{
+  "name": "End",
+  "color": "light_purple",
+  "unlock": "feat:dragonslayer",
+  "elytra_tier": 3,
+  "palette": {
+    "floor": [
+      "minecraft:purpur_block",
+      "minecraft:end_stone_bricks",
+      "minecraft:end_stone_bricks",
+      "minecraft:purpur_pillar"
+    ],
+    "wall": [
+      "minecraft:purpur_block",
+      "minecraft:end_stone_bricks",
+      "minecraft:end_stone_bricks",
+      "minecraft:purpur_pillar"
+    ],
+    "ceiling": [
+      "minecraft:end_stone_bricks",
+      "minecraft:purpur_block"
+    ],
+    "pillar": [
+      "minecraft:purpur_pillar",
+      "minecraft:end_stone_bricks"
+    ],
+    "light": [
+      "minecraft:pearlescent_froglight"
+    ],
+    "gate": [
+      "minecraft:iron_bars"
+    ]
+  },
+  "mobs": [
+    "minecraft:enderman",
+    "minecraft:shulker",
+    "minecraft:endermite",
+    "minecraft:phantom"
+  ],
+  "lieutenant": {
+    "name": "The Shellguard",
+    "mob": "minecraft:shulker",
+    "count": 3
+  },
+  "boss": {
+    "name": "The Void Stalker",
+    "mob": "minecraft:enderman",
+    "count": 1
+  }
+}
