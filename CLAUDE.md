@@ -38,6 +38,7 @@ dev runClientGameTest  rem plays src/gametest in a real world and saves screensh
                        rem closing the world (inside Fabric's test tool, no Vestiges code in the thread dump), so stop it after the last screenshot; set VESTIGES_TOUR=off for a world with every feature off, =world for the world type tour, =protection for the land protection checks
                        rem (=protection prints "[protection] ok" lines; it exits with an error at the end because the world stays open, so read the lines)
 powershell -File tools\run_suite.ps1 sweep   rem automatic checks (AutoCheck): pass/fail report, 5-minute limit, stops the game itself; suites in docs/testing-plan.md
+powershell -File tools\run_all.ps1          rem EVERYTHING in one go: unit tests, then every real-game suite in batches (about 15 minutes), one report in build\run\all-report.md; a failed batch is rerun once and called flaky if it then passes; -Only core,dungeons for some batches
 ```
 
 Loot tables are generated: edit `tools/build_loot.py` and run `python tools/build_loot.py` (never hand-edit `data/vestiges/loot_table/`

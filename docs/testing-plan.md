@@ -120,3 +120,11 @@ Run with `powershell -File tools\run_suite.ps1 <name>` (5-minute limit, muted).
 - `grave`: a real death makes a gravestone, timer off gives no expiry, Gravestones off drops like vanilla.
 - `dungeons`: the key, the portal frame (right size and blocks, switch off, broken), going in, 13 rooms built two ahead, doors that close and open, all Overgrown rooms walked, the Lieutenant and Boss, caches and rewards (own copy, the next key), Elite and Warlord key drops, unbreakable walls, both exit frames, plots cleared before reuse, lives (dying, falling), the First Key feat.
 - `dungeons2`: the Trial and End runs room by room, the End's lock (Dragonslayer feat), void gaps, the one-time elytra, and that every block and monster id in the theme data is real. Run the two suites one after the other (each needs about 2 to 3 minutes).
+
+## One command for everything (2026-11-05)
+
+`powershell -File tools\run_all.ps1` runs the unit tests and then every real-game suite, grouped into batches of one game run each (core, gameplay, structures, villagers, dungeons, themes, atlas-vanilla, atlas-vestiges). It writes `build\run\all-report.md` (a table of every suite with passed and failed counts, then the list of failures) and copies each batch's reports and screenshots to `build\run\all\<batch>\`. A batch that fails is rerun once; if the rerun passes it is marked "flaky" (a timing problem in a check). Exit code 0 means all passed. Options: `-Only core,dungeons` (some batches), `-SkipUnit`, `-NoRetry`.
+
+**New suites go into a batch:** when a suite is added to `AutoCheck.java`, add its name to the right batch in `tools\run_all.ps1`, so the one command keeps covering everything.
+
+**What stays human:** the guides `docs/jb-test-guide.md` and `docs/jb-test-guide-dungeons.md` hold only what a machine cannot judge: feel, sound, controls, the look of the screens, a second player, performance and balance.
