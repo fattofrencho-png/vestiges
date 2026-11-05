@@ -1,8 +1,9 @@
 """Small picture previews of assets for the Library's icon view.
 
-Drawn here, not by the browser: each block becomes a box in the colour of its game texture (averaged), seen from a corner
-with three shades, so a tree looks like a tree. Textures are read from the local game jar while drawing and never copied;
-the finished pictures are kept in ~/.vestiges-assets/thumbs/, outside git, and redrawn when an asset gets a new version.
+Drawn here, not by the browser: every block face is painted with the game's real texture (see textured.py), seen from a
+corner. If a model can't be drawn that way, the old flat boxes in the averaged texture colour are the fallback.
+Textures are read from the local game jar while drawing and never copied; the finished pictures are kept in
+~/.vestiges-assets/thumbs/, outside git, and redrawn when an asset gets a new version.
 """
 import io
 import threading
@@ -11,9 +12,10 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 import projects
+import textured
 
-REVISION = 3          # change when the drawing changes, so old pictures are redrawn
-SIZE = 192            # finished picture, in pixels
+REVISION = 4          # change when the drawing changes, so old pictures are redrawn
+SIZE = 256            # finished picture, in pixels
 SUPER = 3             # drawn this many times larger, then shrunk, for smooth edges
 MAX_BLOCKS = 60000
 SHADE = {"top": 1.0, "left": 0.78, "right": 0.58}
@@ -96,7 +98,15 @@ def _shade(colour, factor):
 
 
 def draw(blocks, jar, size=SIZE):
-    """A PNG (bytes) of the blocks, seen from a corner. Empty assets give a small blank picture."""
+    """A PNG (bytes) of the blocks with real game textures, seen from a corner. Empty assets give a small blank picture."""
+    try:
+        return _png(textured.draw(blocks, jar, look, size))
+    except Exception:
+        return draw_flat(blocks, jar, size)
+
+
+def draw_flat(blocks, jar, size=SIZE):
+    """The fallback: boxes in the averaged texture colour."""
     seen = []
     for x, y, z, state in blocks[:MAX_BLOCKS]:
         found = look(jar, state)

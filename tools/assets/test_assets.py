@@ -1158,6 +1158,25 @@ class Thumbs(unittest.TestCase):
         self.assertTrue(all(p[0] > p[1] for p in opaque))  # reddish, from the texture
         self.assertEqual(Image.open(io.BytesIO(thumbs.draw([[0, 0, 0, "minecraft:air"]], FakeJar()))).getbbox(), None)
 
+    def test_faces_keep_the_real_texture_pixels_instead_of_one_average_colour(self):
+        from PIL import Image
+
+        class Checker(FakeJar):
+            def __init__(self):
+                image = Image.new("RGBA", (16, 16), (255, 255, 255, 255))
+                for x in range(16):
+                    for y in range(16):
+                        if (x // 4 + y // 4) % 2:
+                            image.putpixel((x, y), (0, 0, 255, 255))
+                out = io.BytesIO()
+                image.save(out, "PNG")
+                self.png = out.getvalue()
+        picture = Image.open(io.BytesIO(thumbs.draw([[0, 0, 0, "minecraft:stone"]], Checker()))).convert("RGBA")
+        colours = {p[:3] for p in picture.getdata() if p[3] == 255}
+        self.assertTrue(any(c[2] > 200 and c[0] > 150 for c in colours), "light squares are drawn")   # top face, full light
+        self.assertTrue(any(c[2] > 200 and c[0] < 5 for c in colours), "blue squares are drawn")
+        self.assertFalse(any(abs(c[0] - 128) < 30 and abs(c[2] - 255) < 30 and c[1] > 100 and c[1] < 150 for c in colours), "no blended average")
+
     def test_pictures_are_kept_and_redrawn_for_a_new_version(self):
         thumbs._jar_source = FakeJar
         try:
