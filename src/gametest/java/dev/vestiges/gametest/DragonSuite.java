@@ -583,9 +583,10 @@ final class DragonSuite {
 		actAs(server, 3);
 		phase(server, EnderDragonPhase.HOLDING_PATTERN);
 		int shovesBefore = DragonMoves.shoves;
-		for (int i = 0; i < 12 && DragonMoves.shoves == shovesBefore; i++) {
+		// The dragon flies on during the one-second warning, so keep the player beside it until the shove has fired.
+		for (int i = 0; i < 80 && DragonMoves.shoves == shovesBefore; i++) {
 			besideDragon(server, 6);
-			ctx.waitTicks(10);
+			ctx.waitTicks(2);
 		}
 		c.check("a player near the flying dragon is warned and then shoved", DragonMoves.shoves > shovesBefore, DragonMoves.shoves + " shoves");
 		double sideways = Math.hypot(DragonMoves.lastShove.x, DragonMoves.lastShove.z);
