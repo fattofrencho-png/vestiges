@@ -46,9 +46,11 @@ class EnchantDataTest {
 		for (Path f : files) {
 			JsonElement json = JsonParser.parseString(Files.readString(f, StandardCharsets.UTF_8));
 			Enchantment e = Enchantment.DIRECT_CODEC.parse(ops, json).getOrThrow(msg -> new IllegalStateException(f.getFileName() + ": " + msg));
-			assertEquals(4, e.getMaxLevel(), f.getFileName() + ": the table, loot and trades must stop at IV");
+			// Mending is the one exception: reworked into a one-time safety net, it has no levels any more (design log, Gear).
+			boolean mending = f.getFileName().toString().equals("mending.json");
+			assertEquals(mending ? 1 : 4, e.getMaxLevel(), f.getFileName() + ": the table, loot and trades must stop at IV (Mending has no levels)");
 			// Like vanilla, Quick Charge's top level never comes from the table (its min cost is above its max cost).
-			if (!f.getFileName().toString().equals("quick_charge.json")) {
+			if (!mending && !f.getFileName().toString().equals("quick_charge.json")) {
 				assertTrue(e.getMinCost(4) <= e.getMaxCost(4), f.getFileName() + ": IV must be reachable at the table");
 			}
 		}

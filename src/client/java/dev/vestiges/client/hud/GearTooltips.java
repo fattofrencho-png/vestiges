@@ -1,5 +1,6 @@
 package dev.vestiges.client.hud;
 
+import dev.vestiges.gear.BrokenGear;
 import dev.vestiges.gear.GearLadder;
 import dev.vestiges.gear.GearService;
 import dev.vestiges.gear.Rarity;
@@ -22,6 +23,11 @@ public final class GearTooltips {
 	}
 
 	public static void register() {
+		ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
+			if (!lines.isEmpty() && BrokenGear.isBroken(stack)) {
+				lines.add(1, Component.literal("Broken: does nothing until repaired at an anvil with its material").withStyle(ChatFormatting.RED));
+			}
+		});
 		ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
 			Player player = Minecraft.getInstance().player;
 			if (lines.isEmpty() || player == null || !GearService.on(player)) {

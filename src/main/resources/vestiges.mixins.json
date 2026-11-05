@@ -30,6 +30,7 @@
 		"EnchantedBonusChanceMixin",
 		"EnchantedCountIncreaseFunctionMixin",
 		"EnchantmentMenuMixin",
+		"ExperienceOrbMixin",
 		"FallingBlockEntityMixin",
 		"FarmlandBlockMixin",
 		"FoodDataMixin",

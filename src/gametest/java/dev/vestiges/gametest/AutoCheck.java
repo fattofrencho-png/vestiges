@@ -64,6 +64,7 @@ public final class AutoCheck implements FabricClientGameTest {
 						case "quests" -> QuestSuite.run(ctx, server, checks);
 						case "villagers" -> VillagerSuite.run(ctx, server, checks);
 						case "grave" -> GraveSuite.run(ctx, server, checks);
+						case "mending" -> MendingSuite.run(ctx, server, checks);
 						case "dungeons" -> DungeonSuite.run(ctx, server, checks);
 						case "dungeons2" -> DungeonSuite.themes(ctx, server, checks);
 						case "persistence" -> PersistenceSuite.run(ctx, server, checks);

@@ -2,6 +2,7 @@ package dev.vestiges.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import dev.vestiges.gear.BrokenGear;
 import dev.vestiges.gear.EnchantScale;
 import dev.vestiges.gear.GearService;
 import dev.vestiges.server.Emeralds;
@@ -113,6 +114,17 @@ public abstract class AnvilMenuMixin extends ItemCombinerMenu {
 				int level = expected;
 				EnchantmentHelper.updateEnchantments(result, m -> m.set(h, level));
 			}
+		}
+	}
+
+	/** A broken item is repaired with its material only: combining it with a second copy of the item is refused. */
+	@Inject(method = "createResult", at = @At("TAIL"))
+	private void vestiges$brokenNoCombine(CallbackInfo ci) {
+		ItemStack left = inputSlots.getItem(0);
+		ItemStack right = inputSlots.getItem(1);
+		if (!resultSlots.getItem(0).isEmpty() && left.is(right.getItem()) && (BrokenGear.isBroken(left) || BrokenGear.isBroken(right))) {
+			resultSlots.setItem(0, ItemStack.EMPTY);
+			cost.set(0);
 		}
 	}
 }
