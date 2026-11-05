@@ -5,5 +5,9 @@
   "requirement": "Level 15, kill 5 elites",
   "reward": "Tier 1 key and the portal frame",
   "xp": 200,
-  "later": "dungeons (M8)"
+  "goals": [
+    { "type": "level", "amount": 15 },
+    { "type": "elites", "amount": 5 }
+  ],
+  "item": "dungeon_key"
 }
