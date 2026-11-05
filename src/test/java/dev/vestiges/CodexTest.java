@@ -53,7 +53,8 @@ class CodexTest {
 	void allApprovedEntriesArePresent() {
 		Map<String, Integer> bySection = new HashMap<>();
 		ENTRIES.forEach(e -> bySection.merge(e.section(), 1, Integer::sum));
-		assertEquals(Map.of("blocks", 180, "mobs", 88, "biomes", 62, "structures", 32, "items", 52), bySection);
+		// 414 approved entries from the flavour file, plus one lore chapter per dragon in the MVP (dragons 1 to 6; the rest come with their data files).
+		assertEquals(Map.of("blocks", 180, "mobs", 88, "biomes", 62, "structures", 32, "items", 52, "lore", 6), bySection);
 		assertTrue(ENTRIES.stream().allMatch(e -> !e.line1().isEmpty() && !e.line2().isEmpty()), "every entry has its two lines");
 	}
 

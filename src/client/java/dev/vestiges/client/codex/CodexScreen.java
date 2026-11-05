@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
  */
 public final class CodexScreen extends Screen {
 	private enum Section {
-		BLOCKS("Blocks", "blocks"), MOBS("Bestiary", "mobs"), PLACES("Places", "biomes"), ITEMS("Items", "items");
+		BLOCKS("Blocks", "blocks"), MOBS("Bestiary", "mobs"), PLACES("Places", "biomes"), ITEMS("Items", "items"), LORE("Lore", "lore");
 
 		final String label;
 		final String id;

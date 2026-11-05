@@ -222,6 +222,9 @@ public final class MobService {
 
 	/** Damage multiplier for everything this mob deals: +6% per level, times size, rank strength and Brute. */
 	public static double damageMultiplier(LivingEntity attacker) {
+		if (attacker instanceof EnderDragon) {
+			return dev.vestiges.dragon.DragonService.damageMultiplier(attacker);
+		}
 		MobData d = data(attacker);
 		if (d == null || !enabled()) {
 			return 1.0;

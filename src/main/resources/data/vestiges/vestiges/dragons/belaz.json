@@ -1,0 +1,20 @@
+{
+  "number": 2,
+  "name": "Belaz",
+  "title": "the Ember",
+  "level": 8,
+  "gate": 8,
+  "health": 1.4,
+  "damage": 1.2,
+  "moves": [
+    "fire_ring"
+  ],
+  "rewards": {
+    "xp_levels": 1.0,
+    "emeralds": 64,
+    "book": true,
+    "relic": false,
+    "feats": [],
+    "chapter": "lore/belaz"
+  }
+}

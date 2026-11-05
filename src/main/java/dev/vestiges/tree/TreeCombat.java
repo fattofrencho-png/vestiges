@@ -100,6 +100,12 @@ public final class TreeCombat {
 	// ---- the damage pipeline ---------------------------------------------------------------------------------------
 
 	public static float modifyDamage(LivingEntity target, DamageSource source, float amount) {
+		float out = modifyDamageUncapped(target, source, amount);
+		// A lore dragon takes at most 8% of its health from one hit, and nothing from a player out in the void.
+		return target instanceof net.minecraft.world.entity.boss.enderdragon.EnderDragon dragon ? dev.vestiges.dragon.DragonService.onDragonHit(dragon, source, out) : out;
+	}
+
+	private static float modifyDamageUncapped(LivingEntity target, DamageSource source, float amount) {
 		if (!(target.level() instanceof ServerLevel level) || amount <= 0) {
 			return amount;
 		}

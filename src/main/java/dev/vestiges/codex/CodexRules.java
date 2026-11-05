@@ -28,6 +28,9 @@ public final class CodexRules {
 		if (CodexEntry.MOBS.equals(e.section())) {
 			return 4;
 		}
+		if (CodexEntry.LORE.equals(e.section())) {
+			return 1;
+		}
 		return unique(e) ? 1 : 3;
 	}
 
@@ -66,6 +69,9 @@ public final class CodexRules {
 			}
 			case CodexEntry.ITEMS -> {
 				return count >= (e.rare() ? 3 : 16) ? 3 : 1;
+			}
+			case CodexEntry.LORE -> {
+				return 1;
 			}
 			case CodexEntry.BIOMES -> {
 				return count >= BIOME_CHUNKS ? 3 : 1;
@@ -168,6 +174,9 @@ public final class CodexRules {
 		}
 		if (unique(e)) {
 			return "Recorded";
+		}
+		if (CodexEntry.LORE.equals(e.section())) {
+			return "Chapter unlocked";
 		}
 		return stage == 1 ? "Discovered" : stage == 2 ? "Familiar" : "Mastered";
 	}

@@ -21,10 +21,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /** M5: renown scores and levels, level drops after 3 days, saved settlement data, marker limits and the feat data. */
 class SettlementTest {
+	/** Marker items are game items, so the game's registries must be ready whichever test class runs first (Gradle runs failed ones first). */
+	@BeforeAll
+	static void boot() {
+		net.minecraft.SharedConstants.tryDetectVersion();
+		net.minecraft.server.Bootstrap.bootStrap();
+	}
+
 	@Test
 	void levelsAndRadii() {
 		assertEquals(1, Renown.level(0));
@@ -103,7 +111,7 @@ class SettlementTest {
 			}
 		}
 		assertEquals(24, feats.size());
-		Set<String> types = Set.of("level", "biomes", "codex", "elites", "villagers", "beds", "renown", "renown_two", "raids", "raid_omen", "renown_levels");
+		Set<String> types = Set.of("level", "biomes", "codex", "elites", "villagers", "beds", "renown", "renown_two", "raids", "raid_omen", "renown_levels", "dragon_best");
 		for (Map.Entry<String, Feat> e : feats.entrySet()) {
 			Feat f = e.getValue();
 			boolean checkable = !f.goals().isEmpty() || !f.counter().isEmpty();
