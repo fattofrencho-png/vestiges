@@ -155,6 +155,11 @@ class DragonTest {
 		assertEquals(0, idle.active());
 		assertTrue(idle.hurt().isEmpty());
 		assertEquals(0, w.withKills(-5).kills());
+		DragonWorld idleFor = w.withIdle(1234L);
+		assertEquals(1234L, idleFor.idleSince());
+		assertEquals(idleFor, DragonWorld.CODEC.parse(JsonOps.INSTANCE, DragonWorld.CODEC.encodeStart(JsonOps.INSTANCE, idleFor).getOrThrow()).getOrThrow());
+		assertEquals(-1L, DragonWorld.EMPTY.idleSince());
+		assertEquals(-1L, idleFor.fighting(4).idleSince(), "a new fight counts the arena as occupied");
 	}
 
 	@Test
@@ -168,5 +173,35 @@ class DragonTest {
 		assertEquals(0, PlayerDragons.EMPTY.best());
 		PlayerDragons back = PlayerDragons.CODEC.parse(JsonOps.INSTANCE, PlayerDragons.CODEC.encodeStart(JsonOps.INSTANCE, p).getOrThrow()).getOrThrow();
 		assertEquals(p, back);
+	}
+
+	@Test
+	void emeraldsComeInStacksOfAtMost64() {
+		assertEquals(List.of(32), DragonRules.stacks(32));
+		assertEquals(List.of(64, 64, 64), DragonRules.stacks(192));
+		assertEquals(List.of(64, 36), DragonRules.stacks(100));
+		assertTrue(DragonRules.stacks(0).isEmpty());
+	}
+
+	@Test
+	void theRepairRebuildsTenPillarsInSixtySeconds() {
+		assertEquals(10, DragonRules.PILLARS);
+		assertEquals(60 * 20, DragonRules.REPAIR_STEP_TICKS * DragonRules.PILLARS);
+		assertEquals(2 * 60 * 20, DragonRules.EMPTY_RESET_TICKS);
+	}
+
+	@Test
+	void everyDragonHasItsLoreChapterAsAMarkedPlaceholderWithoutKesmar() throws IOException {
+		Path codex = Path.of("src/main/resources/data/vestiges/vestiges/codex");
+		for (DragonDef d : load()) {
+			String chapter = d.rewards().chapter();
+			assertTrue(chapter.startsWith("lore/"), chapter);
+			Path f = codex.resolve(chapter + ".json");
+			assertTrue(Files.exists(f), f + " (run tools/build_codex.py)");
+			String text = Files.readString(f, StandardCharsets.UTF_8);
+			assertTrue(text.contains("\"section\": \"lore\""), chapter);
+			assertTrue(text.contains("[Placeholder]"), chapter + " must be marked as placeholder text until the lore chat writes it");
+			assertFalse(text.toLowerCase().contains("kesmar"), chapter);
+		}
 	}
 }

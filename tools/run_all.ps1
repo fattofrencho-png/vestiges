@@ -27,6 +27,7 @@ $batches = [ordered]@{
 	"dungeons"   = @("dungeons")
 	"themes"     = @("dungeons2")
 	"dragons"    = @("dragons")
+	"dragons-lost" = @("dragons2")
 	"atlas-vanilla"  = @("atlas-vanilla")
 	"atlas-vestiges" = @("atlas-vestiges")
 }

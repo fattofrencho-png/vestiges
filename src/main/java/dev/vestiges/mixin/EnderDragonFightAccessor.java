@@ -1,6 +1,7 @@
 package dev.vestiges.mixin;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.dimension.end.DragonRespawnStage;
 import net.minecraft.world.level.dimension.end.EnderDragonFight;
@@ -27,4 +28,7 @@ public interface EnderDragonFightAccessor {
 
 	@Accessor("level")
 	ServerLevel vestiges$level();
+
+	@Accessor("dragonEvent")
+	ServerBossEvent vestiges$bar();
 }

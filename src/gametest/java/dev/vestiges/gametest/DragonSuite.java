@@ -1,6 +1,7 @@
 package dev.vestiges.gametest;
 
 import dev.vestiges.Vestiges;
+import dev.vestiges.codex.CodexService;
 import dev.vestiges.data.VestigesData;
 import dev.vestiges.dragon.DragonDef;
 import dev.vestiges.dragon.DragonMark;
@@ -9,10 +10,14 @@ import dev.vestiges.dragon.PlayerDragons;
 import dev.vestiges.dungeon.DungeonService;
 import dev.vestiges.feats.FeatService;
 import dev.vestiges.inventory.InventoryService;
+import dev.vestiges.level.LevelCurve;
+import dev.vestiges.level.LevelService;
 import dev.vestiges.mixin.EnderDragonFightAccessor;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
+import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,6 +29,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.EndSpikeFeature;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -146,6 +153,108 @@ final class DragonSuite {
 		});
 	}
 
+	private static long totalXp(TestServerContext server) {
+		return server.computeOnServer(s -> {
+			var l = LevelService.get(s.getPlayerList().getPlayers().get(0));
+			return LevelCurve.totalTo(l.level()) + l.xp();
+		});
+	}
+
+	private static int carried(TestServerContext server, net.minecraft.world.item.Item item) {
+		return server.computeOnServer(s -> {
+			ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			int n = 0;
+			for (int i = 0; i < p.getInventory().getContainerSize(); i++) {
+				if (p.getInventory().getItem(i).is(item)) {
+					n += p.getInventory().getItem(i).getCount();
+				}
+			}
+			return n;
+		});
+	}
+
+	/** The highest enchantment level on any enchanted book the player carries. */
+	private static int bestBookLevel(TestServerContext server) {
+		return server.computeOnServer(s -> {
+			ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			int best = 0;
+			for (int i = 0; i < p.getInventory().getContainerSize(); i++) {
+				ItemStack stack = p.getInventory().getItem(i);
+				var stored = stack.get(DataComponents.STORED_ENCHANTMENTS);
+				if (stack.is(Items.ENCHANTED_BOOK) && stored != null) {
+					for (var e : stored.entrySet()) {
+						best = Math.max(best, e.getIntValue());
+					}
+				}
+			}
+			return best;
+		});
+	}
+
+	/** The pillar crystals standing on the first, second... pillars (by the order the repair uses). */
+	private static int crystalsOnPillars(TestServerContext server, int from, int to) {
+		return server.computeOnServer(s -> {
+			ServerLevel end = s.getLevel(Level.END);
+			var spikes = EndSpikeFeature.getSpikesForLevel(end);
+			int n = 0;
+			for (int i = from; i < Math.min(to, spikes.size()); i++) {
+				n += end.getEntitiesOfClass(EndCrystal.class, spikes.get(i).getTopBoundingBox()).size();
+			}
+			return n;
+		});
+	}
+
+	private static void breakPillarCrystals(TestServerContext server, int from, int to) {
+		server.runOnServer(s -> {
+			ServerLevel end = s.getLevel(Level.END);
+			var spikes = EndSpikeFeature.getSpikesForLevel(end);
+			for (int i = from; i < Math.min(to, spikes.size()); i++) {
+				end.getEntitiesOfClass(EndCrystal.class, spikes.get(i).getTopBoundingBox()).forEach(net.minecraft.world.entity.Entity::discard);
+			}
+		});
+	}
+
+	/** The exit portal, or (before one has been found) where the fountain's bedrock pillar stands. */
+	private static BlockPos portalOrFallback(TestServerContext server) {
+		BlockPos portal = portal(server);
+		if (portal != null) {
+			return portal;
+		}
+		return server.computeOnServer(s -> new BlockPos(0, s.getLevel(Level.END).getHeight(Heightmap.Types.WORLD_SURFACE, 0, 0) - 4, 0));
+	}
+
+	private static boolean waitGone(TestServerContext server, int ticks) {
+		try {
+			server.waitFor(s -> {
+				ServerLevel end = s.getLevel(Level.END);
+				var fight = end == null ? null : end.getDragonFight();
+				var id = fight == null ? null : fight.dragonUUID();
+				return id == null || !(end.getEntity(id) instanceof EnderDragon d) || d.isRemoved();
+			}, ticks);
+			return true;
+		} catch (RuntimeException e) {
+			return false;
+		}
+	}
+
+	private static boolean waitUntil(TestServerContext server, java.util.function.Predicate<net.minecraft.server.MinecraftServer> test, int ticks) {
+		try {
+			server.waitFor(test::test, ticks);
+			return true;
+		} catch (RuntimeException e) {
+			return false;
+		}
+	}
+
+	private static void die(ClientGameTestContext ctx, TestServerContext server) {
+		server.runCommand("kill @p");
+		ctx.waitForScreen(DeathScreen.class);
+		ctx.waitTicks(10);
+		ctx.clickScreenButton("deathScreen.respawn");
+		ctx.waitFor(mc -> mc.player != null && mc.player.isAlive() && mc.gui.screen() == null, 600);
+		ctx.waitTicks(20);
+	}
+
 	static void run(ClientGameTestContext ctx, TestServerContext server, Checks c) {
 		data(ctx, server, c);
 		fights(ctx, server, c);
@@ -215,6 +324,8 @@ final class DragonSuite {
 			((EnderDragon) end.getEntity(end.getDragonFight().dragonUUID())).setHealth(1f);
 		});
 		ctx.waitTicks(25);
+		long xpBefore = totalXp(server);
+		DragonService.repairStepOverride = 20;
 		hit(server, 100f, 0, -1, 0);
 		try {
 			server.waitFor(s -> DragonService.world(s).kills() == 1, 1500);
@@ -225,10 +336,21 @@ final class DragonSuite {
 		c.check("the fight is over", server.computeOnServer(s -> DragonService.world(s).active()) == 0);
 		c.check("the fighter is rewarded for dragon 1", server.computeOnServer(s -> DragonService.player(s.getPlayerList().getPlayers().get(0)).has(1)));
 		c.check("that unlocks the 2nd ender chest page", pages(server) == 2, String.valueOf(pages(server)));
+		c.check("the fighter was paid XP (a level's worth at level 4 and the feat)", totalXp(server) - xpBefore >= LevelCurve.need(4), (totalXp(server) - xpBefore) + " XP");
+		c.check("32 emeralds (32 x 1)", carried(server, Items.EMERALD) == 32, String.valueOf(carried(server, Items.EMERALD)));
+		c.check("a Level VI enchanted book", bestBookLevel(server) >= 6, "best level " + bestBookLevel(server));
+		c.check("the lore chapter is in the Codex", server.computeOnServer(s -> CodexService.get(s.getPlayerList().getPlayers().get(0)).stage("lore/tulva")) == 1);
 		ctx.waitTicks(60);
 		c.check("the Dragonslayer feat is done", server.computeOnServer(s -> FeatService.get(s.getPlayerList().getPlayers().get(0)).done().contains("dragonslayer")));
 		c.check("so the End dungeon theme is open", server.computeOnServer(s -> DungeonService.unlocked(s.getPlayerList().getPlayers().get(0),
 			VestigesData.DUNGEON_THEMES.get(Vestiges.id("end")))));
+
+		c.section("The arena repairs itself");
+		breakPillarCrystals(server, 7, 10);
+		c.check("three pillar crystals are gone", crystalsOnPillars(server, 7, 10) == 0, String.valueOf(crystalsOnPillars(server, 7, 10)));
+		c.check("the repair runs and ends", waitUntil(server, s -> !DragonService.repairing(), 900));
+		c.check("the three crystals are back", crystalsOnPillars(server, 7, 10) == 3, String.valueOf(crystalsOnPillars(server, 7, 10)));
+		DragonService.repairStepOverride = -1;
 
 		c.section("The gate");
 		BlockPos portal = portal(server);
@@ -281,5 +403,55 @@ final class DragonSuite {
 		c.check("it has 200 health, no mark and no new name", vanilla.present() && !vanilla.marked() && Math.abs(vanilla.max() - 200.0) < 0.5 && vanilla.name().isEmpty(),
 			vanilla.toString());
 		server.runCommand("vestiges dragon count 0");
+	}
+
+	/** S12b: a fight that is lost or abandoned. The empty arena resets it; if everyone dies the dragon heals, leaves, and the crystals can call it again. */
+	static void lost(ClientGameTestContext ctx, TestServerContext server, Checks c) {
+		server.runCommand("gamemode creative @p");
+		server.runCommand("vestiges level set @p 5");
+		server.runCommand("execute in minecraft:the_end run tp @p 0 90 0");
+
+		c.section("An empty arena resets the fight");
+		c.check("dragon 1 appears", waitForDragon(server, 1, 1200));
+		hit(server, 1000f, 0, -1, 0);
+		Snap hurt = dragon(server);
+		c.check("it is hurt", hurt.health() < hurt.max() - 1, hurt.health() + " of " + hurt.max());
+		c.check("the player is credited", server.computeOnServer(s -> DragonService.world(s).hurt().size()) == 1);
+		DragonService.emptyResetOverride = 100;
+		server.runCommand("gamemode spectator @p");
+		c.check("with nobody in the arena its health comes back", waitUntil(server, s -> {
+			ServerLevel end = s.getLevel(Level.END);
+			EnderDragon d = (EnderDragon) end.getEntity(end.getDragonFight().dragonUUID());
+			return d != null && d.getHealth() >= d.getMaxHealth() - 0.01f;
+		}, 600));
+		c.check("nobody is credited any more", server.computeOnServer(s -> DragonService.world(s).hurt().isEmpty()));
+		c.check("the dragon stays", dragon(server).present() && dragon(server).number() == 1);
+		DragonService.emptyResetOverride = -1;
+
+		c.section("Everyone dies");
+		server.runCommand("gamemode creative @p");
+		ctx.waitTicks(30);
+		hit(server, 1000f, 0, -1, 0);
+		c.check("hurt again", dragon(server).health() < dragon(server).max() - 1);
+		die(ctx, server);
+		ctx.waitTicks(40);
+		c.check("the fight is over and nothing was counted", server.computeOnServer(s -> DragonService.world(s).active()) == 0 && kills(server) == 0);
+		c.check("nobody got a reward", server.computeOnServer(s -> DragonService.player(s.getPlayerList().getPlayers().get(0)).count()) == 0);
+		c.check("the End is open for a new summoning", server.computeOnServer(s -> ((EnderDragonFightAccessor) s.getLevel(Level.END).getDragonFight()).vestiges$killed()));
+		c.check("the pillar repair has begun", DragonService.repairing());
+		c.check("the boss bar is hidden", !server.computeOnServer(s -> ((EnderDragonFightAccessor) s.getLevel(Level.END).getDragonFight()).vestiges$bar().isVisible()));
+
+		c.section("Four crystals call it again");
+		DragonService.repairStepOverride = 20;
+		server.runCommand("execute in minecraft:the_end run tp @p 0 90 0");
+		ctx.waitTicks(40);
+		BlockPos portal = portalOrFallback(server);
+		ring(server, portal);
+		ctx.waitTicks(5);
+		InteractionResult placed = place(server, portal);
+		c.check("dragon 1 has no gate: the crystal goes down", placed.consumesAction(), placed + " | " + rimReport(server, portal));
+		c.check("Tulva comes back", waitForDragon(server, 1, 2400));
+		c.check("with the full 200 health", Math.abs(dragon(server).max() - 200.0) < 0.5 && dragon(server).health() > 199);
+		DragonService.repairStepOverride = -1;
 	}
 }

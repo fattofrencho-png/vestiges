@@ -21,6 +21,11 @@ public final class DragonRules {
 	public static final int EMPTY_RESET_TICKS = 2 * 60 * 20;
 	/** After a kill the 10 pillars and their crystals come back over this long (60 seconds). */
 	public static final int REPAIR_TICKS = 60 * 20;
+	/** After a lost fight the healed dragon stays this long (10 seconds) before it despawns. */
+	public static final int DESPAWN_GRACE_TICKS = 200;
+	/** The End has 10 pillars; the repair rebuilds one every sixth of the repair time. */
+	public static final int PILLARS = 10;
+	public static final int REPAIR_STEP_TICKS = REPAIR_TICKS / PILLARS;
 	/** A player this far under the portal is out in the void, beyond the dragon's reach. */
 	public static final int VOID_DEPTH = 40;
 	/** Levels the summoner needs for each dragon number. */
@@ -76,6 +81,15 @@ public final class DragonRules {
 	/** Is this player rewarded: they hurt the dragon or its crystals and stand within the reward radius of the portal when it dies. */
 	public static boolean rewarded(boolean hurtIt, double distanceToPortal) {
 		return hurtIt && distanceToPortal <= REWARD_RADIUS;
+	}
+
+	/** Emeralds are handed out in stacks of at most 64. */
+	public static java.util.List<Integer> stacks(int count) {
+		java.util.List<Integer> out = new java.util.ArrayList<>();
+		for (int left = Math.max(0, count); left > 0; left -= 64) {
+			out.add(Math.min(64, left));
+		}
+		return out;
 	}
 
 	/** Ender chest pages: one to start, one more for every dragon the player has been rewarded for. */

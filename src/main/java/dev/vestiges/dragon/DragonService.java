@@ -1,19 +1,24 @@
 package dev.vestiges.dragon;
 
 import dev.vestiges.Vestiges;
+import dev.vestiges.codex.CodexService;
 import dev.vestiges.config.ConfigStore;
 import dev.vestiges.config.VestigesSystem;
 import dev.vestiges.data.VestigesData;
 import dev.vestiges.feats.FeatService;
+import dev.vestiges.gear.Rarity;
 import dev.vestiges.inventory.InventoryService;
 import dev.vestiges.level.LevelService;
+import dev.vestiges.loot.LootGear;
 import dev.vestiges.mixin.EnderDragonFightAccessor;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
@@ -24,15 +29,20 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.end.EnderDragonFight;
+import net.minecraft.world.level.levelgen.feature.EndSpikeFeature;
 import net.minecraft.world.phys.AABB;
 
 /**
@@ -52,6 +62,16 @@ public final class DragonService {
 	/** The player who last put an end crystal down, and when (the safety net behind the crystal item's own check). */
 	private static UUID lastPlacer;
 	private static long lastPlacedAt = -10;
+	/** Fight bookkeeping that need not survive a restart. */
+	private static boolean someoneDied;
+	private static long failedAt = -1;
+	/** The pillar repair after a fight: the next pillar to rebuild (-1 = none) and when. */
+	private static int repairNext = -1;
+	private static long repairAt;
+	/** For the automatic checks: ticks between two rebuilt pillars (-1 = the real sixth of a minute). */
+	public static int repairStepOverride = -1;
+	/** For the automatic checks: how long an empty arena waits before the fight resets (-1 = the real two minutes). */
+	public static int emptyResetOverride = -1;
 	/** How many summonings the gate has refused since the server started (the automatic checks read it). */
 	public static int refusals;
 
@@ -73,6 +93,11 @@ public final class DragonService {
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(DragonService::tick);
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			if (entity instanceof ServerPlayer p) {
+				onPlayerDied(p);
+			}
+		});
 	}
 
 	// ---- saved state -------------------------------------------------------------------------------------------------
@@ -229,7 +254,12 @@ public final class DragonService {
 	// ---- a dragon appears --------------------------------------------------------------------------------------------
 
 	private static void onDragonLoad(ServerLevel level, EnderDragon dragon) {
-		if (!enabled() || !level.dimension().equals(Level.END) || dragon.getAttached(MARK) != null || dragon.isDeadOrDying()) {
+		if (!enabled() || !level.dimension().equals(Level.END) || dragon.isDeadOrDying()) {
+			return;
+		}
+		DragonMark existing = dragon.getAttached(MARK);
+		if (existing != null) {
+			resetIfAbandoned(level.getServer(), level, dragon, existing);
 			return;
 		}
 		MinecraftServer server = level.getServer();
@@ -243,6 +273,8 @@ public final class DragonService {
 		int party = Math.max(1, fight == null ? 1 : partyAround(level, portalOf(fight)));
 		configure(dragon, def, party);
 		save(server, w.fighting(number));
+		someoneDied = false;
+		failedAt = -1;
 		Vestiges.LOGGER.info("Vestiges: dragon {} ({}) appears, health {}", number, def.display(), dragon.getMaxHealth());
 	}
 
@@ -275,13 +307,35 @@ public final class DragonService {
 		return Math.sqrt(dx * dx + dz * dz);
 	}
 
+	private static int emptyLimit() {
+		return emptyResetOverride >= 0 ? emptyResetOverride : DragonRules.EMPTY_RESET_TICKS;
+	}
+
 	private static void tick(MinecraftServer server) {
 		if (server.getTickCount() % 20 != 0 || !enabled()) {
 			return;
 		}
 		ServerLevel end = server.getLevel(Level.END);
 		EnderDragonFight fight = end == null ? null : end.getDragonFight();
-		UUID id = fight == null ? null : fight.dragonUUID();
+		if (fight == null) {
+			return;
+		}
+		repairTick(end);
+		DragonWorld w = world(server);
+		if (w.active() <= 0) {
+			return;
+		}
+		long now = end.getGameTime();
+		int inArena = partyAround(end, portalOf(fight));
+		// Whether anyone is in the arena is kept even while nobody is there and the dragon is unloaded.
+		if (inArena > 0 && w.idleSince() >= 0) {
+			w = w.withIdle(-1);
+			save(server, w);
+		} else if (inArena == 0 && w.idleSince() < 0) {
+			w = w.withIdle(now);
+			save(server, w);
+		}
+		UUID id = fight.dragonUUID();
 		if (id == null || !(end.getEntity(id) instanceof EnderDragon dragon)) {
 			return;
 		}
@@ -291,16 +345,139 @@ public final class DragonService {
 			return;
 		}
 		// A bigger party makes it tougher, never the other way round; it keeps the share of health it has left.
-		int party = partyAround(end, portalOf(fight));
-		if (party > mark.party()) {
+		if (inArena > mark.party()) {
 			float share = dragon.getHealth() / Math.max(1f, dragon.getMaxHealth());
 			var health = dragon.getAttribute(Attributes.MAX_HEALTH);
 			if (health != null) {
-				health.setBaseValue(DragonRules.maxHealth(def.health(), party));
+				health.setBaseValue(DragonRules.maxHealth(def.health(), inArena));
 			}
 			dragon.setHealth(share * dragon.getMaxHealth());
-			dragon.setAttached(MARK, mark.withParty(party));
+			dragon.setAttached(MARK, mark.withParty(inArena));
 		}
+		// A lost fight where players still stand elsewhere in the End: the dragon has healed and now leaves.
+		if (failedAt >= 0) {
+			if (now - failedAt >= DragonRules.DESPAWN_GRACE_TICKS) {
+				despawn(end, fight, dragon);
+			}
+			return;
+		}
+		if (inArena > 0) {
+			return;
+		}
+		if (someoneDied) {
+			lost(end, fight, dragon);
+		} else if (w.idleSince() >= 0 && now - w.idleSince() >= emptyLimit()) {
+			reset(server, dragon);
+		}
+	}
+
+	/** A dragon that has just loaded again after the arena stood empty for two minutes starts over. */
+	private static void resetIfAbandoned(MinecraftServer server, ServerLevel end, EnderDragon dragon, DragonMark mark) {
+		DragonWorld w = world(server);
+		if (w.active() == mark.number() && w.idleSince() >= 0 && end.getGameTime() - w.idleSince() >= emptyLimit()) {
+			reset(server, dragon);
+		}
+	}
+
+	/**
+	 * A player died in a fight. If nobody else is left in the arena the fight is lost, and this is the moment to act: once the last player has left
+	 * the End the arena unloads and the dragon with it.
+	 */
+	private static void onPlayerDied(ServerPlayer p) {
+		if (!enabled() || !p.level().dimension().equals(Level.END) || !(p.level() instanceof ServerLevel end)) {
+			return;
+		}
+		MinecraftServer server = end.getServer();
+		EnderDragonFight fight = end.getDragonFight();
+		if (fight == null || world(server).active() <= 0 || fight.dragonUUID() == null || !(end.getEntity(fight.dragonUUID()) instanceof EnderDragon dragon)
+			|| mark(dragon) == null || dragon.isDeadOrDying()) {
+			return;
+		}
+		someoneDied = true;
+		BlockPos portal = portalOf(fight);
+		boolean othersInArena = false;
+		boolean othersInEnd = false;
+		for (ServerPlayer q : end.players()) {
+			if (q != p && !q.isSpectator() && !q.isDeadOrDying()) {
+				othersInEnd = true;
+				othersInArena |= horizontal(q, portal) <= DragonRules.PARTY_RADIUS;
+			}
+		}
+		if (!othersInArena && failedAt < 0) {
+			lost(end, fight, dragon);
+			if (!othersInEnd) {
+				despawn(end, fight, dragon);
+			}
+		}
+	}
+
+	/** Everyone who fought has died: the dragon heals at once and leaves after a short while. The count does not change; the crystals are gone. */
+	private static void lost(ServerLevel end, EnderDragonFight fight, EnderDragon dragon) {
+		dragon.setHealth(dragon.getMaxHealth());
+		failedAt = end.getGameTime();
+		Vestiges.LOGGER.info("Vestiges: the fight against dragon {} is lost", mark(dragon).number());
+	}
+
+	/** Nobody was in the arena for two minutes: health is restored and nobody is credited, but the dragon stays and the crystals are not refunded. */
+	private static void reset(MinecraftServer server, EnderDragon dragon) {
+		dragon.setHealth(dragon.getMaxHealth());
+		DragonMark mark = mark(dragon);
+		save(server, world(server).fighting(mark.number()));
+		Vestiges.LOGGER.info("Vestiges: the empty arena resets the fight against dragon {}", mark.number());
+	}
+
+	/** The healed dragon of a lost fight leaves. The next summoning is open again (4 new crystals), and the pillars come back. */
+	private static void despawn(ServerLevel end, EnderDragonFight fight, EnderDragon dragon) {
+		EnderDragonFightAccessor a = (EnderDragonFightAccessor) fight;
+		a.vestiges$bar().setProgress(0f);
+		a.vestiges$bar().setVisible(false);
+		dragon.discard();
+		a.vestiges$setKilled(true);
+		MinecraftServer server = end.getServer();
+		save(server, world(server).idle());
+		failedAt = -1;
+		someoneDied = false;
+		startRepair(end);
+	}
+
+	// ---- the arena repairs itself -------------------------------------------------------------------------------------
+
+	/** After a fight the 10 pillars and their crystals come back, one every sixth of a minute. */
+	static void startRepair(ServerLevel end) {
+		repairNext = 0;
+		repairAt = end.getGameTime() + repairStep();
+	}
+
+	private static int repairStep() {
+		return repairStepOverride >= 0 ? repairStepOverride : DragonRules.REPAIR_STEP_TICKS;
+	}
+
+	public static boolean repairing() {
+		return repairNext >= 0;
+	}
+
+	private static void repairTick(ServerLevel end) {
+		if (repairNext < 0 || end.getGameTime() < repairAt) {
+			return;
+		}
+		if (end.players().isEmpty()) {
+			// Nobody is there to see it: wait, so no chunk is loaded for nothing.
+			repairAt = end.getGameTime() + repairStep();
+			return;
+		}
+		List<EndSpikeFeature.EndSpike> spikes = EndSpikeFeature.getSpikesForLevel(end);
+		if (repairNext >= spikes.size()) {
+			repairNext = -1;
+			return;
+		}
+		EndSpikeFeature.EndSpike spike = spikes.get(repairNext);
+		for (EndCrystal old : end.getEntitiesOfClass(EndCrystal.class, spike.getTopBoundingBox())) {
+			old.discard();
+		}
+		new EndSpikeFeature(List.of(spike), false, Optional.empty()).place(end, end.getChunkSource().getGenerator(), RandomSource.create(),
+			new BlockPos(spike.getCenterX(), 45, spike.getCenterZ()));
+		repairNext++;
+		repairAt += repairStep();
 	}
 
 	// ---- fighting ----------------------------------------------------------------------------------------------------
@@ -383,6 +560,9 @@ public final class DragonService {
 			}
 		}
 		save(server, w.withKills(Math.max(w.kills(), mark.number())).idle());
+		someoneDied = false;
+		failedAt = -1;
+		startRepair(level);
 		Vestiges.LOGGER.info("Vestiges: dragon {} killed, {} fighter(s) rewarded", mark.number(), winners.size());
 		if (def != null) {
 			for (ServerPlayer p : winners) {
@@ -391,14 +571,40 @@ public final class DragonService {
 		}
 	}
 
-	/** What a player gets once for a dragon. */
+	/** What a player gets once for a dragon: XP, emeralds, a Level VI book (Relic rarity), a Relic for the act boss, the lore chapter and the feats. */
 	static void reward(ServerPlayer p, DragonDef def) {
 		if (player(p).has(def.number())) {
 			return;
 		}
 		setPlayer(p, player(p).with(def.number()));
-		p.sendSystemMessage(Component.literal("Dragon " + def.number() + " is dead: " + def.display() + ".").withStyle(ChatFormatting.LIGHT_PURPLE));
+		DragonDef.Rewards r = def.rewards();
+		ServerLevel level = (ServerLevel) p.level();
+		RandomSource random = p.getRandom();
+		long xp = r.xpLevels() > 0 ? LevelService.addXp(p, DragonRules.xpFor(def.level(), r.xpLevels()), "dragon") : 0;
+		for (int n : DragonRules.stacks(r.emeralds())) {
+			give(p, new ItemStack(Items.EMERALD, n));
+		}
+		if (r.book()) {
+			give(p, LootGear.build(level, random, def.level(), true, null, Rarity.Tier.RELIC));
+		}
+		if (r.relic()) {
+			give(p, LootGear.build(level, random, def.level(), false, null, Rarity.Tier.RELIC));
+		}
+		if (!r.chapter().isEmpty()) {
+			CodexService.unlock(p, r.chapter());
+		}
+		p.sendSystemMessage(Component.literal("Dragon " + def.number() + " is dead: " + def.display() + ". +" + xp + " XP, " + r.emeralds() + " emeralds"
+			+ (r.book() ? ", a Level VI book" : "") + (r.relic() ? ", a Relic" : "") + ".").withStyle(ChatFormatting.LIGHT_PURPLE));
 		InventoryService.sendPages(p);
 		FeatService.check(p);
+	}
+
+	private static void give(ServerPlayer p, ItemStack stack) {
+		if (stack.isEmpty() || p.getInventory().add(stack)) {
+			return;
+		}
+		ItemEntity drop = new ItemEntity(p.level(), p.getX(), p.getY(), p.getZ(), stack);
+		drop.setTarget(p.getUUID());
+		p.level().addFreshEntity(drop);
 	}
 }
