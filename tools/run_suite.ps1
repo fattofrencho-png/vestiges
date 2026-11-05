@@ -32,7 +32,10 @@ while (((Get-Date) - $start).TotalSeconds -lt $Limit) {
 $secs = [int]((Get-Date) - $start).TotalSeconds
 # Stop the game and everything Gradle started for it.
 & taskkill /T /F /PID $p.Id | Out-Null
-Get-CimInstance Win32_Process -Filter "Name='java.exe'" | Where-Object { $_.CommandLine -match "clientGameTest|GradleDaemon|GradleWrapperMain" } |
+# Only processes of THIS folder: other chats run games and builds from their own worktrees at the same time, and a global sweep would kill theirs.
+# ($root is also the start of a worktree's path, so the folder must be followed by build, gradle or .gradle, not by .claude.)
+$mine = [regex]::Escape($root) + '\\+(build|gradle|\.gradle)\b'
+Get-CimInstance Win32_Process -Filter "Name='java.exe'" | Where-Object { $_.CommandLine -match $mine -and $_.CommandLine -match "clientGameTest|GradleDaemon|GradleWrapperMain|gradle-wrapper" } |
 	ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 
 Write-Host "== finished: $finished after $secs s (limit $Limit s) =="
