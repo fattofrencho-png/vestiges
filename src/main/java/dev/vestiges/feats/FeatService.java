@@ -100,6 +100,7 @@ public final class FeatService {
 			case "renown_levels" -> SettlementService.levelsGained(p);
 			case "raids" -> st.raids();
 			case "raid_omen" -> st.bestOmen();
+			case "dragon_best" -> dev.vestiges.dragon.DragonService.best(p);
 			default -> 0;
 		};
 	}
@@ -116,6 +117,7 @@ public final class FeatService {
 			case "renown_two" -> "Settlements at renown level";
 			case "raids" -> "Raids defended";
 			case "raid_omen" -> "Raid beaten at Bad Omen level";
+			case "dragon_best" -> "Dragon defeated";
 			default -> type;
 		};
 	}

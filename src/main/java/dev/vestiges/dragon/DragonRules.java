@@ -21,6 +21,8 @@ public final class DragonRules {
 	public static final int EMPTY_RESET_TICKS = 2 * 60 * 20;
 	/** After a kill the 10 pillars and their crystals come back over this long (60 seconds). */
 	public static final int REPAIR_TICKS = 60 * 20;
+	/** A player this far under the portal is out in the void, beyond the dragon's reach. */
+	public static final int VOID_DEPTH = 40;
 	/** Levels the summoner needs for each dragon number. */
 	public static final int LEVELS_PER_DRAGON = 4;
 
