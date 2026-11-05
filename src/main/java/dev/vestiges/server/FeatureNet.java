@@ -95,6 +95,18 @@ public final class FeatureNet {
 		root.addProperty("sleep", sleepRule());
 		root.addProperty("brew_stack", c.numbers.brewStack);
 		root.addProperty("stack_limit", c.numbers.stackLimit);
+		// Continent names and centres for the map; only worlds made with the Vestiges world type have them.
+		com.google.gson.JsonArray lands = new com.google.gson.JsonArray();
+		if (dev.vestiges.world.WorldAtlas.active(p.level().getServer())) {
+			for (dev.vestiges.world.WorldPlan.Land land : dev.vestiges.world.WorldPlans.current().lands()) {
+				JsonObject o = new JsonObject();
+				o.addProperty("name", land.name());
+				o.addProperty("x", land.x());
+				o.addProperty("z", land.z());
+				lands.add(o);
+			}
+		}
+		root.add("lands", lands);
 		if (ServerPlayNetworking.canSend(p, FeaturePayloads.State.TYPE)) {
 			ServerPlayNetworking.send(p, new FeaturePayloads.State(root.toString()));
 		}

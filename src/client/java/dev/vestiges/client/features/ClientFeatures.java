@@ -20,6 +20,7 @@ public final class ClientFeatures {
 	private static int stackLimit = 64;
 	/** Features switched off only because something they need is off (they return with it). */
 	private static final java.util.List<String> REMEMBERED = new java.util.ArrayList<>();
+	private static final java.util.List<Land> LANDS = new java.util.ArrayList<>();
 
 	private ClientFeatures() {
 	}
@@ -28,6 +29,7 @@ public final class ClientFeatures {
 		ClientPlayNetworking.registerGlobalReceiver(FeaturePayloads.State.TYPE, (payload, ctx) -> ctx.client().execute(() -> receive(ctx.client(), payload.json())));
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
 			SYSTEMS.clear();
+			LANDS.clear();
 			operator = false;
 		}));
 	}
@@ -52,6 +54,13 @@ public final class ClientFeatures {
 		if (root.has("remembered")) {
 			root.getAsJsonArray("remembered").forEach(e -> REMEMBERED.add(e.getAsString()));
 		}
+		LANDS.clear();
+		if (root.has("lands")) {
+			root.getAsJsonArray("lands").forEach(e -> {
+				JsonObject o = e.getAsJsonObject();
+				LANDS.add(new Land(o.get("name").getAsString(), o.get("x").getAsInt(), o.get("z").getAsInt()));
+			});
+		}
 		operator = root.get("operator").getAsBoolean();
 		sleep = root.get("sleep").getAsInt();
 		if (root.get("prompt").getAsBoolean() && mc.gui.screen() == null) {
@@ -61,6 +70,15 @@ public final class ClientFeatures {
 
 	public static boolean on(VestigesSystem system) {
 		return system.core() || SYSTEMS.getOrDefault(system.id, system.onByDefault());
+	}
+
+	/** A continent's name and centre. */
+	public record Land(String name, int x, int z) {
+	}
+
+	/** The continents of this world, empty in a vanilla world (the map then shows no continent names). */
+	public static java.util.List<Land> lands() {
+		return LANDS;
 	}
 
 	public static boolean operator() {
