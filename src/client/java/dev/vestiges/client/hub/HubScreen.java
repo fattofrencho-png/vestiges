@@ -265,6 +265,9 @@ public final class HubScreen extends Screen {
 				}).bounds(x, settingsY, w, 20).build());
 				String[] sleeps = {"100", "50", "1"};
 				row(cycle(x, settingsY, w, "Sleep percentage", sleeps, String.valueOf(ClientFeatures.sleepPercent()), v -> ClientFeatures.send("sleep", v)));
+					if (ClientFeatures.on(dev.vestiges.config.VestigesSystem.GRAVE_TIMER)) {
+						row(cycle(x, settingsY, w, "Gravestone timer (days)", new String[] {"1", "3", "7", "14"}, String.valueOf(ClientFeatures.graveDays()), v -> ClientFeatures.send("grave", v)));
+					}
 					if (ClientFeatures.on(dev.vestiges.config.VestigesSystem.STACKS)) {
 						row(cycle(x, settingsY, w, "Stack limit", new String[] {"64", "99"}, String.valueOf(ClientFeatures.stackLimit()), v -> ClientFeatures.send("stack", v)));
 					}

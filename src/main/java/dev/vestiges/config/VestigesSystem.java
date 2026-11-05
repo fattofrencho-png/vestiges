@@ -42,6 +42,8 @@ public enum VestigesSystem {
 	SHAPES("shapes", "Ctrl + Alt shapes", Category.COMFORT, F.COMFORT, "Scroll an item to swap it for related shapes, at the normal recipe cost. You can undo."),
 	SHULKERS("shulkers", "Open shulker boxes", Category.COMFORT, F.COMFORT | F.BUILT, "Right-click a box in your inventory to open it."),
 	SLEEP("sleep", "Sleep percentage", Category.COMFORT, F.BUILT | F.OFF_BY_DEFAULT, "Fewer players need to sleep to skip the night. Half by default; operators can change it in Settings, World."),
+	GRAVES("graves", "Gravestones", Category.COMFORT, F.IN_CORE | F.BUILT, "When you die, your things rest in a gravestone where you fell, and only you can collect them.\n\nOff: vanilla, your things drop where you died."),
+	GRAVE_TIMER("grave_timer", "Gravestone timer", Category.COMFORT, F.IN_CORE | F.BUILT, "The gravestone crumbles after a number of days (set in Settings, World), leaving a skull with your most valuable item.\n\nOff: the gravestone stays until you collect it.", "graves"),
 	GRIEFING("griefing", "No mob griefing", Category.COMFORT, F.BUILT | F.OFF_BY_DEFAULT, "No creeper holes, no endermen moving blocks. This is vanilla's mobGriefing rule, so villagers can't farm while it is on."),
 	PEEK("peek", "Peek", Category.COMFORT, F.COMFORT, "See inside containers you could open, without opening them."),
 	FREECAM("freecam", "Freecam", Category.COMFORT, F.OFF_BY_DEFAULT, "Free flying camera, through walls too.\n\nIn survival it works like x-ray, so turn it off where that matters.");

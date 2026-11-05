@@ -95,6 +95,7 @@ public final class FeatureNet {
 		root.addProperty("sleep", sleepRule());
 		root.addProperty("brew_stack", c.numbers.brewStack);
 		root.addProperty("stack_limit", c.numbers.stackLimit);
+		root.addProperty("grave_days", c.numbers.graveDays);
 		// Continent names and centres for the map; only worlds made with the Vestiges world type have them.
 		com.google.gson.JsonArray lands = new com.google.gson.JsonArray();
 		if (dev.vestiges.world.WorldAtlas.active(p.level().getServer())) {
@@ -146,6 +147,10 @@ public final class FeatureNet {
 				case "stack" -> {
 					int limit = "99".equals(payload.value()) ? 99 : 64;
 					change(server, c -> c.numbers.stackLimit = limit);
+				}
+				case "grave" -> {
+					int days = Math.max(1, Math.min(30, Integer.parseInt(payload.value())));
+					change(server, c -> c.numbers.graveDays = days);
 				}
 				case "done" -> change(server, c -> c.setupPending = false);
 				default -> {

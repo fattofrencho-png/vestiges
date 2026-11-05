@@ -74,6 +74,16 @@ public final class GraveService {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> server.execute(() -> sendAll(handler.player)));
 	}
 
+	/** The Gravestones switch: off, deaths drop the inventory like vanilla. */
+	public static boolean enabled() {
+		return ConfigStore.server().enabled(dev.vestiges.config.VestigesSystem.GRAVES);
+	}
+
+	/** The timer switch: off, a gravestone stays until its owner collects it. */
+	public static boolean timerOn() {
+		return ConfigStore.server().enabled(dev.vestiges.config.VestigesSystem.GRAVE_TIMER);
+	}
+
 	private static GraveList list(MinecraftServer server) {
 		GraveList l = server.overworld().getAttached(GRAVES);
 		return l != null ? l : GraveList.EMPTY;
@@ -91,7 +101,7 @@ public final class GraveService {
 
 	/** Called from the death hook, just before vanilla would drop the inventory. Returns whether the items went into a grave. */
 	public static boolean createGrave(ServerPlayer player) {
-		if (!LevelService.enabled()) {
+		if (!LevelService.enabled() || !enabled()) {
 			return false;
 		}
 		ServerLevel level = (ServerLevel) player.level();
@@ -126,7 +136,7 @@ public final class GraveService {
 			server.overworld().getGameTime(), false, false, List.copyOf(items));
 		save(server, list.add(g));
 		player.sendSystemMessage(Component.literal("Your items rest in a grave at " + spot.getX() + ", " + spot.getY() + ", " + spot.getZ()
-			+ ". Collect it within " + ConfigStore.server().numbers.graveDays + " days.").withStyle(ChatFormatting.GOLD));
+			+ (timerOn() ? ". Collect it within " + ConfigStore.server().numbers.graveDays + " days." : ". It stays until you collect it.")).withStyle(ChatFormatting.GOLD));
 		LevelService.notice(player, "grave", graveJson(g));
 		return true;
 	}
@@ -192,9 +202,13 @@ public final class GraveService {
 		}
 		long now = server.overworld().getGameTime();
 		long life = Math.max(1, ConfigStore.server().numbers.graveDays) * DAY;
+		boolean timer = timerOn();
 		GraveList out = list;
 		for (Grave g : list.graves()) {
 			long age = now - g.created();
+			if (!timer) {
+				continue;
+			}
 			if (!g.decayed() && age >= life) {
 				ItemStack keep = ItemValue.mostValuable(g.items());
 				Grave decayed = g.decayTo(keep.isEmpty() ? List.of() : List.of(keep));
@@ -239,7 +253,7 @@ public final class GraveService {
 		o.addProperty("x", g.pos().getX());
 		o.addProperty("y", g.pos().getY());
 		o.addProperty("z", g.pos().getZ());
-		o.addProperty("expires", g.created() + Math.max(1, ConfigStore.server().numbers.graveDays) * DAY);
+		o.addProperty("expires", timerOn() ? g.created() + Math.max(1, ConfigStore.server().numbers.graveDays) * DAY : 0L);
 		return o;
 	}
 
