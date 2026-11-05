@@ -107,6 +107,9 @@ public final class FeatureNet {
 			}
 		}
 		root.add("lands", lands);
+		if (lands.size() > 0) {
+			root.addProperty("atlas", dev.vestiges.world.WorldAtlas.grid(p.level().getServer()));
+		}
 		if (ServerPlayNetworking.canSend(p, FeaturePayloads.State.TYPE)) {
 			ServerPlayNetworking.send(p, new FeaturePayloads.State(root.toString()));
 		}

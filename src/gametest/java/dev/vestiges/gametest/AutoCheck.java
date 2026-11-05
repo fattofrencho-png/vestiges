@@ -32,7 +32,7 @@ public final class AutoCheck implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext ctx) {
 		String wanted = System.getenv("VESTIGES_SUITE");
-		if (wanted == null || wanted.isBlank() || wanted.equals("groups") || wanted.equals("camshots")) {
+		if (wanted == null || wanted.isBlank() || wanted.equals("groups") || wanted.equals("camshots") || AtlasCheck.handles(wanted)) {
 			return;
 		}
 		ctx.getInput().resizeWindow(1920, 1080);

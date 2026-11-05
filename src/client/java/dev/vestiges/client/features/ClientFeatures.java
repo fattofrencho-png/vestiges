@@ -21,6 +21,7 @@ public final class ClientFeatures {
 	/** Features switched off only because something they need is off (they return with it). */
 	private static final java.util.List<String> REMEMBERED = new java.util.ArrayList<>();
 	private static final java.util.List<Land> LANDS = new java.util.ArrayList<>();
+	private static String atlas = "";
 
 	private ClientFeatures() {
 	}
@@ -30,6 +31,7 @@ public final class ClientFeatures {
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
 			SYSTEMS.clear();
 			LANDS.clear();
+			atlas = "";
 			operator = false;
 		}));
 	}
@@ -55,6 +57,7 @@ public final class ClientFeatures {
 			root.getAsJsonArray("remembered").forEach(e -> REMEMBERED.add(e.getAsString()));
 		}
 		LANDS.clear();
+		atlas = root.has("atlas") ? root.get("atlas").getAsString() : "";
 		if (root.has("lands")) {
 			root.getAsJsonArray("lands").forEach(e -> {
 				JsonObject o = e.getAsJsonObject();
@@ -79,6 +82,31 @@ public final class ClientFeatures {
 	/** The continents of this world, empty in a vanilla world (the map then shows no continent names). */
 	public static java.util.List<Land> lands() {
 		return LANDS;
+	}
+
+	/** Where a block is: a continent's name, "an island", "the open sea", or null in a world without continents. */
+	public static String placeAt(double x, double z) {
+		int w = dev.vestiges.world.WorldAtlas.gridWidth();
+		int h = dev.vestiges.world.WorldAtlas.gridHeight();
+		if (atlas.length() != w * h) {
+			return null;
+		}
+		int ix = (int) Math.floor((x - dev.vestiges.world.GlobeMap.X_MIN) / dev.vestiges.world.WorldAtlas.GRID_CELL);
+		int iz = (int) Math.floor((z - dev.vestiges.world.GlobeMap.Z_MIN) / dev.vestiges.world.WorldAtlas.GRID_CELL);
+		if (x < dev.vestiges.world.GlobeMap.X_MIN || z < dev.vestiges.world.GlobeMap.Z_MIN || x >= dev.vestiges.world.GlobeMap.X_MAX || z >= dev.vestiges.world.GlobeMap.Z_MAX) {
+			return "the open sea";
+		}
+		ix = Math.min(ix, w - 1);
+		iz = Math.min(iz, h - 1);
+		char c = atlas.charAt(iz * w + ix);
+		if (c == '.') {
+			return "the open sea";
+		}
+		if (c == 'i') {
+			return "an island";
+		}
+		int i = c - '0';
+		return i >= 0 && i < LANDS.size() ? LANDS.get(i).name() : null;
 	}
 
 	public static boolean operator() {

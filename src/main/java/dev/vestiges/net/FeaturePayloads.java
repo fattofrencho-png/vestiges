@@ -16,7 +16,7 @@ public final class FeaturePayloads {
 	public record State(String json) implements CustomPacketPayload {
 		public static final Type<State> TYPE = new Type<>(Vestiges.id("features"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, State> CODEC = StreamCodec.composite(
-			ByteBufCodecs.stringUtf8(8192), State::json,
+			ByteBufCodecs.stringUtf8(65536), State::json,
 			State::new);
 
 		@Override
