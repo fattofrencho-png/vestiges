@@ -145,6 +145,9 @@ public final class HubScreen extends Screen {
 		if (tab == Tab.MAP) {
 			buildMap();
 		}
+		if (tab == Tab.VILLAGERS) {
+			dev.vestiges.client.villager.VillagerPanel.build(this::addRenderableWidget, this, width, height, HEADER + 4, height - FOOTER - 2, this::rebuildWidgets);
+		}
 		if (tab == Tab.QUESTS) {
 			dev.vestiges.client.quest.QuestPanel.build(this::addRenderableWidget, width, height, HEADER + 4, height - FOOTER - 2, this::rebuildWidgets);
 		}
@@ -332,6 +335,7 @@ public final class HubScreen extends Screen {
 		int top = HEADER + 8;
 		switch (tab) {
 			case FEATS -> renderFeats(g, top);
+			case VILLAGERS -> dev.vestiges.client.villager.VillagerPanel.render(g, font, HEADER + 6);
 			case QUESTS -> dev.vestiges.client.quest.QuestPanel.render(g, font, width, HEADER + 26, height - FOOTER - 26);
 			case SETTLEMENTS -> renderSettlements(g, top, mouseX, mouseY);
 			case SETTINGS -> renderSettings(g, top);

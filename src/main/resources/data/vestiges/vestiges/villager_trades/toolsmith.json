@@ -1,0 +1,96 @@
+{
+ "job": "toolsmith",
+ "offers": [
+  {
+   "item": "minecraft:stone_pickaxe",
+   "count": 1,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:stone_axe",
+   "count": 1,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:stone_shovel",
+   "count": 1,
+   "price": 1,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:iron_pickaxe",
+   "count": 1,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:iron_axe",
+   "count": 1,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:iron_shovel",
+   "count": 1,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:iron_hoe",
+   "count": 1,
+   "price": 10,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:bell",
+   "count": 1,
+   "price": 12,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:iron_ingot",
+   "count": 8,
+   "price": 14,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:diamond_pickaxe",
+   "count": 1,
+   "price": 40,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:diamond_axe",
+   "count": 1,
+   "price": 40,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:diamond_shovel",
+   "count": 1,
+   "price": 28,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:diamond_pickaxe",
+   "count": 1,
+   "price": 100,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

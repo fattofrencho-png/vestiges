@@ -62,6 +62,7 @@ public final class AutoCheck implements FabricClientGameTest {
 						case "structures2" -> LootSuite.structuresDeep(ctx, server, checks);
 						case "settlements" -> SettlementSuite.run(ctx, server, checks);
 						case "quests" -> QuestSuite.run(ctx, server, checks);
+						case "villagers" -> VillagerSuite.run(ctx, server, checks);
 						case "persistence" -> PersistenceSuite.run(ctx, server, checks);
 					default -> checks.check("suite exists", false, "unknown suite " + suite);
 				}

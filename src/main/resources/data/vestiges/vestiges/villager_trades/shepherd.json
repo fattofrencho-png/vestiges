@@ -1,0 +1,89 @@
+{
+ "job": "shepherd",
+ "offers": [
+  {
+   "item": "minecraft:white_wool",
+   "count": 8,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:shears",
+   "count": 1,
+   "price": 3,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:string",
+   "count": 8,
+   "price": 2,
+   "tier": 1,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:white_bed",
+   "count": 1,
+   "price": 6,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:painting",
+   "count": 2,
+   "price": 5,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:red_dye",
+   "count": 6,
+   "price": 4,
+   "tier": 2,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:white_banner",
+   "count": 1,
+   "price": 10,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:lantern",
+   "count": 2,
+   "price": 12,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:item_frame",
+   "count": 3,
+   "price": 9,
+   "tier": 3,
+   "kind": "n"
+  },
+  {
+   "item": "minecraft:glow_item_frame",
+   "count": 3,
+   "price": 26,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:black_wool",
+   "count": 16,
+   "price": 24,
+   "tier": 4,
+   "kind": "e"
+  },
+  {
+   "item": "minecraft:white_banner",
+   "count": 4,
+   "price": 70,
+   "tier": 5,
+   "kind": "l"
+  }
+ ]
+}

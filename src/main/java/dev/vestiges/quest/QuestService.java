@@ -115,7 +115,7 @@ public final class QuestService {
 			}
 		});
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {
-			if (player instanceof ServerPlayer sp && entity instanceof Villager v && sp.isShiftKeyDown() && enabled()) {
+			if (player instanceof ServerPlayer sp && entity instanceof Villager v && sp.isShiftKeyDown() && enabled() && !dev.vestiges.villager.VillagerService.screenOpens()) {
 				return onVillager(sp, v) ? InteractionResult.SUCCESS : InteractionResult.PASS;
 			}
 			return InteractionResult.PASS;
@@ -496,8 +496,24 @@ public final class QuestService {
 	}
 
 	private static boolean onVillager(ServerPlayer p, Villager v) {
+		if (talk(p, v)) {
+			return true;
+		}
+		String id = available(p, v);
+		if (id.isEmpty()) {
+			return false;
+		}
+		if (sideFull(p)) {
+			MapNet.message(p, "You already have " + QuestRules.MAX_SIDE_ACTIVE + " side quests.", true);
+			return true;
+		}
+		offer(p, id, v.getUUID().toString());
+		return true;
+	}
+
+	/** A talk step at the villager who gave the quest moves on. */
+	public static boolean talk(ServerPlayer p, Villager v) {
 		String giver = v.getUUID().toString();
-		// A talk step at the villager who gave the quest comes first.
 		for (Map.Entry<String, QuestState.Active> e : get(p).active().entrySet()) {
 			QuestDef d = def(e.getKey());
 			QuestState.Active a = e.getValue();
@@ -508,24 +524,45 @@ public final class QuestService {
 				return true;
 			}
 		}
+		return false;
+	}
+
+	/** The id of the quest this villager can offer the player now (by its job), or "". */
+	public static String available(ServerPlayer p, Villager v) {
+		if (!enabled()) {
+			return "";
+		}
 		String job = v.getVillagerData().profession().unwrapKey().map(k -> k.identifier().getPath()).orElse("");
 		QuestState st = get(p);
 		long today = p.level().getServer().overworld().getGameTime() / 24000L;
-		long activeSide = st.active().keySet().stream().map(QuestService::def).filter(d -> d != null && d.side()).count();
 		for (Map.Entry<Identifier, QuestDef> e : VestigesData.QUESTS.all().entrySet()) {
 			QuestDef d = e.getValue();
 			String id = e.getKey().getPath();
 			if ("villager".equals(d.start()) && job.equals(d.job()) && !st.active().containsKey(id) && !blocked(d)
 				&& (!st.done(id) || QuestRules.canReturn(st.finishedDay().getOrDefault(id, 0L), today))) {
-				if (activeSide >= QuestRules.MAX_SIDE_ACTIVE) {
-					MapNet.message(p, "You already have " + QuestRules.MAX_SIDE_ACTIVE + " side quests.", true);
-					return true;
-				}
-				offer(p, id, giver);
-				return true;
+				return id;
 			}
 		}
-		return false;
+		return "";
+	}
+
+	/** Whether the player already runs as many side quests as allowed. */
+	public static boolean sideFull(ServerPlayer p) {
+		return get(p).active().keySet().stream().map(QuestService::def).filter(d -> d != null && d.side()).count() >= QuestRules.MAX_SIDE_ACTIVE;
+	}
+
+	/** Name, giver and intro of a quest, for the villager screen. */
+	public static JsonObject describe(String id) {
+		QuestDef d = def(id);
+		JsonObject o = new JsonObject();
+		if (d != null) {
+			o.addProperty("id", id);
+			o.addProperty("name", d.name());
+			o.addProperty("giver", d.giver());
+			o.addProperty("intro", d.intro());
+			o.addProperty("side", d.side());
+		}
+		return o;
 	}
 
 	// ---- offers and actions ------------------------------------------------------------------------------------------
