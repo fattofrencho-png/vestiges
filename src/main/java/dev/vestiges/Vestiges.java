@@ -44,6 +44,7 @@ public class Vestiges implements ModInitializer {
 		dev.vestiges.level.XpSources.register();
 		dev.vestiges.grave.GraveService.register();
 		dev.vestiges.dungeon.DungeonService.register();
+		dev.vestiges.dragon.DragonService.register();
 		dev.vestiges.net.TreePayloads.register();
 		dev.vestiges.tree.TreeService.register();
 		dev.vestiges.tree.TreeTicker.register();

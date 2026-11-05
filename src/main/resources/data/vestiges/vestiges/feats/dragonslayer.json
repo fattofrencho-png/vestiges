@@ -2,8 +2,13 @@
   "chain": "dragonslayer",
   "order": 1,
   "name": "Dragonslayer",
-  "requirement": "Kill dragon 1",
-  "reward": "Title \"Dragonslayer\"",
+  "requirement": "Defeat dragon 1",
+  "reward": "Title \"Dragonslayer\"; the End dungeons open",
   "xp": 500,
-  "later": "the End (M9)"
+  "goals": [
+    {
+      "type": "dragon_best",
+      "amount": 1
+    }
+  ]
 }

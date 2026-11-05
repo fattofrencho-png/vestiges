@@ -105,6 +105,19 @@ RARE_ITEMS = {"Beacon", "Conduit", "Elytra", "Enchanted Golden Apple", "Heart of
 
 # --- Mobs ----------------------------------------------------------------------------------------------------------------
 BOSSES = {"Ender Dragon", "Wither", "Warden", "Elder Guardian"}
+
+# --- Lore chapters: one Codex entry per dragon, unlocked when the player is rewarded for its kill (data/vestiges/vestiges/dragons) ---
+# PLACEHOLDER TEXT: the two lines only repeat the approved chapter summaries of docs/lore/lore-log.md ("The 24 dragons, names and chapters")
+# so the entries work. The lore chat writes the real chapters; replace these lines (or read them from docs/lore) when it hands them over.
+# Only dragons 1 to 6 are listed: dragons 7 to 24 are added with their data files. The name "Kesmar" must not appear before dragon 24.
+DRAGON_CHAPTERS = [
+    ("Tulva", "[Placeholder] Vault-builders, strongholds.", "[Placeholder] Libraries in enchanting-table glyphs."),
+    ("Belaz", "[Placeholder] The Kilnfolk.", "[Placeholder] The fire started in the sky."),
+    ("Morst", "[Placeholder] Windward towers.", "[Placeholder] The trial breezes are the makers' breath."),
+    ("Dhars", "[Placeholder] The Glassmakers.", "[Placeholder] Broken things regrew overnight, as if edited."),
+    ("Ilvig", "[Placeholder] The Sleepless, taken by phantoms.", "[Placeholder] Lights that moved faster than the stars."),
+    ("Durhos", "[Placeholder] The Shrouded hid the longest.", "[Placeholder] The purges are chosen."),
+]
 MOB_ICONS = {"ender_dragon": "dragon_head", "wither": "wither_skeleton_skull", "player": "player_head"}
 
 # --- Biomes (icon per biome) ---------------------------------------------------------------------------------------------
@@ -262,6 +275,9 @@ def main():
         need("item", ids, items, name)
         out.append(("items", name, {"members": [f"minecraft:{i}" for i in ids], "rare": name in RARE_ITEMS,
                                    "icon": icon_for(ids, name), "line1": l1, "line2": l2}))
+
+    for name, l1, l2 in DRAGON_CHAPTERS:
+        out.append(("lore", name, {"members": [], "icon": icon_for(["dragon_head"], name), "line1": l1, "line2": l2}))
 
     if errors:
         print("\n".join(errors))

@@ -17,6 +17,8 @@ public record CodexEntry(String section, String name, String cls, List<String> m
 	public static final String BIOMES = "biomes";
 	public static final String STRUCTURES = "structures";
 	public static final String ITEMS = "items";
+	/** The dragons' lore chapters: unlocked by killing the dragon, one stage, no counting. */
+	public static final String LORE = "lore";
 
 	public static final Codec<CodexEntry> CODEC = RecordCodecBuilder.create(i -> i.group(
 		Codec.STRING.fieldOf("section").forGetter(CodexEntry::section),

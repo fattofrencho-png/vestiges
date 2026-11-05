@@ -33,7 +33,7 @@ public enum VestigesSystem {
 	DUNGEONS("dungeons", "Dungeons", Category.WORLD, F.IN_CORE | F.BUILT, "Portal runs: a key and a portal frame open a dungeon of locked rooms with a boss and rewards.\n\nOff: portal frames do nothing."),
 	EVENTS("events", "World events", Category.WORLD, 0, "Blood Moon, caravans, shrines and more."),
 	NETHER_POCKETS("nether_pockets", "Nether pockets", Category.WORLD, 0, "Rare Nether caves in deepslate."),
-	DRAGONS("dragons", "24 dragons", Category.WORLD, F.IN_CORE, "The End, the Vestige and the story's ending."),
+	DRAGONS("dragons", "24 dragons", Category.WORLD, F.IN_CORE | F.BUILT, "The End, the Vestige and the story's ending. Summon with 4 end crystals; each dragon needs a higher level.\n\nOff: the End is vanilla."),
 	BLUEPRINTS("blueprints", "Blueprints", Category.WORLD, 0, "Save builds and fill in ghost copies."),
 
 	FARMING("farming", "Farming help", Category.COMFORT, F.IN_CORE | F.BUILT, "Right-click harvest, no trampling, growth info and meal buffs."),

@@ -46,3 +46,6 @@ __pycache__/
 *.pyc
 /tools/blueprint-dashboard/frontend/dist/
 /tools/blueprint-dashboard/backend/storage/
+
+# app build
+*.exe

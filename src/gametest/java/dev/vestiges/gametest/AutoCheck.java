@@ -67,6 +67,9 @@ public final class AutoCheck implements FabricClientGameTest {
 						case "mending" -> MendingSuite.run(ctx, server, checks);
 						case "dungeons" -> DungeonSuite.run(ctx, server, checks);
 						case "dungeons2" -> DungeonSuite.themes(ctx, server, checks);
+						case "dragons" -> DragonSuite.run(ctx, server, checks);
+						case "dragons2" -> DragonSuite.lost(ctx, server, checks);
+						case "dragons3" -> DragonSuite.moves(ctx, server, checks);
 						case "persistence" -> PersistenceSuite.run(ctx, server, checks);
 					default -> checks.check("suite exists", false, "unknown suite " + suite);
 				}

@@ -235,6 +235,15 @@ public final class CodexService {
 		}
 	}
 
+	/** Unlocks an entry that has no counting (a dragon's lore chapter): stage 1, with the usual toast. */
+	public static void unlock(ServerPlayer p, String id) {
+		CodexEntry e = CodexIndex.get().entry(id);
+		if (e != null && enabled() && get(p).stage(id) == 0) {
+			save(p, reach(p, get(p), id, e, 1));
+			sendSnapshot(p);
+		}
+	}
+
 	private static void save(ServerPlayer p, CodexProgress prog) {
 		if (prog != get(p)) {
 			p.setAttached(PROGRESS, prog);

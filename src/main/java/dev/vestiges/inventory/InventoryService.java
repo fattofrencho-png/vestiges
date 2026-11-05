@@ -126,9 +126,13 @@ public final class InventoryService {
 			}
 			case "ender_open" -> {
 				if (slots.getItem(ExtraSlots.ENDER).is(Items.ENDER_CHEST)) {
-					player.getEnderChestInventory().setActiveChest(null);
-					player.openMenu(new SimpleMenuProvider((id, inv, p) -> ChestMenu.threeRows(id, inv, player.getEnderChestInventory()),
-						Component.translatable("container.enderchest")));
+					openPage(player, 0);
+				}
+			}
+			case "ender_page" -> {
+				// From the ender chest slot, or from any ender chest page that is already open (also an ender chest block).
+				if (slots.getItem(ExtraSlots.ENDER).is(Items.ENDER_CHEST) || inEnderMenu(player)) {
+					openPage(player, a.a());
 				}
 			}
 			case "page_rename" -> {
@@ -167,9 +171,37 @@ public final class InventoryService {
 		}
 	}
 
-	/** Ender chest pages you can use: 1 now, one more per dragon (dragons arrive in M9). */
+	/** Is the player looking at an ender chest page (the vanilla one or one of the extra pages)? */
+	static boolean inEnderMenu(ServerPlayer player) {
+		return player.containerMenu instanceof ChestMenu menu && (menu.getContainer() == player.getEnderChestInventory()
+			|| ((ExtraHolder) player).vestiges$pages().owns(menu.getContainer()));
+	}
+
+	/**
+	 * Opens ender chest page {@code page} (0 = the first, the vanilla ender chest). A page that is not unlocked stays shut. The title keeps the
+	 * ender chest's own name, so the screen still knows it is one, and adds the page number and name.
+	 */
+	public static void openPage(ServerPlayer player, int page) {
+		if (page < 0 || page >= unlockedPages(player)) {
+			return;
+		}
+		ExtraHolder holder = (ExtraHolder) player;
+		net.minecraft.world.Container container;
+		if (page == 0) {
+			player.getEnderChestInventory().setActiveChest(null);
+			container = player.getEnderChestInventory();
+		} else {
+			container = holder.vestiges$pages().container(page);
+		}
+		List<String> names = holder.vestiges$pageNames();
+		String name = page < names.size() ? names.get(page) : "";
+		Component title = Component.translatable("container.enderchest").append(Component.literal(" · " + (page + 1) + (name.isBlank() ? "" : " · " + name)));
+		player.openMenu(new SimpleMenuProvider((id, inv, p) -> ChestMenu.threeRows(id, inv, container), title));
+	}
+
+	/** Ender chest pages you can use: 1 to start, one more for every dragon you were rewarded for (the dragons switch off: just the first). */
 	public static int unlockedPages(ServerPlayer player) {
-		return 1;
+		return dev.vestiges.dragon.DragonService.enabled() ? dev.vestiges.dragon.DragonService.pages(player, PAGES) : 1;
 	}
 
 	// ---- sync ------------------------------------------------------------------------------------------------------
@@ -246,6 +278,7 @@ public final class InventoryService {
 		ExtraHolder to = (ExtraHolder) newPlayer;
 		to.vestiges$setBank(from.vestiges$bank());
 		to.vestiges$setPageNames(from.vestiges$pageNames());
+		to.vestiges$pages().copyFrom(from.vestiges$pages());
 		Selection oldSel = InventoryHooks.selection(oldPlayer);
 		Selection newSel = InventoryHooks.selection(newPlayer);
 		for (int kind = Selection.TOOL; kind <= Selection.BELT; kind++) {

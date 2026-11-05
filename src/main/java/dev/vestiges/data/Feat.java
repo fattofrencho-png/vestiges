@@ -14,7 +14,7 @@ import java.util.List;
  */
 public record Feat(String chain, int order, String name, String requirement, String reward, int xp, boolean repeatable, List<Goal> goals,
 				   String item, String owed, String later, String counter, int every) {
-	/** One check: a kind ("level", "biomes", "codex", "elites", "villagers", "beds", "renown", "renown_two", "raids", "raid_omen") and an amount. */
+	/** One check: a kind ("level", "biomes", "codex", "elites", "villagers", "beds", "renown", "renown_two", "raids", "raid_omen", "dragon_best") and an amount. */
 	public record Goal(String type, int amount) {
 		public static final Codec<Goal> CODEC = RecordCodecBuilder.create(i -> i.group(
 			Codec.STRING.fieldOf("type").forGetter(Goal::type),
@@ -53,6 +53,7 @@ public record Feat(String chain, int order, String name, String requirement, Str
 			case "level" -> VestigesSystem.CHARACTER;
 			case "codex" -> VestigesSystem.CODEX;
 			case "elites" -> VestigesSystem.ELITES;
+			case "dragon_best" -> VestigesSystem.DRAGONS;
 			case "renown", "renown_two", "renown_levels" -> VestigesSystem.SETTLEMENTS;
 			default -> null;
 		};

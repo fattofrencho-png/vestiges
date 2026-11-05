@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.serialization.Codec;
+import dev.vestiges.inventory.EnderPages;
 import dev.vestiges.inventory.ExtraHolder;
 import dev.vestiges.inventory.ExtraSlots;
 import dev.vestiges.inventory.Selection;
@@ -36,6 +37,8 @@ public abstract class PlayerExtraMixin implements ExtraHolder {
 	private long vestiges$bank;
 	@Unique
 	private List<String> vestiges$pages;
+	@Unique
+	private EnderPages vestiges$enderPages;
 
 	@Override
 	public ExtraSlots vestiges$slots() {
@@ -56,6 +59,14 @@ public abstract class PlayerExtraMixin implements ExtraHolder {
 	}
 
 	@Override
+	public EnderPages vestiges$pages() {
+		if (vestiges$enderPages == null) {
+			vestiges$enderPages = new EnderPages();
+		}
+		return vestiges$enderPages;
+	}
+
+	@Override
 	public List<String> vestiges$pageNames() {
 		return vestiges$pages != null ? vestiges$pages : List.of();
 	}
@@ -70,6 +81,7 @@ public abstract class PlayerExtraMixin implements ExtraHolder {
 		out.store("vestiges_slots", ExtraSlots.CODEC, vestiges$slots().toList());
 		out.putLong("vestiges_bank", vestiges$bank);
 		out.store("vestiges_pages", Codec.STRING.listOf(), vestiges$pageNames());
+		out.store("vestiges_ender_pages", EnderPages.CODEC, vestiges$pages().toList());
 		Selection sel = (Selection) ((Player) (Object) this).getInventory();
 		out.store("vestiges_racks", Codec.INT.listOf(), List.of(sel.vestiges$rackIndex(Selection.TOOL), sel.vestiges$rackIndex(Selection.WEAPON),
 			sel.vestiges$rackIndex(Selection.BELT)));
@@ -80,6 +92,7 @@ public abstract class PlayerExtraMixin implements ExtraHolder {
 		in.read("vestiges_slots", ExtraSlots.CODEC).ifPresent(list -> vestiges$slots().fromList(list));
 		vestiges$bank = Math.max(0, in.getLongOr("vestiges_bank", 0L));
 		vestiges$pages = in.read("vestiges_pages", Codec.STRING.listOf()).map(List::copyOf).orElse(List.of());
+		in.read("vestiges_ender_pages", EnderPages.CODEC).ifPresent(list -> vestiges$pages().fromList(list));
 		Selection sel = (Selection) ((Player) (Object) this).getInventory();
 		in.read("vestiges_racks", Codec.INT.listOf()).ifPresent(r -> {
 			for (int i = 0; i < Math.min(3, r.size()); i++) {
