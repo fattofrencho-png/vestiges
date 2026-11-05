@@ -1,6 +1,7 @@
 package dev.vestiges.gametest;
 
 import dev.vestiges.Vestiges;
+import dev.vestiges.client.inventory.ClientInventory;
 import dev.vestiges.codex.CodexService;
 import dev.vestiges.data.VestigesData;
 import dev.vestiges.dragon.DragonDef;
@@ -11,6 +12,8 @@ import dev.vestiges.dragon.DragonService;
 import dev.vestiges.dragon.PlayerDragons;
 import dev.vestiges.dungeon.DungeonService;
 import dev.vestiges.feats.FeatService;
+import dev.vestiges.inventory.EnderPages;
+import dev.vestiges.inventory.ExtraHolder;
 import dev.vestiges.inventory.InventoryService;
 import dev.vestiges.level.LevelCurve;
 import dev.vestiges.level.LevelService;
@@ -28,6 +31,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhase;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
@@ -436,10 +440,59 @@ final class DragonSuite {
 		ctx.waitTicks(30);
 		hit(server, 1000f, 0, -1, 0);
 		c.check("hurt again", dragon(server).health() < dragon(server).max() - 1);
+
+		// Ender chest pages: the second page holds 5 diamonds, opens as a chest, is saved, and is still there after the death below.
+		server.runOnServer(s -> {
+			ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			DragonService.setPlayer(p, PlayerDragons.EMPTY.with(9));
+			((ExtraHolder) p).vestiges$pages().container(1).setItem(0, new ItemStack(Items.DIAMOND, 5));
+		});
+		c.check("one rewarded dragon makes 2 pages", pages(server) == 2, String.valueOf(pages(server)));
+		String opened = server.computeOnServer(s -> {
+			ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			InventoryService.openPage(p, 1);
+			boolean chest = p.containerMenu instanceof ChestMenu m && m.getContainer() == ((ExtraHolder) p).vestiges$pages().container(1);
+			return chest + " | " + p.containerMenu.getSlot(0).getItem().getCount() + " | " + net.minecraft.world.item.Items.DIAMOND.equals(p.containerMenu.getSlot(0).getItem().getItem());
+		});
+		c.check("page 2 opens as a chest that shows the diamonds", opened.startsWith("true | 5 | true"), opened);
+		boolean stayed = server.computeOnServer(s -> {
+			ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			var before = p.containerMenu;
+			InventoryService.openPage(p, 2);
+			return p.containerMenu == before;
+		});
+		c.check("page 3 is still locked and does not open", stayed);
+		String saved = server.computeOnServer(s -> {
+			ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			var ops = s.registryAccess().createSerializationContext(net.minecraft.nbt.NbtOps.INSTANCE);
+			var tag = EnderPages.CODEC.encodeStart(ops, ((ExtraHolder) p).vestiges$pages().toList()).getOrThrow();
+			var back = EnderPages.CODEC.parse(ops, tag).getOrThrow();
+			return back.size() + " page(s), " + back.get(0).page() + ", " + back.get(0).items().get(0).getCount() + " x " + back.get(0).items().get(0).getItem();
+		});
+		c.check("the page survives being saved and loaded", saved.startsWith("1 page(s), 1, 5 x"), saved);
+		// Switching pages from the open ender chest, as a click on the page list does: first page, then ask for page 2.
+		server.runOnServer(s -> InventoryService.openPage(s.getPlayerList().getPlayers().get(0), 0));
+		ctx.waitTicks(10);
+		ctx.runOnClient(mc -> ClientInventory.send("ender_page", 1, 0, ""));
+		ctx.waitTicks(15);
+		c.check("asking for page 2 from the open ender chest switches to it", server.computeOnServer(s -> {
+			ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			return p.containerMenu instanceof ChestMenu m && m.getContainer() == ((ExtraHolder) p).vestiges$pages().container(1);
+		}));
+		ctx.runOnClient(mc -> ClientInventory.send("ender_page", 5, 0, ""));
+		ctx.waitTicks(10);
+		c.check("asking for a locked page changes nothing", server.computeOnServer(s -> {
+			ServerPlayer p = s.getPlayerList().getPlayers().get(0);
+			return p.containerMenu instanceof ChestMenu m && m.getContainer() == ((ExtraHolder) p).vestiges$pages().container(1);
+		}));
+		ctx.takeScreenshot("dragons-ender-page-2");
+		server.runOnServer(s -> s.getPlayerList().getPlayers().get(0).closeContainer());
 		die(ctx, server);
 		ctx.waitTicks(40);
 		c.check("the fight is over and nothing was counted", server.computeOnServer(s -> DragonService.world(s).active()) == 0 && kills(server) == 0);
-		c.check("nobody got a reward", server.computeOnServer(s -> DragonService.player(s.getPlayerList().getPlayers().get(0)).count()) == 0);
+		c.check("nobody got a reward", !server.computeOnServer(s -> DragonService.player(s.getPlayerList().getPlayers().get(0)).has(1)));
+		c.check("the ender chest page and its diamonds survived the death", server.computeOnServer(s ->
+			((ExtraHolder) s.getPlayerList().getPlayers().get(0)).vestiges$pages().container(1).getItem(0).getCount()) == 5 && pages(server) == 2);
 		c.check("the End is open for a new summoning", server.computeOnServer(s -> ((EnderDragonFightAccessor) s.getLevel(Level.END).getDragonFight()).vestiges$killed()));
 		c.check("the pillar repair has begun", DragonService.repairing());
 		c.check("the boss bar is hidden", !server.computeOnServer(s -> ((EnderDragonFightAccessor) s.getLevel(Level.END).getDragonFight()).vestiges$bar().isVisible()));
