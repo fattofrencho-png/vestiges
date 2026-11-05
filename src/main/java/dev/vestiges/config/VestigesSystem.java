@@ -47,7 +47,7 @@ public enum VestigesSystem {
 
 	/** Groups on the welcome page. */
 	public enum Category {
-		CORE("Always on"), CHARACTER("Character"), LOOT("Loot and enchants"), MOBS("Mobs"), WORLD("World"), COMFORT("Comfort");
+		CORE("Foundation"), CHARACTER("Character"), LOOT("Loot and enchants"), MOBS("Mobs"), WORLD("World"), COMFORT("Comfort");
 
 		public final String label;
 
@@ -58,7 +58,7 @@ public enum VestigesSystem {
 
 	/** Ready-made choices on the welcome page. Each one includes the one before it. */
 	public enum Preset {
-		CORE("Core", "The RPG: levels, trees, gear, mobs, loot, Codex, feats, settlements, villagers, dungeons and dragons."),
+		CORE("RPG", "The RPG: levels, trees, gear, mobs, loot, Codex, feats, settlements, villagers, dungeons and dragons."),
 		COMFORT("Comfort", "Core plus quality of life: sorting, bigger stacks, shapes, shulker boxes and peek."),
 		FULL("Full RPG", "Comfort plus workers, world events, Nether pockets and blueprints.");
 
