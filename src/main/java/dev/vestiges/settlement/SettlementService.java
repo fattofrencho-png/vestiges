@@ -46,6 +46,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -173,6 +175,37 @@ public final class SettlementService {
 		p.sendOverlayMessage(net.minecraft.network.chat.Component.literal("This is " + s.displayName() + ". Only its members can do that."));
 	}
 
+	/** Tells the player why, and refuses the use. */
+	public static InteractionResult deny(ServerPlayer p, Settlement s) {
+		denied(p, s);
+		return refuse(p);
+	}
+
+	/**
+	 * The blocks an explosion may destroy. Mobs' explosions are left to the griefing switch. Everything else (TNT, beds, anchors) can't touch a
+	 * settlement, unless a member caused it.
+	 */
+	public static List<BlockPos> explosionTargets(ServerLevel level, LivingEntity source, List<BlockPos> blocks) {
+		if (!enabled() || blocks.isEmpty() || source instanceof Mob) {
+			return blocks;
+		}
+		String d = dim(level);
+		List<Settlement> standing = world(level.getServer()).settlements().stream().filter(s -> s.standing() && s.dimension().equals(d)).toList();
+		if (standing.isEmpty()) {
+			return blocks;
+		}
+		List<BlockPos> allowed = new ArrayList<>(blocks.size());
+		for (BlockPos pos : blocks) {
+			boolean safe = source instanceof ServerPlayer p
+				? lockedFor(p, level, pos) != null
+				: standing.stream().anyMatch(s -> inside(s.bellPos(), s.radius(), pos));
+			if (!safe) {
+				allowed.add(pos);
+			}
+		}
+		return allowed;
+	}
+
 	private static boolean doorLike(BlockState state) {
 		Block b = state.getBlock();
 		return b instanceof DoorBlock || b instanceof TrapDoorBlock || b instanceof FenceGateBlock || b instanceof ButtonBlock || b instanceof LeverBlock;
@@ -184,18 +217,26 @@ public final class SettlementService {
 		}
 		ItemStack stack = player.getItemInHand(hand);
 		BlockPos pos = hit.getBlockPos();
+		BlockState state = sl.getBlockState(pos);
+		boolean opensDoor = doorLike(state) && !sp.isSecondaryUseActive();
+		boolean placing = stack.getItem() instanceof BlockItem || stack.getItem() instanceof BucketItem || stack.is(Items.FLINT_AND_STEEL)
+			|| stack.is(Items.FIRE_CHARGE);
 		Settlement locked = lockedFor(sp, sl, pos);
 		if (locked != null) {
-			BlockState state = sl.getBlockState(pos);
 			BlockEntity be = sl.getBlockEntity(pos);
 			boolean container = (be instanceof Container || be instanceof LecternBlockEntity) && PlacedBlocks.isPlaced(sl, pos);
-			boolean placing = stack.getItem() instanceof BlockItem || stack.getItem() instanceof BucketItem || stack.is(Items.FLINT_AND_STEEL)
-				|| stack.is(Items.FIRE_CHARGE);
-			if (container || placing && !(doorLike(state) && !sp.isSecondaryUseActive())) {
-				denied(sp, locked);
-				return refuse(sp);
+			boolean changes = placing || dev.vestiges.tree.UtilityPowers.toolChanges(stack, state);
+			if (container || changes && !opensDoor) {
+				return deny(sp, locked);
 			}
 			return InteractionResult.PASS;
+		}
+		// The block clicked can be outside the settlement while the new block lands inside it.
+		if (placing && !opensDoor) {
+			Settlement landing = lockedFor(sp, sl, new BlockPlaceContext(new UseOnContext(player, hand, hit)).getClickedPos());
+			if (landing != null) {
+				return deny(sp, landing);
+			}
 		}
 		if (hand == InteractionHand.MAIN_HAND && enabled() && !sp.isSecondaryUseActive()) {
 			World w = world(sl.getServer());

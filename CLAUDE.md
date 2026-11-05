@@ -19,7 +19,7 @@ read `lore-log.md` before using any lore, and handle its "For the main chat" lis
 - **Anti-exploit:** anything slightly unvanilla is earned (feats, levels, discoveries) and must not be exploitable.
 - **Emeralds are the only currency.** All content is data-driven (JSON datapacks) and every system can be switched off by the server.
 
-## Build order (each milestone ends with a playtest and the author's OK before the next starts)
+## Build order (a combined playtest and the author's OK come before each big new system)
 
 M0 Foundation (this) · Map + waystones · M1 Character · M2 Inventory · M3 Mobs & loot · M4 Codex & farming · M5 Feats & settlements ·
 M6 Villagers · M7 Workers · M8 Dungeons · M9 World & End · M10 Blueprints.
@@ -35,13 +35,15 @@ dev deploy         rem build + replace the jar in the modtesting instance's mods
 dev runClient      rem dev client; H opens the hub
 dev runServer      rem needs eula.txt accepted by the author; never accept it on their behalf
 dev runClientGameTest  rem plays src/gametest in a real world and saves screenshots to build/run/clientGameTest/screenshots; the game stalls when
-                       rem closing the world (inside Fabric's test tool, no Vestiges code in the thread dump), so stop it after the last screenshot; set VESTIGES_TOUR=off for a world with every feature off
+                       rem closing the world (inside Fabric's test tool, no Vestiges code in the thread dump), so stop it after the last screenshot; set VESTIGES_TOUR=off for a world with every feature off, =world for the world type tour, =protection for the land protection checks
+                       rem (=protection prints "[protection] ok" lines; it exits with an error at the end because the world stays open, so read the lines)
 powershell -File tools\run_suite.ps1 sweep   rem automatic checks (AutoCheck): pass/fail report, 5-minute limit, stops the game itself; suites in docs/testing-plan.md
 ```
 
 Loot tables are generated: edit `tools/build_loot.py` and run `python tools/build_loot.py` (never hand-edit `data/vestiges/loot_table/`
 or `data/minecraft/loot_table/chests/`).
 Codex entries are generated too: `python tools/build_codex.py` reads `docs/lore/codex-flavour.md` (never hand-edit `data/vestiges/vestiges/codex/`).
+Terrain files too: `python tools/build_worldgen.py` (never hand-edit `data/vestiges/worldgen/`). CI fails if generated files don't match their scripts.
 
 The machine's default Java is 24 and **cannot** build this (`release = 25`); always go through `dev.bat` or set `JAVA_HOME` to the JDK 25.
 From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.
@@ -53,6 +55,7 @@ From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.
 - **Side chats (author, 2026-10-31):** the main chat drives development and syncs the others. Side chats handle one area: Lore (`docs/lore/`, rules in its `README.md`) and UI (see below). The main chat handles all pushes. More side chats may come, such as one for quest content.
 - **New chats (author, 2026-11-01):** when something starts taking too much development time, cost or tokens, recommend creating a new chat for it. The main chat stays on general development and MVP versions.
 - **UI room (author, 2026-10-31):** UI polish happens in a separate chat, in the `RPG Mod UI` folder on the `ui` branch (rules in `docs/ui/README.md`, decisions in `docs/ui/ui-log.md`; that folder exists only on `ui` until the author says to merge). That chat commits to `ui` only and never pushes; `ui` goes into main only when the author says so. The main chat ships simple first versions of screens and leaves polish to the UI room. New screens use `UiTheme` colours.
+- **World room:** world generation has its own chat, in the `RPG Mod World` folder on the `world` branch (rules in `docs/world/README.md`, decisions in `docs/world/world-log.md`). It commits to `world` only when asked and never pushes.
 - **Testing guides:** a kit block at the top, then copy-paste commands for each step (items with enough copies, gear, effects such as speed
   and haste, time, mobs to summon, `/vestiges` shortcuts), so the author can paste them in a row.
 - **Commit and push only when asked.** Remote: private repo https://github.com/fattofrencho-png/vestiges (CI builds every push to main). `gh` is not installed.
@@ -74,6 +77,7 @@ From Git Bash: `JAVA_HOME=/c/Users/carpe/.jdks/jdk-25.0.4.1+1 ./gradlew build`.
 - `ModAttachments.PROFILE` (`PlayerProfile`): persistent, copied on death; grows with level, tree, Codex, feats.
 - Client: `client/hub/HubScreen` (H; tabs Character, Codex, Villagers, Settlements, Feats, Map, Settings), `client/hud/LookAtHud` (own
   look-at HUD written from scratch, no Jade code) with `LookAtProvider`s registered in `LookAtProviders`; each line can be switched off.
+- Later systems each have their own package (`level/`, `tree/`, `gear/`, `inventory/`, `mobs/`, `loot/`, `codex/`, `farming/`, `feats/`, `settlement/`, `waystone/`, `grave/`, `quest/`, `world/`). Anything that changes blocks for a player must respect `SettlementService.lockedFor`. Client requests for big snapshots go through `server/RequestLimit`.
 - Pitfalls seen in 26.3: mixin `@Unique` field initialisers did not run for `Player` (create such fields lazily in a getter); no
   `ItemStack` in static initialisers of classes loaded at client start (components are bound later); unit tests can't build item stacks. Fabric saves world (overworld) attachments without the dynamic registries: items in world data must use
   `server/SavedItems.CODEC`, and every class holding an `AttachmentRegistry.create` must be touched in `Vestiges.onInitialize` (else saved
