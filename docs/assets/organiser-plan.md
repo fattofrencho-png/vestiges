@@ -1,5 +1,7 @@
 # Asset Studio organiser: plan (DRAFT v1, 2026-11-05, for the author's OK)
 
+> **Status (2026-11-06): steps 0-3 built** (analyser, facets, Review screen); see `Progress` below and `asset-log.md`. Later steps still follow the Trees-first plan in `PROJECT.md`.
+
 Goal: the funnel in already exists (imports, packs, online). This plan builds the funnel **through**: every asset is checked
 automatically, the machine proposes tags, and the author reviews fast (accept / change / reject). Organised assets then feed
 two consumers: the **video funnel** (Minecraft Inspiration) and **Vestiges world generation** (better trees and houses

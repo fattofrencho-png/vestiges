@@ -1,5 +1,7 @@
 # Asset Studio app: plan (v2, 2026-11-04)
 
+> **Status (2026-11-06): mostly built** (desktop app, library management and online search exist; to confirm what is left); decisions and later changes are in `asset-log.md`. Kept for history.
+
 Goal: Asset Studio becomes a desktop app, for the author's own use, that creates, finds online and manages every kind of Vestiges asset.
 
 ## Decisions (author, 2026-11-04)

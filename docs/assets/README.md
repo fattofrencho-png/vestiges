@@ -1,6 +1,6 @@
 # Assets room
 
-Assets have their own chat, in the `RPG Mod Assets` folder on the `assets` branch. Asset Studio is our schematic library: it imports our own builds and builds by others, reviews them one by one, adapts them with one-click edits, names them, and exports them. It can also make trees and plants with an AI (Claude or Gemini), which is optional.
+Assets have their own chat, in the `Minecraft Asset Manager` folder (under `E:/Claudia/Projects`) on the `assets` branch. Asset Studio is our schematic library: it imports our own builds and builds by others, reviews them one by one, adapts them with one-click edits, names them, and exports them. It can also make trees and plants with an AI (Claude or Gemini), which is optional.
 
 ## Rules
 
@@ -12,7 +12,7 @@ Assets have their own chat, in the `RPG Mod Assets` folder on the `assets` branc
 - Credit is optional, and `credits.md` lists entries with a creator. Builds by others should have one: filter the Library by **No credit** to find the gaps. Check permission before adding anything to the mod.
 - Downloads can hold any blocks. **Add to mod** takes vanilla blocks only.
 - Chest contents, sign text, command block data and entities are not copied.
-- When stopping a game, only stop Java processes from this folder (`*RPG Mod Assets*`). Never run `gradlew --stop`.
+- When stopping a game, only stop Java processes from this folder (`*Minecraft Asset Manager*`). Never run `gradlew --stop`.
 
 ## Using it
 
