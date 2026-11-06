@@ -2,6 +2,10 @@
 
 Guidance for Claude Code in this repository.
 
+## This folder (JB, 2026-11-06)
+
+This folder is the **Asset Studio** project (`PROJECT.md`: goal, milestones, hours), on branch `assets` of the Vestiges repository. The text below is the Vestiges mod's guidance and applies to the shared code. Asset Studio feeds the Minecraft Inspiration videos and the mod. Report to `E:\Claudia\Manager\inbox` as described in `E:\Claudia\CLAUDE.md`; do not change Status or Priority.
+
 ## What this is
 
 **Vestiges** (mod id `vestiges`, package `dev.vestiges`): a Fabric mod for Minecraft **26.3** (pinned) on Java 25, Fabric API only,
