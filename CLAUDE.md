@@ -1,10 +1,50 @@
 # CLAUDE.md
 
-Guidance for Claude Code in this repository.
+Guidance for Claude Code in this repository. It has two parts: **Asset Studio** (this folder's project, first) and **Vestiges mod** (the shared code of the repository, below).
 
-## This folder (JB, 2026-11-06)
+# Part 1: Asset Studio (this folder's project)
 
-This folder is the **Asset Studio** project (`PROJECT.md`: goal, milestones, hours), on branch `assets` of the Vestiges repository. The text below is the Vestiges mod's guidance and applies to the shared code. Asset Studio feeds the Minecraft Inspiration videos and the mod. Report to `E:\Claudia\Manager\inbox` as described in `E:\Claudia\CLAUDE.md`; do not change Status or Priority.
+## What this is
+
+This folder is the **Asset Studio** project (`PROJECT.md`: goal, milestones, hours), on branch `assets` of the Vestiges repository (a git worktree). Asset Studio is the desktop tool that builds and manages the Minecraft asset library in `~/.vestiges-assets/library/` (outside git; 376 builds, to confirm against the index). It imports builds (`.schem`, `.litematic`, `.nbt`, mod jars, datapack zips, saved-world boxes), analyses and sorts them (facets: kind, realm, style, folder, model and variant numbers), lets JB review them one by one, adapts them with one-click edits, names them, and exports them. It can also make trees and plants with an AI (Claude or Gemini), which is optional.
+
+It feeds two things: the **Minecraft Inspiration videos** (the library and its taxonomy; spec in `E:\AI Work\Videos\Minecraft Inspiration\Dev\TAXONOMY.md`) and the **Vestiges mod** ("Send to mod" writes `data/vestiges/structure/` and `docs/assets/credits.md`). JB may sell it later, so rights of the source builds matter (see `PROJECT.md`, Milestones). Priority and hours per week are in `PROJECT.md`; do not change Status or Priority.
+
+## Where things are
+
+- Code: `tools/assets/` (Python; `studio.py` is the local server, `app.py` the desktop window, `web/` the screens, `analyse.py`/`triage.py`/`organise.py` the organiser, `naming.py` names, `test_assets.py`/`test_triage.py` tests). `tools/assets/exports.json` says where each tree's ground and trunk are.
+- Docs: `docs/assets/` (`README.md` rules and use, `asset-log.md` decisions, `organiser-plan.md`, `app-plan.md`, `naming-convention.md`, `credits.md` generated).
+- Data, not in git: `~/.vestiges-assets/` (library, thumbs, backups, settings, API keys, card numbers). **Back it up**: git does not hold it. Never print or commit keys.
+- `tools/blueprint-dashboard/` is a separate side tool (image/blueprint to voxel), not part of the library workflow.
+
+## How to run
+
+```bat
+"Asset Studio.bat"                    rem opens the studio in the browser (first run installs tools\assets\requirements.txt)
+dev assets                            rem same, through dev.bat
+build_app.bat                         rem rebuilds "Asset Studio.exe" (PyInstaller; the exe is git-ignored, keep it in this folder)
+python tools\assets\test_assets.py    rem checks; spends no money and needs no key
+python tools\assets\test_triage.py
+```
+
+Python tests run only when JB asks (see his global rules: muted, minimized, 5 minutes, 3 attempts). The Java side (`dev build`, Part 2) is not needed to work on Asset Studio.
+
+## Rules for Asset Studio work
+
+- Plain words, short replies. Sketch first for any new screen or flow. Decisions go in `docs/assets/asset-log.md` (dated, with who decided).
+- The library is outside git, so it is the valuable thing: never delete, overwrite or rewrite it (or `~/.vestiges-assets/` files) without JB's yes. Test on a copy. Reject defaults to Archive (restorable); "Delete now" asks to confirm.
+- Never hand-edit `data/vestiges/structure/` or `docs/assets/credits.md`: "Add to mod" writes them, from saved versions only.
+- Vanilla blocks only go to the mod. Nothing from the Minecraft jar is copied into the repo or published. Check permission before adding anyone's build to the mod; credit is optional but tracked.
+- The cloud vision AI is not approved (offline picture model only, later). AI generation stays optional and needs a key in Settings.
+- Commit to `assets` only; never push (JB or the main chat pushes). `assets` goes into main only when JB says so. Do not switch branch.
+- When stopping a game or app, stop only processes from this folder. Never run `gradlew --stop`.
+- Report to `E:\Claudia\Manager\inbox` as described in `E:\Claudia\CLAUDE.md`. At the end of a work chat update `PROJECT.md` (`Last activity`, `Next step`, `Blocker`) and tick finished milestones.
+
+---
+
+# Part 2: Vestiges mod (shared code of this repository)
+
+The text below is the Vestiges mod's guidance and applies to the shared code in `src/`, `data/` and the rest of the repository.
 
 ## What this is
 
