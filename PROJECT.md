@@ -6,7 +6,7 @@
 - **Priority:** High (JB, 2026-11-06)
 - **Hours per week:** under 5 (JB, 2026-11-06)
 - **Last activity:** 2026-11-06 (CLAUDE.md rewritten with an Asset Studio section; repo cleaned; committed on `assets`, not pushed)
-- **Next step:** Finish the Oak tree series (8 cards, `Dev/TAXONOMY.md` in Minecraft Inspiration); push `assets` when JB says (1-2 local commits ahead)
+- **Next step:** Finish the Oak tree series (8 cards, `Dev/TAXONOMY.md` in Minecraft Inspiration); push `assets` when JB says (3 local commits ahead)
 - **Blocker:** None known (to confirm)
 - **Git/backup:** GitHub `fattofrencho-png/vestiges`, branch `assets` (this folder is a git worktree of the Vestiges repo; pushed 2026-11-06)
 
